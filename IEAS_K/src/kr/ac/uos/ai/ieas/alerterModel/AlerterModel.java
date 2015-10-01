@@ -5,11 +5,11 @@ import java.util.UUID;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerterController.AlerterController;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
-import kr.ac.uos.ai.ieas.resource.IeasMessage;
+import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
 public class AlerterModel extends AbstractModel {
 
-	private IeasMessage ieasMessage;
+	private IeasMessageBuilder ieasMessage;
 	
 	private String alerterTextareaText;
 
@@ -27,7 +27,7 @@ public class AlerterModel extends AbstractModel {
 	
 	public AlerterModel(AlerterController alerterController) {
 
-		this.ieasMessage = new IeasMessage();
+		this.ieasMessage = new IeasMessageBuilder();
 		 
 		this.alerterName = IeasAlerterConfig.ALERTER_NAME;
 		this.alerterID = generateID(alerterName);

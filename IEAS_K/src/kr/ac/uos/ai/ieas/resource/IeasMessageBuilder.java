@@ -22,7 +22,7 @@ import com.google.publicalerts.cap.NotCapException;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
-public class IeasMessage {
+public class IeasMessageBuilder {
 
 	private CapXmlBuilder 	capXmlBuilder;
 	private CapXmlParser 	capXmlParser;
@@ -36,7 +36,7 @@ public class IeasMessage {
 	private String xmlMessage;
 	
 
-	public IeasMessage()  {
+	public IeasMessageBuilder()  {
 
 		capXmlBuilder = new CapXmlBuilder();
 		capXmlParser = new CapXmlParser(true);
@@ -234,7 +234,7 @@ public class IeasMessage {
 		alert = Alert.newBuilder(alert).addCode(code).build();
 	}
 
-	public String getCode(IeasMessage message) {
+	public String getCode(IeasMessageBuilder message) {
 		// TODO Auto-generated method stub
 		return null;
 	}

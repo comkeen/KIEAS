@@ -1,12 +1,12 @@
 package kr.ac.uos.ai.ieas.alertSystem;
 
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
-import kr.ac.uos.ai.ieas.resource.IeasMessage;
+import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
 
 public class AlertSystemController {
 
-	private IeasMessage ieasMessage;
+	private IeasMessageBuilder ieasMessage;
 	private AlertSystemTransmitter alertSystemTransmitter;
 	private AlertSystemView alertSystemView;
 
@@ -19,7 +19,7 @@ public class AlertSystemController {
 		this.alertSystemID = "alertSystem-Jeju-V2";
 		this.location = "Jeju";
 		
-		this.ieasMessage = new IeasMessage();
+		this.ieasMessage = new IeasMessageBuilder();
 		this.alertSystemTransmitter = new AlertSystemTransmitter(this, location);		
 		this.alertSystemView = new AlertSystemView(this, alertSystemID);
 	}

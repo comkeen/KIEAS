@@ -2,7 +2,7 @@ package kr.ac.uos.ai.ieas.gatewayModel;
 
 import java.util.HashMap;
 
-import kr.ac.uos.ai.ieas.resource.IeasMessage;
+import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
 public class GatewayModelManager {
 	
@@ -15,7 +15,7 @@ public class GatewayModelManager {
 	private GatewayAlertSystemInfoTableModel alertSystemInfoTableModel;
 	private GatewayAlertTableModel alertTableModel;
 	
-	private IeasMessage ieasMessage;
+	private IeasMessageBuilder ieasMessage;
 
 
 	
@@ -33,7 +33,7 @@ public class GatewayModelManager {
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
 		
-		this.ieasMessage = new IeasMessage();
+		this.ieasMessage = new IeasMessageBuilder();
 		
 		initAlertElementMap();
 	}

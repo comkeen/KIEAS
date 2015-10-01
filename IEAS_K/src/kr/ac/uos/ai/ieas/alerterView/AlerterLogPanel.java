@@ -1,40 +1,31 @@
 package kr.ac.uos.ai.ieas.alerterView;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerterController.AlerterController;
 import kr.ac.uos.ai.ieas.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.gatewayController.GatewayActionListener;
-import kr.ac.uos.ai.ieas.gatewayView.GatewayLogPane;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 
 
-public class AlerterLogPane extends AbstractView{
+public class AlerterLogPanel extends AbstractView{
 
-	private static AlerterLogPane alerterViewPanel;
+	private static AlerterLogPanel alerterViewPanel;
 	private AlerterController alerterController;
 	private AleterViewActionListener alerterActionListener;
 	private IeasArcGisMap ieasArcGisMap;
 
-	private JFrame frame;
 	private JButton generateCapButton;
 	private JButton messageSendButton;
 
@@ -51,42 +42,43 @@ public class AlerterLogPane extends AbstractView{
 	private DefaultTableModel alertModel;
 
 	private String capMessage;
-	private String[] rowData;
 	private int alertCount;
+	private String[] rowData;
 	private String[] columnNames;
 	private JButton textAreaMessageSendButton;
-	private JButton saveCapButton;
+	private JButton connectServerButton;
 	
 
-	public static AlerterLogPane getInstance(AlerterController alerterController) {
+	public static AlerterLogPanel getInstance(AleterViewActionListener alerterActionListener) {
 		if (alerterViewPanel == null) {
 
-			alerterViewPanel = new AlerterLogPane(alerterController);
+			alerterViewPanel = new AlerterLogPanel(alerterActionListener);
 		}
 		return alerterViewPanel;
 	}
 
 	
-	private AlerterLogPane(AlerterController alerterController) {
+	private AlerterLogPanel(AleterViewActionListener alerterActionListener)
+	{
 
-		this.alerterController = alerterController;
-		this.alerterActionListener = new AleterViewActionListener(alerterController);
+		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();
 		
-		initLookAndFeel();
 		initFrame("alertViewPanel");
 	}
 	
-	public JPanel getLogPane(){
+	public JPanel getLogPanel()
+	{
 		return this.logPanel;
 	}
 	
 
-	public void modelPropertyChange(PropertyChangeEvent evt){
+	public void modelPropertyChange(PropertyChangeEvent evt)
+	{
 		
 		System.out.println("trigger property change");
-		switch (evt.getPropertyName()){
-		
+		switch (evt.getPropertyName())
+		{		
 		case AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
 			textArea.setText(evt.getNewValue().toString());
 			System.out.println("text area propertychange");
@@ -96,19 +88,13 @@ public class AlerterLogPane extends AbstractView{
 		}
 	}
 	
-	public void setActionListener(AleterViewActionListener alerterActionListener) {
+	public void setActionListener(AleterViewActionListener alerterActionListener)
+	{
 		this.alerterActionListener = alerterActionListener;
 	}
-	
-	private void initLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-	}
 
-	private void initFrame(String name) {
+	private void initFrame(String name)
+	{
 		
 		this.logPanel = new JPanel();
 		logPanel.setLayout(new GridBagLayout());
@@ -130,8 +116,6 @@ public class AlerterLogPane extends AbstractView{
 		this.setGbc(1, 2, 1, 1, 1, 1);
 		this.initButtonPane();
 		this.initComboBox();
-
-		frame.setVisible(true);
 	}
 
 	private void initMap() {
@@ -200,9 +184,9 @@ public class AlerterLogPane extends AbstractView{
 		textAreaMessageSendButton.addActionListener(alerterActionListener);
 		buttonPane.add(textAreaMessageSendButton, BorderLayout.EAST);
 		
-		this.saveCapButton = new JButton("SaveCap");
-		saveCapButton.addActionListener(alerterActionListener);
-		buttonPane.add(saveCapButton, BorderLayout.EAST);
+		this.connectServerButton = new JButton("ConnectServer");
+		connectServerButton.addActionListener(alerterActionListener);
+		buttonPane.add(connectServerButton, BorderLayout.EAST);
 
 		logPanel.add(buttonPane, gbc);
 	}
@@ -280,6 +264,11 @@ public class AlerterLogPane extends AbstractView{
 
 	public JComboBox<String> getEventComboBox() {
 		return this.eventComboBox;
+	}
+
+
+	public JTextArea getTextArea() {
+		return textArea;
 	}
 
 }

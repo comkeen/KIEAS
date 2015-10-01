@@ -1,46 +1,36 @@
 package kr.ac.uos.ai.ieas.alerterView;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerterController.AlerterController;
 import kr.ac.uos.ai.ieas.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.gatewayView.GatewayDataPane;
-import kr.ac.uos.ai.ieas.gatewayView.GatewayInfoPane;
-import kr.ac.uos.ai.ieas.gatewayView.GatewayLogPane;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 
 
-public class AlerterViewTabbedPanel extends AbstractView{
+public class AlerterTopView extends AbstractView{
 
 	private AlerterController alerterController;
 	private JFrame frame;
 	private JTabbedPane mainTabbedPane;
 	private JTextArea textArea;
 
-	private AlerterLogPane alerterLogPanel;
+	private AlerterLogPanel alerterLogPanel;
+	private AlerterCapElementPanel alerterCapElementPanel;
+	private AleterViewActionListener alerterActionListener;
 	
 
-	public AlerterViewTabbedPanel(AlerterController alerterController) {
+	public AlerterTopView(AlerterController alerterController) {
 
 		this.alerterController = alerterController;
+		this.alerterActionListener = new AleterViewActionListener(alerterController);
 		
 		initLookAndFeel();
 		initFrame("alertViewPanel");
@@ -52,7 +42,7 @@ public class AlerterViewTabbedPanel extends AbstractView{
 		switch (evt.getPropertyName()){
 		
 		case AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
-			textArea.setText(evt.getNewValue().toString());
+			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
 			System.out.println("propertychange");
 		default:
 			
@@ -77,10 +67,32 @@ public class AlerterViewTabbedPanel extends AbstractView{
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
 				
-		this.alerterLogPanel = AlerterLogPane.getInstance(alerterController);
-		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPane());		
+		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
+		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
 		
-
+		this.alerterCapElementPanel = AlerterCapElementPanel.getInstance(alerterActionListener);
+		mainTabbedPane.addTab("CAP", alerterCapElementPanel.getCapElementPanel());
+		
 		frame.setVisible(true);
+	}
+
+	public void receiveGatewayAck(String identifier) {
+		alerterLogPanel.receiveGatewayAck(identifier);
+	}
+
+	public void receiveAlertSystemAck(String identifier) {
+		alerterLogPanel.receiveAlertSystemAck(identifier);		
+	}
+
+	public void addAlertTableRow(String id, String event, String addresses) {
+		alerterLogPanel.addAlertTableRow(id, event, addresses);		
+	}
+
+	public void loadCapDraft() {
+		alerterCapElementPanel.loadCapDraft();
+	}
+
+	public void saveCap() {
+		alerterCapElementPanel.saveCap();
 	}
 }

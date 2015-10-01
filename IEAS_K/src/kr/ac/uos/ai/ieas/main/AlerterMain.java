@@ -2,8 +2,7 @@ package kr.ac.uos.ai.ieas.main;
 
 import kr.ac.uos.ai.ieas.alerterController.AlerterController;
 import kr.ac.uos.ai.ieas.alerterModel.AlerterModel;
-import kr.ac.uos.ai.ieas.alerterView.AlerterLogPane;
-import kr.ac.uos.ai.ieas.alerterView.AlerterViewTabbedPanel;
+import kr.ac.uos.ai.ieas.alerterView.AlerterTopView;
 
 
 public class AlerterMain{
@@ -12,10 +11,10 @@ public class AlerterMain{
 		
 		AlerterController alerterController = new AlerterController();
 		AlerterModel alerterModel = new AlerterModel(alerterController);
-		AlerterViewTabbedPanel alerterViewTabbedPanel = new AlerterViewTabbedPanel(alerterController);
+		AlerterTopView alerterTopView = new AlerterTopView(alerterController);
 		
 		alerterController.addModel(alerterModel);
-		alerterController.addView(alerterViewTabbedPanel);
+		alerterController.addView(alerterTopView);
 		alerterController.initAlerterController();
 	}
 }

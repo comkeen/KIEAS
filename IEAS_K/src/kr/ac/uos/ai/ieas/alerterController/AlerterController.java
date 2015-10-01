@@ -6,15 +6,15 @@ import kr.ac.uos.ai.ieas.abstractClass.AbstractController;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerterModel.AlerterModel;
-import kr.ac.uos.ai.ieas.alerterView.AlerterLogPane;
+import kr.ac.uos.ai.ieas.alerterView.AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
-import kr.ac.uos.ai.ieas.resource.IeasMessage;
+import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
 public class AlerterController extends AbstractController{ 
 
-	private IeasMessage ieasMessage;
+	private IeasMessageBuilder ieasMessage;
 	private AlerterTransmitter alerterTransmitter;
-	private AlerterLogPane alerterView;
+	private AlerterTopView alerterView;
 	private AlerterModel alerterModel;
 
 
@@ -37,7 +37,7 @@ public class AlerterController extends AbstractController{
 	public void initAlerterController() {
 				
 		this.alerterModel = (AlerterModel) getRegisteredModels().get(0);
-		this.alerterView = (AlerterLogPane) getRegisteredViews().get(0);
+		this.alerterView = (AlerterTopView) getRegisteredViews().get(0);
 
 	}
 	
@@ -114,6 +114,16 @@ public class AlerterController extends AbstractController{
 	public void connectToServer() {
 
 		this.alerterTransmitter = new AlerterTransmitter(this, alerterModel.getAlerterID());
+	}
+
+	public void loadCapDraft()
+	{
+		alerterView.loadCapDraft();
+	}
+
+	public void saveCap()
+	{
+		alerterView.saveCap();
 	}
 
 //	public void saveCap(String capMessage) {
