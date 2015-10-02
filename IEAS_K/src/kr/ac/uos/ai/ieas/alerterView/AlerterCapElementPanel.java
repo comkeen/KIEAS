@@ -60,6 +60,8 @@ public class AlerterCapElementPanel
 	private JTextField savePathTextField;
 	private JTextField loadPathTextField;
 
+	private JButton alertApplyButton;
+
 
 	public static AlerterCapElementPanel getInstance(AleterViewActionListener alerterActionListener)
 	{
@@ -128,7 +130,8 @@ public class AlerterCapElementPanel
 	{
 		this.alertPanel = new JPanel();
 		this.alertScrollPanel = new JScrollPane(alertPanel);
-		alertPanel.setLayout(new GridLayout(2,4));
+		alertPanel.setLayout(new GridLayout(4,2));
+
 		
 		JLabel identifier = new JLabel("Identifier");
 		this.identifierValue = new JTextField();
@@ -151,13 +154,19 @@ public class AlerterCapElementPanel
 		alertPanel.add(sender,2);
 		alertPanel.add(senderValue,3);
 		
+		this.alertApplyButton = createButton("Apply");
+		alertPanel.add(alertApplyButton, 4);
+		
 		capPanel.add(alertScrollPanel, gbc);
 	}
 
 	private void initCapInfo()
 	{
 		this.infoPanel = new JPanel();
+				
+		JLabel infoTitle = new JLabel("Info");
 		
+		infoPanel.add(infoTitle);
 		capPanel.add(infoPanel, gbc);
 	}
 
@@ -165,7 +174,7 @@ public class AlerterCapElementPanel
 	{
 		this.buttonPane = new JPanel();
 
-		this.loadPathTextField = new JTextField("cap/cap.xml");
+		this.loadPathTextField = new JTextField("cap/HRA.xml");
 		buttonPane.add(loadPathTextField, BorderLayout.WEST);
 		
 		this.loadCapDraftButton = createButton("LoadCapDraft");
@@ -179,7 +188,7 @@ public class AlerterCapElementPanel
 
 		capPanel.add(buttonPane, gbc);
 	}
-
+	
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
@@ -212,11 +221,19 @@ public class AlerterCapElementPanel
 
 			textArea.setText(content);
 			ieasMessage.setMessage(content);
+			
+			setAlertPanel(ieasMessage);
 		}
 		catch (IOException e)
 		{	
 			e.printStackTrace();
 		}
+	}
+		
+	private void setAlertPanel(IeasMessageBuilder ieasMessage)
+	{
+		identifierValue.setText(ieasMessage.getIdentifier());
+		senderValue.setText(ieasMessage.getSender());
 	}
 
 	private void capWriter()
@@ -253,6 +270,13 @@ public class AlerterCapElementPanel
 	public void saveCap() 
 	{
 		capWriter();
+	}
+
+	public void applyAlertElement() {
+		ieasMessage.setIdentifier(identifierValue.getText());
+		ieasMessage.setSender(senderValue.getText());
+		
+		textArea.setText(ieasMessage.getMessage());
 	}
 }
 

@@ -11,13 +11,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
-import kr.ac.uos.ai.ieas.alerterController.AlerterController;
+import kr.ac.uos.ai.ieas.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.alerterController.AleterViewActionListener;
 
 
-public class AlerterTopView extends AbstractView{
+public class _AlerterTopView extends AbstractView{
 
-	private AlerterController alerterController;
+	private _AlerterController alerterController;
 	private JFrame frame;
 	private JTabbedPane mainTabbedPane;
 	private JTextArea textArea;
@@ -27,7 +27,7 @@ public class AlerterTopView extends AbstractView{
 	private AleterViewActionListener alerterActionListener;
 	
 
-	public AlerterTopView(AlerterController alerterController) {
+	public _AlerterTopView(_AlerterController alerterController) {
 
 		this.alerterController = alerterController;
 		this.alerterActionListener = new AleterViewActionListener(alerterController);
@@ -41,7 +41,7 @@ public class AlerterTopView extends AbstractView{
 		System.out.println("trigger property change");
 		switch (evt.getPropertyName()){
 		
-		case AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
+		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
 			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
 			System.out.println("propertychange");
 		default:
@@ -94,5 +94,9 @@ public class AlerterTopView extends AbstractView{
 
 	public void saveCap() {
 		alerterCapElementPanel.saveCap();
+	}
+
+	public void applyAlertElement() {
+		alerterCapElementPanel.applyAlertElement();
 	}
 }

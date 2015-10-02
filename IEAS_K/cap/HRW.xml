@@ -12,15 +12,15 @@
     <category>Met</category>
     <event>호우주의보</event>
     <urgency>Expected</urgency>
-    <severity>Moderate</severity>
+    <severity>Severe</severity>
     <certainty>Possible</certainty>
     <eventCode>
       <valueName>TTAS.KO-07.0046/R5 재난 종류 코드</valueName>
-      <value>HRA</value>
+      <value>HRW</value>
     </eventCode>
     <effective>2015-01-01T00:00:00+09:00</effective>
     <senderName>총괄예보관</senderName>
-    <headline>호우주의보 발표</headline>
+    <headline>호우경보 발표</headline>
     <description>
 	□ 발효시각
 	호우주의보 발표 : [yyyy년 mm월 dd일 hh시 mm분]

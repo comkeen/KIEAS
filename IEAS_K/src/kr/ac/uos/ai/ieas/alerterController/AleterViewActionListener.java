@@ -6,10 +6,10 @@ import java.awt.event.ActionListener;
 
 public class AleterViewActionListener implements ActionListener
 {	
-	private AlerterController controller;
+	private _AlerterController controller;
 	
 	
-	public AleterViewActionListener(AlerterController alerterController)
+	public AleterViewActionListener(_AlerterController alerterController)
 	{
 		this.controller = alerterController;
 	}
@@ -42,6 +42,10 @@ public class AleterViewActionListener implements ActionListener
 		else if(actionCommand.equals("SaveCap"))
 		{
 			controller.saveCap();
+		}
+		else if(actionCommand.equals("Apply"))
+		{
+			controller.applyAlertElement();
 		}
 	}
 }

@@ -215,9 +215,10 @@ public class IeasMessageBuilder {
 	}
 
 	public void setIdentifier(String source) {
-		UUID id = UUID.randomUUID();
-		String identifier = source+"-"+id;
-		alert = Alert.newBuilder(alert).setIdentifier(identifier).build();
+//		UUID id = UUID.randomUUID();
+//		String identifier = source+"-"+id;
+//		alert = Alert.newBuilder(alert).setIdentifier(identifier).build();
+		alert = Alert.newBuilder(alert).setIdentifier(source).build();
 	}
 
 	public String getIdentifier() {

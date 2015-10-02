@@ -3,7 +3,7 @@ package kr.ac.uos.ai.ieas.alerterModel;
 import java.util.UUID;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
-import kr.ac.uos.ai.ieas.alerterController.AlerterController;
+import kr.ac.uos.ai.ieas.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
@@ -25,7 +25,7 @@ public class AlerterModel extends AbstractModel {
 	
 	private String oldString;
 	
-	public AlerterModel(AlerterController alerterController) {
+	public AlerterModel(_AlerterController alerterController) {
 
 		this.ieasMessage = new IeasMessageBuilder();
 		 
@@ -78,14 +78,14 @@ public class AlerterModel extends AbstractModel {
 		oldString = this.alerterTextareaText;
 		this.alerterTextareaText = text;
 		
-		firePropertyChange(AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY, oldString, alerterTextareaText);
+		firePropertyChange(_AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY, oldString, alerterTextareaText);
 	}
 	
 	public void setLocationComboboxText(String text){
 		oldString = this.locationComboboxText;
 		this.locationComboboxText = text;		
 
-		firePropertyChange(AlerterController.ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY, oldString, locationComboboxText);
+		firePropertyChange(_AlerterController.ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY, oldString, locationComboboxText);
 	}
 	
 	public String getAlerterTextAreaText(){

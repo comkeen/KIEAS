@@ -14,7 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
-import kr.ac.uos.ai.ieas.alerterController.AlerterController;
+import kr.ac.uos.ai.ieas.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 
@@ -22,7 +22,7 @@ import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 public class AlerterLogPanel extends AbstractView{
 
 	private static AlerterLogPanel alerterViewPanel;
-	private AlerterController alerterController;
+	private _AlerterController alerterController;
 	private AleterViewActionListener alerterActionListener;
 	private IeasArcGisMap ieasArcGisMap;
 
@@ -79,7 +79,7 @@ public class AlerterLogPanel extends AbstractView{
 		System.out.println("trigger property change");
 		switch (evt.getPropertyName())
 		{		
-		case AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
+		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
 			textArea.setText(evt.getNewValue().toString());
 			System.out.println("text area propertychange");
 			break;

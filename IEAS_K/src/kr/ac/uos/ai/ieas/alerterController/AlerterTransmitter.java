@@ -18,7 +18,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 public class AlerterTransmitter {
 	
 
-	private AlerterController alerter;
+	private _AlerterController alerter;
 
 	private Connection connection;
 	private Session session;
@@ -30,7 +30,7 @@ public class AlerterTransmitter {
 	private String MqServerIP;
 	
 
-	public AlerterTransmitter(AlerterController alerter, String alerterID) {
+	public AlerterTransmitter(_AlerterController alerter, String alerterID) {
 
 		this.alerter = alerter;
 		this.alerterID = alerterID;

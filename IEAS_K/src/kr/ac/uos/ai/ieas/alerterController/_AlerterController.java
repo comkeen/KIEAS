@@ -6,15 +6,15 @@ import kr.ac.uos.ai.ieas.abstractClass.AbstractController;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerterModel.AlerterModel;
-import kr.ac.uos.ai.ieas.alerterView.AlerterTopView;
+import kr.ac.uos.ai.ieas.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
 import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
-public class AlerterController extends AbstractController{ 
+public class _AlerterController extends AbstractController{ 
 
 	private IeasMessageBuilder ieasMessage;
 	private AlerterTransmitter alerterTransmitter;
-	private AlerterTopView alerterView;
+	private _AlerterTopView alerterView;
 	private AlerterModel alerterModel;
 
 
@@ -37,7 +37,7 @@ public class AlerterController extends AbstractController{
 	public void initAlerterController() {
 				
 		this.alerterModel = (AlerterModel) getRegisteredModels().get(0);
-		this.alerterView = (AlerterTopView) getRegisteredViews().get(0);
+		this.alerterView = (_AlerterTopView) getRegisteredViews().get(0);
 
 	}
 	
@@ -124,6 +124,10 @@ public class AlerterController extends AbstractController{
 	public void saveCap()
 	{
 		alerterView.saveCap();
+	}
+
+	public void applyAlertElement() {
+		alerterView.applyAlertElement();
 	}
 
 //	public void saveCap(String capMessage) {
