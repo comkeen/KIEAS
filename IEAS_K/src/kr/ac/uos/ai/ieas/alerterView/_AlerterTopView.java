@@ -5,7 +5,6 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -17,10 +16,8 @@ import kr.ac.uos.ai.ieas.alerterController.AleterViewActionListener;
 
 public class _AlerterTopView extends AbstractView{
 
-	private _AlerterController alerterController;
 	private JFrame frame;
 	private JTabbedPane mainTabbedPane;
-	private JTextArea textArea;
 
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapElementPanel alerterCapElementPanel;
@@ -29,7 +26,6 @@ public class _AlerterTopView extends AbstractView{
 
 	public _AlerterTopView(_AlerterController alerterController) {
 
-		this.alerterController = alerterController;
 		this.alerterActionListener = new AleterViewActionListener(alerterController);
 		
 		initLookAndFeel();
@@ -66,7 +62,7 @@ public class _AlerterTopView extends AbstractView{
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
-				
+		
 		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
 		

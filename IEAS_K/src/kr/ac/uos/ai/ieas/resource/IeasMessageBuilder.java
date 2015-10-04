@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.SimpleTimeZone;
-import java.util.UUID;
 
 import org.xml.sax.SAXParseException;
 
 import com.google.publicalerts.cap.Alert;
+import com.google.publicalerts.cap.Alert.MsgType;
+import com.google.publicalerts.cap.Alert.Scope;
+import com.google.publicalerts.cap.Alert.Status;
 import com.google.publicalerts.cap.Area;
 import com.google.publicalerts.cap.CapException;
 import com.google.publicalerts.cap.CapUtil;
@@ -231,13 +233,8 @@ public class IeasMessageBuilder {
 		}
 	}
 
-	public void setCode(String code) {
-		alert = Alert.newBuilder(alert).addCode(code).build();
-	}
-
 	public String getCode(IeasMessageBuilder message) {
-		// TODO Auto-generated method stub
-		return null;
+		return alert.getCode(0).toString();
 	}
 
 	public void setMsgTypeToAlert() {
@@ -266,7 +263,6 @@ public class IeasMessageBuilder {
 		try {
 			return alert.getInfo(0).getEvent();
 		} catch (NotCapException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -277,13 +273,7 @@ public class IeasMessageBuilder {
 	}
 	
 	public String getSource() {
-		try {
-			return alert.getSource();
-
-		} catch (NotCapException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return alert.getSource().toString();
 	}
 	
 	public void setEvent(String event) {
@@ -298,5 +288,104 @@ public class IeasMessageBuilder {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public String getStatus() {
+		return alert.getStatus().toString();
+	}
+
+	public String getMsgType() {
+		return alert.getMsgType().toString();
+	}
+
+	public String getScope() {
+		return alert.getScope().toString();
+	}
+
+	public String getCode() {
+		return alert.getCode(0).toString();
+	}
+
+	public void setSent(String text) {
+		alert = Alert.newBuilder(alert).setSent(text).build();
+	}
+
+	public void setStatus(String text) {
+		for (Status status : Alert.Status.values()) {
+			if(text.equals(status.toString()))
+			{
+				alert = Alert.newBuilder(alert).setStatus(status).build();		
+			}
+		}
+	}
+
+	public void setMsgType(String text) {
+		for (MsgType msgType : Alert.MsgType.values()) {
+			if(text.equals(msgType.toString()))
+			{
+				alert = Alert.newBuilder(alert).setMsgType(msgType).build();		
+			}
+		}
+	}
+
+	public void setScope(String text) {
+		for (Scope scope : Alert.Scope.values()) {
+			if(text.equals(scope.toString()))
+			{
+				alert = Alert.newBuilder(alert).setScope(scope).build();		
+			}
+		}
+	}
+
+	public void setCode(String code) {
+		alert = Alert.newBuilder(alert).setCode(0, code).build();
+	}
+
+	public String getLanguage() {
+		return alert.getInfo(0).getLanguage().toString();
+	}
+
+	public String getCategory() {
+		return alert.getInfo(0).getCategory(0).toString();
+	}
+
+	public String getUrgency() {
+		return alert.getInfo(0).getUrgency().toString();
+	}
+
+	public String getSeverity() {
+		return alert.getInfo(0).getSeverity().toString();
+	}
+
+	public String getCertainty() {
+		return alert.getInfo(0).getCertainty().toString();
+	}
+
+	public String getEventCode() {
+		return alert.getInfo(0).getEventCodeList().get(0).getValue().toString();
+	}
+
+	public String getEffective() {
+		return alert.getInfo(0).getEffective().toString();
+	}
+
+	public String getSenderName() {
+		return alert.getInfo(0).getSenderName().toString();
+	}
+
+	public String getHeadline() {
+		return alert.getInfo(0).getHeadline().toString();
+	}
+
+	public String getDescrpition() {
+		return alert.getInfo(0).getDescription().toString();
+	}
+
+	public String getWeb() {
+		return alert.getInfo(0).getWeb().toString();
+	}
+
+	public String getContact() {
+		return alert.getInfo(0).getContact().toString();
 	}
 }
