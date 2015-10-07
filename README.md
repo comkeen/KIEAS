@@ -3,9 +3,10 @@
 우리의 프로젝트에서는 대한민국 통합재난경보발령시스템(Integrated Emergency Alert System for Korea)의 발전을 위해 참조모델을 개발하여 연구중에 있다. 당신은 이 페이지에서 우리의 프로젝트를 이해하기위해 필요한 정보들을 얻을 수 있다.
 
 
-## 문서 레퍼런스 ##
+## 1. 문서 레퍼런스 ##
 
 [구글드라이브(Root)](http://googledrive.com/host/0B0--4gSfRo2fcDl1MmI0Tk5URmc/)
+
 
 #### CAP 표준 문서 레퍼런스 ####
 
@@ -18,6 +19,15 @@
 * [CAP Elements v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fOUI5VTkwcW9YcTg)
 
 * [CAP Elements v1.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fM0h6RnMzaXhKa1E)
+
+* [EDXL-DE v2.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fUmh4Mk1xU0dIVms)
+
+* [EDXL-DE v2.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fLWI1Q2ZqLXdDdTA)
+
+* [EDXL-CT v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fcUNrRUZpNUpmdEU)
+
+* [EDXL-SitRep v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fVFh2LTc5eHg3cm8)
+
 
 #### 국내 표준문서 레퍼런스 ####
 
@@ -32,7 +42,6 @@
 * ["경보 표출 방법" TTAK.KO-06.0364](https://drive.google.com/open?id=0B0--4gSfRo2fdF9fX1g2NG1sZkU)
 
 * ["LTE 망에서의 재난 문자 서비스" KCS.KO-06.0263](https://drive.google.com/open?id=0B0--4gSfRo2fby0wNUtmMXZzbXc)
-
 
 
 
