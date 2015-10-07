@@ -2,9 +2,8 @@
 
 우리의 프로젝트에서는 대한민국 통합재난경보발령시스템(Integrated Emergency Alert System for Korea)의 발전을 위해 참조모델을 개발하여 연구중에 있다. 당신은 이 페이지에서 우리의 프로젝트를 이해하기위해 필요한 정보들을 얻을 수 있다.
 
-## 1. 프로젝트 형상관리 툴 **SourceTree** 사용방법 ##
+## 1. 필요 환경 ##
 
-[Source Tree 설치방법](http://riddlehouse.tistory.com/entry/Source-Tree-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-13)
 
 
 ## 2. 문서 레퍼런스 ##
