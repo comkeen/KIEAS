@@ -7,7 +7,7 @@
 
 [구글드라이브(Root)](http://googledrive.com/host/0B0--4gSfRo2fcDl1MmI0Tk5URmc/)
 
-#### CAP 문서 레퍼런스 ####
+#### CAP 표준 문서 레퍼런스 ####
 
 * [CAP v1.2 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fT2tTUUZqM3h3TVk)
  
@@ -19,7 +19,7 @@
 
 * [CAP Elements v1.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fM0h6RnMzaXhKa1E)
 
-#### 국내 표준 레퍼런스 ####
+#### 국내 표준문서 레퍼런스 ####
 
 * ["통합경보시스템을 위한 공통경보프로토콜 프로파일" TTAK.OT-06.0055](https://drive.google.com/open?id=0B0--4gSfRo2fekdRVEpzTkV6UEE)
 
