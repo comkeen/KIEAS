@@ -4,7 +4,7 @@
 
 ## 1. 프로젝트 형상관리 툴 **SourceTree** 설치 ##
 
-[Source Tree](http://riddlehouse.tistory.com/entry/Source-Tree-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-13)
+[Source Tree 설치방법](http://riddlehouse.tistory.com/entry/Source-Tree-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-13)
 
 
 ## 2. 문서 레퍼런스 ##
