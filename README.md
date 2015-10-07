@@ -7,8 +7,11 @@
 
 [구글드라이브(Root)](http://googledrive.com/host/0B0--4gSfRo2fcDl1MmI0Tk5URmc/)
 
-[CAP 1.2 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fT2tTUUZqM3h3TVk) 
+
+[CAP 1.2 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fT2tTUUZqM3h3TVk)
+ 
 [CAP Feed 1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fX1R5V0FVOVNsS28)
+
 [CAP Feed 1.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fY0M4ZmlqLW4tUDQ)
 
 
