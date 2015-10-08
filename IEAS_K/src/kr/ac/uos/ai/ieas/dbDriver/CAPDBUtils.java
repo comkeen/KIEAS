@@ -180,7 +180,6 @@ public class CAPDBUtils
 		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
 		
 		String alertQuery = "SELECT * FROM alert WHERE alert_eid in " + alertIdList;
-		System.out.println(alertQuery);
 		String resQuery = "SELECT * FROM resource WHERE info_eid in " + infoIdList;
 		String areaQuery = "SELECT * FROM area WHERE info_eid in " + infoIdList;
 		

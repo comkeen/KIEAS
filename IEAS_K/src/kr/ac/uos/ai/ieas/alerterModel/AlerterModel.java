@@ -1,6 +1,12 @@
 package kr.ac.uos.ai.ieas.alerterModel;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
 import java.util.UUID;
+
+import com.google.publicalerts.cap.Alert;
+import com.google.publicalerts.cap.CapUtil;
 
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerterController._AlerterController;
@@ -9,10 +15,11 @@ import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
 
 public class AlerterModel extends AbstractModel {
 
+	public static final String ALERTER_NAME = "국민안전처";
+	
 	private IeasMessageBuilder ieasMessage;
 	
 	private String alerterTextareaText;
-
 	private String[] locationListForComboBox;
 	private String locationComboboxText;
 	private String eventComboboxText;
@@ -29,7 +36,7 @@ public class AlerterModel extends AbstractModel {
 
 		this.ieasMessage = new IeasMessageBuilder();
 		 
-		this.alerterName = IeasAlerterConfig.ALERTER_NAME;
+		this.alerterName = ALERTER_NAME;
 		this.alerterID = generateID(alerterName);
 		this.senderName = "";
 		
@@ -51,13 +58,19 @@ public class AlerterModel extends AbstractModel {
 		setAlerterTextArea(str);
 		return message;
 	}
-	
-	
+		
 	private String generateID(String name){
 		UUID id = UUID.randomUUID();
 		String identifier = name+"-"+id;
 
 		return identifier;		
+	}
+	
+	public GregorianCalendar setSent() {
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
+		cal.setGregorianChange(new Date());
+		cal.setTime(new Date());
+		return cal;
 	}
 	
 	private String createMessage(String addresses, String event) {
@@ -83,7 +96,7 @@ public class AlerterModel extends AbstractModel {
 	
 	public void setLocationComboboxText(String text){
 		oldString = this.locationComboboxText;
-		this.locationComboboxText = text;		
+		this.locationComboboxText = text;
 
 		firePropertyChange(_AlerterController.ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY, oldString, locationComboboxText);
 	}

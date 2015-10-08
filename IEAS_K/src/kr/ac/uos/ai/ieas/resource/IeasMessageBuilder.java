@@ -216,13 +216,6 @@ public class IeasMessageBuilder {
 		alert = Alert.newBuilder(alert).setSent(CapUtil.formatCapDate(cal)).build();
 	}
 
-	public void setIdentifier(String source) {
-//		UUID id = UUID.randomUUID();
-//		String identifier = source+"-"+id;
-//		alert = Alert.newBuilder(alert).setIdentifier(identifier).build();
-		alert = Alert.newBuilder(alert).setIdentifier(source).build();
-	}
-
 	public String getIdentifier() {
 		try {
 			return alert.getIdentifier();
@@ -319,8 +312,10 @@ public class IeasMessageBuilder {
 		}
 	}
 
-	public void setMsgType(String text) {
-		for (MsgType msgType : Alert.MsgType.values()) {
+	public void setMsgType(String text)
+	{
+		for (MsgType msgType : Alert.MsgType.values())
+		{
 			if(text.equals(msgType.toString()))
 			{
 				alert = Alert.newBuilder(alert).setMsgType(msgType).build();		
@@ -387,5 +382,9 @@ public class IeasMessageBuilder {
 
 	public String getContact() {
 		return alert.getInfo(0).getContact().toString();
+	}
+
+	public void setIdentifier(String text) {
+		alert = Alert.newBuilder(alert).setIdentifier(text).build();
 	}
 }
