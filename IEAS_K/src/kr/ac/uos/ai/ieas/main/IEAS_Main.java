@@ -8,12 +8,15 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayController;
+
 public class IEAS_Main
 {
 	public IEAS_Main()
 	{
 //		initGUI();
 		new AlerterMain();
+//		GatewayController.getInstance();
 	}
 
 	public static void main(String[] args) {

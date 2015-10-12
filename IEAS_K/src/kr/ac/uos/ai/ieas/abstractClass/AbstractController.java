@@ -3,7 +3,7 @@ package kr.ac.uos.ai.ieas.abstractClass;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import kr.ac.uos.ai.ieas.alerterController.AbstractPropertyChangeListener;
+import kr.ac.uos.ai.ieas.alerter.alerterController.AbstractPropertyChangeListener;
 
 
 public abstract class AbstractController {

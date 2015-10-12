@@ -1,8 +1,8 @@
 package kr.ac.uos.ai.ieas.main;
 
-import kr.ac.uos.ai.ieas.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.alerterModel.AlerterModel;
-import kr.ac.uos.ai.ieas.alerterView._AlerterTopView;
+import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterModel;
+import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 
 
 public class AlerterMain{
