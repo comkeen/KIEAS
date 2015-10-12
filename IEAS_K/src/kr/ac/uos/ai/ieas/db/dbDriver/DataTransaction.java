@@ -8,7 +8,7 @@ public class DataTransaction
 {
 	private static final String username = "root";
 	private static final String password = "dlsrhdwlsmd";
-	private static final String url = "jdbc:mysql://127.0.0.1:3306/capkorean?useUnicode=true& useUnicode=true&characterEncoding=euc_kr";
+	private static final String url = "jdbc:mysql://172.16.165.135:3306/capkorean?useUnicode=true& useUnicode=true&characterEncoding=euc_kr";
 	public Connection connection = null;
 	public static int connectionCount = 0;
 
