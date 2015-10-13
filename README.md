@@ -8,7 +8,7 @@
 
 ## 2. 문서 레퍼런스 ##
 
-[구글드라이브(Root)](http://googledrive.com/host/0B0--4gSfRo2fcDl1MmI0Tk5URmc/)
+[구글드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)
 
 
 #### CAP 표준 문서 레퍼런스 ####
