@@ -13,23 +13,17 @@
 
 #### CAP 표준 문서 레퍼런스 ####
 
-* [CAP v1.2 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fT2tTUUZqM3h3TVk)
+* [CAP v1.2 OASIS 표준문서](http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.pdf)
  
-* [CAP Feeds v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fX1R5V0FVOVNsS28)
+* [CAP Feeds v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency-adopt/cap-feeds/v1.0/cap-feeds-v1.0.pdf)
 
-* [CAP Feeds v1.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fY0M4ZmlqLW4tUDQ)
+* [CAP Elements v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency-adopt/cap-elements/v1.0/cn01/cap-elements-v1.0-cn01.pdf)
 
-* [CAP Elements v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fOUI5VTkwcW9YcTg)
+* [EDXL-DE v2.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-de/v2.0/cs02/edxl-de-v2.0-cs02.pdf)
 
-* [CAP Elements v1.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fM0h6RnMzaXhKa1E)
+* [EDXL-CT v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-ct/v1.0/csd03/edxl-ct-v1.0-csd03.pdf)
 
-* [EDXL-DE v2.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fUmh4Mk1xU0dIVms)
-
-* [EDXL-DE v2.0 OASIS 표준문서 번역](https://drive.google.com/open?id=0B0--4gSfRo2fLWI1Q2ZqLXdDdTA)
-
-* [EDXL-CT v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fcUNrRUZpNUpmdEU)
-
-* [EDXL-SitRep v1.0 OASIS 표준문서](https://drive.google.com/open?id=0B0--4gSfRo2fVFh2LTc5eHg3cm8)
+* [EDXL-SitRep v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-sitrep/v1.0/cs01/edxl-sitrep-v1.0-cs01.pdf)
 
 
 #### 국내 표준문서 레퍼런스 ####
