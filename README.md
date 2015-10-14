@@ -29,34 +29,3 @@
 * ["경보 표출 방법" TTAK.KO-06.0364/R1](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-06.0364%2FR1&standard_no=&kor_standard=%B0%E6%BA%B8+%C7%A5%C3%E2&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=2&acode1=&acode2=&scode1=&scode2=)
 * ["LTE 망에서 재난문자 서비스 제공을 위한 요구사항 및 메시지 형식" KCS.KO-06.0263/R1](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-06.0263%2FR1&standard_no=&kor_standard=lte+%B8%C1&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=2&acode1=&acode2=&scode1=&scode2=)
 
-
-
-
-
-
-
-## What is this repository for? ##
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-## How do I get set up? ##
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-## Contribution guidelines ##
-
-* Writing tests
-* Code review
-* Other guidelines
-
-## Who do I talk to? ##
-
-* Repo owner or admin
-* Other community or team contact
