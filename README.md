@@ -6,12 +6,12 @@
 
 
 
-## 2. 문서 레퍼런스 ##
+## 2. 참고문서 ##
 
-[구글드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)
+우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
 
 
-#### CAP 표준 문서 레퍼런스 ####
+#### 3. CAP/EDXL 표준 참고문서 ####
 
 * [CAP v1.2 OASIS 표준문서](http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.pdf)
  
