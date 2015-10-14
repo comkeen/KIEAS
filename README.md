@@ -11,7 +11,7 @@
 * 우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
 
 
-#### 3. CAP/EDXL 표준 참고문서 ####
+#### [ CAP/EDXL 표준 ] ####
 
 * [CAP v1.2 OASIS 표준문서](http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.pdf)
  
@@ -26,7 +26,7 @@
 * [EDXL-SitRep v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-sitrep/v1.0/cs01/edxl-sitrep-v1.0-cs01.pdf)
 
 
-#### 국내 표준문서 레퍼런스 ####
+#### [ 국내 표준 문서 ] ####
 
 * ["통합경보시스템을 위한 공통경보프로토콜 프로파일" TTAK.OT-06.0055](https://drive.google.com/open?id=0B0--4gSfRo2fekdRVEpzTkV6UEE)
 
