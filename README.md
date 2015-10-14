@@ -8,7 +8,7 @@
 
 ## 2. 참고문서 ##
 
-우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
+* 우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
 
 
 #### 3. CAP/EDXL 표준 참고문서 ####
