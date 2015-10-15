@@ -6,18 +6,16 @@ import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.UUID;
 
-import com.google.publicalerts.cap.Alert;
-import com.google.publicalerts.cap.CapUtil;
-
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
+import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class AlerterModelManager extends AbstractModel {
 	
-	private KieasMessageBuilder kieasMessage;
+	private KieasMessageBuilder kieasMessageBuilder;
 	private _DatabaseHandler databaseHandler;
 	
 	private String alerterTextareaText;
@@ -29,19 +27,17 @@ public class AlerterModelManager extends AbstractModel {
 	
 	private String alerterName;
 	private String alerterID;
-	private String senderName;
 	
 	private String oldString;
 	
 	
 	public AlerterModelManager(_AlerterController alerterController)
 	{
-		this.kieasMessage = new KieasMessageBuilder();
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.databaseHandler = new _DatabaseHandler();
 		 
 		this.alerterName = "기상청";
 		this.alerterID = generateID(alerterName);
-		this.senderName = "";
 		
 		this.locationComboboxText = "locate";
 		this.eventComboboxText = "event";
@@ -60,7 +56,7 @@ public class AlerterModelManager extends AbstractModel {
 
 	public String buildCap() 
 	{
-		String str = createMessage(locationComboboxText, eventComboboxText);
+		String str = createMessage(eventComboboxText);
 		setAlerterTextArea(str);
 		return message;
 	}
@@ -73,16 +69,16 @@ public class AlerterModelManager extends AbstractModel {
 		return identifier;		
 	}
 	
-	private String createMessage(String addresses, String event) 
+	private String createMessage(String event) 
 	{
-		kieasMessage.setIdentifier(alerterID);
-		kieasMessage.setSender(alerterID);
-		kieasMessage.setSent(getDateCalendar());
-		kieasMessage.setMsgType("Alert");
-		kieasMessage.setEvent(event);
-		kieasMessage.build();
+		kieasMessageBuilder.setIdentifier(alerterID);
+		kieasMessageBuilder.setSender(alerterID);
+		kieasMessageBuilder.setSent(getDateCalendar());
+		kieasMessageBuilder.setMsgType("Alert");
+		kieasMessageBuilder.setEvent(event);
+		kieasMessageBuilder.build();
 
-		return kieasMessage.getMessage();
+		return kieasMessageBuilder.getMessage();
 	}
 		
 	public GregorianCalendar getDateCalendar()
@@ -123,9 +119,10 @@ public class AlerterModelManager extends AbstractModel {
 	{
 		return message;
 	}
-	
+		
 	public ArrayList<String> getQueryResult(String query)
 	{	
-		return databaseHandler.getQueryResult(query.toUpperCase());
+		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapLibraryObject(databaseHandler.getQueryResult(query.toUpperCase()));
+		return result;
 	}
 }

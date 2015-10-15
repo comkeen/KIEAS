@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,7 +16,6 @@ import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
-import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
@@ -39,13 +37,10 @@ public class AlerterDatabasePanel {
 	private JTable alertTable;
 	private AlertTableModel alertTableModel;
 	private JScrollPane databaseScrollPanel;
-	private ArrayList<String> results;
 	
 	private HashMap<String, String> alertElementMap;
 	private HashMap<String, String> alertMessageMap;
 	
-
-	private JButton hrwButton;
 	private JTextField queryTextField;
 
 
@@ -98,7 +93,7 @@ public class AlerterDatabasePanel {
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 2, 3, 1, 1, 1);
-		initDataButtonPane();
+		initButtonPane();
 		
 		gbc.fill = GridBagConstraints.BOTH;
 		setGbc(0, 1, 3, 1, 1, 3);
@@ -119,7 +114,7 @@ public class AlerterDatabasePanel {
 		gbc.weighty = weighty;
 	}
 	
-	private void initDataButtonPane()
+	private void initButtonPane()
 	{
 		this.dataButtonPane = new JPanel();
 		

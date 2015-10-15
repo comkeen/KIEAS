@@ -25,7 +25,6 @@ import com.google.publicalerts.cap.Info.Certainty;
 import com.google.publicalerts.cap.Info.Severity;
 import com.google.publicalerts.cap.Info.Urgency;
 import com.google.publicalerts.cap.NotCapException;
-import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
@@ -116,7 +115,7 @@ public class KieasMessageBuilder
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append(cal.get(Calendar.YEAR)).append("년")
-		.append(cal.get(Calendar.MONTH)).append("월")
+		.append(cal.get(Calendar.MONTH)+1).append("월")
 		.append(cal.get(Calendar.DATE)).append("일").append(" ")
 		.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
 		.append(cal.get(Calendar.MINUTE)).append("분")
@@ -511,7 +510,7 @@ public class KieasMessageBuilder
 	
 	
 	
-	public ArrayList<String> generateCap(ArrayList<CAPAlert> alertList) {
+	public ArrayList<String> databaseObjectToCapLibraryObject(ArrayList<CAPAlert> alertList) {
 		
 		ArrayList<String> capList = new ArrayList<String>();
 		

@@ -10,17 +10,15 @@ public class _DatabaseHandler {
 	
 	private CAPDBUtils capDbUtils;
 	private ArrayList<CAPAlert> searchResult;
-	private KieasMessageBuilder ieasMessageBuilder;
 	
 	
 	public _DatabaseHandler()
 	{
 		this.capDbUtils = new CAPDBUtils();
 		this.searchResult = new ArrayList<CAPAlert>();
-		this.ieasMessageBuilder = new KieasMessageBuilder();
 	}
 	
-	public ArrayList<String> getQueryResult(String type)
+	public ArrayList<CAPAlert> getQueryResult(String type)
 	{
 		for (DisasterEventType disasterEventType : DisasterEventType.values()) {
 			if(disasterEventType.toString().equals(type))
@@ -28,20 +26,7 @@ public class _DatabaseHandler {
 				searchResult = capDbUtils.searchCAPsByEventType(disasterEventType);
 			}
 		}
-		ArrayList<String> result = ieasMessageBuilder.generateCap(searchResult);
 
-		return result;
+		return searchResult;
 	}
-	
-	public void testDatabase()
-	{
-		searchResult = capDbUtils.searchCAPsByEventType(DisasterEventType.HRA);
-
-		ArrayList<String> result = ieasMessageBuilder.generateCap(searchResult);
-
-		for (String string : result) {
-			System.out.println(string);
-		}
-	}
-
 }

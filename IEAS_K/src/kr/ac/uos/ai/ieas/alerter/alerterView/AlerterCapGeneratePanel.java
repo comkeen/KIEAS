@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,7 +21,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IEAS_List;
 
@@ -33,7 +31,6 @@ public class AlerterCapGeneratePanel
 	private AleterViewActionListener alerterActionListener;
 	private GridBagConstraints gbc;
 	private KieasMessageBuilder ieasMessage;
-	private _DatabaseHandler databaseDriver;
 	
 	private FileInputStream fileInputStream;
 	private InputStreamReader inputStreamReader;

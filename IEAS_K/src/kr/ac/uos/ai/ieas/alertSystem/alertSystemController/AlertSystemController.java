@@ -1,6 +1,5 @@
 package kr.ac.uos.ai.ieas.alertSystem.alertSystemController;
 
-import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
