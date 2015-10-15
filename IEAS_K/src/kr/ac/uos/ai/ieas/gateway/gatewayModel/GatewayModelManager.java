@@ -2,7 +2,7 @@ package kr.ac.uos.ai.ieas.gateway.gatewayModel;
 
 import java.util.HashMap;
 
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class GatewayModelManager {
 	
@@ -15,7 +15,7 @@ public class GatewayModelManager {
 	private GatewayAlertSystemInfoTableModel alertSystemInfoTableModel;
 	private GatewayAlertTableModel alertTableModel;
 	
-	private IeasMessageBuilder ieasMessage;
+	private KieasMessageBuilder ieasMessage;
 
 
 	
@@ -33,7 +33,7 @@ public class GatewayModelManager {
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
 		
-		this.ieasMessage = new IeasMessageBuilder();
+		this.ieasMessage = new KieasMessageBuilder();
 		
 		initAlertElementMap();
 	}
@@ -94,7 +94,7 @@ public class GatewayModelManager {
 	public String creatAckMessage(String message, String sender) {
 		ieasMessage.setMessage(message);
 		ieasMessage.setSender(sender);
-		ieasMessage.setMsgTypeToAck();
+		ieasMessage.setMsgType("Ack");
 		ieasMessage.build();
 		
 		return ieasMessage.getMessage();

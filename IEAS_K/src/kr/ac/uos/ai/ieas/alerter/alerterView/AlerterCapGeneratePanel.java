@@ -22,18 +22,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.db.dbDriver.DatabaseDriver;
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration.IEAS_List;
+import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IEAS_List;
 
-public class AlerterCapElementPanel
+public class AlerterCapGeneratePanel
 {
-	private static AlerterCapElementPanel alerterCapElementPanel;
+	private static AlerterCapGeneratePanel alerterCapElementPanel;
 
 	private AleterViewActionListener alerterActionListener;
 	private GridBagConstraints gbc;
-	private IeasMessageBuilder ieasMessage;
-	private DatabaseDriver databaseDriver;
+	private KieasMessageBuilder ieasMessage;
+	private _DatabaseHandler databaseDriver;
 	
 	private FileInputStream fileInputStream;
 	private InputStreamReader inputStreamReader;
@@ -70,21 +70,21 @@ public class AlerterCapElementPanel
 
 
 
-	public static AlerterCapElementPanel getInstance(AleterViewActionListener alerterActionListener)
+	public static AlerterCapGeneratePanel getInstance(AleterViewActionListener alerterActionListener)
 	{
 		if (alerterCapElementPanel == null)
 		{
-			alerterCapElementPanel = new AlerterCapElementPanel(alerterActionListener);
+			alerterCapElementPanel = new AlerterCapGeneratePanel(alerterActionListener);
 		}
 		return alerterCapElementPanel;
 	}
 
 
-	private AlerterCapElementPanel(AleterViewActionListener alerterActionListener)
+	private AlerterCapGeneratePanel(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();
-		this.ieasMessage = new IeasMessageBuilder();
+		this.ieasMessage = new KieasMessageBuilder();
 
 		initFrame("alertViewPanel");		
 	}
@@ -315,7 +315,7 @@ public class AlerterCapElementPanel
 		}
 	}
 		
-	private void setAlertPanel(IeasMessageBuilder ieasMessage)
+	private void setAlertPanel(KieasMessageBuilder ieasMessage)
 	{
 		alertValues[0].setText(ieasMessage.getIdentifier());
 		alertValues[1].setText(ieasMessage.getSender());
@@ -326,7 +326,7 @@ public class AlerterCapElementPanel
 		alertValues[6].setText(ieasMessage.getCode());
 	}
 	
-	private void setInfoPanel(IeasMessageBuilder ieasMessage)
+	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
 		infoValues[0][0].setText(ieasMessage.getLanguage());
 		infoValues[0][1].setText(ieasMessage.getCategory());

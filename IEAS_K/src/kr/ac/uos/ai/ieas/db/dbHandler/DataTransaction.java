@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.db.dbDriver;
+package kr.ac.uos.ai.ieas.db.dbHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;

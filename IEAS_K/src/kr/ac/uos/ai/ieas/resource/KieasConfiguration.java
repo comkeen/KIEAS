@@ -1,6 +1,6 @@
 package kr.ac.uos.ai.ieas.resource;
 
-public class IeasConfiguration {
+public class KieasConfiguration {
 	
 	public final static String PACKAGE_NAME 				= "ase.";
 	

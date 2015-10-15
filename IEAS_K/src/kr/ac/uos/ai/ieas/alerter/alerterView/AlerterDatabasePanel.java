@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,25 +13,25 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
-import kr.ac.uos.ai.ieas.db.dbDriver.DatabaseDriver;
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
+import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
 public class AlerterDatabasePanel {
 	
-	private static AlerterDatabasePanel alerterDataPane;
+	private static AlerterDatabasePanel alerterDataPane;	
 	private AleterViewActionListener alerterActionListener;
-	private DatabaseDriver databaseDriver;
-	private IeasMessageBuilder ieasMessageBuilder;
+	private KieasMessageBuilder kieasMessageBuilder;
 	private GridBagConstraints gbc;
 	
 	private JPanel databasePanel;
 	private JPanel dataButtonPane;
 
-	private JButton hraButton;
+	private JButton queryButton;
 	private JTextArea dataTextArea;
 	private JScrollPane dataTextAreaPane;
 
@@ -42,7 +43,10 @@ public class AlerterDatabasePanel {
 	
 	private HashMap<String, String> alertElementMap;
 	private HashMap<String, String> alertMessageMap;
+	
+
 	private JButton hrwButton;
+	private JTextField queryTextField;
 
 
 	public static AlerterDatabasePanel getInstance(AleterViewActionListener alerterActionListener)
@@ -59,12 +63,12 @@ public class AlerterDatabasePanel {
 		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();
 		this.alertTableModel = new AlertTableModel();
+		this.kieasMessageBuilder = new KieasMessageBuilder();
+		
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
-		this.ieasMessageBuilder = new IeasMessageBuilder();
+		
 		initAlertElementMap();
-		this.databaseDriver = new DatabaseDriver();
-
 		
 		initDatabasePanel();
 	}
@@ -119,14 +123,15 @@ public class AlerterDatabasePanel {
 	{
 		this.dataButtonPane = new JPanel();
 		
-		this.hraButton = new JButton("HRA");
-		hraButton.addActionListener(alerterActionListener);
-		
-		this.hrwButton = new JButton("HRW");
-		hrwButton.addActionListener(alerterActionListener);
+		this.queryButton = new JButton("Query");
+		queryButton.addActionListener(alerterActionListener);
 
-		dataButtonPane.add(hraButton, BorderLayout.WEST);
-		dataButtonPane.add(hrwButton, BorderLayout.WEST);
+		this.queryTextField = new JTextField();
+		queryTextField.setSize(500, 100);
+		queryTextField.setText("HRA");
+		
+		dataButtonPane.add(queryButton, BorderLayout.WEST);
+		dataButtonPane.add(queryTextField, BorderLayout.WEST);
 
 		databasePanel.add(dataButtonPane, gbc);
 	}
@@ -154,7 +159,7 @@ public class AlerterDatabasePanel {
 	{
 		if(alertTable.getSelectedRow() >= 0)
 		{
-			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();			
+			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();	
 			String message = getAlertMessage(identifier);
 			dataTextArea.setText(message);
 		}
@@ -184,37 +189,40 @@ public class AlerterDatabasePanel {
 		for (String message : results)
 		{
 			alertTableModel.addTableRowData(getAlertElementMap(message));	
-			ieasMessageBuilder.setMessage(message);
-			putAlertMessageMap(ieasMessageBuilder.getIdentifier(), message);
+			kieasMessageBuilder.setMessage(message);
+			putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 		}		
 	}
 	
-	public void putAlertMessageMap(String key, String message) {
+	public void putAlertMessageMap(String key, String message)
+	{
 		alertMessageMap.put(key, message);
 	}
 	
-	public String getAlertMessage(String identifier) {
+	public String getAlertMessage(String identifier)
+	{
 		return alertMessageMap.get(identifier);
 	}
 	
-	public HashMap<String, String> getAlertElementMap(String message) {
-		
-		ieasMessageBuilder.setMessage(message);
-		alertElementMap.replace("sender", ieasMessageBuilder.getSender());
-		alertElementMap.replace("identifier", ieasMessageBuilder.getIdentifier());
-		alertElementMap.replace("sent", ieasMessageBuilder.getSent());
-		alertElementMap.replace("event", ieasMessageBuilder.getEvent());
+	public HashMap<String, String> getAlertElementMap(String message) 
+	{		
+		kieasMessageBuilder.setMessage(message);
+		alertElementMap.replace("sender", kieasMessageBuilder.getSender());
+		alertElementMap.replace("identifier", kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace("sent", kieasMessageBuilder.sentToYmdhms(kieasMessageBuilder.getSent()));
+		alertElementMap.replace("event", kieasMessageBuilder.getEvent());
 		
 		return alertElementMap;
 	}
 
-	public void getHRAResult() {
-		this.results = databaseDriver.getHRAResult();
+	public void getQueryResult(ArrayList<String> results)
+	{	
+		alertTableModel.getTableModel().setRowCount(0);
 		addAlertTableRow(results);
 	}
-	
-	public void getHRWResult() {
-		this.results = databaseDriver.getHRWResult();
-		addAlertTableRow(results);
+
+	public String getQuery()
+	{
+		return queryTextField.getText();
 	}
 }

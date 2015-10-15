@@ -11,7 +11,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration.IeasAddress;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasAddress;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 

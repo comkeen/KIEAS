@@ -50,18 +50,15 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		{
 			controller.applyAlertElement();
 		}
-		else if(actionCommand.equals("HRA"))
+		else if(actionCommand.equals("Query"))
 		{
-			controller.getHRAResult();
-		}
-		else if(actionCommand.equals("HRW"))
-		{
-			controller.getHRWResult();
+			controller.getQueryResult();
 		}
 	}
 
 	@Override
-	public void valueChanged(ListSelectionEvent e) {
+	public void valueChanged(ListSelectionEvent e)
+	{
 		controller.selectTableEvent();
 	}
 }

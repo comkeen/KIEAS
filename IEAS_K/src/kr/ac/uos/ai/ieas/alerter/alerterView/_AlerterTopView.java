@@ -2,6 +2,7 @@ package kr.ac.uos.ai.ieas.alerter.alerterView;
 
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -20,7 +21,7 @@ public class _AlerterTopView extends AbstractView{
 	private JTabbedPane mainTabbedPane;
 
 	private AlerterLogPanel alerterLogPanel;
-	private AlerterCapElementPanel alerterCapElementPanel;
+	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AleterViewActionListener alerterActionListener;
 	private AlerterDatabasePanel alerterDatabasePanel;
 	
@@ -64,8 +65,8 @@ public class _AlerterTopView extends AbstractView{
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
 		
-		this.alerterCapElementPanel = AlerterCapElementPanel.getInstance(alerterActionListener);
-		mainTabbedPane.addTab("CAP", alerterCapElementPanel.getPanel());
+		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
+		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
 		
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
@@ -82,35 +83,43 @@ public class _AlerterTopView extends AbstractView{
 		alerterLogPanel.receiveGatewayAck(identifier);
 	}
 
-	public void receiveAlertSystemAck(String identifier) {
+	public void receiveAlertSystemAck(String identifier)
+	{
 		alerterLogPanel.receiveAlertSystemAck(identifier);		
 	}
 
-	public void addAlertTableRow(String id, String event, String addresses) {
+	public void addAlertTableRow(String id, String event, String addresses)
+	{
 		alerterLogPanel.addAlertTableRow(id, event, addresses);		
 	}
 
-	public void loadCapDraft() {
-		alerterCapElementPanel.loadCapDraft();
+	public void loadCapDraft()
+	{
+		alerterCapGeneratePanel.loadCapDraft();
 	}
 
-	public void saveCap() {
-		alerterCapElementPanel.saveCap();
+	public void saveCap()
+	{
+		alerterCapGeneratePanel.saveCap();
 	}
 
-	public void applyAlertElement() {
-		alerterCapElementPanel.applyAlertElement();
+	public void applyAlertElement()
+	{
+		alerterCapGeneratePanel.applyAlertElement();
 	}
 
-	public void selectTableEvent() {
+	public void selectTableEvent()
+	{
 		alerterDatabasePanel.selectTableEvent();
 	}
 
-	public void getHRAResult() {
-		alerterDatabasePanel.getHRAResult();
+	public void getQueryResult(ArrayList<String> results)
+	{
+		alerterDatabasePanel.getQueryResult(results);
 	}
-	
-	public void getHRWResult() {
-		alerterDatabasePanel.getHRWResult();
+
+	public String getQuery()
+	{
+		return alerterDatabasePanel.getQuery();
 	}
 }

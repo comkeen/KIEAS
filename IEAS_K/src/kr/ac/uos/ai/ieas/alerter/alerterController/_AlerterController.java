@@ -5,61 +5,69 @@ import java.util.ArrayList;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractController;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterModel;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
-import kr.ac.uos.ai.ieas.db.dbDriver.DatabaseDriver;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class _AlerterController extends AbstractController{ 
-
-	private IeasMessageBuilder ieasMessage;
+public class _AlerterController extends AbstractController
+{ 
+	private KieasMessageBuilder kieasMessage;
 	private AlerterTransmitter alerterTransmitter;
 	private _AlerterTopView alerterView;
-	private AlerterModel alerterModel;
-
+	private AlerterModelManager alerterModel;
 
 	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "AlerterTextareaText";
 	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "AlerterLocationComboboxText";
 	public static final String ALERT_EVENT_COMBOBOX_TEXT_PROPERTY = "AlerterEventComboboxText";
+
+	public static final String ALERTER_DB_PANEL_TEXTAREA_TEXT_PROPERTY = "AlerterDbPanelTextAreaText";
+	public static final String ALERTER_DB_PANEL_TABLE_PROPERTY = "AlerterDbPanelTableModel";
+
 	
-	public void changeAlerterTextareaProperty(String text){
+	public void changeAlerterTextareaProperty(String text)
+	{
 		setModelProperty(ALERT_TEXTAREA_TEXT_PROPERTY, text);
 	}
 	
-	public void changeLocationComboboxTextProperty(String text){
+	public void changeLocationComboboxTextProperty(String text)
+	{
 		setModelProperty(ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY, text);
 	}
 	
-	public void changeEventComboboxTextProperty(String text){
+	public void changeEventComboboxTextProperty(String text)
+	{
 		setModelProperty(ALERT_EVENT_COMBOBOX_TEXT_PROPERTY, text);
 	}
 	
-	public void initAlerterController() {
-				
-		this.alerterModel = (AlerterModel) getRegisteredModels().get(0);
+	public void initAlerterController() 
+	{				
+		this.alerterModel = (AlerterModelManager) getRegisteredModels().get(0);
 		this.alerterView = (_AlerterTopView) getRegisteredViews().get(0);
 	}
 	
-	public ArrayList<AbstractModel> getRegisteredModels(){
+	public ArrayList<AbstractModel> getRegisteredModels()
+	{
 		return super.registeredModels;
 	}
 	
-	public ArrayList<AbstractView> getRegisteredViews(){
+	public ArrayList<AbstractView> getRegisteredViews()
+	{
 		return super.registeredViews;
-	}
-	
+	}	
 
-	public void sendMessage() {
+	public void sendMessage() 
+	{
 		sendMessageToGateway();
 	}
 	
-	public void sendTextAreaMessage() {
+	public void sendTextAreaMessage()
+	{
 		sendTextAreaMessageToGateway(alerterModel.getAlerterTextAreaText());
 	}
 	
-	public void sendMessageToGateway() {
-
+	public void sendMessageToGateway()
+	{
 //		alerterView.addAlertTableRow(id, event, addresses);
 		alerterTransmitter.sendMessage(alerterModel.getMessage());
 
@@ -67,51 +75,60 @@ public class _AlerterController extends AbstractController{
 		System.out.println();
 	}
 
-	public void acceptMessage(String message) {
+	public void acceptMessage(String message)
+	{
+		try 
+		{
+			kieasMessage.setMessage(message);
 
-		try {
-			ieasMessage.setMessage(message);
-
-			String sender = ieasMessage.getSender();
-			String identifier = ieasMessage.getIdentifier();
+			String sender = kieasMessage.getSender();
+			String identifier = kieasMessage.getIdentifier();
 
 			System.out.println("(" + alerterModel.getAlerterID() + ")" + " Received Message From (" + sender + ") : ");
 			System.out.println();
 
-			if(sender.equals(IeasConfiguration.IeasName.GATEWAY_NAME)) {
+			if(sender.equals(KieasConfiguration.IeasName.GATEWAY_NAME))
+			{
 				alerterView.receiveGatewayAck(identifier);
-			} else {
+			}
+			else 
+			{
 				alerterView.receiveAlertSystemAck(identifier);
 			}
 
-		} catch (Exception e) {
+		} 
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
 
-	public void sendTextAreaMessageToGateway(String message) {
-
-		ieasMessage.setMessage(message);
+	public void sendTextAreaMessageToGateway(String message)
+	{
+		kieasMessage.setMessage(message);
 		
-		String id = ieasMessage.getIdentifier();
-		String event = ieasMessage.getEvent();
-		String addresses = ieasMessage.getAddresses();
+		String id = kieasMessage.getIdentifier();
+		String event = kieasMessage.getEvent();
+		String addresses = kieasMessage.getAddresses();
 		
 		alerterView.addAlertTableRow(id, event, addresses);
 		alerterTransmitter.sendMessage(message);
 	}
 	
-	public void generateCap() {
+	public void generateCap() 
+	{
 		System.out.println("generate cap");
 		alerterModel.buildCap();
 	}
 
-	public void saveCap(String capMessage) {
+	public void saveCap(String capMessage)
+	{
 		System.out.println("saveCap");
 	}
 
-	public void connectToServer() {
+	public void connectToServer()
+	{
 
 		this.alerterTransmitter = new AlerterTransmitter(this, alerterModel.getAlerterID());
 	}
@@ -126,35 +143,18 @@ public class _AlerterController extends AbstractController{
 		alerterView.saveCap();
 	}
 
-	public void applyAlertElement() {
+	public void applyAlertElement()
+	{
 		alerterView.applyAlertElement();
 	}
 
-	public void selectTableEvent() {
+	public void selectTableEvent()
+	{
 		alerterView.selectTableEvent();
 	}
 
-	public void getHRAResult() {
-		alerterView.getHRAResult();
+	public void getQueryResult()
+	{
+		alerterView.getQueryResult(alerterModel.getQueryResult(alerterView.getQuery()));
 	}
-	
-	public void getHRWResult() {
-		alerterView.getHRWResult();
-	}
-
-//	public void saveCap(String capMessage) {
-//		String fileName = "D://cap/test.xml";
-//		
-//		try {
-//			BufferedWriter fw = new BufferedWriter(new FileWriter(fileName, true));
-//			fw.write(capMessage);
-//			fw.flush();
-//			fw.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		System.out.println("write comp");
-//	}
-
 }

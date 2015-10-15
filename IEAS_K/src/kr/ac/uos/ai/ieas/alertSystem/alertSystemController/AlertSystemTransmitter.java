@@ -13,7 +13,7 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration.IeasAddress;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasAddress;
 
 public class AlertSystemTransmitter {
 

@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.db.dbDriver;
+package kr.ac.uos.ai.ieas.db.dbHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,29 +6,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
 
 import org.apache.commons.dbutils.BeanProcessor;
-
-import com.google.publicalerts.cap.Alert;
-import com.google.publicalerts.cap.CapUtil;
 
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
+
 
 public class CAPDBUtils
-{
-	
+{	
 	public CAPDBUtils()
 	{
-	}
-	
+		
+	}	
 	
 	public ArrayList<CAPAlert> getAlerts()
 	{

@@ -16,7 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 
 public class AlertSystemView {
 	
@@ -103,7 +103,7 @@ public class AlertSystemView {
 		this.topicCombobox = new JComboBox<String>();
 		topicCombobox.addItemListener(alertSystemActionListener);
 		
-		for (String location : IeasConfiguration.IEAS_List.LOCATION_LIST) {
+		for (String location : KieasConfiguration.IEAS_List.LOCATION_LIST) {
 
 			topicCombobox.addItem(location);
 		};		

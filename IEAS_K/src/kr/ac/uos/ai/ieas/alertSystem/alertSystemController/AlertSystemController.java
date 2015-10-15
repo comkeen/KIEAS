@@ -1,28 +1,26 @@
 package kr.ac.uos.ai.ieas.alertSystem.alertSystemController;
 
-import kr.ac.uos.ai.ieas.db.dbDriver.DatabaseDriver;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
-import kr.ac.uos.ai.ieas.resource.IeasMessageBuilder;
+import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
 public class AlertSystemController {
 
-	private IeasMessageBuilder ieasMessage;
+	private KieasMessageBuilder ieasMessage;
 	private AlertSystemTransmitter alertSystemTransmitter;
 	private AlertSystemView alertSystemView;
 
 	private String alertSystemID;
 	private String location;
 	private String ackMessage;
-	private DatabaseDriver databaseDriver;
 
 	public AlertSystemController()  {		
 
 		this.alertSystemID = "alertSystem-Jeju-V2";
 		this.location = "Jeju";
 		
-		this.ieasMessage = new IeasMessageBuilder();
-		this.databaseDriver = new DatabaseDriver();
+		this.ieasMessage = new KieasMessageBuilder();
 		this.alertSystemTransmitter = new AlertSystemTransmitter(this, location);		
 		this.alertSystemView = new AlertSystemView(this, alertSystemID);
 	}
@@ -45,7 +43,7 @@ public class AlertSystemController {
 			
 			alertSystemView.setTextArea(message);
 			Thread.sleep(1000);
-			sendAckMessage(message, IeasConfiguration.IeasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+			sendAckMessage(message, KieasConfiguration.IeasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,7 +55,7 @@ public class AlertSystemController {
 		ieasMessage.setMessage(message);
 		
 		ieasMessage.setAddresses(ieasMessage.getSender());
-		ieasMessage.setMsgTypeToAck();
+		ieasMessage.setMsgType("Ack");
 		ieasMessage.setSender(alertSystemID);
 		ieasMessage.build();
 		

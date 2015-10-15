@@ -5,7 +5,7 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 
 public class GatewayController {
 
@@ -35,7 +35,7 @@ public class GatewayController {
 
 	private GatewayController() {
 
-		this.gatewayID = IeasConfiguration.IeasName.GATEWAY_NAME;
+		this.gatewayID = KieasConfiguration.IeasName.GATEWAY_NAME;
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
@@ -74,7 +74,7 @@ public class GatewayController {
 		addresses = gatewayModelManager.getAlertElementMap(message).get("addresses");
 		event = gatewayModelManager.getAlertElementMap(message).get("event");
 
-		for (String location : IeasConfiguration.IEAS_List.LOCATION_LIST) {
+		for (String location : KieasConfiguration.IEAS_List.LOCATION_LIST) {
 
 			if (addresses.equals(location)) {
 				gatewayTransmitter.sendTopicMessage(message, addresses);	

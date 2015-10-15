@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.resource.IeasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 
 
 public class AlerterLogPanel extends AbstractView{
@@ -24,7 +24,6 @@ public class AlerterLogPanel extends AbstractView{
 	private static AlerterLogPanel alerterViewPanel;
 	private _AlerterController alerterController;
 	private AleterViewActionListener alerterActionListener;
-	private IeasArcGisMap ieasArcGisMap;
 
 	private JButton generateCapButton;
 	private JButton messageSendButton;
@@ -104,10 +103,6 @@ public class AlerterLogPanel extends AbstractView{
 		gbc.fill = GridBagConstraints.BOTH;
 		this.setGbc(1, 0, 1, 1, 1, 1);
 		this.initTextAreaPane();
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		this.setGbc(2, 0, 1, 3, 5, 1);
-//		this.initMap();
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(1, 1, 1, 1, 1, 2);
@@ -116,12 +111,6 @@ public class AlerterLogPanel extends AbstractView{
 		this.setGbc(1, 2, 1, 1, 1, 1);
 		this.initButtonPane();
 		this.initComboBox();
-	}
-
-	private void initMap() {
-		
-		this.ieasArcGisMap = new IeasArcGisMap();
-		logPanel.add(ieasArcGisMap.getMapPane(), gbc);
 	}
 
 	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
@@ -197,10 +186,10 @@ public class AlerterLogPanel extends AbstractView{
 		this.eventComboBox = new JComboBox<String>();
 		eventComboBox.addActionListener(alerterActionListener);
 
-		for (String location : IeasConfiguration.IEAS_List.LOCATION_LIST) {
+		for (String location : KieasConfiguration.IEAS_List.LOCATION_LIST) {
 			locationCombobox.addItem(location);
 		};
-		for (String event : IeasConfiguration.IEAS_List.EVENT_LIST) {
+		for (String event : KieasConfiguration.IEAS_List.EVENT_LIST) {
 			eventComboBox.addItem(event);
 		}
 
