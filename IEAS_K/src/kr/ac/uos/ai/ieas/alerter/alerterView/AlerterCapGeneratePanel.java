@@ -65,8 +65,6 @@ public class AlerterCapGeneratePanel
 	private JTextArea infoDescriptionTextArea;
 
 
-
-
 	public static AlerterCapGeneratePanel getInstance(AleterViewActionListener alerterActionListener)
 	{
 		if (alerterCapElementPanel == null)
@@ -109,7 +107,6 @@ public class AlerterCapGeneratePanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 3, 3, 1, 1, 1);
 		initCapInfoPanel();
-
 	}
 
 	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)

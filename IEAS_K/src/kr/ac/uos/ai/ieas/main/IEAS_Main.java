@@ -66,7 +66,5 @@ public class IEAS_Main
 		mainPane.add(alertsystemButton);
 		
 		frame.setVisible(true);
-		
-
 	}
 }
