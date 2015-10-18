@@ -1,5 +1,6 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ public class _AlerterTopView extends AbstractView{
 	public _AlerterTopView(_AlerterController alerterController) {
 
 		this.alerterActionListener = new AleterViewActionListener(alerterController);
-		
 		initLookAndFeel();
 		initFrame("alertViewPanel");
 	}
@@ -121,5 +121,10 @@ public class _AlerterTopView extends AbstractView{
 	public String getQuery()
 	{
 		return alerterDatabasePanel.getQuery();
+	}
+
+	public void addInfoIndexPanel()
+	{
+		alerterCapGeneratePanel.addInfoIndexPanel();
 	}
 }

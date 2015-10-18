@@ -157,4 +157,9 @@ public class _AlerterController extends AbstractController
 	{
 		alerterView.getQueryResult(alerterModel.getQueryResult(alerterView.getQuery()));
 	}
+
+	public void addInfoIndexPanel() 
+	{
+		alerterView.addInfoIndexPanel();
+	}
 }

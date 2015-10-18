@@ -11,8 +11,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,13 +33,13 @@ public class AlerterCapGeneratePanel
 	private AleterViewActionListener alerterActionListener;
 	private GridBagConstraints gbc;
 	private KieasMessageBuilder ieasMessage;
-	
+
 	private FileInputStream fileInputStream;
 	private InputStreamReader inputStreamReader;
 	private BufferedReader bufferedReader;
 	private BufferedWriter bufferedWriter;
 	private StringReader stringReader;
-	
+
 	private JPanel capPanel;
 	private JPanel buttonPane;
 	private JButton saveCapButton;
@@ -47,22 +49,24 @@ public class AlerterCapGeneratePanel
 	private JTextArea textArea;
 	private JScrollPane textAreaPane;
 	private JScrollPane capScrollPanel;
-	
+
 
 	private JPanel alertPanel;
 	private JTextField[] alertValues;
+	private JComboBox<String>[] alertEnumValues;
 	private JButton alertApplyButton;
 
 	private JTabbedPane infoPanel;
-	private JPanel infoIndexPanel;	
-	private JTextField[][] infoValues;
+	private ArrayList<JPanel> infoIndexPanels;
+	private JComboBox<String>[] infoEnumValues;
+	private JTextField[] infoValues;
 	private JTextArea[] infoDescriptionValues;
-	private JButton[] infoButtons;
-	
+
 	private JTextField savePathTextField;
 	private JTextField loadPathTextField;
 
-	private JTextArea infoDescriptionTextArea;
+	private int infoCounter;
+
 
 
 	public static AlerterCapGeneratePanel getInstance(AleterViewActionListener alerterActionListener)
@@ -91,7 +95,7 @@ public class AlerterCapGeneratePanel
 		capPanel.setLayout(new GridBagLayout());
 
 		gbc.anchor = GridBagConstraints.BASELINE;
-		
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 0, 3, 1, 1, 1);
 		initTextArea();
@@ -99,7 +103,7 @@ public class AlerterCapGeneratePanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 1, 3, 1, 1, 1);
 		initButtonPanel();
-		
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 2, 3, 1, 1, 1);
 		initCapAlertPanel();
@@ -118,22 +122,13 @@ public class AlerterCapGeneratePanel
 		gbc.weightx = weightx;
 		gbc.weighty = weighty;
 	}
-	
-	private void setGbc(int gridx, int gridy)
-	{
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-	}
 
 	private void initTextArea()
 	{
 		this.textArea = new JTextArea(20, 20);
 		this.textAreaPane = new JScrollPane(textArea);	
-
+		textArea.setSize(1000, 1000);
+		textArea.setEditable(false);
 		textArea.setText("\n");
 
 		capPanel.add(textAreaPane, gbc);
@@ -143,81 +138,164 @@ public class AlerterCapGeneratePanel
 	{
 		this.alertPanel = new JPanel();
 		alertPanel.setLayout(new GridBagLayout());
-//		this.alertScrollPanel = new JScrollPane(alertPanel);
 
 		this.alertValues = new JTextField[IEAS_List.ALERT_ELEMENT_LIST.length];
-		
+		this.alertEnumValues = new JComboBox[IEAS_List.ALERT_ELEMENT_LIST.length];
 		//info가 여러개일 경우			
 		int i = 0;
 		for (String alertElementName : IEAS_List.ALERT_ELEMENT_LIST)
 		{
 			setGbc(0, i, 1, 1, 1, 1);
 			createAndAddLable(alertElementName, alertPanel);
-			setGbc(1, i, 9, 1, 9, 1);
-			alertValues[i] = createAndAddTextField(alertPanel);
-			
+			if(alertElementName.equals("Status"))
+			{
+				setGbc(1, i, 1, 1, 1, 1);
+				alertEnumValues[i] = createAndAddComboBox(alertPanel);	
+				for (String value : ieasMessage.getCapEnumMap().get("Status")) {
+					alertEnumValues[i].addItem(value);
+				}
+			}
+			else if(alertElementName.equals("MsgType"))
+			{
+				setGbc(1, i, 1, 1, 1, 1);
+				alertEnumValues[i] = createAndAddComboBox(alertPanel);	
+				for (String value : ieasMessage.getCapEnumMap().get("MsgType")) {
+					alertEnumValues[i].addItem(value);
+				}
+			}
+			else if(alertElementName.equals("Scope"))
+			{
+				setGbc(1, i, 1, 1, 1, 1);
+				alertEnumValues[i] = createAndAddComboBox(alertPanel);	
+				for (String value : ieasMessage.getCapEnumMap().get("Scope")) {
+					alertEnumValues[i].addItem(value);
+				}
+			}
+			else if(alertElementName.equals("Code"))
+			{
+				setGbc(1, i, 9, 1, 9, 1);
+				alertValues[i] = createAndAddTextField(alertPanel);
+				alertValues[i].setText("대한민국정부1.0");
+				alertValues[i].setEditable(false);
+			}
+			else
+			{
+				setGbc(1, i, 9, 1, 9, 1);
+				alertValues[i] = createAndAddTextField(alertPanel);
+			}
 			i++;
 		}
-		
-//		setGbc(0, i, 2, 1, 2, 1);		
-//		this.alertApplyButton = createButton("Apply");
-//		alertApplyButton.setActionCommand("AlertApply");
-//		alertPanel.add(alertApplyButton, gbc);
-		
-//		capPanel.add(alertScrollPanel, gbc);
 		capPanel.add(alertPanel, gbc);
 	}
 
 	private void initCapInfoPanel()
 	{
 		this.infoPanel = new JTabbedPane();
-		
-		this.infoValues = new JTextField[2][IEAS_List.INFO_ELEMENT_LIST.length];
-		this.infoDescriptionValues = new JTextArea[2];
-		this.infoButtons = new JButton[2];
-		
-		// TODO Auto-generated method stub
-		//info가 여러개일 경우 처리
-		for (int infoCounter = 1; infoCounter < 3; infoCounter++)
-		{
-			this.infoIndexPanel = new JPanel();
-			infoIndexPanel.setLayout(new GridBagLayout());
-//			this.infoScrollPanel = new JScrollPane(infoIndexPanel);			
-			
-			int i = 0;
-			for (String infoElementName : IEAS_List.INFO_ELEMENT_LIST)
-			{
-				if (infoElementName.equals("Description"))
-				{
-					setGbc(0, i, 1, 1, 1, 1);
-					createAndAddLable(infoElementName, infoIndexPanel);
-					setGbc(1, i, 9, 5, 9, 5);
-					infoDescriptionValues[infoCounter-1] = new JTextArea();
-					JScrollPane descriptionScrollPanel = new JScrollPane(infoDescriptionValues[infoCounter-1]);
-					infoIndexPanel.add(descriptionScrollPanel, gbc);
-					
-					i++;
-				}
-				else 
-				{
-					
-				setGbc(0, i, 1, 1, 1, 1);
-				createAndAddLable(infoElementName, infoIndexPanel);
-				setGbc(1, i, 9, 1, 9, 1);
-				infoValues[infoCounter-1][i] = createAndAddTextField(infoIndexPanel);
-								
-				i++;
-				}
-			}
-			
-//			setGbc(0, i, 2, 1, 2, 1);
-//			infoButtons[infoCounter - 1] = createAndAddInfoApplyButton("Apply", infoCounter);
-//			infoIndexPanel.add(alertApplyButton, gbc);			
-			
-//			infoPanel.addTab("Info" + infoCounter, infoScrollPanel);		
-			infoPanel.addTab("Info" + infoCounter, infoIndexPanel);	
-		}
+		this.infoValues = new JTextField[IEAS_List.INFO_ELEMENT_LIST.length];
+		this.infoEnumValues = new JComboBox[IEAS_List.INFO_ELEMENT_LIST.length];
+		this.infoDescriptionValues = new JTextArea[5];
+		this.infoIndexPanels = new ArrayList<JPanel>();
+
+		this.infoCounter = 0;
+		addInfoIndexPanel();
+
 		capPanel.add(infoPanel, gbc);
+	}
+
+	public void addInfoIndexPanel()
+	{		
+		removeTabPanel();
+		this.infoIndexPanels.add(new JPanel());
+		infoIndexPanels.get(infoCounter).setLayout(new GridBagLayout());
+
+		int i = 0;
+		for (String infoElementName : IEAS_List.INFO_ELEMENT_LIST)
+		{
+			if (infoElementName.equals("Description"))
+			{
+				setGbc(0, i, 1, 1, 1, 1);
+				createAndAddLable(infoElementName, infoIndexPanels.get(infoCounter));
+				setGbc(1, i, 9, 5, 9, 5);
+				infoDescriptionValues[infoCounter] = new JTextArea();
+
+				JScrollPane descriptionScrollPanel = new JScrollPane(infoDescriptionValues[infoCounter]);
+				infoIndexPanels.get(infoCounter).add(descriptionScrollPanel, gbc);
+
+				i++;
+			}
+			else
+			{				
+				setGbc(0, i, 1, 1, 1, 1);
+				createAndAddLable(infoElementName, infoIndexPanels.get(infoCounter));
+				if(infoElementName.equals("Category"))
+				{
+					setGbc(1, i, 1, 1, 1, 1);
+					infoEnumValues[i] = createAndAddComboBox(infoIndexPanels.get(infoCounter));	
+					for (String value : ieasMessage.getCapEnumMap().get("Category")) {
+						infoEnumValues[i].addItem(value);
+					}
+				}
+//				else if(infoElementName.equals("Language"))
+//				{
+//					setGbc(1, i, 1, 1, 1, 1);
+//					infoEnumValues[i] = createAndAddComboBox(infoIndexPanels.get(infoCounter));
+//					infoEnumValues[i].addItem("ko_kr");
+//				}
+				else if(infoElementName.equals("Urgency"))
+				{
+					setGbc(1, i, 1, 1, 1, 1);
+					infoEnumValues[i] = createAndAddComboBox(infoIndexPanels.get(infoCounter));
+					for (String value : ieasMessage.getCapEnumMap().get("Urgency")) {
+						infoEnumValues[i].addItem(value);
+					}
+				}
+				else if(infoElementName.equals("Severity"))
+				{
+					setGbc(1, i, 1, 1, 1, 1);
+					infoEnumValues[i] = createAndAddComboBox(infoIndexPanels.get(infoCounter));
+					for (String value : ieasMessage.getCapEnumMap().get("Severity")) {
+						infoEnumValues[i].addItem(value);
+					}
+				}
+				else if(infoElementName.equals("Certainty"))
+				{
+					setGbc(1, i, 1, 1, 1, 1);
+					infoEnumValues[i] = createAndAddComboBox(infoIndexPanels.get(infoCounter));	
+					for (String value : ieasMessage.getCapEnumMap().get("Certainty")) {
+						infoEnumValues[i].addItem(value);
+					}
+				}				
+				else
+				{
+					setGbc(1, i, 3, 1, 3, 1);
+					infoValues[i] = createAndAddTextField(infoIndexPanels.get(infoCounter));
+				}
+				i++;
+			}
+		}
+		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
+		infoCounter++;
+		addTabPanel();
+	}
+
+	private void addTabPanel()
+	{
+		JPanel panel =  new JPanel();
+		createAndAddInfoApplyButton("Add Info", panel);
+		infoPanel.addTab("+", panel);
+		infoPanel.setSelectedIndex(infoCounter-1);
+
+	}
+
+	private void removeTabPanel()
+	{
+		for(int i = 0 ; i < infoPanel.getComponentCount(); i++)
+		{
+			if(infoPanel.getTitleAt(i).equals("+"))
+			{
+				infoPanel.remove(infoPanel.getSelectedComponent());
+			}
+		}
 	}
 
 
@@ -226,47 +304,56 @@ public class AlerterCapGeneratePanel
 		JLabel label = new JLabel(name);
 		panel.add(label, gbc);
 	}
-	
+
 	private JTextField createAndAddTextField(JPanel panel)
 	{
 		JTextField textField = new JTextField();
+		textField.setPreferredSize(textField.getPreferredSize());
 		panel.add(textField, gbc);		
-		
+
 		return textField;
 	}
-	
-	private JButton createAndAddInfoApplyButton(String name, int index)
+
+	private JComboBox<String> createAndAddComboBox(JPanel panel)
+	{
+		JComboBox<String> comboBox = new JComboBox<>();
+		panel.add(comboBox, gbc);		
+
+		return comboBox;
+	}
+
+	private JButton createAndAddInfoApplyButton(String name, JPanel panel)
 	{
 		JButton button = new JButton(name);
-		button.setActionCommand(name + index);
-		infoIndexPanel.add(button, gbc);
-				
+		button.addActionListener(alerterActionListener);
+		panel.add(button, gbc);
+
 		return button;
 	}
-	
-	
+
+
 	private void initButtonPanel()
 	{
 		this.buttonPane = new JPanel();
 
 		this.loadPathTextField = new JTextField("cap/HRA.xml");
 		buttonPane.add(loadPathTextField, BorderLayout.WEST);
-		
+
 		this.loadCapDraftButton = createButton("LoadCapDraft");
 		buttonPane.add(loadCapDraftButton, BorderLayout.WEST);		
-		
+
 		this.saveCapButton = createButton("SaveCap");
 		buttonPane.add(saveCapButton, BorderLayout.EAST);
-		
+
 		this.savePathTextField = new JTextField("cap/out.xml");
 		buttonPane.add(savePathTextField, BorderLayout.EAST);
 
 		this.alertApplyButton = createButton("Apply");
 		buttonPane.add(alertApplyButton, BorderLayout.EAST);
-		
+
 		capPanel.add(buttonPane, gbc);
 	}
-	
+
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
@@ -277,6 +364,76 @@ public class AlerterCapGeneratePanel
 	public JScrollPane getPanel()
 	{
 		return this.capScrollPanel;
+	}
+
+	private void setAlertPanel(KieasMessageBuilder ieasMessage)
+	{
+		alertValues[0].setText(ieasMessage.getIdentifier());
+		alertValues[1].setText(ieasMessage.getSender());
+		alertValues[2].setText(ieasMessage.getSent());
+		for(int i = 0; i < alertEnumValues[3].getItemCount(); i++)
+		{
+			if(alertEnumValues[3].getItemAt(i).equals(ieasMessage.getStatus()))
+			{				
+				alertEnumValues[3].setSelectedIndex(i);
+			}				
+		}
+		for(int i = 0; i < alertEnumValues[4].getItemCount(); i++)
+		{
+			if(alertEnumValues[4].getItemAt(i).equals(ieasMessage.getMsgType()))
+			{
+				alertEnumValues[4].setSelectedIndex(i);
+			}				
+		}
+		for(int i = 0; i < alertEnumValues[5].getItemCount(); i++)
+		{
+			if(alertEnumValues[5].getItemAt(i).equals(ieasMessage.getScope()))
+			{
+				alertEnumValues[5].setSelectedIndex(i);
+			}				
+		}
+		alertValues[6].setText(ieasMessage.getCode());
+	}
+
+	private void setInfoPanel(KieasMessageBuilder ieasMessage)
+	{
+		infoValues[0].setText(ieasMessage.getLanguage());
+		for(int i = 0; i < infoEnumValues[1].getItemCount(); i++)
+		{
+			if(infoEnumValues[1].getItemAt(i).equals(ieasMessage.getCategory()))
+			{
+				infoEnumValues[1].setSelectedIndex(i);
+			}				
+		}
+		infoValues[2].setText(ieasMessage.getEvent());
+		for(int i = 0; i < infoEnumValues[3].getItemCount(); i++)
+		{
+			if(infoEnumValues[3].getItemAt(i).equals(ieasMessage.getUrgency()))
+			{
+				infoEnumValues[3].setSelectedIndex(i);
+			}				
+		}
+		for(int i = 0; i < infoEnumValues[4].getItemCount(); i++)
+		{
+			if(infoEnumValues[4].getItemAt(i).equals(ieasMessage.getSeverity()))
+			{
+				infoEnumValues[4].setSelectedIndex(i);
+			}				
+		}
+		for(int i = 0; i < infoEnumValues[5].getItemCount(); i++)
+		{
+			if(infoEnumValues[5].getItemAt(i).equals(ieasMessage.getCertainty()))
+			{
+				infoEnumValues[5].setSelectedIndex(i);
+			}				
+		}
+		infoValues[6].setText(ieasMessage.getEventCode());
+		infoValues[7].setText(ieasMessage.getEffective());
+		infoValues[8].setText(ieasMessage.getSenderName());
+		infoValues[9].setText(ieasMessage.getWeb());
+		infoValues[10].setText(ieasMessage.getContact());
+		infoValues[11].setText(ieasMessage.getHeadline());
+		infoDescriptionValues[0].setText(ieasMessage.getDescrpition());
 	}
 
 	private void capLoader()
@@ -298,8 +455,9 @@ public class AlerterCapGeneratePanel
 			}
 
 			textArea.setText(content);
+			textArea.setCaretPosition(0);
 			ieasMessage.setMessage(content);
-			
+
 			setAlertPanel(ieasMessage);
 			setInfoPanel(ieasMessage);
 		}
@@ -308,48 +466,20 @@ public class AlerterCapGeneratePanel
 			e.printStackTrace();
 		}
 	}
-		
-	private void setAlertPanel(KieasMessageBuilder ieasMessage)
-	{
-		alertValues[0].setText(ieasMessage.getIdentifier());
-		alertValues[1].setText(ieasMessage.getSender());
-		alertValues[2].setText(ieasMessage.getSent());
-		alertValues[3].setText(ieasMessage.getStatus());
-		alertValues[4].setText(ieasMessage.getMsgType());
-		alertValues[5].setText(ieasMessage.getScope());
-		alertValues[6].setText(ieasMessage.getCode());
-	}
-	
-	private void setInfoPanel(KieasMessageBuilder ieasMessage)
-	{
-		infoValues[0][0].setText(ieasMessage.getLanguage());
-		infoValues[0][1].setText(ieasMessage.getCategory());
-		infoValues[0][2].setText(ieasMessage.getEvent());
-		infoValues[0][3].setText(ieasMessage.getUrgency());
-		infoValues[0][4].setText(ieasMessage.getSeverity());
-		infoValues[0][5].setText(ieasMessage.getCertainty());
-		infoValues[0][6].setText(ieasMessage.getEventCode());
-		infoValues[0][7].setText(ieasMessage.getEffective());
-		infoValues[0][8].setText(ieasMessage.getSenderName());
-		infoValues[0][9].setText(ieasMessage.getWeb());
-		infoValues[0][10].setText(ieasMessage.getContact());
-		infoValues[0][11].setText(ieasMessage.getHeadline());
-		infoDescriptionValues[0].setText(ieasMessage.getDescrpition());
-	}
 
 	private void capWriter()
 	{
 		this.stringReader = new StringReader(textArea.getText());
 		bufferedReader = new BufferedReader(stringReader);
-		
-//		String extension= ".xml";
+
+		//		String extension= ".xml";
 		String path = savePathTextField.getText();
 		String temp = "";
-		
+
 		try
 		{
 			this.bufferedWriter = new BufferedWriter(new FileWriter(path));
-			
+
 			while((temp = bufferedReader.readLine()) != null)
 			{
 				bufferedWriter.write(temp);
@@ -367,7 +497,7 @@ public class AlerterCapGeneratePanel
 	{
 		capLoader();
 	}
-	
+
 	public void saveCap() 
 	{
 		capWriter();
@@ -381,20 +511,19 @@ public class AlerterCapGeneratePanel
 		ieasMessage.setMsgType(alertValues[4].getText());
 		ieasMessage.setScope(alertValues[5].getText());
 		ieasMessage.setCode(alertValues[6].getText());
-		
+
 		textArea.setText(ieasMessage.getMessage());
 	}
-	
-	//todo
+
 	public void applyInfoElement() {
-		ieasMessage.setIdentifier(infoValues[0][0].getText());
-		ieasMessage.setSender(infoValues[0][1].getText());
-		ieasMessage.setSent(infoValues[0][2].getText());
-		ieasMessage.setStatus(infoValues[0][3].getText());
-		ieasMessage.setMsgType(infoValues[0][4].getText());
-		ieasMessage.setScope(infoValues[0][5].getText());
-		ieasMessage.setCode(infoValues[0][6].getText());
-		
+		ieasMessage.setIdentifier(infoValues[0].getText());
+		ieasMessage.setSender(infoValues[1].getText());
+		ieasMessage.setSent(infoValues[2].getText());
+		ieasMessage.setStatus(infoValues[3].getText());
+		ieasMessage.setMsgType(infoValues[4].getText());
+		ieasMessage.setScope(infoValues[5].getText());
+		ieasMessage.setCode(infoValues[6].getText());
+
 		textArea.setText(ieasMessage.getMessage());
 	}
 }

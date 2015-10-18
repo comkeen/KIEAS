@@ -3,8 +3,12 @@ package kr.ac.uos.ai.ieas.alerter.alerterController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import org.apache.activemq.selector.SelectorParserConstants;
 
 
 public class AleterViewActionListener implements ActionListener, ListSelectionListener
@@ -53,6 +57,10 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		else if(actionCommand.equals("Query"))
 		{
 			controller.getQueryResult();
+		}
+		else if(actionCommand.equals("Add Info"))
+		{
+			controller.addInfoIndexPanel();
 		}
 	}
 

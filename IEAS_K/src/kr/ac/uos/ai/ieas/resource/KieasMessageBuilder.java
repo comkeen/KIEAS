@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.SimpleTimeZone;
 
 import org.xml.sax.SAXParseException;
@@ -22,6 +23,7 @@ import com.google.publicalerts.cap.Group;
 import com.google.publicalerts.cap.Info;
 import com.google.publicalerts.cap.Info.Category;
 import com.google.publicalerts.cap.Info.Certainty;
+import com.google.publicalerts.cap.Info.ResponseType;
 import com.google.publicalerts.cap.Info.Severity;
 import com.google.publicalerts.cap.Info.Urgency;
 import com.google.publicalerts.cap.NotCapException;
@@ -43,7 +45,8 @@ public class KieasMessageBuilder
 	private Info 			info;
 	private Resource 		resource;
 	private Area 			area;
-
+	
+	private HashMap<String, ArrayList<String>> capEnumMap;
 	private String xmlMessage;
 	
 
@@ -52,8 +55,79 @@ public class KieasMessageBuilder
 		this.capXmlBuilder = new CapXmlBuilder();
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
-
+		
+		this.capEnumMap = new HashMap<>();
+		initAlertCapEnumMap();
+		initInfoCapEnumMap();
+		
 		buildDefaultMessage();
+	}
+	
+	private void initAlertCapEnumMap()
+	{
+		ArrayList<String> capEnum1 = new ArrayList<>();
+		for (Status value : Alert.Status.values())
+		{
+			capEnum1.add(value.toString());
+		}
+		capEnumMap.put("Status", capEnum1);
+		
+		ArrayList<String> capEnum2 = new ArrayList<>();
+		for (MsgType value : Alert.MsgType.values())
+		{
+			capEnum2.add(value.toString());
+		}
+		capEnumMap.put("MsgType", capEnum2);
+		
+		ArrayList<String> capEnum3 = new ArrayList<>();
+		for (Scope value : Alert.Scope.values())
+		{
+			capEnum3.add(value.toString());
+		}
+		capEnumMap.put("Scope", capEnum3);	
+	}	
+	
+	private void initInfoCapEnumMap()
+	{
+		ArrayList<String> capEnum1 = new ArrayList<>();
+		for (Category value : Info.Category.values())
+		{
+			capEnum1.add(value.toString());
+		}
+		capEnumMap.put("Category", capEnum1);
+		
+		ArrayList<String> capEnum2 = new ArrayList<>();
+		for (Certainty value : Info.Certainty.values())
+		{
+			capEnum2.add(value.toString());
+		}
+		capEnumMap.put("Certainty", capEnum2);
+		
+		ArrayList<String> capEnum3 = new ArrayList<>();
+		for (ResponseType value : Info.ResponseType.values())
+		{
+			capEnum3.add(value.toString());
+		}
+		capEnumMap.put("ResponseType", capEnum3);
+		
+		ArrayList<String> capEnum4 = new ArrayList<>();
+		for (Severity value : Info.Severity.values())
+		{
+			capEnum4.add(value.toString());
+		}
+		capEnumMap.put("Severity", capEnum4);
+		
+		ArrayList<String> capEnum5 = new ArrayList<>();
+		for (Urgency value : Info.Urgency.values())
+		{
+			capEnum5.add(value.toString());
+		}
+		capEnumMap.put("Urgency", capEnum5);
+	}
+	
+	public HashMap<String, ArrayList<String>> getCapEnumMap()
+	{
+		return this.capEnumMap;
 	}
 	
 	public void buildDefaultMessage() {
