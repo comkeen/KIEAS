@@ -1,6 +1,6 @@
 # 통합재난경보발령시스템 #
 
-우리의 프로젝트에서는 대한민국 통합재난경보발령시스템(Korea Integrated Emergency Alert System)의 발전을 위한 참조모델의 연구개발이 진행중에 있다. 당신은 이 페이지에서 우리의 프로젝트를 이해하기 위해 필요한 자료들을 얻을 수 있다. 프로젝트에 대한 더 자세한 소개는 위키 페이지(http://alertwiki.uos.ac.kr)에서 열람할 수 있다.
+우리의 프로젝트에서는 대한민국 통합재난경보발령시스템(Korea Integrated Emergency Alert System)의 발전을 위한 참조모델의 연구개발이 진행중에 있다. 당신은 이 페이지에서 우리의 프로젝트를 이해하기 위해 필요한 자료들을 얻을 수 있다. 프로젝트에 대한 더 상세한 소개와 관련 작업 결과물(문서)은 위키 페이지(http://alertwiki.uos.ac.kr)에서 열람할 수 있다.
 
 ## 1. 필요 환경 ##
 
@@ -28,4 +28,3 @@
 * ["옥내경보방송시스템" TTAK.KO-06.0363](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-06.0363&standard_no=&kor_standard=%BF%C1%B3%BB%B0%E6%BA%B8&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=1&acode1=&acode2=&scode1=&scode2=)
 * ["경보 표출 방법" TTAK.KO-06.0364/R1](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-06.0364%2FR1&standard_no=&kor_standard=%B0%E6%BA%B8+%C7%A5%C3%E2&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=2&acode1=&acode2=&scode1=&scode2=)
 * ["LTE 망에서 재난문자 서비스 제공을 위한 요구사항 및 메시지 형식" KCS.KO-06.0263/R1](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-06.0263%2FR1&standard_no=&kor_standard=lte+%B8%C1&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=2&acode1=&acode2=&scode1=&scode2=)
-
