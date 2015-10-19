@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractController;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterModelManager;
+import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
@@ -15,7 +15,7 @@ public class _AlerterController extends AbstractController
 	private KieasMessageBuilder kieasMessage;
 	private AlerterTransmitter alerterTransmitter;
 	private _AlerterTopView alerterView;
-	private AlerterModelManager alerterModel;
+	private _AlerterModelManager alerterModel;
 
 	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "AlerterTextareaText";
 	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "AlerterLocationComboboxText";
@@ -24,33 +24,37 @@ public class _AlerterController extends AbstractController
 	public static final String ALERTER_DB_PANEL_TEXTAREA_TEXT_PROPERTY = "AlerterDbPanelTextAreaText";
 	public static final String ALERTER_DB_PANEL_TABLE_PROPERTY = "AlerterDbPanelTableModel";
 
-	
+
 	public void changeAlerterTextareaProperty(String text)
 	{
 		setModelProperty(ALERT_TEXTAREA_TEXT_PROPERTY, text);
 	}
-	
+
 	public void changeLocationComboboxTextProperty(String text)
 	{
 		setModelProperty(ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY, text);
 	}
-	
+
 	public void changeEventComboboxTextProperty(String text)
 	{
 		setModelProperty(ALERT_EVENT_COMBOBOX_TEXT_PROPERTY, text);
 	}
+
 	
+	/**
+	 * Model과 View 초기화.
+	 */
 	public void initAlerterController() 
 	{				
-		this.alerterModel = (AlerterModelManager) getRegisteredModels().get(0);
+		this.alerterModel = (_AlerterModelManager) getRegisteredModels().get(0);
 		this.alerterView = (_AlerterTopView) getRegisteredViews().get(0);
 	}
-	
+
 	public ArrayList<AbstractModel> getRegisteredModels()
 	{
 		return super.registeredModels;
 	}
-	
+
 	public ArrayList<AbstractView> getRegisteredViews()
 	{
 		return super.registeredViews;
@@ -60,15 +64,15 @@ public class _AlerterController extends AbstractController
 	{
 		sendMessageToGateway();
 	}
-	
+
 	public void sendTextAreaMessage()
 	{
 		sendTextAreaMessageToGateway(alerterModel.getAlerterTextAreaText());
 	}
-	
+
 	public void sendMessageToGateway()
 	{
-//		alerterView.addAlertTableRow(id, event, addresses);
+		//		alerterView.addAlertTableRow(id, event, addresses);
 		alerterTransmitter.sendMessage(alerterModel.getMessage());
 
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
@@ -107,15 +111,15 @@ public class _AlerterController extends AbstractController
 	public void sendTextAreaMessageToGateway(String message)
 	{
 		kieasMessage.setMessage(message);
-		
+
 		String id = kieasMessage.getIdentifier();
 		String event = kieasMessage.getEvent();
 		String addresses = kieasMessage.getAddresses();
-		
+
 		alerterView.addAlertTableRow(id, event, addresses);
 		alerterTransmitter.sendMessage(message);
 	}
-	
+
 	public void generateCap() 
 	{
 		System.out.println("generate cap");
@@ -152,7 +156,10 @@ public class _AlerterController extends AbstractController
 	{
 		alerterView.selectTableEvent();
 	}
-
+	
+	/**
+	 * 데이터베이스에서 이벤트코드에 맞는 결과값들을 가져온다.
+	 */
 	public void getQueryResult()
 	{
 		alerterView.getQueryResult(alerterModel.getQueryResult(alerterView.getQuery()));

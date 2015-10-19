@@ -11,7 +11,11 @@ public class _DatabaseHandler {
 	private CAPDBUtils capDbUtils;
 	private ArrayList<CAPAlert> searchResult;
 	
-	
+	/**
+	 * Database에 직접 접근하는 주체.
+	 * Cap 포맷과 Database 접근을 관리하는 CapDbUtils 초기화.
+	 * 
+	 */
 	public _DatabaseHandler()
 	{
 		this.capDbUtils = new CAPDBUtils();

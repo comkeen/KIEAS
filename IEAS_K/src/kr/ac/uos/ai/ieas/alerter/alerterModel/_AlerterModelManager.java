@@ -9,11 +9,10 @@ import java.util.UUID;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class AlerterModelManager extends AbstractModel {
+public class _AlerterModelManager extends AbstractModel {
 	
 	private KieasMessageBuilder kieasMessageBuilder;
 	private _DatabaseHandler databaseHandler;
@@ -30,8 +29,15 @@ public class AlerterModelManager extends AbstractModel {
 	
 	private String oldString;
 	
-	
-	public AlerterModelManager(_AlerterController alerterController)
+	/**
+	 * AlerterModel을 관리한다.
+	 * Cap메시지 처리를 위한 KieasMessageBuilder 초기화.
+	 * Database 접근을 위한 DatabaseHandler 초기화.
+	 * 
+	 *  
+	 * @param alerterController
+	 */
+	public _AlerterModelManager(_AlerterController alerterController)
 	{
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.databaseHandler = new _DatabaseHandler();
