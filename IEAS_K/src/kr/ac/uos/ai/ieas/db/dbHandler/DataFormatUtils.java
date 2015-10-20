@@ -65,7 +65,8 @@ public class DataFormatUtils {
 		String code = input.substring(2, 4);
 		return lang + "-" + code;
 	}
-
+	
+	/*
 	public static void main(String[] args) {
 
 		CAPDBUtils util = new CAPDBUtils();
@@ -87,5 +88,5 @@ public class DataFormatUtils {
 		String test2 = "ko-KR";
 		System.out.println(DataFormatUtils.removeDashFromLanguageCode(test2));
 	}
-
+	*/
 }

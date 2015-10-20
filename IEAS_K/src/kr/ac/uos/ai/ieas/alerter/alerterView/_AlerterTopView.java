@@ -15,8 +15,8 @@ import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 
 
-public class _AlerterTopView extends AbstractView{
-
+public class _AlerterTopView extends AbstractView
+{
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
 
@@ -32,20 +32,20 @@ public class _AlerterTopView extends AbstractView{
 	 * 
 	 * @param alerterController
 	 */
-	public _AlerterTopView(_AlerterController alerterController) {
-
+	public _AlerterTopView(_AlerterController alerterController)
+	{
 		this.alerterActionListener = new AleterViewActionListener(alerterController);
 		initFrame("alertViewPanel");
 	}
-	
-	public void modelPropertyChange(PropertyChangeEvent evt){
 
+	public void modelPropertyChange(PropertyChangeEvent evt)
+	{
 		System.out.println("trigger property change");
-		switch (evt.getPropertyName()){
 
+		switch (evt.getPropertyName())
+		{
 		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
 			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
-			System.out.println("propertychange");
 		default:
 
 		}
@@ -76,8 +76,8 @@ public class _AlerterTopView extends AbstractView{
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
 
-		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
-		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
+//		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
+//		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
 
 
 

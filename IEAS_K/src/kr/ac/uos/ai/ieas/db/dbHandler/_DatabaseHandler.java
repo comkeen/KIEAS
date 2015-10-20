@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
-import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _DatabaseHandler {
 	

@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SimpleTimeZone;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xml.sax.SAXParseException;
 
 import com.google.publicalerts.cap.Alert;
@@ -582,7 +584,16 @@ public class KieasMessageBuilder
 	}
 	
 	
-	
+	private String getValueInJasonObject(String jsonInput) {
+		
+		try {
+			JSONObject jsonObj = new JSONObject(jsonInput);
+			return jsonObj.getJSONObject("EventCode").getString("Value");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public ArrayList<String> databaseObjectToCapLibraryObject(ArrayList<CAPAlert> alertList) {
 		
@@ -609,7 +620,7 @@ public class KieasMessageBuilder
 						.setUrgency(this.setUrgency(capInfo.getUrgency().toString()))
 						.setSeverity(this.setSeverity(capInfo.getSeverity().toString()))
 						.setCertainty(this.setCertainty(capInfo.getCertainty().toString()))
-						.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(capInfo.getEventCode()).build())
+						.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(getValueInJasonObject(capInfo.getEventCode())).build())
 //						.setEffective(this.dateToString(capInfo.getEffective()))
 						.setSenderName(capInfo.getSenderName())
 						.setHeadline(capInfo.getHeadline())
