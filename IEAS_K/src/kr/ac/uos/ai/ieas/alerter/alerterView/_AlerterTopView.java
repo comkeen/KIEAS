@@ -48,7 +48,7 @@ public class _AlerterTopView extends AbstractView
 
 	private void initFrame(String name) {
 		this.mainFrame = new JFrame(name);
-		mainFrame.setSize(1600, 900);
+		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initLookAndFeel();
@@ -79,9 +79,11 @@ public class _AlerterTopView extends AbstractView
 		case _AlerterController.ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY:
 			alerterCapGeneratePanel.setTextArea(evt.getNewValue().toString());
 		case _AlerterController.ALERTER_IDENTIFIER_PROPERTY:
-			alerterCapGeneratePanel.setIdentifierDisplay(evt.getNewValue().toString());
+			alerterCapGeneratePanel.setIdentifierValue(evt.getNewValue().toString());
 		case _AlerterController.ALERTER_SENDER_PROPERTY:
-			alerterCapGeneratePanel.setSenderDisplay(evt.getNewValue().toString());
+			alerterCapGeneratePanel.setSenderValue(evt.getNewValue().toString());
+		case _AlerterController.ALERTER_STATUS_PROPERTY:
+			alerterCapGeneratePanel.setStatusValue(evt.getNewValue().toString());
 		default:
 
 		}
@@ -103,7 +105,7 @@ public class _AlerterTopView extends AbstractView
 
 	public void applyAlertElement()
 	{
-		alerterCapGeneratePanel.applyAlertElement();
+//		alerterCapGeneratePanel.applyAlertElement();
 	}
 
 	public void selectTableEvent()

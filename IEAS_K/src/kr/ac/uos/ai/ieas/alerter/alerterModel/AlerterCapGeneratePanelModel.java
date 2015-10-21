@@ -78,13 +78,22 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 		oldString = this.m_SenderText;
 		this.m_SenderText = text;
 		
-		firePropertyChange(_AlerterController.ALERTER_IDENTIFIER_PROPERTY, oldString, m_SenderText);
+		firePropertyChange(_AlerterController.ALERTER_SENDER_PROPERTY, oldString, m_SenderText);
+	}
+	
+	public void setStatusText(String text)
+	{
+		oldString = this.m_StatusText;
+		this.m_StatusText = text;
+		
+		firePropertyChange(_AlerterController.ALERTER_STATUS_PROPERTY, oldString, m_StatusText);
 	}
 	
 	private void setAlertPanel(KieasMessageBuilder ieasMessage)
 	{
 		setIdentifierText(ieasMessage.getIdentifier());
 		setSenderText(ieasMessage.getSender());	
+		setStatusText(ieasMessage.getStatus());
 	}
 /*
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)

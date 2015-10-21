@@ -53,12 +53,6 @@ public class _AlerterModelManager extends AbstractModel {
 	public void initDefault()
 	{
 		setAlerterTextArea(" ");
-		setLocationComboBoxList(KieasConfiguration.IEAS_List.LOCATION_LIST);
-	}
-
-	private void setLocationComboBoxList(String[] locationList)
-	{
-		this.locationListForComboBox = locationList;
 	}
 
 	public String buildCap() 

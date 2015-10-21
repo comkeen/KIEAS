@@ -2,21 +2,10 @@ package kr.ac.uos.ai.ieas.resource;
 
 public class KieasConfiguration {
 	
-	public final static String PACKAGE_NAME 				= "ase.";
-	
-	
-	public static class IeasReference 
-	{
-		public final static String CAP_PROFILE				= "http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html";
-		public final static String KOREAN_CAP_PROFILE		= "https://docs.google.com/document/d/1k18zB7Cc7Q2N8oHaWCo1Zi6n6tFcZIZFg_f8fI6GuVs/edit";
-		public final static String KOREAN_EVENT_CODE 		= "https://docs.google.com/spreadsheets/d/1uygOTIAlXBkEmIVqXoMPyoWrw11rxDuqvGY_ZsLeWPw/edit#gid=1051772531";
-	
-		public final static String SCENARIO					= "https://docs.google.com/document/d/1Pin8bq4ajB5H2h2766TipN4qF042yoyrBGapAGrjAuc/edit";
-	}
-	
+	public final static String PACKAGE_NAME 				= "kieas.";
+		
 	public static class IeasName 
 	{
-
 		public final static String GATEWAY_NAME 			= PACKAGE_NAME + "gateway";
 		public final static String STANDARD_ALERTER 		= PACKAGE_NAME + "standardAlerter";
 		public final static String OLD_ALERTER 				= PACKAGE_NAME + "oldAlerter";
@@ -41,8 +30,33 @@ public class KieasConfiguration {
 		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
 	}
 	
-	public static class IEAS_List {
-		
+	public static class KIEAS_Constant
+	{
+		public static final String IDENTIFIER = "Identifier";
+		public static final String SENDER = "Sender";
+		public static final String SENT = "Sent";
+		public static final String STATUS = "Status";
+		public static final String MSG_TYPE = "MsgType";
+		public static final String SCOPE = "Scope";
+		public static final String CODE = "Code";
+
+		public static final String LANGUAGE = "Language";
+		public static final String CATEGORY = "Category";
+		public static final String EVENT = "Event";
+		public static final String URGENCY = "Urgency";
+		public static final String SEVERITY = "Severity";
+		public static final String CERTAINTY = "Certainty";
+		public static final String EVENT_CODE = "EventCode";
+		public static final String EFFECTIVE = "Effective";
+		public static final String SENDERNAME = "SenderName";
+		public static final String HEADLINE = "Headline";
+		public static final String DESCRIPTION = "Description";
+		public static final String WEB = "Web";
+		public static final String CONTACT = "Contact";
+	}
+	
+	public static class IEAS_List 
+	{		
 		public static final String[] ALERT_SYSTEM_TYPE_LIST =
 		{
 			"자동우량경보시스템",
@@ -87,40 +101,16 @@ public class KieasConfiguration {
 		};
 		
 		public static final String[] LANGUAGE_LIST =
-			{
-				"ko-KR",
-				"us-EN",
-			};
-		
-		public static final String[] LOCATION_LIST =
 		{
-			"Seoul",
-			"Deagu",
-			"Busan",
-			"Jeju"
-		};
-		
-		public static final String[] EVENT_LIST = 
-		{
-			"호우 경보",
-			"대설 경보",
-			"강풍 경보"
-		};
-		
-		public static final String[] EVENT_CODE_LIST = 
-		{
-			"HRW",
-			"HAS",
-			"HWW"
+			"ko-KR",
+			"us-EN",
 		};
 
-		
+		public static final String[] LOCATION_LIST = 
+		{
+			"location1",
+			"location2"
+		};	
 	}	
-	
-	public static class MessageSpec 
-	{
-		public final static String IEAS_SOURCE = "소방방재청";
-		public final static String IEAS_CODE = "대한민국정부1.0";
-	}
 }
 

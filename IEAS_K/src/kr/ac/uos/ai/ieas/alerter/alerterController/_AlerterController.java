@@ -28,6 +28,7 @@ public class _AlerterController extends AbstractController
 	public static final String ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY = "AlerterCapGenerateTextAreaText";
 	public static final String ALERTER_IDENTIFIER_PROPERTY = "CapGeneratePanelAlertIdentifierText";
 	public static final String ALERTER_SENDER_PROPERTY = "CapGeneratePanelAlertSenderText";
+	public static final String ALERTER_STATUS_PROPERTY = "CapGeneratePanelAlertStatusText";
 
 	
 	/**

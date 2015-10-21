@@ -16,7 +16,6 @@ import javax.swing.table.DefaultTableModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 
 
 public class AlerterLogPanel extends AbstractView{
@@ -185,13 +184,6 @@ public class AlerterLogPanel extends AbstractView{
 		locationCombobox.addActionListener(alerterActionListener);
 		this.eventComboBox = new JComboBox<String>();
 		eventComboBox.addActionListener(alerterActionListener);
-
-		for (String location : KieasConfiguration.IEAS_List.LOCATION_LIST) {
-			locationCombobox.addItem(location);
-		};
-		for (String event : KieasConfiguration.IEAS_List.EVENT_LIST) {
-			eventComboBox.addItem(event);
-		}
 
 		buttonPane.add(locationCombobox, BorderLayout.WEST);
 		buttonPane.add(eventComboBox, BorderLayout.WEST);
