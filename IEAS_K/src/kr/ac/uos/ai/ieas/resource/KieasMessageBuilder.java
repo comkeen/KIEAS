@@ -36,6 +36,7 @@ import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
+import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 
 public class KieasMessageBuilder
 {
@@ -87,7 +88,7 @@ public class KieasMessageBuilder
 			capEnum3.add(value.toString());
 		}
 		capEnumMap.put("Scope", capEnum3);	
-	}	
+	}
 	
 	private void initInfoCapEnumMap()
 	{
@@ -125,6 +126,22 @@ public class KieasMessageBuilder
 			capEnum5.add(value.toString());
 		}
 		capEnumMap.put("Urgency", capEnum5);
+		
+		ArrayList<String> capEnum6 = new ArrayList<String>();
+		for (DisasterEventType value : DisasterEventType.values())
+		{
+			String str = value.toString() + "(" + value.getKoreanEventCode() + ")";
+			capEnum6.add(str);
+		}
+		capEnumMap.put("EventCode", capEnum6);
+		
+		ArrayList<String> capEnum7 = new ArrayList<String>();
+		for (String value : KieasConfiguration.IEAS_List.LANGUAGE_LIST)
+		{
+			System.out.println(value);
+			capEnum7.add(value);
+		}
+		capEnumMap.put("Language", capEnum7);
 	}
 	
 	public HashMap<String, ArrayList<String>> getCapEnumMap()
@@ -141,7 +158,7 @@ public class KieasMessageBuilder
 				.setStatus(Alert.Status.SYSTEM)
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.PUBLIC)
-				.build();
+				.buildPartial();
 		
 		this.info = Info.newBuilder()
 				.setLanguage("ko-KR")
@@ -184,7 +201,7 @@ public class KieasMessageBuilder
 		return CapUtil.formatCapDate(cal);
 	}
 	
-	public String sentToYmdhms(String date)
+	public String transformToYmdhms(String date)
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
 		cal.setTime(CapUtil.toJavaDate(date));
@@ -200,6 +217,11 @@ public class KieasMessageBuilder
 		return sb.toString();
 	}
 		
+	public int getInfoCount()
+	{
+		return alert.getInfoCount();
+	}
+	
 	public String getMessage()
 	{
 		try 
@@ -588,7 +610,7 @@ public class KieasMessageBuilder
 		
 		try {
 			JSONObject jsonObj = new JSONObject(jsonInput);
-			return jsonObj.getJSONObject("EventCode").getString("Value");
+			return jsonObj.getString("value");
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;

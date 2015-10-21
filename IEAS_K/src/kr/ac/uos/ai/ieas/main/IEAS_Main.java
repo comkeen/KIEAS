@@ -19,22 +19,26 @@ public class IEAS_Main
 //		GatewayController.getInstance();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		new IEAS_Main();
-	}	
+	}
 	
-	private void initGUI(){
+	private void initGUI()
+	{
 		JFrame frame = new JFrame();
 		frame.setSize(300, 200);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		ActionListener actionListener = new ActionListener() {
-
+		ActionListener actionListener = new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			{
 				String event = e.getActionCommand();
-				switch (event) {
+				switch (event)
+				{
 				case "alerter":
 					new AlerterMain();
 					break;
@@ -59,7 +63,6 @@ public class IEAS_Main
 		gatewayButton.addActionListener(actionListener);
 		JButton alertsystemButton = new JButton("alertsystem");
 		alertsystemButton.addActionListener(actionListener);
-		
 		
 		mainPane.add(alerterButton);
 		mainPane.add(gatewayButton);

@@ -22,17 +22,19 @@
     <senderName>총괄예보관</senderName>
     <headline>호우경보 발표</headline>
     <description>
-	□ 발효시각
-	호우주의보 발표 : [yyyy년 mm월 dd일 hh시 mm분]
-	
-	□ 해당구역
-	호우주의보 발표 : [GeoNames]
-	
-	□ 내용
-	호우주의보 발표
-	o 현재 강수량([Tense] ~ 현재): [Value]mm
-	o 예상 강수량(현재~[Tense]): [Value]mm
-	o 총 예상 강수량: [Value]mm
+    <![CDATA[
+□ 발효시각
+호우주의보 발표 : [yyyy년 mm월 dd일 hh시 mm분]
+
+□ 해당구역
+호우주의보 발표 : [GeoNames]
+
+□ 내용
+호우주의보 발표
+o 현재 강수량([Tense] ~ 현재): [Value]mm
+o 예상 강수량(현재~[Tense]): [Value]mm
+o 총 예상 강수량: [Value]mm
+	]]>
     </description>
     <web>http://www.kma.go.kr/weather/warning/status.jsp</web>
     <contact>전국 국번없이 131</contact>

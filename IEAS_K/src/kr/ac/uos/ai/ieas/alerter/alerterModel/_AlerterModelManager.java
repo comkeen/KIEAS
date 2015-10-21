@@ -28,6 +28,7 @@ public class _AlerterModelManager extends AbstractModel {
 	private String alerterID;
 	
 	private String oldString;
+	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
 	
 	/**
 	 * AlerterModel을 관리한다.
@@ -41,7 +42,7 @@ public class _AlerterModelManager extends AbstractModel {
 	{
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.databaseHandler = new _DatabaseHandler();
-		 
+		
 		this.alerterName = "기상청";
 		this.alerterID = generateID(alerterName);
 		

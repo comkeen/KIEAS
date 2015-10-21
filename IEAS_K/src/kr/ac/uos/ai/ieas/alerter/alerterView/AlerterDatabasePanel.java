@@ -204,7 +204,7 @@ public class AlerterDatabasePanel {
 		kieasMessageBuilder.setMessage(message);
 		alertElementMap.replace("sender", kieasMessageBuilder.getSender());
 		alertElementMap.replace("identifier", kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace("sent", kieasMessageBuilder.sentToYmdhms(kieasMessageBuilder.getSent()));
+		alertElementMap.replace("sent", kieasMessageBuilder.transformToYmdhms(kieasMessageBuilder.getSent()));
 		alertElementMap.replace("event", kieasMessageBuilder.getEvent());
 		
 		return alertElementMap;

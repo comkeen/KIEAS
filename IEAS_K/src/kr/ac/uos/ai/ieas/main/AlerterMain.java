@@ -9,12 +9,7 @@ public class AlerterMain{
 
 	public AlerterMain() {
 		
-		_AlerterController alerterController = new _AlerterController();
-		_AlerterModelManager alerterModel = new _AlerterModelManager(alerterController);
-		_AlerterTopView alerterTopView = new _AlerterTopView(alerterController);
-		
-		alerterController.addModel(alerterModel);
-		alerterController.addView(alerterTopView);
-		alerterController.initAlerterController();
+		new _AlerterController();
+
 	}
 }

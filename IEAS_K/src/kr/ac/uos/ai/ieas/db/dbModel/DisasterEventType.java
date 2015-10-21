@@ -77,6 +77,5 @@ public enum DisasterEventType {
 	
 	public String getKoreanEventCode() {
 		return this.koreanEventCode;
-	}
-	
+	}	
 }

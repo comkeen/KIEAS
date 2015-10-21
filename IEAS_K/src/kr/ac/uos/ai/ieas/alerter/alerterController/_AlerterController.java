@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractController;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterCapGeneratePanelModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
@@ -14,8 +15,9 @@ public class _AlerterController extends AbstractController
 { 
 	private KieasMessageBuilder kieasMessage;
 	private AlerterTransmitter alerterTransmitter;
-	private _AlerterTopView alerterView;
-	private _AlerterModelManager alerterModel;
+	private _AlerterTopView alerterTopView;
+	private _AlerterModelManager alerterModelManager;
+	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
 
 	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "AlerterTextareaText";
 	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "AlerterLocationComboboxText";
@@ -23,8 +25,25 @@ public class _AlerterController extends AbstractController
 
 	public static final String ALERTER_DB_PANEL_TEXTAREA_TEXT_PROPERTY = "AlerterDbPanelTextAreaText";
 	public static final String ALERTER_DB_PANEL_TABLE_PROPERTY = "AlerterDbPanelTableModel";
+	public static final String ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY = "AlerterCapGenerateTextAreaText";
+	public static final String ALERTER_IDENTIFIER_PROPERTY = "CapGeneratePanelAlertIdentifierText";
+	public static final String ALERTER_SENDER_PROPERTY = "CapGeneratePanelAlertSenderText";
 
-
+	
+	/**
+	 * Model과 View 초기화.
+	 */	
+	public _AlerterController()
+	{
+		this.addModel(new _AlerterModelManager(this));
+		this.addModel(new AlerterCapGeneratePanelModel(this));
+		this.addView(new _AlerterTopView(this));
+		
+		this.alerterModelManager = (_AlerterModelManager) getRegisteredModels().get(0);
+		this.alerterCapGeneratePanelModel = (AlerterCapGeneratePanelModel) getRegisteredModels().get(1);
+		this.alerterTopView = (_AlerterTopView) getRegisteredViews().get(0);
+	}
+	
 	public void changeAlerterTextareaProperty(String text)
 	{
 		setModelProperty(ALERT_TEXTAREA_TEXT_PROPERTY, text);
@@ -38,16 +57,6 @@ public class _AlerterController extends AbstractController
 	public void changeEventComboboxTextProperty(String text)
 	{
 		setModelProperty(ALERT_EVENT_COMBOBOX_TEXT_PROPERTY, text);
-	}
-
-	
-	/**
-	 * Model과 View 초기화.
-	 */
-	public void initAlerterController() 
-	{				
-		this.alerterModel = (_AlerterModelManager) getRegisteredModels().get(0);
-		this.alerterView = (_AlerterTopView) getRegisteredViews().get(0);
 	}
 
 	public ArrayList<AbstractModel> getRegisteredModels()
@@ -67,13 +76,13 @@ public class _AlerterController extends AbstractController
 
 	public void sendTextAreaMessage()
 	{
-		sendTextAreaMessageToGateway(alerterModel.getAlerterTextAreaText());
+		sendTextAreaMessageToGateway(alerterModelManager.getAlerterTextAreaText());
 	}
 
 	public void sendMessageToGateway()
 	{
 		//		alerterView.addAlertTableRow(id, event, addresses);
-		alerterTransmitter.sendMessage(alerterModel.getMessage());
+		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
 
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
@@ -88,16 +97,16 @@ public class _AlerterController extends AbstractController
 			String sender = kieasMessage.getSender();
 			String identifier = kieasMessage.getIdentifier();
 
-			System.out.println("(" + alerterModel.getAlerterID() + ")" + " Received Message From (" + sender + ") : ");
+			System.out.println("(" + alerterModelManager.getAlerterID() + ")" + " Received Message From (" + sender + ") : ");
 			System.out.println();
 
 			if(sender.equals(KieasConfiguration.IeasName.GATEWAY_NAME))
 			{
-				alerterView.receiveGatewayAck(identifier);
+				alerterTopView.receiveGatewayAck(identifier);
 			}
 			else 
 			{
-				alerterView.receiveAlertSystemAck(identifier);
+				alerterTopView.receiveAlertSystemAck(identifier);
 			}
 
 		} 
@@ -116,14 +125,14 @@ public class _AlerterController extends AbstractController
 		String event = kieasMessage.getEvent();
 		String addresses = kieasMessage.getAddresses();
 
-		alerterView.addAlertTableRow(id, event, addresses);
+		alerterTopView.addAlertTableRow(id, event, addresses);
 		alerterTransmitter.sendMessage(message);
 	}
 
 	public void generateCap() 
 	{
 		System.out.println("generate cap");
-		alerterModel.buildCap();
+		alerterModelManager.buildCap();
 	}
 
 	public void saveCap(String capMessage)
@@ -134,27 +143,27 @@ public class _AlerterController extends AbstractController
 	public void connectToServer()
 	{
 
-		this.alerterTransmitter = new AlerterTransmitter(this, alerterModel.getAlerterID());
+		this.alerterTransmitter = new AlerterTransmitter(this, alerterModelManager.getAlerterID());
 	}
 
 	public void loadCapDraft()
 	{
-		alerterView.loadCapDraft();
+		alerterCapGeneratePanelModel.capLoader();
 	}
 
 	public void saveCap()
 	{
-		alerterView.saveCap();
+//		alerterView.saveCap();
 	}
 
 	public void applyAlertElement()
 	{
-		alerterView.applyAlertElement();
+		alerterTopView.applyAlertElement();
 	}
 
 	public void selectTableEvent()
 	{
-		alerterView.selectTableEvent();
+		alerterTopView.selectTableEvent();
 	}
 	
 	/**
@@ -162,11 +171,11 @@ public class _AlerterController extends AbstractController
 	 */
 	public void getQueryResult()
 	{
-		alerterView.getQueryResult(alerterModel.getQueryResult(alerterView.getQuery()));
+		alerterTopView.getQueryResult(alerterModelManager.getQueryResult(alerterTopView.getQuery()));
 	}
 
 	public void addInfoIndexPanel() 
 	{
-		alerterView.addInfoIndexPanel();
+		alerterTopView.addInfoIndexPanel();
 	}
 }

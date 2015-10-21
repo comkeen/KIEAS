@@ -38,19 +38,6 @@ public class _AlerterTopView extends AbstractView
 		initFrame("alertViewPanel");
 	}
 
-	public void modelPropertyChange(PropertyChangeEvent evt)
-	{
-		System.out.println("trigger property change");
-
-		switch (evt.getPropertyName())
-		{
-		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
-			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
-		default:
-
-		}
-	}
-
 	private void initLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -79,9 +66,25 @@ public class _AlerterTopView extends AbstractView
 //		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
 //		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
 
-
-
 		mainFrame.setVisible(true);
+	}
+
+	public void modelPropertyChange(PropertyChangeEvent evt)
+	{
+		System.out.println(evt.getPropertyName());
+		switch (evt.getPropertyName())
+		{
+		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
+			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
+		case _AlerterController.ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY:
+			alerterCapGeneratePanel.setTextArea(evt.getNewValue().toString());
+		case _AlerterController.ALERTER_IDENTIFIER_PROPERTY:
+			alerterCapGeneratePanel.setIdentifierDisplay(evt.getNewValue().toString());
+		case _AlerterController.ALERTER_SENDER_PROPERTY:
+			alerterCapGeneratePanel.setSenderDisplay(evt.getNewValue().toString());
+		default:
+
+		}
 	}
 
 	public void receiveGatewayAck(String identifier) {
@@ -96,16 +99,6 @@ public class _AlerterTopView extends AbstractView
 	public void addAlertTableRow(String id, String event, String addresses)
 	{
 		alerterLogPanel.addAlertTableRow(id, event, addresses);		
-	}
-
-	public void loadCapDraft()
-	{
-		alerterCapGeneratePanel.loadCapDraft();
-	}
-
-	public void saveCap()
-	{
-		alerterCapGeneratePanel.saveCap();
 	}
 
 	public void applyAlertElement()
