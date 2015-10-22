@@ -15,7 +15,6 @@ public class KieasConfiguration {
 	
 	public static class IeasAddress 
 	{
-
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://localhost:61616";
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://127.0.0.1:61616";
 		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.196:61616"; //host window
@@ -32,27 +31,7 @@ public class KieasConfiguration {
 	
 	public static class KIEAS_Constant
 	{
-		public static final String IDENTIFIER = "Identifier";
-		public static final String SENDER = "Sender";
-		public static final String SENT = "Sent";
-		public static final String STATUS = "Status";
-		public static final String MSG_TYPE = "MsgType";
-		public static final String SCOPE = "Scope";
-		public static final String CODE = "Code";
-
-		public static final String LANGUAGE = "Language";
-		public static final String CATEGORY = "Category";
-		public static final String EVENT = "Event";
-		public static final String URGENCY = "Urgency";
-		public static final String SEVERITY = "Severity";
-		public static final String CERTAINTY = "Certainty";
-		public static final String EVENT_CODE = "EventCode";
-		public static final String EFFECTIVE = "Effective";
-		public static final String SENDERNAME = "SenderName";
-		public static final String HEADLINE = "Headline";
-		public static final String DESCRIPTION = "Description";
-		public static final String WEB = "Web";
-		public static final String CONTACT = "Contact";
+		
 	}
 	
 	public static class IEAS_List 

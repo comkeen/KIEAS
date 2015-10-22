@@ -25,25 +25,20 @@ public class _AlerterTopView extends AbstractView
 	private AleterViewActionListener alerterActionListener;
 	private AlerterDatabasePanel alerterDatabasePanel;
 
+	
+	
 	/**
 	 * _AlerterTopView 생성자.
 	 * AlerterViewActionListener 초기화
 	 * MainFrame 초기화
+	 * @param alerterActionListener 
 	 * 
 	 * @param alerterController
 	 */
-	public _AlerterTopView(_AlerterController alerterController)
+	public _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
-		this.alerterActionListener = new AleterViewActionListener(alerterController);
+		this.alerterActionListener = alerterActionListener;
 		initFrame("alertViewPanel");
-	}
-
-	private void initLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void initFrame(String name) {
@@ -69,23 +64,11 @@ public class _AlerterTopView extends AbstractView
 		mainFrame.setVisible(true);
 	}
 
-	public void modelPropertyChange(PropertyChangeEvent evt)
-	{
-		System.out.println(evt.getPropertyName());
-		switch (evt.getPropertyName())
-		{
-		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
-			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
-		case _AlerterController.ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY:
-			alerterCapGeneratePanel.setTextArea(evt.getNewValue().toString());
-		case _AlerterController.ALERTER_IDENTIFIER_PROPERTY:
-			alerterCapGeneratePanel.setIdentifierValue(evt.getNewValue().toString());
-		case _AlerterController.ALERTER_SENDER_PROPERTY:
-			alerterCapGeneratePanel.setSenderValue(evt.getNewValue().toString());
-		case _AlerterController.ALERTER_STATUS_PROPERTY:
-			alerterCapGeneratePanel.setStatusValue(evt.getNewValue().toString());
-		default:
-
+	private void initLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(new NimbusLookAndFeel());
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -126,5 +109,39 @@ public class _AlerterTopView extends AbstractView
 	public void addInfoIndexPanel()
 	{
 		alerterCapGeneratePanel.addInfoIndexPanel();
+	}	
+
+	@Override
+	public void modelPropertyChange(PropertyChangeEvent evt)
+	{
+		switch (evt.getPropertyName())
+		{
+		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
+			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
+			return;
+		case _AlerterController.CGPANEL_IDENTIFIER_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			return;	
+		case _AlerterController.CGPANEL_SENDER_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		case _AlerterController.CGPANEL_SENT_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		case _AlerterController.CGPANEL_STATUS_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		case _AlerterController.CGPANEL_MSG_TYPE_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		case _AlerterController.CGPANEL_SCOPE_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		case _AlerterController.CGPANEL_CODE_PROPERTY:
+			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
+			break;	
+		default:
+			break;
+		}
 	}
 }

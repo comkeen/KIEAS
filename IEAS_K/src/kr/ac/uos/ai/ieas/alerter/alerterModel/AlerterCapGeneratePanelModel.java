@@ -46,56 +46,110 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 	
 	private String[][] m_InfoValueTexts;
 
+	private int m_infoCounter;
 	private String oldString;
 	
 	
-	public AlerterCapGeneratePanelModel(_AlerterController alerterController) 
+	public AlerterCapGeneratePanelModel(_AlerterController alerterController)
 	{
 		this.kieasMessage = new KieasMessageBuilder();
 		
 		this.m_TextAreaText = "";
 		this.m_LoadTextFieldText = "cap/HRA.xml";
 		this.m_SaveTextFieldText = "cap/out.xml";
+		this.m_infoCounter = 0;
 	}
 	
-	public void setTextAreaText(String text)
+	public void setLoadTextField(String text)
+	{
+		oldString = this.m_LoadTextFieldText;
+		this.m_LoadTextFieldText = text;
+		firePropertyChange(_AlerterController.CGPANEL_LOAD_TEXT_FEILD_PROPERTY, oldString, m_LoadTextFieldText);
+	}
+	
+	public void setSaveTextField(String text)
+	{
+		oldString = this.m_SaveTextFieldText;
+		this.m_SaveTextFieldText = text;
+		firePropertyChange(_AlerterController.CGPANEL_SAVE_TEXT_FEILD_PROPERTY, oldString, m_SaveTextFieldText);
+	}
+	
+	public void setTextArea(String text)
 	{
 		oldString = this.m_TextAreaText;
 		this.m_TextAreaText = text;
-		firePropertyChange(_AlerterController.ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY, oldString, m_TextAreaText);
+		firePropertyChange(_AlerterController.CGPANEL_TEXT_AREA_PROPERTY, oldString, m_TextAreaText);
 	}
 	
-	public void setIdentifierText(String text)
+	public void setIdentifier(String text)
 	{
 		oldString = this.m_IdentifierText;
 		this.m_IdentifierText = text;
 		
-		firePropertyChange(_AlerterController.ALERTER_IDENTIFIER_PROPERTY, oldString, m_IdentifierText);
+		firePropertyChange(_AlerterController.CGPANEL_IDENTIFIER_PROPERTY, oldString, m_IdentifierText);
 	}
 	
-	public void setSenderText(String text)
+	public void setSender(String text)
 	{
 		oldString = this.m_SenderText;
 		this.m_SenderText = text;
 		
-		firePropertyChange(_AlerterController.ALERTER_SENDER_PROPERTY, oldString, m_SenderText);
+		firePropertyChange(_AlerterController.CGPANEL_SENDER_PROPERTY, oldString, m_SenderText);
 	}
 	
-	public void setStatusText(String text)
+	public void setSent(String text)
+	{
+		oldString = this.m_SentText;
+		this.m_SentText = text;
+		
+		firePropertyChange(_AlerterController.CGPANEL_SENT_PROPERTY, oldString, m_SentText);
+	}
+	
+	public void setStatus(String text)
 	{
 		oldString = this.m_StatusText;
 		this.m_StatusText = text;
 		
-		firePropertyChange(_AlerterController.ALERTER_STATUS_PROPERTY, oldString, m_StatusText);
+		firePropertyChange(_AlerterController.CGPANEL_STATUS_PROPERTY, oldString, m_StatusText);
+	}
+	
+	public void setMsgType(String text)
+	{
+		oldString = this.m_MsgTypeText;
+		this.m_MsgTypeText = text;
+		
+		firePropertyChange(_AlerterController.CGPANEL_MSG_TYPE_PROPERTY, oldString, m_MsgTypeText);
+	}
+	
+	public void setScope(String text)
+	{
+		oldString = this.m_ScopeText;
+		this.m_ScopeText = text;
+		
+		firePropertyChange(_AlerterController.CGPANEL_SCOPE_PROPERTY, oldString, m_ScopeText);
+	}
+	
+	public void setCode(String text)
+	{
+		oldString = this.m_CodeText;
+		this.m_CodeText = text;
+		
+		firePropertyChange(_AlerterController.CGPANEL_CODE_PROPERTY, oldString, m_CodeText);
 	}
 	
 	private void setAlertPanel(KieasMessageBuilder ieasMessage)
 	{
-		setIdentifierText(ieasMessage.getIdentifier());
-		setSenderText(ieasMessage.getSender());	
-		setStatusText(ieasMessage.getStatus());
+		setIdentifier(ieasMessage.getIdentifier());
+		setSender(ieasMessage.getSender());	
+		setSent(ieasMessage.getSent());	
+		setStatus(ieasMessage.getStatus());
+		setMsgType(ieasMessage.getMsgType());
+		setScope(ieasMessage.getScope());
+		setCode(ieasMessage.getCode());
 	}
-/*
+
+
+	/*
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
 		for(int infoCounter = 0; infoCounter < ieasMessage.getInfoCount(); infoCounter++)
@@ -172,7 +226,7 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 				content += temp + "\n";
 			}
 
-			setTextAreaText(content);
+			setTextArea(content);
 			kieasMessage.setMessage(content);
 
 			setAlertPanel(kieasMessage);

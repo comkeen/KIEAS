@@ -39,7 +39,7 @@ public abstract class AbstractController {
 
 
 	protected void setModelProperty(String propertyName, Object newValue) {
-
+		
 		for (AbstractModel model: registeredModels) {
 			try {
 
@@ -49,9 +49,8 @@ public abstract class AbstractController {
 						}
 								);
 				method.invoke(model, newValue);
-
 			} catch (Exception ex) {
-				//  Handle exception
+				System.out.println("there is no method name of " + "set"+propertyName);
 			}
 		}
 	}

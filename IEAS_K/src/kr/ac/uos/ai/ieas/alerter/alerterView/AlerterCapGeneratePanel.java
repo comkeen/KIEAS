@@ -1,11 +1,11 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -18,7 +18,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KIEAS_Constant;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class AlerterCapGeneratePanel
@@ -49,12 +48,33 @@ public class AlerterCapGeneratePanel
 	private ArrayList<HashMap<String, Component>> infoComponents;
 	private int infoCounter;
 
-
-	public static final String TEXT_FIELD = "TextField";
-	public static final String COMBO_BOX = "ComboBox";
-	public static final String TEXT_AREA = "TextArea";
+	private static final String TEXT_FIELD = "TextField";
+	private static final String COMBO_BOX = "ComboBox";
+	private static final String TEXT_AREA = "TextArea";
 	
+	public static final String IDENTIFIER = "Identifier";
+	public static final String SENDER = "Sender";
+	public static final String SENT = "Sent";
+	public static final String STATUS = "Status";
+	public static final String MSG_TYPE = "MsgType";
+	public static final String SCOPE = "Scope";
+	public static final String CODE = "Code";
 
+	public static final String LANGUAGE = "Language";
+	public static final String CATEGORY = "Category";
+	public static final String EVENT = "Event";
+	public static final String URGENCY = "Urgency";
+	public static final String SEVERITY = "Severity";
+	public static final String CERTAINTY = "Certainty";
+	public static final String EVENT_CODE = "EventCode";
+	public static final String EFFECTIVE = "Effective";
+	public static final String SENDER_NAME = "SenderName";
+	public static final String HEADLINE = "Headline";
+	public static final String DESCRIPTION = "Description";
+	public static final String WEB = "Web";
+	public static final String CONTACT = "Contact";
+
+	
 	public static AlerterCapGeneratePanel getInstance(AleterViewActionListener alerterActionListener)
 	{
 		if (alerterCapElementPanel == null)
@@ -63,28 +83,26 @@ public class AlerterCapGeneratePanel
 		}
 		return alerterCapElementPanel;
 	}
-
+	
 	private AlerterCapGeneratePanel(AleterViewActionListener alerterActionListener)
 	{
+//		super();
 		this.alerterActionListener = alerterActionListener;
 		this.ieasMessage = new KieasMessageBuilder();
-
-		initFrame("alertViewPanel");		
+		this.capGenerateScrollPanel = initFrame("alertViewPanel");		
 	}
 
-	private void initFrame(String name)
+	private JScrollPane initFrame(String name)
 	{		
 		this.capGeneratePanel = new JPanel();
-		this.capGenerateScrollPanel = new JScrollPane(capGeneratePanel);
 		capGeneratePanel.setLayout(new BoxLayout(capGeneratePanel, BoxLayout.Y_AXIS));
-		
-		capGeneratePanel.add(initTextArea());
 
-		capGeneratePanel.add(initButtonPanel());
-		
+		capGeneratePanel.add(initTextArea());
+		capGeneratePanel.add(initButtonPanel());	
 		capGeneratePanel.add(initCapAlertPanel());
-//
 		capGeneratePanel.add(initCapInfoPanel());
+		
+		return new JScrollPane(capGeneratePanel);
 	}
 
 	private Component initTextArea()
@@ -100,21 +118,27 @@ public class AlerterCapGeneratePanel
 	private Component initButtonPanel()
 	{
 		this.buttonPane = new JPanel();
-
-		this.loadPathTextField = new JTextField();
-		buttonPane.add(loadPathTextField, BorderLayout.WEST);
-
+		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
+		
+		Box loadBox = Box.createHorizontalBox();		
 		this.loadCapDraftButton = createButton("LoadCapDraft");
-		buttonPane.add(loadCapDraftButton, BorderLayout.WEST);		
+		loadBox.add(loadCapDraftButton);		
+		this.loadPathTextField = new JTextField();
+		loadBox.add(loadPathTextField);
+		loadBox.setBorder(BorderFactory.createLoweredBevelBorder());
+		buttonPane.add(loadBox);
 
+		Box saveBox = Box.createHorizontalBox();	
 		this.saveCapButton = createButton("SaveCap");
-		buttonPane.add(saveCapButton, BorderLayout.EAST);
-
+		saveBox.add(saveCapButton);
 		this.savePathTextField = new JTextField();
-		buttonPane.add(savePathTextField, BorderLayout.EAST);
-
+		saveBox.add(savePathTextField);
+		saveBox.setBorder(BorderFactory.createLoweredBevelBorder());
+		buttonPane.add(saveBox);
+		
 		this.alertApplyButton = createButton("Apply");
-		buttonPane.add(alertApplyButton, BorderLayout.EAST);
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		buttonPane.add(alertApplyButton);
 		
 		return buttonPane;
 	}
@@ -131,23 +155,16 @@ public class AlerterCapGeneratePanel
 	{
 		this.alertPanel = new JPanel();
 		alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
+		alertPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		this.alertComponents = new HashMap<>();
 		
-		alertPanel.add(addBox("Identifier", TEXT_FIELD));
-		alertPanel.add(addBox("Sender", TEXT_FIELD));
-		alertPanel.add(addBox("Sent", TEXT_FIELD));
-		alertPanel.add(addBox("Status", COMBO_BOX));
-		alertPanel.add(addBox("MsgType", COMBO_BOX));
-		alertPanel.add(addBox("Scope", COMBO_BOX));
-		alertPanel.add(addBox("Code", TEXT_FIELD));
-		
-		
-		for (String value : ieasMessage.getCapEnumMap().get(KIEAS_Constant.MSG_TYPE)) {
-			((JComboBox<String>) alertComponents.get(KIEAS_Constant.MSG_TYPE)).addItem(value);			
-		}
-		for (String value : ieasMessage.getCapEnumMap().get(KIEAS_Constant.SCOPE)) {
-			((JComboBox<String>) alertComponents.get(KIEAS_Constant.SCOPE)).addItem(value);			
-		}		
+		alertPanel.add(addBox(IDENTIFIER, TEXT_FIELD));
+		alertPanel.add(addBox(SENDER, TEXT_FIELD));
+		alertPanel.add(addBox(SENT, TEXT_FIELD));
+		alertPanel.add(addBox(STATUS, COMBO_BOX));
+		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
+		alertPanel.add(addBox(SCOPE, COMBO_BOX));
+		alertPanel.add(addBox(CODE, TEXT_FIELD));		
 		
 		return alertPanel;
 	}
@@ -157,6 +174,7 @@ public class AlerterCapGeneratePanel
 		Box box = Box.createHorizontalBox();
 		
 		JLabel label = new JLabel(labelName);
+		label.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		int offset = (int) (100 - label.getPreferredSize().getWidth());
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
 		box.add(label);	
@@ -167,7 +185,7 @@ public class AlerterCapGeneratePanel
 			JComboBox<String> comboBox = new JComboBox<>();
 			for (String value : ieasMessage.getCapEnumMap().get(labelName))
 			{
-				comboBox.addItem(value);		
+				comboBox.addItem(value);
 			}
 			alertComponents.put(labelName, comboBox);
 			box.add(comboBox);
@@ -192,6 +210,7 @@ public class AlerterCapGeneratePanel
 		Box box = Box.createHorizontalBox();
 		
 		JLabel label = new JLabel(labelName);
+		label.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		int offset = (int) (100 - label.getPreferredSize().getWidth());
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
 		box.add(label);		
@@ -225,6 +244,7 @@ public class AlerterCapGeneratePanel
 	private Component initCapInfoPanel()
 	{
 		this.infoPanel = new JTabbedPane();
+		infoPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		this.infoIndexPanels = new ArrayList<JPanel>();
 		this.infoComponents = new ArrayList<HashMap<String, Component>>();
 
@@ -241,19 +261,19 @@ public class AlerterCapGeneratePanel
 		infoComponents.add(new HashMap<>());
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox("Language", COMBO_BOX, infoCounter));
-		panel.add(addBox("Category", COMBO_BOX, infoCounter));
-		panel.add(addBox("Event", TEXT_FIELD, infoCounter));
-		panel.add(addBox("Urgency", COMBO_BOX, infoCounter));
-		panel.add(addBox("Severity", COMBO_BOX, infoCounter));
-		panel.add(addBox("Certainty", COMBO_BOX, infoCounter));
-		panel.add(addBox("EventCode", COMBO_BOX, infoCounter));
-		panel.add(addBox("Effective", TEXT_FIELD, infoCounter));
-		panel.add(addBox("SenderName", TEXT_FIELD, infoCounter));
-		panel.add(addBox("HeadLine", TEXT_FIELD, infoCounter));
-		panel.add(addBox("Description", TEXT_AREA, infoCounter));
-		panel.add(addBox("Web", TEXT_FIELD, infoCounter));
-		panel.add(addBox("Contact", TEXT_FIELD, infoCounter));
+		panel.add(addBox(LANGUAGE, COMBO_BOX, infoCounter));
+		panel.add(addBox(CATEGORY, COMBO_BOX, infoCounter));
+		panel.add(addBox(EVENT, TEXT_FIELD, infoCounter));
+		panel.add(addBox(URGENCY, COMBO_BOX, infoCounter));
+		panel.add(addBox(SEVERITY, COMBO_BOX, infoCounter));
+		panel.add(addBox(CERTAINTY, COMBO_BOX, infoCounter));
+		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoCounter));
+		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoCounter));
+		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoCounter));
+		panel.add(addBox(HEADLINE, TEXT_FIELD, infoCounter));
+		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoCounter));
+		panel.add(addBox(WEB, TEXT_FIELD, infoCounter));
+		panel.add(addBox(CONTACT, TEXT_FIELD, infoCounter));
 
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
@@ -266,8 +286,7 @@ public class AlerterCapGeneratePanel
 		JPanel panel =  new JPanel();
 		createAndAddInfoAddButton("Add Info", panel);
 		infoPanel.addTab("+", panel);
-		infoPanel.setSelectedIndex(infoCounter-1);
-
+		infoPanel.setSelectedIndex(infoCounter - 1);
 	}
 
 	private void removeTabPanel()
@@ -315,24 +334,26 @@ public class AlerterCapGeneratePanel
 		textArea.setCaretPosition(0);
 	}
 	
-	public void setIdentifierValue(String string)
+	public void setAlertPropertyValue(String string, String target)
 	{
-		((JTextField) alertComponents.get(KIEAS_Constant.IDENTIFIER)).setText(string);;
+		if (alertComponents.get(target) instanceof JTextField)
+		{
+			((JTextField) alertComponents.get(target)).setText(string);
+			return;
+		}
+		if (alertComponents.get(target) instanceof JComboBox<?>)
+		{
+			((JComboBox<?>) alertComponents.get(target)).setSelectedItem(string);
+			return;
+		}
+	}
+
+	public void setLoadTextField(String string) {
+		loadPathTextField.setText(string);
 	}
 	
-	public void setSenderValue(String string)
-	{
-		((JTextField) alertComponents.get(KIEAS_Constant.SENDER)).setText(string);;
-	}
-	
-	public void setSentValue(String string)
-	{
-		((JTextField) alertComponents.get(KIEAS_Constant.SENT)).setText(string);;
-	}
-	
-	public void setStatusValue(String string)
-	{		
-		((JComboBox) alertComponents.get(KIEAS_Constant.STATUS)).setSelectedItem(string);
+	public void setSaveTextField(String string) {
+		savePathTextField.setText(string);
 	}
 }
 

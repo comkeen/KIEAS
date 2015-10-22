@@ -7,6 +7,7 @@ import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlerterCapGeneratePanelModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
+import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterCapGeneratePanel;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
@@ -18,27 +19,51 @@ public class _AlerterController extends AbstractController
 	private _AlerterTopView alerterTopView;
 	private _AlerterModelManager alerterModelManager;
 	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
+	private AleterViewActionListener alerterActionListener;
 
-	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "AlerterTextareaText";
-	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "AlerterLocationComboboxText";
-	public static final String ALERT_EVENT_COMBOBOX_TEXT_PROPERTY = "AlerterEventComboboxText";
+	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "Textarea";
+	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "LocationCombobox";
+	public static final String ALERT_EVENT_COMBOBOX_TEXT_PROPERTY = "EventCombobox";
 
-	public static final String ALERTER_DB_PANEL_TEXTAREA_TEXT_PROPERTY = "AlerterDbPanelTextAreaText";
-	public static final String ALERTER_DB_PANEL_TABLE_PROPERTY = "AlerterDbPanelTableModel";
-	public static final String ALERTER_CAPGENERATEPANEL_TEXTAREA_PROPERTY = "AlerterCapGenerateTextAreaText";
-	public static final String ALERTER_IDENTIFIER_PROPERTY = "CapGeneratePanelAlertIdentifierText";
-	public static final String ALERTER_SENDER_PROPERTY = "CapGeneratePanelAlertSenderText";
-	public static final String ALERTER_STATUS_PROPERTY = "CapGeneratePanelAlertStatusText";
+	public static final String DBPANEL_TEXTAREA_TEXT_PROPERTY = "DbPanelTextArea";
+	public static final String DBPANEL_TABLE_PROPERTY = "DbPanelTableModel";
+	
+	public static final String CGPANEL_TEXT_AREA_PROPERTY = "TextArea";
+	public static final String CGPANEL_LOAD_TEXT_FEILD_PROPERTY = "LoadTextField";
+	public static final String CGPANEL_SAVE_TEXT_FEILD_PROPERTY = "SaveTextField";
+	
+	public static final String CGPANEL_IDENTIFIER_PROPERTY = "Identifier";
+	public static final String CGPANEL_SENDER_PROPERTY = "Sender";
+	public static final String CGPANEL_SENT_PROPERTY = "Sent";
+	public static final String CGPANEL_STATUS_PROPERTY = "Status";
+	public static final String CGPANEL_MSG_TYPE_PROPERTY = "MsgType";
+	public static final String CGPANEL_SCOPE_PROPERTY = "Scope";
+	public static final String CGPANEL_CODE_PROPERTY = "Code";
 
+	public static final String CGPANEL_LANGUAGE_PROPERTY = "Language";
+	public static final String CGPANEL_CATEGORY_PROPERTY = "Category";
+	public static final String CGPANEL_EVENT_PROPERTY = "Event";
+	public static final String CGPANEL_URGENCY_PROPERTY = "Urgency";
+	public static final String CGPANEL_SEVERITY_PROPERTY = "Severity";
+	public static final String CGPANEL_CERTAINTY_PROPERTY = "Certainty";
+	public static final String CGPANEL_EVENT_CODE_PROPERTY = "EventCode";
+	public static final String CGPANEL_EFFECTIVE_PROPERTY = "Effective";
+	public static final String CGPANEL_SENDER_NAME_PROPERTY = "SenderName";
+	public static final String CGPANEL_HEADLINE_PROPERTY = "Headline";
+	public static final String CGPANEL_DESCRIPTION_PROPERTY = "Description";
+	public static final String CGPANEL_WEB_PROPERTY = "PanelWeb";
+	public static final String CGPANEL_CONTACT_PROPERTY = "Contact";
 	
 	/**
 	 * Model과 View 초기화.
 	 */	
 	public _AlerterController()
 	{
+		this.alerterActionListener = new AleterViewActionListener(this);
+		
 		this.addModel(new _AlerterModelManager(this));
 		this.addModel(new AlerterCapGeneratePanelModel(this));
-		this.addView(new _AlerterTopView(this));
+		this.addView(new _AlerterTopView(alerterActionListener));
 		
 		this.alerterModelManager = (_AlerterModelManager) getRegisteredModels().get(0);
 		this.alerterCapGeneratePanelModel = (AlerterCapGeneratePanelModel) getRegisteredModels().get(1);
@@ -143,7 +168,6 @@ public class _AlerterController extends AbstractController
 
 	public void connectToServer()
 	{
-
 		this.alerterTransmitter = new AlerterTransmitter(this, alerterModelManager.getAlerterID());
 	}
 
