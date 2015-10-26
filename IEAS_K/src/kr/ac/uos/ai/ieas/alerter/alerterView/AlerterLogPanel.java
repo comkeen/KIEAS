@@ -3,7 +3,6 @@ package kr.ac.uos.ai.ieas.alerter.alerterView;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.beans.PropertyChangeEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,13 +12,12 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
-import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 
 
-public class AlerterLogPanel extends AbstractView{
-
+public class AlerterLogPanel 
+{
 	private static AlerterLogPanel alerterViewPanel;
 	private _AlerterController alerterController;
 	private AleterViewActionListener alerterActionListener;
@@ -69,23 +67,7 @@ public class AlerterLogPanel extends AbstractView{
 	{
 		return this.logPanel;
 	}
-	
-
-	public void modelPropertyChange(PropertyChangeEvent evt)
-	{
 		
-		System.out.println("trigger property change");
-		switch (evt.getPropertyName())
-		{		
-		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
-			textArea.setText(evt.getNewValue().toString());
-			System.out.println("text area propertychange");
-			break;
-		default:
-			return;
-		}
-	}
-	
 	public void setActionListener(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;

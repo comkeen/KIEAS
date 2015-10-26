@@ -1,7 +1,6 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView;
 
 import java.awt.Container;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -10,21 +9,17 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.ac.uos.ai.ieas.abstractClass.AbstractView;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 
 
-public class _AlerterTopView extends AbstractView
+public class _AlerterTopView
 {
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
 
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
-	private AleterViewActionListener alerterActionListener;
 	private AlerterDatabasePanel alerterDatabasePanel;
-
 	
 	
 	/**
@@ -37,7 +32,9 @@ public class _AlerterTopView extends AbstractView
 	 */
 	public _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
-		this.alerterActionListener = alerterActionListener;
+		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
+		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
+		
 		initFrame("alertViewPanel");
 	}
 
@@ -52,10 +49,7 @@ public class _AlerterTopView extends AbstractView
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
-		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
-
-		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
 
 //		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
@@ -109,39 +103,17 @@ public class _AlerterTopView extends AbstractView
 	public void addInfoIndexPanel()
 	{
 		alerterCapGeneratePanel.addInfoIndexPanel();
-	}	
+	}
 
-	@Override
-	public void modelPropertyChange(PropertyChangeEvent evt)
-	{
-		switch (evt.getPropertyName())
-		{
-		case _AlerterController.ALERT_TEXTAREA_TEXT_PROPERTY:
-			alerterLogPanel.getTextArea().setText(evt.getNewValue().toString());
-			return;
-		case _AlerterController.CGPANEL_IDENTIFIER_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			return;	
-		case _AlerterController.CGPANEL_SENDER_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
-		case _AlerterController.CGPANEL_SENT_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
-		case _AlerterController.CGPANEL_STATUS_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
-		case _AlerterController.CGPANEL_MSG_TYPE_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
-		case _AlerterController.CGPANEL_SCOPE_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
-		case _AlerterController.CGPANEL_CODE_PROPERTY:
-			alerterCapGeneratePanel.setAlertPropertyValue(evt.getNewValue().toString(), evt.getPropertyName());
-			break;	
+	public void updateView(String view, String target, String value) {
+		switch (view) {
+		case "AlerterCapGeneratePanel":
+			alerterCapGeneratePanel.updateView(target, value);
+			break;
+
 		default:
+			System.out.println("there is no such a view " + view);
 			break;
 		}
-	}
+	}	
 }

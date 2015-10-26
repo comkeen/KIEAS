@@ -350,21 +350,21 @@ public class KieasMessageBuilder
 		return alert.getCode(0).toString();
 	}		
 
-	public String getLanguage()
+	public String getLanguage(int index)
 	{
-		return alert.getInfo(0).getLanguage().toString();
+		return alert.getInfo(index).getLanguage().toString();
 	}
 
-	public String getCategory()
+	public String getCategory(int index)
 	{
-		return alert.getInfo(0).getCategory(0).toString();
+		return alert.getInfo(index).getCategory(0).toString();
 	}
 
-	public String getEvent()
+	public String getEvent(int index)
 	{
 		try
 		{
-			return alert.getInfo(0).getEvent();
+			return alert.getInfo(index).getEvent();
 		}
 		catch (NotCapException e)
 		{
@@ -373,54 +373,54 @@ public class KieasMessageBuilder
 		}
 	}
 
-	public String getUrgency()
+	public String getUrgency(int index)
 	{
-		return alert.getInfo(0).getUrgency().toString();
+		return alert.getInfo(index).getUrgency().toString();
 	}
 
-	public String getSeverity()
+	public String getSeverity(int index)
 	{
-		return alert.getInfo(0).getSeverity().toString();
+		return alert.getInfo(index).getSeverity().toString();
 	}
 
-	public String getCertainty()
+	public String getCertainty(int index)
 	{
-		return alert.getInfo(0).getCertainty().toString();
+		return alert.getInfo(index).getCertainty().toString();
 	}
 
-	public String getEventCode() 
+	public String getEventCode(int index) 
 	{
-		return alert.getInfo(0).getEventCodeList().get(0).getValue().toString();
+		return alert.getInfo(index).getEventCodeList().get(0).getValue().toString();
 	}
 
-	public String getEffective()
+	public String getEffective(int index)
 	{
-		return alert.getInfo(0).getEffective().toString();
+		return alert.getInfo(index).getEffective().toString();
 	}
 
-	public String getSenderName()
+	public String getSenderName(int index)
 	{
-		return alert.getInfo(0).getSenderName().toString();
+		return alert.getInfo(index).getSenderName().toString();
 	}
 
-	public String getHeadline()
+	public String getHeadline(int index)
 	{
-		return alert.getInfo(0).getHeadline().toString();
+		return alert.getInfo(index).getHeadline().toString();
 	}
 
-	public String getDescrpition()
+	public String getDescrpition(int index)
 	{
-		return alert.getInfo(0).getDescription().toString();
+		return alert.getInfo(index).getDescription().toString();
 	}
 
-	public String getWeb()
+	public String getWeb(int index)
 	{
-		return alert.getInfo(0).getWeb().toString();
+		return alert.getInfo(index).getWeb().toString();
 	}
 
-	public String getContact()
+	public String getContact(int index)
 	{
-		return alert.getInfo(0).getContact().toString();
+		return alert.getInfo(index).getContact().toString();
 	}
 
 	

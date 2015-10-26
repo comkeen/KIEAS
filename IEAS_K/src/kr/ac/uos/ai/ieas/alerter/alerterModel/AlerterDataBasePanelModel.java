@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SimpleTimeZone;
 
-import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 

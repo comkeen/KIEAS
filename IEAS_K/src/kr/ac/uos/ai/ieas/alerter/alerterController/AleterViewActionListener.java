@@ -31,41 +31,37 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	{
 		String actionCommand = event.getActionCommand();
 		
-		if (actionCommand.equals("GenerateCap"))
-		{
-			controller.generateCap();
-		}
-		else if(actionCommand.equals("Send"))
-		{
-			controller.sendMessage();			
-		}
-		else if(actionCommand.equals("TextAreaSend"))
-		{
-			controller.sendTextAreaMessage();			
-		}
-		else if(actionCommand.equals("ConnectServer"))
-		{
+		switch (actionCommand) {
+		case "GenerateCap":
+//			controller.generateCap();
+			return;			
+		case "Send":
+			controller.sendMessage();
+			return;
+		case "TextAreaSend":
+			controller.sendTextAreaMessage();
+			return;
+		case "ConnectServer":
 			controller.connectToServer();
-		}
-		else if(actionCommand.equals("LoadCapDraft"))
-		{
+			return;
+		case "LoadCapDraft":
 			controller.loadCapDraft();
-		}
-		else if(actionCommand.equals("SaveCap"))
-		{
+			return;
+		case "SaveCap":
 			controller.saveCap();
-		}
-		else if(actionCommand.equals("Apply"))
-		{
+			return;
+		case "Apply":
 			controller.applyAlertElement();
-		}
-		else if(actionCommand.equals("Query"))
-		{
+			return;
+		case "Query":
 			controller.getQueryResult();
-		}
-		else if(actionCommand.equals("Add Info"))
-		{
+			return;
+		case "Add Info":
 			controller.addInfoIndexPanel();
+			return;
+		default:
+			System.out.println("there is no such a actionCommand " + actionCommand);
+			return;
 		}
 	}
 

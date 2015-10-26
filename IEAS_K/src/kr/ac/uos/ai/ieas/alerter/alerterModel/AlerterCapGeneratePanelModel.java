@@ -1,5 +1,6 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,13 +19,14 @@ import java.util.SimpleTimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import kr.ac.uos.ai.ieas.abstractClass.AbstractModel;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterCapGeneratePanel;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
-public class AlerterCapGeneratePanelModel extends AbstractModel
+public class AlerterCapGeneratePanelModel
 {	
+	private _AlerterModelManager alerterModelManager;
 	private KieasMessageBuilder kieasMessage;
 	
 	private FileInputStream fileInputStream;
@@ -31,188 +34,152 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 	private BufferedReader bufferedReader;
 	private BufferedWriter bufferedWriter;
 	private StringReader stringReader;
-	
-	private String m_TextAreaText;
-	private String m_LoadTextFieldText;
-	private String m_SaveTextFieldText;
-	
-	private String m_IdentifierText;
-	private String m_SenderText;
-	private String m_SentText;
-	private String m_StatusText;
-	private String m_MsgTypeText;
-	private String m_ScopeText;
-	private String m_CodeText;
-	
-	private String[][] m_InfoValueTexts;
 
-	private int m_infoCounter;
-	private String oldString;
+	private String mViewName;
+	
+	private String mTextArea;
+	private String mLoadTextField;
+	private String mSaveTextField;
+	
+	private String mIdentifier;
+	private String mSender;
+	private String mSent;
+	private String mStatus;
+	private String mMsgType;
+	private String mScope;
+	private String mCode;
+
+	private String mLanguage;
+	private String mCategory;
+	private String mEvent;
+	private String mUrgency;
+	private String mSeverity;
+	private String mCertainty;
+	private String mEventCode;
+	private String mEffective;
+	private String mSenderName;
+	private String mHeadline;
+	private String mDescription;
+	private String mWeb;
+	private String mContact;
+	
+	private HashMap<String, String> mAlertValues;
+	private ArrayList<HashMap<String, String>> mInfoValues;
+	private int mInfoCounter;
+
+	private String memberTarget;
 	
 	
-	public AlerterCapGeneratePanelModel(_AlerterController alerterController)
+	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
+		this.alerterModelManager = _AlerterModelManager;
 		this.kieasMessage = new KieasMessageBuilder();
+				
+		init();
+	}
+	
+	private void init()
+	{
+		this.mAlertValues = new HashMap<>();
+		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
+		this.mInfoCounter = 0;
 		
-		this.m_TextAreaText = "";
-		this.m_LoadTextFieldText = "cap/HRA.xml";
-		this.m_SaveTextFieldText = "cap/out.xml";
-		this.m_infoCounter = 0;
-	}
-	
-	public void setLoadTextField(String text)
-	{
-		oldString = this.m_LoadTextFieldText;
-		this.m_LoadTextFieldText = text;
-		firePropertyChange(_AlerterController.CGPANEL_LOAD_TEXT_FEILD_PROPERTY, oldString, m_LoadTextFieldText);
-	}
-	
-	public void setSaveTextField(String text)
-	{
-		oldString = this.m_SaveTextFieldText;
-		this.m_SaveTextFieldText = text;
-		firePropertyChange(_AlerterController.CGPANEL_SAVE_TEXT_FEILD_PROPERTY, oldString, m_SaveTextFieldText);
-	}
-	
-	public void setTextArea(String text)
-	{
-		oldString = this.m_TextAreaText;
-		this.m_TextAreaText = text;
-		firePropertyChange(_AlerterController.CGPANEL_TEXT_AREA_PROPERTY, oldString, m_TextAreaText);
-	}
-	
-	public void setIdentifier(String text)
-	{
-		oldString = this.m_IdentifierText;
-		this.m_IdentifierText = text;
+		setProperty(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, "cap/HRA.xml");
+		setProperty(AlerterCapGeneratePanel.SAVE_TEXT_FIELD, "cap/out.xml");
 		
-		firePropertyChange(_AlerterController.CGPANEL_IDENTIFIER_PROPERTY, oldString, m_IdentifierText);
+		this.mIdentifier = "";
+		this.mSender = "";
+		this.mSent = "";
+		this.mStatus = "";
+		this.mMsgType = "";
+		this.mScope = "";
+		this.mCode = "";
+		
+		this.mLanguage = "";
+		this.mCategory = "";
+		this.mEvent = "";
+		this.mUrgency = "";
+		this.mSeverity = "";
+		this.mCertainty = "";
+		this.mEventCode = "";
+		this.mEffective = "";
+		this.mSenderName = "";
+		this.mHeadline = "";
+		this.mDescription = "";
+		this.mWeb = "";
+		this.mContact = "";				
 	}
 	
-	public void setSender(String text)
+	public void setProperty(String target, String value)
 	{
-		oldString = this.m_SenderText;
-		this.m_SenderText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_SENDER_PROPERTY, oldString, m_SenderText);
+		memberTarget = "m" + target;
+//		System.out.println("memberTarget = " + memberTarget);
+//		System.out.println("value = " + value);
+		try 
+		{
+			this.getClass().getDeclaredField(memberTarget).set(this, value);
+			alerterModelManager.updateView(mViewName, target, this.getClass().getDeclaredField(memberTarget).get(this).toString());
+		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+		{
+			System.out.println("there is no such a field " + memberTarget);
+			e.printStackTrace();
+		}
 	}
 	
-	public void setSent(String text)
+	public void setProperty(String target, String value, int index)
 	{
-		oldString = this.m_SentText;
-		this.m_SentText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_SENT_PROPERTY, oldString, m_SentText);
-	}
-	
-	public void setStatus(String text)
-	{
-		oldString = this.m_StatusText;
-		this.m_StatusText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_STATUS_PROPERTY, oldString, m_StatusText);
-	}
-	
-	public void setMsgType(String text)
-	{
-		oldString = this.m_MsgTypeText;
-		this.m_MsgTypeText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_MSG_TYPE_PROPERTY, oldString, m_MsgTypeText);
-	}
-	
-	public void setScope(String text)
-	{
-		oldString = this.m_ScopeText;
-		this.m_ScopeText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_SCOPE_PROPERTY, oldString, m_ScopeText);
-	}
-	
-	public void setCode(String text)
-	{
-		oldString = this.m_CodeText;
-		this.m_CodeText = text;
-		
-		firePropertyChange(_AlerterController.CGPANEL_CODE_PROPERTY, oldString, m_CodeText);
+		memberTarget = "m" + target;
+//		System.out.println("memberTarget = " + memberTarget);
+//		System.out.println("value = " + value);
+		try 
+		{
+			this.getClass().getDeclaredField(memberTarget).set(this, value);
+			alerterModelManager.updateView(mViewName, target, this.getClass().getDeclaredField(memberTarget).get(this).toString());
+		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+		{
+			System.out.println("there is no such a field " + memberTarget);
+			e.printStackTrace();
+		}
 	}
 	
 	private void setAlertPanel(KieasMessageBuilder ieasMessage)
 	{
-		setIdentifier(ieasMessage.getIdentifier());
-		setSender(ieasMessage.getSender());	
-		setSent(ieasMessage.getSent());	
-		setStatus(ieasMessage.getStatus());
-		setMsgType(ieasMessage.getMsgType());
-		setScope(ieasMessage.getScope());
-		setCode(ieasMessage.getCode());
+		setProperty(AlerterCapGeneratePanel.IDENTIFIER, ieasMessage.getIdentifier());
+		setProperty(AlerterCapGeneratePanel.SENDER, ieasMessage.getSender());
+		setProperty(AlerterCapGeneratePanel.SENT, ieasMessage.getSent());
+		setProperty(AlerterCapGeneratePanel.STATUS, ieasMessage.getStatus());
+		setProperty(AlerterCapGeneratePanel.MSG_TYPE, ieasMessage.getMsgType());
+		setProperty(AlerterCapGeneratePanel.SCOPE, ieasMessage.getScope());
+		setProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
 	}
-
-
-	/*
+	
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
-		for(int infoCounter = 0; infoCounter < ieasMessage.getInfoCount(); infoCounter++)
+		for(int i = 0; i < ieasMessage.getInfoCount(); i++)
 		{
-			for(int i = 0; i < infoEnumValues[infoCounter][0].getItemCount(); i++)
-			{
-				if(infoEnumValues[infoCounter][0].getItemAt(i).equals(ieasMessage.getLanguage()))
-				{
-					infoEnumValues[infoCounter][0].setSelectedIndex(i);
-				}				
-			}
-			for(int i = 0; i < infoEnumValues[infoCounter][1].getItemCount(); i++)
-			{
-				if(infoEnumValues[infoCounter][1].getItemAt(i).equals(ieasMessage.getCategory()))
-				{
-					infoEnumValues[infoCounter][1].setSelectedIndex(i);
-				}				
-			}
-			infoValues[infoCounter][2].setText(ieasMessage.getEvent());
-			for(int i = 0; i < infoEnumValues[infoCounter][3].getItemCount(); i++)
-			{
-				if(infoEnumValues[infoCounter][3].getItemAt(i).equals(ieasMessage.getUrgency()))
-				{
-					infoEnumValues[infoCounter][3].setSelectedIndex(i);
-				}				
-			}
-			for(int i = 0; i < infoEnumValues[infoCounter][4].getItemCount(); i++)
-			{
-				if(infoEnumValues[infoCounter][4].getItemAt(i).equals(ieasMessage.getSeverity()))
-				{
-					infoEnumValues[infoCounter][4].setSelectedIndex(i);
-				}				
-			}
-			for(int i = 0; i < infoEnumValues[infoCounter][5].getItemCount(); i++)
-			{
-				if(infoEnumValues[infoCounter][5].getItemAt(i).equals(ieasMessage.getCertainty()))
-				{
-					infoEnumValues[infoCounter][5].setSelectedIndex(i);
-				}				
-			}
-			for(int i = 0; i < infoEnumValues[infoCounter][6].getItemCount(); i++)
-			{
-				String[] tokens = infoEnumValues[infoCounter][6].getItemAt(i).split("\\(");
-
-				if(tokens[0].equals(ieasMessage.getEventCode()))
-				{
-					infoEnumValues[infoCounter][6].setSelectedIndex(i);
-				}				
-			}
-			infoValues[infoCounter][7].setText(ieasMessage.transformToYmdhms(ieasMessage.getEffective()));
-			infoValues[infoCounter][8].setText(ieasMessage.getSenderName());
-			infoValues[infoCounter][9].setText(ieasMessage.getWeb());
-			infoValues[infoCounter][10].setText(ieasMessage.getContact());
-			infoValues[infoCounter][11].setText(ieasMessage.getHeadline());
+			setProperty(AlerterCapGeneratePanel.LANGUAGE, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.CATEGORY, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.EVENT, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.URGENCY, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.SEVERITY, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.CERTAINTY, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.EVENT_CODE, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.EFFECTIVE, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.SENDER_NAME, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.HEADLINE, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.DESCRIPTION, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.WEB, ieasMessage.getCategory(i));
+			setProperty(AlerterCapGeneratePanel.CONTACT, ieasMessage.getCategory(i));
 		}
-		infoDescriptionValues[0].setText(ieasMessage.getDescrpition());
 	}
-*/
+
 	public void capLoader()
 	{
 		try
 		{
-			String path = m_LoadTextFieldText;
+			String path = mLoadTextField;
 
 			String temp = "";	         
 			String content = "";
@@ -226,9 +193,9 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 				content += temp + "\n";
 			}
 
-			setTextArea(content);
+			setProperty("TextArea", content);
 			kieasMessage.setMessage(content);
-
+//
 			setAlertPanel(kieasMessage);
 //			setInfoPanel(kieasMessage);
 		}
@@ -240,11 +207,11 @@ public class AlerterCapGeneratePanelModel extends AbstractModel
 
 	public void capWriter()
 	{
-		this.stringReader = new StringReader(m_TextAreaText);
+		this.stringReader = new StringReader(mTextArea);
 		bufferedReader = new BufferedReader(stringReader);
 
 		//		String extension= ".xml";
-		String path = m_SaveTextFieldText;
+		String path = mSaveTextField;
 		String temp = "";
 
 		try
