@@ -52,7 +52,7 @@ public class _AlerterController
 	public _AlerterController()
 	{
 		this.alerterActionListener = new AleterViewActionListener(this);
-		this.alerterTopView = new _AlerterTopView(alerterActionListener);
+		this.alerterTopView = _AlerterTopView.getInstance(alerterActionListener);
 		this.alerterModelManager = new _AlerterModelManager(this);
 	}
 	

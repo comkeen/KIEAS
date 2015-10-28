@@ -70,7 +70,7 @@ public class GatewayModelManager {
 
 		alertElementMap.replace("sender", ieasMessage.getSender());
 		alertElementMap.replace("identifier", ieasMessage.getIdentifier());
-		alertElementMap.replace("event", ieasMessage.getEvent());
+		alertElementMap.replace("event", ieasMessage.getEvent(0));
 		alertElementMap.replace("addresses", ieasMessage.getAddresses());
 		alertElementMap.replace("sent", ieasMessage.getSent());
 

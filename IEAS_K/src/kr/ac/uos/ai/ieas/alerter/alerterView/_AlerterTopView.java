@@ -14,14 +14,23 @@ import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 
 public class _AlerterTopView
 {
+	private static _AlerterTopView alerterTopView;
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
 
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AlerterDatabasePanel alerterDatabasePanel;
-	
-	
+
+	public static _AlerterTopView getInstance(AleterViewActionListener alerterActionListener)
+	{
+		if (alerterTopView == null)
+		{
+			alerterTopView = new _AlerterTopView(alerterActionListener);
+		}
+		return alerterTopView;
+	}
+
 	/**
 	 * _AlerterTopView 생성자.
 	 * AlerterViewActionListener 초기화
@@ -30,11 +39,11 @@ public class _AlerterTopView
 	 * 
 	 * @param alerterController
 	 */
-	public _AlerterTopView(AleterViewActionListener alerterActionListener)
+	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
-		
+
 		initFrame("alertViewPanel");
 	}
 
@@ -52,9 +61,9 @@ public class _AlerterTopView
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
 
-//		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
-//		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
-
+		//	this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
+		//	mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
+		
 		mainFrame.setVisible(true);
 	}
 
@@ -82,7 +91,7 @@ public class _AlerterTopView
 
 	public void applyAlertElement()
 	{
-//		alerterCapGeneratePanel.applyAlertElement();
+		//alerterCapGeneratePanel.applyAlertElement();
 	}
 
 	public void selectTableEvent()

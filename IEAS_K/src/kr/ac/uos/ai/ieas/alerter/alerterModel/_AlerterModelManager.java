@@ -6,17 +6,29 @@ import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.UUID;
 
+import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _AlerterModelManager{
 
+	private static _AlerterModelManager alerterModelManager;
 	private _AlerterController alerterController;
 	private _DatabaseHandler databaseHandler;	
 	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
 	
 	private KieasMessageBuilder kieasMessageBuilder;
+	
+	public static _AlerterModelManager getInstance(_AlerterController alerterController)
+	{
+		if (alerterModelManager == null)
+		{
+			alerterModelManager = new _AlerterModelManager(alerterController);
+		}
+		return alerterModelManager;
+	}
 	
 	/**
 	 * AlerterModel을 관리한다.

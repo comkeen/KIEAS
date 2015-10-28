@@ -117,6 +117,7 @@ public class AlerterCapGeneratePanel
 		this.textAreaPane = new JScrollPane(mTextArea);
 		mTextArea.setEditable(false);
 		panelComponenets.put("TextArea", mTextArea);
+		textAreaPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		return textAreaPane;
 	}
 
@@ -146,8 +147,9 @@ public class AlerterCapGeneratePanel
 		buttonPane.add(saveBox);
 
 		this.alertApplyButton = createButton("Apply");
-		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		buttonPane.add(alertApplyButton);
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		return buttonPane;
 	}
@@ -156,7 +158,7 @@ public class AlerterCapGeneratePanel
 	{
 		this.alertPanel = new JPanel();
 		alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
-		alertPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+		alertPanel.setBorder(BorderFactory.createEtchedBorder());
 		this.alertComponents = new HashMap<>();
 
 		alertPanel.add(addBox(IDENTIFIER, TEXT_FIELD));
@@ -166,26 +168,29 @@ public class AlerterCapGeneratePanel
 		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
 		alertPanel.add(addBox(SCOPE, COMBO_BOX));
 		alertPanel.add(addBox(CODE, TEXT_FIELD));		
-
+		alertPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		return alertPanel;
 	}
 
 	private Component initCapInfoPanel()
 	{
 		this.infoPanel = new JTabbedPane();
-		infoPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+		infoPanel.setBorder(BorderFactory.createEtchedBorder());
 		this.infoIndexPanels = new ArrayList<JPanel>();
 		this.infoComponents = new ArrayList<HashMap<String, Component>>();
 
 		this.infoCounter = 0;
 		addInfoIndexPanel();
-
+		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
 		return infoPanel;
 	}
 
 	public void addInfoIndexPanel()
 	{
 		removeTabPanel();
+		infoComponents.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -203,9 +208,9 @@ public class AlerterCapGeneratePanel
 		panel.add(addBox(WEB, TEXT_FIELD, infoCounter));
 		panel.add(addBox(CONTACT, TEXT_FIELD, infoCounter));
 
+		
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
-		infoComponents.add(new HashMap<>());
 		infoCounter++;
 		addTabPanel();
 	}
@@ -223,7 +228,7 @@ public class AlerterCapGeneratePanel
 		Box box = Box.createHorizontalBox();
 
 		JLabel label = new JLabel(labelName);
-		label.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		int offset = (int) (100 - label.getPreferredSize().getWidth());
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
 		box.add(label);	
@@ -259,10 +264,10 @@ public class AlerterCapGeneratePanel
 		Box box = Box.createHorizontalBox();
 
 		JLabel label = new JLabel(labelName);
-		label.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		int offset = (int) (100 - label.getPreferredSize().getWidth());
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
-		box.add(label);		
+		box.add(label);
 
 		switch (type)
 		{
