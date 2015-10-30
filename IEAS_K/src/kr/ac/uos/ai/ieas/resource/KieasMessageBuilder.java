@@ -629,7 +629,7 @@ public class KieasMessageBuilder
 					.setSent(this.dateToString(capAlert.getSent()))
 					.setStatus(this.setStatus(capAlert.getStatus().toString()))
 					.setMsgType(this.setMsgType(capAlert.getMsgType().toString()))
-					.setScope(this.setScope(capAlert.getScope()))
+					.setScope(this.setScope(capAlert.getScope().toString()))
 //					.addCode(capAlert.getCode())
 					.buildPartial();
 

@@ -12,7 +12,7 @@ public class CAPAlert implements CAPBean {
 	private Status status;
 	private MsgType msgType;
 	private String source;
-	private String scope;
+	private Scope scope;
 	private String restriction;
 	private String addresses;
 	private String code;
@@ -28,6 +28,10 @@ public class CAPAlert implements CAPBean {
 
 	public enum MsgType {
 		Alert, Update, Cancel, Ack, Error;
+	}
+	
+	public enum Scope {
+		Public, Restricted, Private;
 	}
 
 	public int getAlert_eid() {
@@ -86,11 +90,11 @@ public class CAPAlert implements CAPBean {
 		this.source = source;
 	}
 
-	public String getScope() {
+	public Scope getScope() {
 		return scope;
 	}
 
-	public void setScope(String scope) {
+	public void setScope(Scope scope) {
 		this.scope = scope;
 	}
 
