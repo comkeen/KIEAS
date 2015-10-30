@@ -238,6 +238,62 @@ public class CAPDBUtils
 		}
 	}
 
+	public ArrayList<CAPAlert> getCAPDrafts() {
+		
+		ArrayList<CAPAlert> draftList = new ArrayList<CAPAlert>();
+		ArrayList<CAPInfo> infoList = new ArrayList<CAPInfo>();
+		String queryAlert = "SELECT * from alert WHERE status='Draft'"; 
+		String queryInfo = "SELECT * from info WHERE alert_eid in ";
+		String alertIdList = "";
+//		String infoIdList = "";
+		
+		try
+		{
+			DataTransaction transaction = new DataTransaction(true);
+			Connection conn = transaction.connection;
+			
+			Statement stmtAlert = conn.createStatement();
+			ResultSet rsAlert = stmtAlert.executeQuery(queryAlert);
+			BeanProcessor bpAlert = new BeanProcessor();
+			
+			while(rsAlert.next()){
+				draftList.add((CAPAlert) bpAlert.toBean(rsAlert, CAPAlert.class));
+			}
+			
+			for (int i=0; i<draftList.size(); i++) 
+			{
+				alertIdList += draftList.get(i).getAlert_eid();
+//				infoIdList += infoList.get(i).getInfo_eid();
+				if(i != draftList.size() - 1)
+				{
+					alertIdList += ", ";
+//					infoIdList += ", ";
+				}
+			}
+			
+			Statement stmtInfo = conn.createStatement();
+			queryInfo += "(" + alertIdList + ")";
+			System.out.println(queryInfo);
+			
+			ResultSet rsInfo = stmtInfo.executeQuery(queryInfo);
+			BeanProcessor bpInfo = new BeanProcessor();
+			System.out.println(alertIdList);
+			
+			while (rsInfo.next()) {
+				infoList.add((CAPInfo) bpInfo.toBean(rsInfo, CAPInfo.class));
+			}
+			
+			draftList.get(0).setInfoList(infoList);
+			return draftList;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	private ArrayList<CAPAlert> buildFullCap(ArrayList<CAPAlert> alertList,	ArrayList<CAPInfo> infoList, ArrayList<CAPResource> resList, ArrayList<CAPArea> areaList)
 	{
 
@@ -284,4 +340,14 @@ public class CAPDBUtils
 		}		
 		return alertElementList;
 	}
+	
+	public static void main(String[] args) {
+		ArrayList<CAPAlert> drafts = new ArrayList<CAPAlert>();
+		CAPDBUtils util = new CAPDBUtils();
+		drafts = util.getCAPDrafts();
+		System.out.println("size: " + drafts.size());
+		System.out.println("하위 info size: " + drafts.get(0).getInfoList().size());
+	}
 }
+
+

@@ -1,15 +1,12 @@
 package kr.ac.uos.ai.ieas.db.dbHandler;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
-
-import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 
 public class DataFormatUtils {
 
