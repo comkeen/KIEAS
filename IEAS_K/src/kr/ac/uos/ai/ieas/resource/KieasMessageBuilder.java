@@ -59,14 +59,11 @@ public class KieasMessageBuilder
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
 		
-		this.capEnumMap = new HashMap<>();
-		initAlertCapEnumMap();
-		initInfoCapEnumMap();
 		
 		buildDefaultMessage();
 	}
 	
-	private void initAlertCapEnumMap()
+	private void buildAlertCapEnumMap()
 	{
 		ArrayList<String> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values())
@@ -90,7 +87,7 @@ public class KieasMessageBuilder
 		capEnumMap.put("Scope", capEnum3);	
 	}
 	
-	private void initInfoCapEnumMap()
+	private void buildInfoCapEnumMap()
 	{
 		ArrayList<String> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values())
@@ -146,7 +143,10 @@ public class KieasMessageBuilder
 	
 	public HashMap<String, ArrayList<String>> getCapEnumMap()
 	{
-		return this.capEnumMap;
+		this.capEnumMap = new HashMap<>();
+		buildAlertCapEnumMap();
+		buildInfoCapEnumMap();
+		return capEnumMap;
 	}
 	
 	public void buildDefaultMessage() {

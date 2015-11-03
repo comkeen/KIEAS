@@ -41,6 +41,7 @@ public class _AlerterTopView
 	 */
 	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
+		initLookAndFeel();
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 
@@ -52,7 +53,6 @@ public class _AlerterTopView
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		initLookAndFeel();
 
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = mainFrame.getContentPane();
@@ -63,7 +63,7 @@ public class _AlerterTopView
 
 		//	this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
 		//	mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
-		
+
 		mainFrame.setVisible(true);
 	}
 

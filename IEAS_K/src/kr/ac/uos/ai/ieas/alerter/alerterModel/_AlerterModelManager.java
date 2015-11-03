@@ -66,8 +66,7 @@ public class _AlerterModelManager{
 	{	
 		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapLibraryObject(databaseHandler.getQueryResult(query.toUpperCase()));
 		return result;
-	}
-	
+	}	
 
 	public void capLoader() {
 		alerterCapGeneratePanelModel.capLoader();

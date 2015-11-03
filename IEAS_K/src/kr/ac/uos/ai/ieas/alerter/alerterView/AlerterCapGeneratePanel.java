@@ -23,7 +23,6 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 public class AlerterCapGeneratePanel
 {
 	private static AlerterCapGeneratePanel alerterCapElementPanel;
-
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
 
@@ -131,7 +130,7 @@ public class AlerterCapGeneratePanel
 		loadBox.add(loadCapDraftButton);		
 		this.mLoadTextField = new JTextField();
 		panelComponenets.put("LoadTextField", mLoadTextField);
-		//		loadPathTextField.setText("cap/HRA.xml");
+		mLoadTextField.setText("cap/HRA.xml");
 		loadBox.add(mLoadTextField);
 		loadBox.setBorder(BorderFactory.createLoweredBevelBorder());
 		buttonPane.add(loadBox);
@@ -141,7 +140,7 @@ public class AlerterCapGeneratePanel
 		saveBox.add(saveCapButton);
 		this.mSaveTextField = new JTextField();
 		panelComponenets.put("SaveTextField", mSaveTextField);
-		//		savePathTextField.setText("cap/out.xml");
+		mSaveTextField.setText("cap/out.xml");
 		saveBox.add(mSaveTextField);
 		saveBox.setBorder(BorderFactory.createLoweredBevelBorder());
 		buttonPane.add(saveBox);
@@ -167,7 +166,7 @@ public class AlerterCapGeneratePanel
 		alertPanel.add(addBox(STATUS, COMBO_BOX));
 		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
 		alertPanel.add(addBox(SCOPE, COMBO_BOX));
-		alertPanel.add(addBox(CODE, TEXT_FIELD));		
+		alertPanel.add(addBox(CODE, TEXT_FIELD));
 		alertPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		return alertPanel;
@@ -277,17 +276,17 @@ public class AlerterCapGeneratePanel
 			{
 				comboBox.addItem(value);		
 			}
-			infoComponents.get(index).put(labelName, comboBox);
+			infoComponents.get(index).put(labelName + index, comboBox);
 			box.add(comboBox);
 			return box;
 		case TEXT_FIELD:
 			JTextField textField = new JTextField();
-			infoComponents.get(index).put(labelName, textField);
+			infoComponents.get(index).put(labelName + index, textField);
 			box.add(textField);
 			return box;
 		case TEXT_AREA:
 			JTextArea textArea = new JTextArea();
-			infoComponents.get(index).put(labelName, textArea);
+			infoComponents.get(index).put(labelName + index, textArea);
 			box.add(textArea);
 			return box;
 		default:
@@ -395,6 +394,11 @@ public class AlerterCapGeneratePanel
 			if (infoComponents.get(i).get(target) instanceof JComboBox<?>)
 			{
 				((JComboBox<?>) infoComponents.get(i).get(target)).setSelectedItem(value);
+				return;
+			}
+			if (infoComponents.get(i).get(target) instanceof JTextArea)
+			{
+				((JTextArea) infoComponents.get(i).get(target)).setText(value);
 				return;
 			}
 		}

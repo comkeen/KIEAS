@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -19,7 +18,7 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 public class AlerterCapGeneratePanelModel
 {	
 	private _AlerterModelManager alerterModelManager;
-	private KieasMessageBuilder kieasMessage;
+	private KieasMessageBuilder kieasMessageBuilder;
 	
 	private FileInputStream fileInputStream;
 	private InputStreamReader inputStreamReader;
@@ -30,10 +29,9 @@ public class AlerterCapGeneratePanelModel
 	private String mViewName;
 
 	private Vector<Object> mViewComponents;
-	
+		
+	private HashMap<String, String> mComponents;
 	private String mTextArea;
-	
-	private HashMap<String, String> mSaveLoadPanelComponents;
 	private String mLoadTextField;
 	private String mSaveTextField;
 	
@@ -63,18 +61,14 @@ public class AlerterCapGeneratePanelModel
 	private String mWeb;
 	private String mContact;
 	
-
-	private String memberTarget;
-	private String mInfoElementName;
-	
 	
 	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
-		this.kieasMessage = new KieasMessageBuilder();
-		
-		initComponentVector();
+		this.kieasMessageBuilder = new KieasMessageBuilder();
+
 		init();
+		initComponentVector();
 	}
 	
 	private void initComponentVector()
@@ -88,21 +82,21 @@ public class AlerterCapGeneratePanelModel
 
 	private HashMap<String, String> initSaveLoadPanelComponents()
 	{
-		this.mSaveLoadPanelComponents = new HashMap<>();
-		mSaveLoadPanelComponents.put(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, "");
-		mSaveLoadPanelComponents.put(AlerterCapGeneratePanel.SAVE_TEXT_FIELD, "");
-		return mSaveLoadPanelComponents;
+		this.mComponents = new HashMap<>();
+		mComponents.put(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, mLoadTextField);
+		mComponents.put(AlerterCapGeneratePanel.SAVE_TEXT_FIELD, mSaveTextField);
+		return mComponents;
 	}
 	
 	private HashMap<String, String> initAlertPanelComponents() {
 		this.mAlertValues = new HashMap<>();
-		mAlertValues.put(AlerterCapGeneratePanel.IDENTIFIER, "");
-		mAlertValues.put(AlerterCapGeneratePanel.SENDER, "");
-		mAlertValues.put(AlerterCapGeneratePanel.SENT, "");
-		mAlertValues.put(AlerterCapGeneratePanel.STATUS, "");
-		mAlertValues.put(AlerterCapGeneratePanel.MSG_TYPE, "");
-		mAlertValues.put(AlerterCapGeneratePanel.SCOPE, "");
-		mAlertValues.put(AlerterCapGeneratePanel.CODE, "");
+		mAlertValues.put(AlerterCapGeneratePanel.IDENTIFIER, mIdentifier);
+		mAlertValues.put(AlerterCapGeneratePanel.SENDER, mSender);
+		mAlertValues.put(AlerterCapGeneratePanel.SENT, mSent);
+		mAlertValues.put(AlerterCapGeneratePanel.STATUS, mStatus);
+		mAlertValues.put(AlerterCapGeneratePanel.MSG_TYPE, mMsgType);
+		mAlertValues.put(AlerterCapGeneratePanel.SCOPE, mScope);
+		mAlertValues.put(AlerterCapGeneratePanel.CODE, mCode);
 		return mAlertValues;
 	}
 
@@ -116,20 +110,21 @@ public class AlerterCapGeneratePanelModel
 	private HashMap<String, String> addInfoIndexValues(int index)
 	{
 		this.mInfoIndexValues = new HashMap<>();
-		mInfoIndexValues.put(AlerterCapGeneratePanel.LANGUAGE + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CATEGORY + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.URGENCY + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.SEVERITY + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CERTAINTY + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT_CODE + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EFFECTIVE + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.HEADLINE + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.DESCRIPTION + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.WEB + index, "");
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CONTACT + index, "");
-		
-		return null;
+		mInfoIndexValues.put(AlerterCapGeneratePanel.LANGUAGE + index, mLanguage);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.CATEGORY + index, mCategory);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT + index, mEvent);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.URGENCY + index, mUrgency);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.SEVERITY + index, mSeverity);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.CERTAINTY + index, mCertainty);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT_CODE + index, mEventCode);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.EFFECTIVE + index, mEffective);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.SENDER_NAME + index, mSenderName);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.HEADLINE + index, mHeadline);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.DESCRIPTION + index, mDescription);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.WEB + index, mWeb);
+		mInfoIndexValues.put(AlerterCapGeneratePanel.CONTACT + index, mContact);
+
+		return mInfoIndexValues;
 	}
 
 	private void init()
@@ -137,8 +132,9 @@ public class AlerterCapGeneratePanelModel
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
 		this.mInfoCounter = 0;
 		
-		setProperty(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, "cap/HRA.xml");
-		setProperty(AlerterCapGeneratePanel.SAVE_TEXT_FIELD, "cap/out.xml");
+		this.mTextArea = "";		
+		this.mLoadTextField = "cap/HRA.xml";
+		this.mSaveTextField = "cap/out.xml";
 		
 		this.mIdentifier = "";
 		this.mSender = "";
@@ -160,69 +156,64 @@ public class AlerterCapGeneratePanelModel
 		this.mHeadline = "";
 		this.mDescription = "";
 		this.mWeb = "";
-		this.mContact = "";				
+		this.mContact = "";
 	}
 	
-	public void setProperty(String target, String value)
+	public void setModelProperty(String target, String value)
 	{
-		memberTarget = "m" + target;
-		try 
+		for (Object component : mViewComponents)
 		{
-			this.getClass().getDeclaredField(memberTarget).set(this, value);
-			alerterModelManager.updateView(mViewName, target, this.getClass().getDeclaredField(memberTarget).get(this).toString());
+			if (component instanceof HashMap<?, ?>)
+			{
+				((HashMap<String, String>) component).replace(target, value);
+				alerterModelManager.updateView(mViewName, target, value);
+				return;
+			}
+			if (component instanceof Vector<?>)
+			{
+				for (HashMap<String, String> hashMap : (Vector<HashMap<String, String>>) component)
+				{
+					if(hashMap.containsKey(target))
+					{
+						hashMap.replace(target, value);
+						alerterModelManager.updateView(mViewName, target, value);
+						return;
+					}
+				}
+			}
 		}
-		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
-		{
-			System.out.println("there is no such a field " + memberTarget);
-			e.printStackTrace();
-		}
-	}
-	
-	public void setProperty(String target, String value, int index)
-	{
-		memberTarget = "m" + target;
-//		System.out.println("memberTarget = " + memberTarget);
-//		System.out.println("value = " + value);
-		try 
-		{
-			this.getClass().getDeclaredField(memberTarget).set(this, value);
-			alerterModelManager.updateView(mViewName, target, this.getClass().getDeclaredField(memberTarget).get(this).toString());
-		}
-		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
-		{
-			System.out.println("there is no such a field " + memberTarget);
-			e.printStackTrace();
-		}
+		System.out.println("there is no such a ModelPropertyName " + target);
 	}
 	
 	private void setAlertPanel(KieasMessageBuilder ieasMessage)
 	{
-		setProperty(AlerterCapGeneratePanel.IDENTIFIER, ieasMessage.getIdentifier());
-		setProperty(AlerterCapGeneratePanel.SENDER, ieasMessage.getSender());
-		setProperty(AlerterCapGeneratePanel.SENT, ieasMessage.getSent());
-		setProperty(AlerterCapGeneratePanel.STATUS, ieasMessage.getStatus());
-		setProperty(AlerterCapGeneratePanel.MSG_TYPE, ieasMessage.getMsgType());
-		setProperty(AlerterCapGeneratePanel.SCOPE, ieasMessage.getScope());
-		setProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
+		setModelProperty(AlerterCapGeneratePanel.IDENTIFIER, ieasMessage.getIdentifier());
+		setModelProperty(AlerterCapGeneratePanel.SENDER, ieasMessage.getSender());
+		setModelProperty(AlerterCapGeneratePanel.SENT, ieasMessage.getSent());
+		setModelProperty(AlerterCapGeneratePanel.STATUS, ieasMessage.getStatus());
+		setModelProperty(AlerterCapGeneratePanel.MSG_TYPE, ieasMessage.getMsgType());
+		setModelProperty(AlerterCapGeneratePanel.SCOPE, ieasMessage.getScope());
+		setModelProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
 	}
 	
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
-		for(int i = 0; i < ieasMessage.getInfoCount(); i++)
+		mInfoCounter = ieasMessage.getInfoCount();
+		for(int i = 0; i < mInfoCounter; i++)
 		{
-			setProperty(AlerterCapGeneratePanel.LANGUAGE, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.CATEGORY, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.EVENT, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.URGENCY, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.SEVERITY, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.CERTAINTY, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.EVENT_CODE, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.EFFECTIVE, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.SENDER_NAME, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.HEADLINE, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.DESCRIPTION, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.WEB, ieasMessage.getCategory(i));
-			setProperty(AlerterCapGeneratePanel.CONTACT, ieasMessage.getCategory(i));
+			setModelProperty(AlerterCapGeneratePanel.LANGUAGE + i, ieasMessage.getLanguage(i));
+			setModelProperty(AlerterCapGeneratePanel.CATEGORY + i, ieasMessage.getCategory(i));
+			setModelProperty(AlerterCapGeneratePanel.EVENT + i, ieasMessage.getEvent(i));
+			setModelProperty(AlerterCapGeneratePanel.URGENCY + i, ieasMessage.getUrgency(i));
+			setModelProperty(AlerterCapGeneratePanel.SEVERITY + i, ieasMessage.getSeverity(i));
+			setModelProperty(AlerterCapGeneratePanel.CERTAINTY + i, ieasMessage.getCertainty(i));
+			setModelProperty(AlerterCapGeneratePanel.EVENT_CODE + i, ieasMessage.getEventCode(i));
+			setModelProperty(AlerterCapGeneratePanel.EFFECTIVE + i, ieasMessage.getEffective(i));
+			setModelProperty(AlerterCapGeneratePanel.SENDER_NAME + i, ieasMessage.getSenderName(i));
+			setModelProperty(AlerterCapGeneratePanel.HEADLINE + i, ieasMessage.getHeadline(i));
+			setModelProperty(AlerterCapGeneratePanel.DESCRIPTION + i, ieasMessage.getDescrpition(i));
+			setModelProperty(AlerterCapGeneratePanel.WEB + i, ieasMessage.getWeb(i));
+			setModelProperty(AlerterCapGeneratePanel.CONTACT + i, ieasMessage.getContact(i));
 		}
 	}
 
@@ -244,11 +235,11 @@ public class AlerterCapGeneratePanelModel
 				content += temp + "\n";
 			}
 
-			setProperty("TextArea", content);
-			kieasMessage.setMessage(content);
+			setModelProperty("TextArea", content);
+			kieasMessageBuilder.setMessage(content);
 //
-			setAlertPanel(kieasMessage);
-//			setInfoPanel(kieasMessage);
+			setAlertPanel(kieasMessageBuilder);
+			setInfoPanel(kieasMessageBuilder);
 		}
 		catch (IOException e)
 		{	
