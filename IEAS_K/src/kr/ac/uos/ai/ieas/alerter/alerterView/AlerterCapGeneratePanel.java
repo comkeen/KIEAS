@@ -51,6 +51,8 @@ public class AlerterCapGeneratePanel
 	private ArrayList<JPanel> infoIndexPanels;
 	private int infoCounter;
 	
+	private StringBuffer stringBuffer;
+	
 
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";
@@ -399,6 +401,12 @@ public class AlerterCapGeneratePanel
 		}
 		if (alertComponents.get(target) instanceof JComboBox<?>)
 		{
+			
+			stringBuffer = new StringBuffer(value);
+			System.out.println(stringBuffer.toString());
+			stringBuffer.replace(stringBuffer.indexOf("("), stringBuffer.indexOf(")"), "");
+			stringBuffer.trimToSize();
+			System.out.println("sb = " + stringBuffer.toString());
 			((JComboBox<?>) alertComponents.get(target)).setSelectedItem(value);
 			return;
 		}

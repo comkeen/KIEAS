@@ -281,7 +281,7 @@ public class KieasMessageBuilder
 		
 		ArrayList<String> capEnum6 = new ArrayList<String>();
 		for (DisasterEventType value : DisasterEventType.values())
-		{			
+		{
 			String str = value.toString() + " (" + value.getKoreanEventCode() + ")";
 			capEnum6.add(str);
 		}
@@ -290,7 +290,6 @@ public class KieasMessageBuilder
 		ArrayList<String> capEnum7 = new ArrayList<String>();
 		for (String value : KieasConfiguration.IEAS_List.LANGUAGE_LIST)
 		{
-//			System.out.println(value);
 			capEnum7.add(value);
 		}
 		capEnumMap.put("Language", capEnum7);
