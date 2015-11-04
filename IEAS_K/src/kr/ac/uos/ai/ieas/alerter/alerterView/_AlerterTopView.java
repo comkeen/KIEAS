@@ -114,8 +114,10 @@ public class _AlerterTopView
 		alerterCapGeneratePanel.addInfoIndexPanel();
 	}
 
-	public void updateView(String view, String target, String value) {
-		switch (view) {
+	public void updateView(String view, String target, String value)
+	{
+		switch (view)
+		{
 		case "AlerterCapGeneratePanel":
 			alerterCapGeneratePanel.updateView(target, value);
 			break;
@@ -124,5 +126,15 @@ public class _AlerterTopView
 			System.out.println("there is no such a view " + view);
 			break;
 		}
+	}
+
+	public String getLoadTextField()
+	{
+		return alerterCapGeneratePanel.getLoadTextField();
+	}
+
+	public String getSaveTextField()
+	{
+		return alerterCapGeneratePanel.getSaveTextField();
 	}	
 }

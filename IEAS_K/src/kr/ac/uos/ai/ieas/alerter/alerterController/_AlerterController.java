@@ -1,3 +1,4 @@
+
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
@@ -126,14 +127,14 @@ public class _AlerterController
 		this.alerterTransmitter = new AlerterTransmitter(this, "Alerter");
 	}
 
-	public void loadCapDraft()
+	public void loadCap()
 	{
-		alerterModelManager.capLoader();
+		alerterModelManager.loadCap(alerterTopView.getLoadTextField());
 	}
 
 	public void saveCap()
 	{
-//		alerterView.saveCap();
+		alerterModelManager.saveCap(alerterTopView.getSaveTextField());
 	}
 
 	public void applyAlertElement()
@@ -158,7 +159,6 @@ public class _AlerterController
 	{
 		alerterTopView.addInfoIndexPanel();
 	}
-
 
 	public void updateView(String view, String target, String value) {
 		alerterTopView.updateView(view, target, value);

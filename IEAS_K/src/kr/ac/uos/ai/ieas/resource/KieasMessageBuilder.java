@@ -68,21 +68,76 @@ public class KieasMessageBuilder
 		ArrayList<String> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values())
 		{
-			capEnum1.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.Status.ACTUAL.toString()))
+			{
+				modifiedValue = value.toString() + " (실제)";
+			}
+			else if(value.toString().equals(Alert.Status.EXERCISE.toString()))
+			{
+				modifiedValue = value.toString() + " (훈련)";
+			}
+			else if(value.toString().equals(Alert.Status.SYSTEM.toString()))
+			{
+				modifiedValue = value.toString() + " (시스템)";
+			}
+			else if(value.toString().equals(Alert.Status.TEST.toString()))
+			{
+				modifiedValue = value.toString() + " (테스트)";
+			}
+			else if(value.toString().equals(Alert.Status.DRAFT.toString()))
+			{
+				modifiedValue = value.toString() + " (초안)";
+			}
+			capEnum1.add(modifiedValue);	
 		}
 		capEnumMap.put("Status", capEnum1);
 		
 		ArrayList<String> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
 		{
-			capEnum2.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.MsgType.ALERT.toString()))
+			{
+				modifiedValue = value.toString() + " (경보)";
+			}
+			else if(value.toString().equals(Alert.MsgType.UPDATE.toString()))
+			{
+				modifiedValue = value.toString() + " (갱신)";
+			}
+			else if(value.toString().equals(Alert.MsgType.CANCEL.toString()))
+			{
+				modifiedValue = value.toString() + " (취소)";
+			}
+			else if(value.toString().equals(Alert.MsgType.ACK.toString()))
+			{
+				modifiedValue = value.toString() + " (응답)";
+			}
+			else if(value.toString().equals(Alert.MsgType.ERROR.toString()))
+			{
+				modifiedValue = value.toString() + " (오류)";
+			}
+			capEnum2.add(modifiedValue);	
 		}
 		capEnumMap.put("MsgType", capEnum2);
 		
 		ArrayList<String> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
 		{
-			capEnum3.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.Scope.PUBLIC.toString()))
+			{
+				modifiedValue = value.toString() + " (공용)";
+			}
+			else if(value.toString().equals(Alert.Scope.RESTRICTED.toString()))
+			{
+				modifiedValue = value.toString() + " (제한)";
+			}
+			else if(value.toString().equals(Alert.Scope.PRIVATE.toString()))
+			{
+				modifiedValue = value.toString() + " (개별)";
+			}
+			capEnum3.add(modifiedValue);
 		}
 		capEnumMap.put("Scope", capEnum3);	
 	}
@@ -92,20 +147,78 @@ public class KieasMessageBuilder
 		ArrayList<String> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values())
 		{
-			capEnum1.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Category.GEO.toString()))
+			{
+				modifiedValue = value.toString() + " (지리)";
+			}
+			else if(value.toString().equals(Info.Category.MET.toString()))
+			{
+				modifiedValue = value.toString() + " (기상)";
+			}
+			else if(value.toString().equals(Info.Category.SAFETY.toString()))
+			{
+				modifiedValue = value.toString() + " (안전)";
+			}
+			else if(value.toString().equals(Info.Category.SECURITY.toString()))
+			{
+				modifiedValue = value.toString() + " (보안)";
+			}
+			else if(value.toString().equals(Info.Category.RESCUE.toString()))
+			{
+				modifiedValue = value.toString() + " (구조)";
+			}
+			else if(value.toString().equals(Info.Category.FIRE.toString()))
+			{
+				modifiedValue = value.toString() + " (화재)";
+			}
+			else if(value.toString().equals(Info.Category.HEALTH.toString()))
+			{
+				modifiedValue = value.toString() + " (건강)";
+			}
+			else if(value.toString().equals(Info.Category.ENV.toString()))
+			{
+				modifiedValue = value.toString() + " (환경)";
+			}
+			capEnum1.add(modifiedValue);
 		}
 		capEnumMap.put("Category", capEnum1);
 		
 		ArrayList<String> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
 		{
-			capEnum2.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Certainty.OBSERVED.toString()))
+			{
+				modifiedValue = value.toString() + " (지리)";
+			}
+			else if(value.toString().equals(Info.Certainty.VERY_LIKELY.toString()))
+			{
+				continue;
+			}
+			else if(value.toString().equals(Info.Certainty.LIKELY.toString()))
+			{
+				modifiedValue = value.toString() + " (일어날 가능성 50% 이상)";
+			}
+			else if(value.toString().equals(Info.Certainty.POSSIBLE.toString()))
+			{
+				modifiedValue = value.toString() + " (일어날 가능성 50% 미만)";
+			}
+			else if(value.toString().equals(Info.Certainty.UNLIKELY.toString()))
+			{
+				modifiedValue = value.toString() + " (일어날 가능성 거의 없음)";
+			}
+			else if(value.toString().equals(Info.Certainty.UNKNOWN_CERTAINTY.toString()))
+			{
+				modifiedValue = value.toString() + " (일어날 가능성 알수없음)";
+			}
+			capEnum2.add(modifiedValue);
 		}
 		capEnumMap.put("Certainty", capEnum2);
 		
 		ArrayList<String> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
-		{
+		{			
 			capEnum3.add(value.toString());
 		}
 		capEnumMap.put("ResponseType", capEnum3);
@@ -113,21 +226,63 @@ public class KieasMessageBuilder
 		ArrayList<String> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
 		{
-			capEnum4.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Severity.EXTREME.toString()))
+			{
+				modifiedValue = value.toString() + " (치명적인 피해 발생 예상)";
+			}
+			else if(value.toString().equals(Info.Severity.SEVERE.toString()))
+			{
+				modifiedValue = value.toString() + " (심각한 피해 발생 예상)";
+			}
+			else if(value.toString().equals(Info.Severity.MODERATE.toString()))
+			{
+				modifiedValue = value.toString() + " (피해 발생 가능성 있음)";
+			}
+			else if(value.toString().equals(Info.Severity.MINOR.toString()))
+			{
+				modifiedValue = value.toString() + " (피해 발생 가능성 낮음)";
+			}
+			else if(value.toString().equals(Info.Severity.UNKNOWN_SEVERITY.toString()))
+			{
+				modifiedValue = value.toString() + " (피해 정도를 알수없음)";
+			}
+			capEnum4.add(modifiedValue);
 		}
 		capEnumMap.put("Severity", capEnum4);
 		
 		ArrayList<String> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
 		{
-			capEnum5.add(value.toString());
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Urgency.IMMEDIATE.toString()))
+			{
+				modifiedValue = value.toString() + " (사건 발생 촉박)";
+			}
+			else if(value.toString().equals(Info.Urgency.EXPECTED.toString()))
+			{
+				modifiedValue = value.toString() + " (곧 사건  발생 예상)";
+			}
+			else if(value.toString().equals(Info.Urgency.FUTURE.toString()))
+			{
+				modifiedValue = value.toString() + " (가까운 미래에 사건  발생 예상)";
+			}
+			else if(value.toString().equals(Info.Urgency.PAST.toString()))
+			{
+				modifiedValue = value.toString() + " (과거에 사건 발생 했었음)";
+			}
+			else if(value.toString().equals(Info.Urgency.UNKNOWN_URGENCY.toString()))
+			{
+				modifiedValue = value.toString() + " (사건 발생 시점 알수없음)";
+			}
+			capEnum5.add(modifiedValue);
 		}
 		capEnumMap.put("Urgency", capEnum5);
 		
 		ArrayList<String> capEnum6 = new ArrayList<String>();
 		for (DisasterEventType value : DisasterEventType.values())
-		{
-			String str = value.toString() + "(" + value.getKoreanEventCode() + ")";
+		{			
+			String str = value.toString() + " (" + value.getKoreanEventCode() + ")";
 			capEnum6.add(str);
 		}
 		capEnumMap.put("EventCode", capEnum6);

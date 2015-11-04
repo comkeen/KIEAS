@@ -44,10 +44,10 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "ConnectServer":
 			controller.connectToServer();
 			return;
-		case "LoadCapDraft":
-			controller.loadCapDraft();
+		case "Load Cap":
+			controller.loadCap();
 			return;
-		case "SaveCap":
+		case "Save Cap":
 			controller.saveCap();
 			return;
 		case "Apply":

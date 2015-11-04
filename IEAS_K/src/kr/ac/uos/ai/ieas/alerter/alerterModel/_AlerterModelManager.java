@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
-import java.util.UUID;
+//import java.util.UUID;
 
-import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
@@ -46,13 +44,13 @@ public class _AlerterModelManager{
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 	}
 	
-	private String generateID(String name)
-	{
-		UUID id = UUID.randomUUID();
-		String identifier = name+"-"+id;
-
-		return identifier;		
-	}
+//	private String generateID(String name)
+//	{
+//		UUID id = UUID.randomUUID();
+//		String identifier = name+"-"+id;
+//
+//		return identifier;		
+//	}
 			
 	public GregorianCalendar getDateCalendar()
 	{
@@ -68,11 +66,18 @@ public class _AlerterModelManager{
 		return result;
 	}	
 
-	public void capLoader() {
-		alerterCapGeneratePanelModel.capLoader();
+	public void loadCap(String path)
+	{
+		alerterCapGeneratePanelModel.loadCap(path);
+	}
+	
+	public void saveCap(String path)
+	{
+		alerterCapGeneratePanelModel.saveCap(path);		
 	}
 
-	public void updateView(String view, String target, String value) {
+	public void updateView(String view, String target, String value) 
+	{
 		alerterController.updateView(view, target, value);
 	}
 }
