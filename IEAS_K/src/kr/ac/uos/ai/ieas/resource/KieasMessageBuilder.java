@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SimpleTimeZone;
+import java.util.Vector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class KieasMessageBuilder
 	private Resource 		resource;
 	private Area 			area;
 	
-	private HashMap<String, ArrayList<String>> capEnumMap;
+	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
 	
 
@@ -59,13 +60,39 @@ public class KieasMessageBuilder
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
 		
-		
 		buildDefaultMessage();
+	}
+	
+	public class Item extends Vector<Object>
+	{		
+		public Item(String key, String value)
+		{
+			this.addElement(key);
+			this.addElement(value);
+		}
+		
+		public String getKey()
+		{
+			return (String) this.get(0);
+		}
+		
+		public String toString()
+		{
+			return (String) this.get(1);
+		}
+	}
+	
+	public HashMap<String, ArrayList<Item>> getCapEnumMap()
+	{
+		this.capEnumMap = new HashMap<>();
+		buildAlertCapEnumMap();
+//		buildInfoCapEnumMap();
+		return capEnumMap;
 	}
 	
 	private void buildAlertCapEnumMap()
 	{
-		ArrayList<String> capEnum1 = new ArrayList<>();
+		ArrayList<Item> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values())
 		{
 			String modifiedValue = "";
@@ -89,11 +116,11 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (초안)";
 			}
-			capEnum1.add(modifiedValue);	
+			capEnum1.add(new Item(value.toString(), modifiedValue));	
 		}
 		capEnumMap.put("Status", capEnum1);
 		
-		ArrayList<String> capEnum2 = new ArrayList<>();
+		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
 		{
 			String modifiedValue = "";
@@ -117,11 +144,11 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (오류)";
 			}
-			capEnum2.add(modifiedValue);	
+			capEnum2.add(new Item(value.toString(), modifiedValue));	
 		}
 		capEnumMap.put("MsgType", capEnum2);
 		
-		ArrayList<String> capEnum3 = new ArrayList<>();
+		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
 		{
 			String modifiedValue = "";
@@ -137,11 +164,11 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (개별)";
 			}
-			capEnum3.add(modifiedValue);
+			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Scope", capEnum3);	
 	}
-	
+	/*
 	private void buildInfoCapEnumMap()
 	{
 		ArrayList<String> capEnum1 = new ArrayList<>();
@@ -294,15 +321,7 @@ public class KieasMessageBuilder
 		}
 		capEnumMap.put("Language", capEnum7);
 	}
-	
-	public HashMap<String, ArrayList<String>> getCapEnumMap()
-	{
-		this.capEnumMap = new HashMap<>();
-		buildAlertCapEnumMap();
-		buildInfoCapEnumMap();
-		return capEnumMap;
-	}
-	
+	*/
 	public void buildDefaultMessage() {
 		
 		this.alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)

@@ -52,6 +52,7 @@ public class _AlerterTopView
 		this.mainFrame = new JFrame(name);
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
+//		mainFrame.pack();
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.mainTabbedPane = new JTabbedPane();

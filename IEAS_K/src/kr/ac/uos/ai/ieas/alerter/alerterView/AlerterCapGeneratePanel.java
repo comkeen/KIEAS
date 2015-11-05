@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 
 public class AlerterCapGeneratePanel
@@ -254,7 +255,7 @@ public class AlerterCapGeneratePanel
 		{
 		case COMBO_BOX:
 			JComboBox<String> comboBox = new JComboBox<>();
-			for (String value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
 				comboBox.addItem(value);
 			}
@@ -311,7 +312,6 @@ public class AlerterCapGeneratePanel
 			return box;
 		}
 	}
-
 
 	private void addTabPanel()
 	{
@@ -400,8 +400,7 @@ public class AlerterCapGeneratePanel
 			return;
 		}
 		if (alertComponents.get(target) instanceof JComboBox<?>)
-		{
-			
+		{			
 			stringBuffer = new StringBuffer(value);
 			System.out.println(stringBuffer.toString());
 			stringBuffer.replace(stringBuffer.indexOf("("), stringBuffer.indexOf(")"), "");
