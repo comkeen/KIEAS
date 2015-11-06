@@ -81,8 +81,8 @@ public class KieasConfiguration {
 		
 		public static final String[] LANGUAGE_LIST =
 		{
-			"ko-KR (한국어)",
-			"us-EN (영어)"
+			"ko-KR",
+			"us-EN"
 		};
 
 		public static final String[] LOCATION_LIST = 

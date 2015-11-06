@@ -52,8 +52,6 @@ public class AlerterCapGeneratePanel
 	private ArrayList<JPanel> infoIndexPanels;
 	private int infoCounter;
 	
-	private StringBuffer stringBuffer;
-	
 
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";
@@ -254,11 +252,12 @@ public class AlerterCapGeneratePanel
 		switch (type)
 		{
 		case COMBO_BOX:
-			JComboBox<String> comboBox = new JComboBox<>();
+			Vector<Item> comboboxModel = new Vector<>();
 			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
-				comboBox.addItem(value);
+				comboboxModel.addElement(value);
 			}
+			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
 			alertComponents.put(labelName, comboBox);
 			box.add(comboBox);
 			return box;			
@@ -290,11 +289,12 @@ public class AlerterCapGeneratePanel
 		switch (type)
 		{
 		case COMBO_BOX:
-			JComboBox<String> comboBox = new JComboBox<>();
-			for (String value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+			Vector<Item> comboboxModel = new Vector<>();
+			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
-				comboBox.addItem(value);		
+				comboboxModel.addElement(value);		
 			}
+			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
 			infoComponents.get(index).put(labelName + index, comboBox);
 			box.add(comboBox);
 			return box;
@@ -400,30 +400,37 @@ public class AlerterCapGeneratePanel
 			return;
 		}
 		if (alertComponents.get(target) instanceof JComboBox<?>)
-		{			
-			stringBuffer = new StringBuffer(value);
-			System.out.println(stringBuffer.toString());
-			stringBuffer.replace(stringBuffer.indexOf("("), stringBuffer.indexOf(")"), "");
-			stringBuffer.trimToSize();
-			System.out.println("sb = " + stringBuffer.toString());
-			((JComboBox<?>) alertComponents.get(target)).setSelectedItem(value);
-			return;
-		}
-		for(int i = 0; i < infoCounter; i++)
 		{
-			if (infoComponents.get(i).get(target) instanceof JTextField)
+			for(int i = 0; i < ((JComboBox<?>) alertComponents.get(target)).getItemCount(); i++)
 			{
-				((JTextField) infoComponents.get(i).get(target)).setText(value);
+				if((((Item) ((JComboBox<?>) alertComponents.get(target)).getItemAt(i)).getKey()).equals(value))
+				{
+					((JComboBox<?>) alertComponents.get(target)).setSelectedIndex(i);
+					return;
+				}
+			}
+		}
+		for(int j = 0; j < infoCounter; j++)
+		{
+			if (infoComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) infoComponents.get(j).get(target)).setText(value);
 				return;
 			}
-			if (infoComponents.get(i).get(target) instanceof JComboBox<?>)
+			if (infoComponents.get(j).get(target) instanceof JComboBox<?>)
 			{
-				((JComboBox<?>) infoComponents.get(i).get(target)).setSelectedItem(value);
-				return;
+				for(int i = 0; i < ((JComboBox<?>) infoComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) infoComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) infoComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
 			}
-			if (infoComponents.get(i).get(target) instanceof JTextArea)
+			if (infoComponents.get(j).get(target) instanceof JTextArea)
 			{
-				((JTextArea) infoComponents.get(i).get(target)).setText(value);
+				((JTextArea) infoComponents.get(j).get(target)).setText(value);
 				return;
 			}
 		}

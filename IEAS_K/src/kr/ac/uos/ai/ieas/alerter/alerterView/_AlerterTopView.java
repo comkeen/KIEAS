@@ -69,9 +69,12 @@ public class _AlerterTopView
 	}
 
 	private void initLookAndFeel() {
-		try {
+		try 
+		{
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
+		} 
+		catch (UnsupportedLookAndFeelException e) 
+		{
 			e.printStackTrace();
 		}
 	}

@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SimpleTimeZone;
-import java.util.Vector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,22 +62,26 @@ public class KieasMessageBuilder
 		buildDefaultMessage();
 	}
 	
-	public class Item extends Vector<Object>
+	public class Item
 	{		
+		private String key;
+		private String value;
+		
+		
 		public Item(String key, String value)
 		{
-			this.addElement(key);
-			this.addElement(value);
+			this.key = key;
+			this.value = value;
 		}
 		
 		public String getKey()
 		{
-			return (String) this.get(0);
+			return key;
 		}
 		
 		public String toString()
 		{
-			return (String) this.get(1);
+			return value;
 		}
 	}
 	
@@ -86,7 +89,7 @@ public class KieasMessageBuilder
 	{
 		this.capEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();
-//		buildInfoCapEnumMap();
+		buildInfoCapEnumMap();
 		return capEnumMap;
 	}
 	
@@ -168,10 +171,10 @@ public class KieasMessageBuilder
 		}
 		capEnumMap.put("Scope", capEnum3);	
 	}
-	/*
+	
 	private void buildInfoCapEnumMap()
 	{
-		ArrayList<String> capEnum1 = new ArrayList<>();
+		ArrayList<Item> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values())
 		{
 			String modifiedValue = "";
@@ -207,11 +210,11 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (환경)";
 			}
-			capEnum1.add(modifiedValue);
+			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Category", capEnum1);
 		
-		ArrayList<String> capEnum2 = new ArrayList<>();
+		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
 		{
 			String modifiedValue = "";
@@ -239,18 +242,20 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (일어날 가능성 알수없음)";
 			}
-			capEnum2.add(modifiedValue);
+			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Certainty", capEnum2);
 		
-		ArrayList<String> capEnum3 = new ArrayList<>();
+		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
 		{			
-			capEnum3.add(value.toString());
+			String modifiedValue = "";
+			modifiedValue = value.toString();
+			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("ResponseType", capEnum3);
 		
-		ArrayList<String> capEnum4 = new ArrayList<>();
+		ArrayList<Item> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
 		{
 			String modifiedValue = "";
@@ -274,11 +279,11 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (피해 정도를 알수없음)";
 			}
-			capEnum4.add(modifiedValue);
+			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Severity", capEnum4);
 		
-		ArrayList<String> capEnum5 = new ArrayList<>();
+		ArrayList<Item> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
 		{
 			String modifiedValue = "";
@@ -302,26 +307,36 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (사건 발생 시점 알수없음)";
 			}
-			capEnum5.add(modifiedValue);
+			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Urgency", capEnum5);
 		
-		ArrayList<String> capEnum6 = new ArrayList<String>();
+		ArrayList<Item> capEnum6 = new ArrayList<>();
 		for (DisasterEventType value : DisasterEventType.values())
 		{
-			String str = value.toString() + " (" + value.getKoreanEventCode() + ")";
-			capEnum6.add(str);
+			String modifiedValue = "";
+			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
+			capEnum6.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("EventCode", capEnum6);
 		
-		ArrayList<String> capEnum7 = new ArrayList<String>();
+		ArrayList<Item> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.IEAS_List.LANGUAGE_LIST)
 		{
-			capEnum7.add(value);
+			String modifiedValue = "";
+			if(value.toString().equals(KieasConfiguration.IEAS_List.LANGUAGE_LIST[0]))
+			{
+				modifiedValue = value.toString() + " (한국어)";
+			}
+			else if(value.toString().equals(KieasConfiguration.IEAS_List.LANGUAGE_LIST[1]))
+			{
+				modifiedValue = value.toString() + " (영어)";
+			}
+			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Language", capEnum7);
 	}
-	*/
+	
 	public void buildDefaultMessage() {
 		
 		this.alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
