@@ -175,13 +175,24 @@ public class AlerterCapGeneratePanelModel
 			for (Object component : mViewComponentProperties)
 			{
 				if (component instanceof HashMap<?, ?>)
-				{				
+				{
+					System.out.println("Vector target = " + target);
+					System.out.println("Vector memberName = " + memberName);
+					System.out.println("Vector value = " + value);
+//					if(memberName.equals("mCategory"))
+//					{
+//						((HashMap<String, String>) component).replace(target, value);
+//						alerterModelManager.updateView(mViewName, target, value);
+//						return;
+//					}
 					((HashMap<String, String>) component).replace(target, value);
 					alerterModelManager.updateView(mViewName, target, value);
 					return;
 				}
+				//??
 				if (component instanceof Vector<?>)
 				{
+					
 					for (HashMap<String, String> hashMap : (Vector<HashMap<String, String>>) component)
 					{
 						if(hashMap.containsKey(target))
@@ -192,6 +203,7 @@ public class AlerterCapGeneratePanelModel
 						}
 					}
 				}
+				
 			}
 		}
 		catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) 
@@ -219,6 +231,7 @@ public class AlerterCapGeneratePanelModel
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
 		mInfoCounter = ieasMessage.getInfoCount();
+		System.out.println("infocount : " + mInfoCounter);
 		for(int i = 0; i < mInfoCounter; i++)
 		{
 			setModelProperty(AlerterCapGeneratePanel.LANGUAGE + i, ieasMessage.getLanguage(i));

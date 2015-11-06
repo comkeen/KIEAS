@@ -210,6 +210,22 @@ public class KieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (환경)";
 			}
+			else if(value.toString().equals(Info.Category.TRANSPORT.toString()))
+			{
+				modifiedValue = value.toString() + " (교통)";
+			}
+			else if(value.toString().equals(Info.Category.INFRA.toString()))
+			{
+				modifiedValue = value.toString() + " (기반시설)";
+			}
+			else if(value.toString().equals(Info.Category.CBRNE.toString()))
+			{
+				modifiedValue = value.toString() + " (화생방)";
+			}
+			else if(value.toString().equals(Info.Category.OTHER.toString()))
+			{
+				modifiedValue = value.toString() + " (기타)";
+			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Category", capEnum1);

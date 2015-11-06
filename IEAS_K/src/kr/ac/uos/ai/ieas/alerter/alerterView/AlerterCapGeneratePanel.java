@@ -1,5 +1,7 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
@@ -173,7 +176,7 @@ public class AlerterCapGeneratePanel
 	{
 		this.alertPanel = new JPanel();
 		alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
-		alertPanel.setBorder(BorderFactory.createEtchedBorder());
+		
 		this.alertComponents = new HashMap<>();
 
 		alertPanel.add(addBox(IDENTIFIER, TEXT_FIELD));
@@ -183,7 +186,7 @@ public class AlerterCapGeneratePanel
 		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
 		alertPanel.add(addBox(SCOPE, COMBO_BOX));
 		alertPanel.add(addBox(CODE, TEXT_FIELD));
-		alertPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		alertPanel.setBorder(BorderFactory.createTitledBorder("Alert"));
 		
 		return alertPanel;
 	}
@@ -375,10 +378,29 @@ public class AlerterCapGeneratePanel
 //			return;
 //		}
 //	}
-
+	private int checkIndex(String target)
+	{
+		StringBuffer stringBuffer = new StringBuffer();
+		for(int i = 0; i < target.length(); i++)
+		{
+			char currentChar = target.charAt(i);
+			if(Character.isDigit(currentChar))
+			{
+				stringBuffer.append(currentChar);			
+			}
+		}
+		if(stringBuffer.length() == 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return Integer.parseInt(stringBuffer.toString());			
+		}
+	}
 	
-	public void updateView(String target, String value) {
-
+	public void updateView(String target, String value)
+	{
 		if(target.equals(TEXT_AREA))
 		{
 			this.mTextArea.setText(value);
@@ -412,6 +434,10 @@ public class AlerterCapGeneratePanel
 		}
 		for(int j = 0; j < infoCounter; j++)
 		{
+			if(j > 0)
+			{
+				addInfoIndexPanel();
+			}
 			if (infoComponents.get(j).get(target) instanceof JTextField)
 			{
 				((JTextField) infoComponents.get(j).get(target)).setText(value);
