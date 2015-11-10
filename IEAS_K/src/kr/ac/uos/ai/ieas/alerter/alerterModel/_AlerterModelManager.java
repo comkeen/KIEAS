@@ -29,12 +29,10 @@ public class _AlerterModelManager{
 	}
 	
 	/**
-	 * AlerterModel을 관리한다.
-	 * Cap메시지 처리를 위한 KieasMessageBuilder 초기화.
+	 * AlerterModel들을 관리한다.
+	 * CAP 메시지 처리를 위한 KieasMessageBuilder 초기화.
 	 * Database 접근을 위한 DatabaseHandler 초기화.
-	 * 
-	 *  
-	 * @param alerterController
+	 * @param alerterController Controller
 	 */
 	public _AlerterModelManager(_AlerterController alerterController)
 	{

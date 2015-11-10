@@ -30,13 +30,19 @@ import com.google.publicalerts.cap.Info.Severity;
 import com.google.publicalerts.cap.Info.Urgency;
 import com.google.publicalerts.cap.NotCapException;
 import com.google.publicalerts.cap.Resource;
-import com.google.publicalerts.cap.ValuePair;
 
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
+
+/**
+ * CAP 형식의 메시지를 생성하고 다루는 클래스.
+ * Google CAP Library를 활용하여 CAP 메시지를 다룬다.
+ * @author byun-ai
+ *
+ */
 
 public class KieasMessageBuilder
 {
@@ -46,8 +52,8 @@ public class KieasMessageBuilder
 
 	private Alert 			alert;
 	private Info 			info;
-	private Resource 		resource;
-	private Area 			area;
+//	private Resource 		resource;
+//	private Area 			area;
 	
 	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
@@ -59,11 +65,17 @@ public class KieasMessageBuilder
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
 		
-		buildDefaultMessage();
+//		buildDefaultMessage();
 	}
 	
+	/**
+	 * View에 사용될 Enum을 Item으로 사용하여 Value를 디스플레이하고 Key에 의해 아이템 판별이 이루어진다.
+	 * 
+	 * @author byun-ai
+	 *
+	 */
 	public class Item
-	{		
+	{
 		private String key;
 		private String value;
 		
@@ -85,6 +97,12 @@ public class KieasMessageBuilder
 		}
 	}
 	
+	/**
+	 * CAP 요소에서 사용하는 Enum들을 가져옴.
+	 * CAP 요소 이름 elementName을 Key로 사용하며 이것으로 Enum 리스트를 식별함.
+	 * 
+	 * @return HashMap<String elementName, ArrayList<Item> enum>
+	 */
 	public HashMap<String, ArrayList<Item>> getCapEnumMap()
 	{
 		this.capEnumMap = new HashMap<>();
@@ -174,6 +192,7 @@ public class KieasMessageBuilder
 	
 	private void buildInfoCapEnumMap()
 	{
+		//Category
 		ArrayList<Item> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values())
 		{
@@ -373,9 +392,8 @@ public class KieasMessageBuilder
 				.setCertainty(Info.Certainty.UNKNOWN_CERTAINTY)
 				.buildPartial();
 		
-		this.resource = Resource.newBuilder().buildPartial();
-		
-		this.area = Area.newBuilder().buildPartial();
+//		this.resource = Resource.newBuilder().buildPartial();		
+//		this.area = Area.newBuilder().buildPartial();
 				
 		alert = Alert.newBuilder(alert).addInfo(info).build();
 	}
@@ -463,9 +481,8 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
+
+	//CAP 요소 Getter
 	public String getIdentifier()
 	{
 		try
@@ -664,13 +681,8 @@ public class KieasMessageBuilder
 	
 
 
-
 	
-	
-
-	
-	
-	
+	//CAP 요소 Setter
 	public void setIdentifier(String text)
 	{
 		alert = Alert.newBuilder(alert).setIdentifier(text).build();
@@ -841,6 +853,8 @@ public class KieasMessageBuilder
 		info = Info.newBuilder(info).setContact(contact).build();
 	}
 	
+	
+	
 	private String getValueInJasonObject(String jsonInput) {
 		
 		try {
@@ -852,6 +866,12 @@ public class KieasMessageBuilder
 		}
 	}
 	
+	/**
+	 * Database에서 사용하는 CAP 객체를 Google CAP Library에서 사용하는 CAP 객체로 변환.
+	 * 
+	 * @param alertList Database에서 사용하는 CAP 객체들의 리스트.
+	 * @return Google CAP Library에서 사용하는 CAP 객체들의 리스트.
+	 */	
 	public ArrayList<String> databaseObjectToCapLibraryObject(ArrayList<CAPAlert> alertList) {
 		
 		ArrayList<String> capList = new ArrayList<String>();

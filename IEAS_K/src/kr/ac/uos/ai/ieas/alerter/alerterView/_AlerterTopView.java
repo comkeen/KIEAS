@@ -32,12 +32,8 @@ public class _AlerterTopView
 	}
 
 	/**
-	 * _AlerterTopView 생성자.
-	 * AlerterViewActionListener 초기화
-	 * MainFrame 초기화
-	 * @param alerterActionListener 
-	 * 
-	 * @param alerterController
+	 * Main Frame과 각 포함되는 View Component 초기화.
+	 * @param alerterActionListener 이벤트 리스너
 	 */
 	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
@@ -52,7 +48,6 @@ public class _AlerterTopView
 		this.mainFrame = new JFrame(name);
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
-//		mainFrame.pack();
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.mainTabbedPane = new JTabbedPane();
@@ -127,6 +122,13 @@ public class _AlerterTopView
 		alerterCapGeneratePanel.addAreaIndexPanel();
 	}	
 	
+	/**
+	 * Model의 데이터 값이 바뀌었을 경우 View 갱신을 위해 Model에 의해 호출된다.
+	 * 
+	 * @param view 갱신되어야 하는 View 클래스 이름
+	 * @param target 값이 표시되는 Component의 이름
+	 * @param value 표시되는 값
+	 */
 	public void updateView(String view, String target, String value)
 	{
 		switch (view)

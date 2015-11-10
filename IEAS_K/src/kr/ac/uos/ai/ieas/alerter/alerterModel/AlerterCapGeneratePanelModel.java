@@ -74,7 +74,10 @@ public class AlerterCapGeneratePanelModel
 	private String mAreaDesc;
 	private String mGeoCode;
 
-	
+	/**
+	 * CAP 메시지를 다루기 위해 사용되는 KieasMessageBuilder 객체 생성.
+	 * @param _AlerterModelManager Model들을 관리하는 ModelManager. 
+	 */
 	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
@@ -84,6 +87,10 @@ public class AlerterCapGeneratePanelModel
 		initComponents();
 	}
 
+	/**
+	 * 멤버변수 초기화.
+	 * mViewName - 이 Model의 표적이 되는 View 클래스의 이름.
+	 */
 	private void init()
 	{
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
@@ -122,6 +129,10 @@ public class AlerterCapGeneratePanelModel
 		this.mGeoCode = "";
 	}
 
+	/**
+	 * View 적용될 데이터 값을 가지고있는 Model Vector 생성 및 초기화.
+	 * HashMap<String name, String value> name - 데이터 이름, value - 값	
+	 */
 	private void initComponents()
 	{
 		this.mViewComponentProperties = new Vector<>();
@@ -133,6 +144,7 @@ public class AlerterCapGeneratePanelModel
 		mViewComponentProperties.addElement(initAreaPanelComponents());
 	}
 
+	
 	private HashMap<String, String> initSaveLoadPanelComponents()
 	{
 		this.mComponents = new HashMap<>();
@@ -166,6 +178,11 @@ public class AlerterCapGeneratePanelModel
 		return mInfoValues;
 	}
 
+	/**
+	 * InfoIndex의 추가.	 * 
+	 * @param index 추가되는 Info의 Index.
+	 * @return HashMap<String, String>
+	 */	
 	private HashMap<String, String> addInfoIndexValues(int index)
 	{
 		this.mInfoIndexValues = new HashMap<>();
@@ -196,6 +213,11 @@ public class AlerterCapGeneratePanelModel
 		return mResourceValues;
 	}
 	
+	/**
+	 * ResourceIndex의 추가.
+	 * @param index 추가되는 Resource Index.
+	 * @return HashMap<String, String>
+	 */
 	private HashMap<String, String> addResourceIndexValues(int index)
 	{
 		this.mResourceIndexValues = new HashMap<>();
@@ -216,6 +238,11 @@ public class AlerterCapGeneratePanelModel
 		return mAreaValues;
 	}
 	
+	/**
+	 * AreaIndex의 추가.
+	 * @param index 추가되는 Area Index.
+	 * @return HashMap<String, String>
+	 */
 	private HashMap<String, String> addAreaIndexValues(int index)
 	{
 		this.mAreaIndexValues = new HashMap<>();
@@ -225,6 +252,12 @@ public class AlerterCapGeneratePanelModel
 		return mAreaIndexValues;
 	}
 
+	/**
+	 * Model Vector의 값을 변경할 때 사용됨.
+	 * 값이 변경되면 updateView 호출을 통해 View에 변경된 값을 갱신.
+	 * @param target 변경될 데이터의 이름
+	 * @param value 변경될 데이터의 값
+	 */
 	public void setModelProperty(String target, String value)
 	{
 		String memberName = transformToMemberName(target);
@@ -277,19 +310,24 @@ public class AlerterCapGeneratePanelModel
 		System.out.println("there is no such a ModelPropertyName " + target);
 	}
 
-	private void setAlertPanel(KieasMessageBuilder ieasMessage)
+	/**
+	 * Cap메시지를 로드했을 시 호출됨.
+	 * Alert패널의 데이터들을 일괄 변경, 갱신함.
+	 * @param kieasMessageBuilder 갱신되는 Cap 메시지 객체.
+	 */
+	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		setModelProperty(AlerterCapGeneratePanel.IDENTIFIER, ieasMessage.getIdentifier());
-		setModelProperty(AlerterCapGeneratePanel.SENDER, ieasMessage.getSender());
-		setModelProperty(AlerterCapGeneratePanel.SENT, ieasMessage.getSent());
-		setModelProperty(AlerterCapGeneratePanel.STATUS, ieasMessage.getStatus());
-		setModelProperty(AlerterCapGeneratePanel.MSG_TYPE, ieasMessage.getMsgType());
-		setModelProperty(AlerterCapGeneratePanel.SCOPE, ieasMessage.getScope());
-		setModelProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
+		setModelProperty(AlerterCapGeneratePanel.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		setModelProperty(AlerterCapGeneratePanel.SENDER, kieasMessageBuilder.getSender());
+		setModelProperty(AlerterCapGeneratePanel.SENT, kieasMessageBuilder.getSent());
+		setModelProperty(AlerterCapGeneratePanel.STATUS, kieasMessageBuilder.getStatus());
+		setModelProperty(AlerterCapGeneratePanel.MSG_TYPE, kieasMessageBuilder.getMsgType());
+		setModelProperty(AlerterCapGeneratePanel.SCOPE, kieasMessageBuilder.getScope());
+		setModelProperty(AlerterCapGeneratePanel.CODE, kieasMessageBuilder.getCode());		
 		
-		setInfoPanel(ieasMessage);
-		setResourcePanel(ieasMessage);
-		setAreaPanel(ieasMessage);
+		setInfoPanel(kieasMessageBuilder);
+		setResourcePanel(kieasMessageBuilder);
+		setAreaPanel(kieasMessageBuilder);
 	}
 
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
@@ -337,6 +375,10 @@ public class AlerterCapGeneratePanelModel
 		}
 	}
 	
+	/**
+	 * Cap 메시지를 불러올 때 호출됨.
+	 * @param path 불러올 Cap의 경로
+	 */
 	public void loadCap(String path)
 	{
 		String content = capLoader(path);
@@ -346,6 +388,10 @@ public class AlerterCapGeneratePanelModel
 		setAlertPanel(kieasMessageBuilder);
 	}
 
+	/**
+	 * 작성된 Cap 메시지를 파일로 쓸 때 호출됨.
+	 * @param path 파일이 저장될 경로
+	 */
 	public void saveCap(String path)
 	{
 		capWriter(path);
