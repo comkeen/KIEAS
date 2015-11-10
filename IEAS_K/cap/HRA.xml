@@ -41,7 +41,7 @@ o 총 예상 강수량: [Value]mm
     <resource>
       <resourceDesc>지도</resourceDesc>
       <mimeType>[imageType]/[imageExtension]</mimeType>
-    <uri>http://www.kma.go.kr/repositary/image/wrn/img/imageName.png</uri>
+      <uri>http://www.kma.go.kr/repositary/image/wrn/img/imageName.png</uri>
     </resource>    
     <area>
       <areaDesc>[GeoName]</areaDesc>

@@ -60,7 +60,21 @@ public class AlerterCapGeneratePanelModel
 	private String mDescription;
 	private String mWeb;
 	private String mContact;
+	
+	private Vector<HashMap<String, String>> mResourceValues;
+	private HashMap<String, String> mResourceIndexValues;
+	private int mResourceCounter;
+	private String mResourceDesc;
+	private String mMimeType;
+	private String mUri;
+	
+	private Vector<HashMap<String, String>> mAreaValues;
+	private HashMap<String, String> mAreaIndexValues;
+	private int mAreaCounter;
+	private String mAreaDesc;
+	private String mGeoCode;
 
+	
 	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
@@ -73,8 +87,7 @@ public class AlerterCapGeneratePanelModel
 	private void init()
 	{
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
-		this.mInfoCounter = 0;
-
+		
 		this.mTextArea = "";		
 		this.mLoadTextField = "cap/HRA.xml";
 		this.mSaveTextField = "cap/out.xml";
@@ -100,6 +113,13 @@ public class AlerterCapGeneratePanelModel
 		this.mDescription = "";
 		this.mWeb = "";
 		this.mContact = "";
+
+		this.mResourceDesc = "";
+		this.mMimeType = "";
+		this.mUri = "";
+
+		this.mAreaDesc = "";
+		this.mGeoCode = "";
 	}
 
 	private void initComponents()
@@ -109,6 +129,8 @@ public class AlerterCapGeneratePanelModel
 		mViewComponentProperties.addElement(initSaveLoadPanelComponents());
 		mViewComponentProperties.addElement(initAlertPanelComponents());
 		mViewComponentProperties.addElement(initInfoPanelComponents());
+		mViewComponentProperties.addElement(initResourcePanelComponents());
+		mViewComponentProperties.addElement(initAreaPanelComponents());
 	}
 
 	private HashMap<String, String> initSaveLoadPanelComponents()
@@ -163,6 +185,45 @@ public class AlerterCapGeneratePanelModel
 
 		return mInfoIndexValues;
 	}
+	
+	private Vector<HashMap<String, String>> initResourcePanelComponents()
+	{
+		this.mResourceValues = new Vector<>();
+		this.mResourceCounter = 0;
+		
+		mResourceValues.addElement(addResourceIndexValues(mResourceCounter));
+		
+		return mResourceValues;
+	}
+	
+	private HashMap<String, String> addResourceIndexValues(int index)
+	{
+		this.mResourceIndexValues = new HashMap<>();
+		mResourceIndexValues.put(AlerterCapGeneratePanel.RESOURCE_DESC + index, mResourceDesc);
+		mResourceIndexValues.put(AlerterCapGeneratePanel.MIME_TYPE + index, mMimeType);
+		mResourceIndexValues.put(AlerterCapGeneratePanel.URI + index, mUri);
+
+		return mResourceIndexValues;
+	}
+	
+	private Vector<HashMap<String, String>> initAreaPanelComponents()
+	{
+		this.mAreaValues = new Vector<>();
+		this.mAreaCounter = 0;
+		
+		mAreaValues.addElement(addAreaIndexValues(mAreaCounter));
+		
+		return mAreaValues;
+	}
+	
+	private HashMap<String, String> addAreaIndexValues(int index)
+	{
+		this.mAreaIndexValues = new HashMap<>();
+		mAreaIndexValues.put(AlerterCapGeneratePanel.AREA_DESC + index, mAreaDesc);
+		mAreaIndexValues.put(AlerterCapGeneratePanel.GEO_CODE + index, mGeoCode);
+
+		return mAreaIndexValues;
+	}
 
 	public void setModelProperty(String target, String value)
 	{
@@ -177,8 +238,9 @@ public class AlerterCapGeneratePanelModel
 				if (component instanceof HashMap<?, ?>)
 				{
 					System.out.println("Vector target = " + target);
-					System.out.println("Vector memberName = " + memberName);
-					System.out.println("Vector value = " + value);
+//					System.out.println("Vector memberName = " + memberName);
+//					System.out.println("Vector value = " + value);
+					
 //					if(memberName.equals("mCategory"))
 //					{
 //						((HashMap<String, String>) component).replace(target, value);
@@ -226,6 +288,8 @@ public class AlerterCapGeneratePanelModel
 		setModelProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
 		
 		setInfoPanel(ieasMessage);
+		setResourcePanel(ieasMessage);
+		setAreaPanel(ieasMessage);
 	}
 
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
@@ -250,6 +314,29 @@ public class AlerterCapGeneratePanelModel
 		}
 	}
 
+	private void setResourcePanel(KieasMessageBuilder ieasMessage)
+	{
+		mResourceCounter = ieasMessage.getResourceCount(0);
+		System.out.println("resourceCount : " + mResourceCounter);
+		for(int i = 0; i < mResourceCounter; i++)
+		{
+			setModelProperty(AlerterCapGeneratePanel.RESOURCE_DESC + i, ieasMessage.getResourceDesc(0, i));
+			setModelProperty(AlerterCapGeneratePanel.MIME_TYPE + i, ieasMessage.getMimeType(0, i));
+			setModelProperty(AlerterCapGeneratePanel.URI + i, ieasMessage.getUri(0, i));
+		}
+	}
+	
+	private void setAreaPanel(KieasMessageBuilder ieasMessage)
+	{
+		mAreaCounter = ieasMessage.getAreaCount(0);
+		System.out.println("areaCount : " + mAreaCounter);
+		for(int i = 0; i < mAreaCounter; i++)
+		{
+			setModelProperty(AlerterCapGeneratePanel.AREA_DESC + i, ieasMessage.getAreaDesc(0, i));
+			setModelProperty(AlerterCapGeneratePanel.GEO_CODE + i, ieasMessage.getGeoCode(0, i));
+		}
+	}
+	
 	public void loadCap(String path)
 	{
 		String content = capLoader(path);

@@ -50,6 +50,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Save Cap":
 			controller.saveCap();
 			return;
+		case "Insert DB":
+			controller.insertDatabase();
+			return;
 		case "Apply":
 			controller.applyAlertElement();
 			return;
@@ -58,6 +61,12 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 			return;
 		case "Add Info":
 			controller.addInfoIndexPanel();
+			return;
+		case "Add Resource":
+			controller.addResourceIndexPanel();
+			return;
+		case "Add Area":
+			controller.addAreaIndexPanel();
 			return;
 		default:
 			System.out.println("there is no such a actionCommand " + actionCommand);

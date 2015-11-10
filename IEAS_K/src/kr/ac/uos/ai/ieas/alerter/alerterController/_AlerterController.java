@@ -160,7 +160,22 @@ public class _AlerterController
 		alerterTopView.addInfoIndexPanel();
 	}
 
+	public void addResourceIndexPanel() 
+	{
+		alerterTopView.addResourceIndexPanel();
+	}
+
+	public void addAreaIndexPanel()
+	{
+		alerterTopView.addAreaIndexPanel();
+	}
+	
 	public void updateView(String view, String target, String value) {
 		alerterTopView.updateView(view, target, value);
 	}
+
+	public void insertDatabase() {
+		System.out.println("insert to database : todo");
+	}
+
 }

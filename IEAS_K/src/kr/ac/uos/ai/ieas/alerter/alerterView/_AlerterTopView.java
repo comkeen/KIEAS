@@ -118,6 +118,15 @@ public class _AlerterTopView
 		alerterCapGeneratePanel.addInfoIndexPanel();
 	}
 
+	public void addResourceIndexPanel()
+	{
+		alerterCapGeneratePanel.addResourceIndexPanel();
+	}
+	
+	public void addAreaIndexPanel() {
+		alerterCapGeneratePanel.addAreaIndexPanel();
+	}	
+	
 	public void updateView(String view, String target, String value)
 	{
 		switch (view)
@@ -140,5 +149,5 @@ public class _AlerterTopView
 	public String getSaveTextField()
 	{
 		return alerterCapGeneratePanel.getSaveTextField();
-	}	
+	}
 }

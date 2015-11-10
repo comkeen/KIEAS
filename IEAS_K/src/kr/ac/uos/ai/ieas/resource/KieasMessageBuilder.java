@@ -425,6 +425,16 @@ public class KieasMessageBuilder
 	{
 		return alert.getInfoCount();
 	}
+
+	public int getResourceCount(int index)
+	{
+		return alert.getInfo(index).getResourceCount();
+	}
+	
+	public int getAreaCount(int index)
+	{
+		return alert.getInfo(index).getAreaCount();
+	}
 	
 	public String getMessage()
 	{
@@ -627,8 +637,30 @@ public class KieasMessageBuilder
 		return alert.getInfo(index).getContact().toString();
 	}
 
+	public String getResourceDesc(int infoIndex, int index)
+	{
+		return alert.getInfo(infoIndex).getResource(index).getResourceDesc();
+	}
 	
+	public String getMimeType(int infoIndex, int index)
+	{
+		return alert.getInfo(infoIndex).getResource(index).getMimeType();
+	}
+
+	public String getUri(int infoIndex, int index)
+	{
+		return alert.getInfo(infoIndex).getResource(index).getUri();
+	}
 	
+	public String getAreaDesc(int infoIndex, int index)
+	{
+		return alert.getInfo(infoIndex).getArea(index).getAreaDesc();
+	}
+	
+	public String getGeoCode(int infoIndex, int index)
+	{
+		return alert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();
+	}
 	
 
 
@@ -791,6 +823,14 @@ public class KieasMessageBuilder
 		info = Info.newBuilder(info).setSenderName(senderName).build();
 	}
 
+	public void setHeadline(String headline) {
+		info = Info.newBuilder(info).setHeadline(headline).build();
+	}
+
+	public void setDescription(String description) {
+		info = Info.newBuilder(info).setDescription(description).build();
+	}
+
 	public void setWeb(String web)
 	{
 		info = Info.newBuilder(info).setWeb(web).build();
@@ -800,15 +840,6 @@ public class KieasMessageBuilder
 	{
 		info = Info.newBuilder(info).setContact(contact).build();
 	}
-
-	public void setHeadline(String headline) {
-		info = Info.newBuilder(info).setHeadline(headline).build();
-	}
-
-	public void setDescription(String description) {
-		info = Info.newBuilder(info).setDescription(description).build();
-	}
-	
 	
 	private String getValueInJasonObject(String jsonInput) {
 		

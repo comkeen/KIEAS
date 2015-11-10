@@ -55,6 +55,18 @@ public class AlerterCapGeneratePanel
 	private ArrayList<JPanel> infoIndexPanels;
 	private int infoCounter;
 	
+	private JTabbedPane areaPanel;
+	private ArrayList<JPanel> areaIndexPanels;
+	private ArrayList<HashMap<String, Component>> areaComponents;
+	private int areaCounter;
+	
+	private JTabbedPane resourcePanel;
+	private ArrayList<JPanel> resourceIndexPanels;
+	private ArrayList<HashMap<String, Component>> resourceComponents;
+	private int resourceCounter;
+	private JButton insertDatabaseButton;
+	private JTextField mInsertDatabaseTextField;
+	
 
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";
@@ -62,8 +74,10 @@ public class AlerterCapGeneratePanel
 
 	public static final String LOAD_TEXT_FIELD = "LoadTextField";
 	public static final String SAVE_TEXT_FIELD = "SaveTextField";
+	private static final String INSERT_DATABASE_TEXT_FIELD = "InsertDatabaseTextField";
 	public static final String LOAD_CAP_BUTTON = "Load Cap";
 	public static final String SAVE_CAP_BUTTON = "Save Cap";
+	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
 	
 	
 	public static final String IDENTIFIER = "Identifier";
@@ -88,6 +102,13 @@ public class AlerterCapGeneratePanel
 	public static final String WEB = "Web";
 	public static final String CONTACT = "Contact";
 
+	public static final String RESOURCE_DESC = "ResourceDesc";
+	public static final String MIME_TYPE = "MimeType";
+	public static final String URI = "Uri";
+	
+	public static final String AREA_DESC = "AreaDesc";
+	public static final String GEO_CODE = "GeoCode";
+	
 	private static final int BASE_LINE = 100;
 
 	
@@ -118,11 +139,11 @@ public class AlerterCapGeneratePanel
 		capGeneratePanel.add(initTextArea());
 		capGeneratePanel.add(initButtonPanel());	
 		capGeneratePanel.add(initCapAlertPanel());
-		capGeneratePanel.add(initCapInfoPanel());
 		
 		mViewComponents.addElement(panelComponenets);
 		mViewComponents.addElement(alertComponents);
 		mViewComponents.addElement(infoComponents);
+		mViewComponents.addElement(areaComponents);
 
 		this.capGenerateScrollPanel = new JScrollPane(capGeneratePanel);
 	}
@@ -164,6 +185,16 @@ public class AlerterCapGeneratePanel
 		saveBox.setBorder(BorderFactory.createLoweredBevelBorder());
 		buttonPane.add(saveBox);
 
+		Box insertDatabaseBox = Box.createHorizontalBox();
+		this.insertDatabaseButton = createButton(INSERT_DATABASE_BUTTON);
+		insertDatabaseBox.add(insertDatabaseButton);
+		this.mInsertDatabaseTextField = new JTextField();
+		panelComponenets.put(INSERT_DATABASE_TEXT_FIELD, mInsertDatabaseTextField);
+		mInsertDatabaseTextField.setText("ALERT ID");
+		insertDatabaseBox.add(mInsertDatabaseTextField);
+		insertDatabaseBox.setBorder(BorderFactory.createLoweredBevelBorder());
+		buttonPane.add(insertDatabaseBox);
+		
 		this.alertApplyButton = createButton("Apply");
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		buttonPane.add(alertApplyButton);
@@ -186,6 +217,9 @@ public class AlerterCapGeneratePanel
 		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
 		alertPanel.add(addBox(SCOPE, COMBO_BOX));
 		alertPanel.add(addBox(CODE, TEXT_FIELD));
+		alertPanel.add(initCapInfoPanel());
+		alertPanel.add(initCapResourcePanel());	
+		alertPanel.add(initCapAreaPanel());	
 		alertPanel.setBorder(BorderFactory.createTitledBorder("Alert"));
 		
 		return alertPanel;
@@ -207,31 +241,92 @@ public class AlerterCapGeneratePanel
 
 	public void addInfoIndexPanel()
 	{
-		removeTabPanel();
+		removeTabPanel(infoPanel);
 		infoComponents.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(LANGUAGE, COMBO_BOX, infoCounter));
-		panel.add(addBox(CATEGORY, COMBO_BOX, infoCounter));
-		panel.add(addBox(EVENT, TEXT_FIELD, infoCounter));
-		panel.add(addBox(URGENCY, COMBO_BOX, infoCounter));
-		panel.add(addBox(SEVERITY, COMBO_BOX, infoCounter));
-		panel.add(addBox(CERTAINTY, COMBO_BOX, infoCounter));
-		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoCounter));
-		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoCounter));
-		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoCounter));
-		panel.add(addBox(HEADLINE, TEXT_FIELD, infoCounter));
-		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoCounter));
-		panel.add(addBox(WEB, TEXT_FIELD, infoCounter));
-		panel.add(addBox(CONTACT, TEXT_FIELD, infoCounter));
+		panel.add(addBox(LANGUAGE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(CATEGORY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(EVENT, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(URGENCY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(SEVERITY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(CERTAINTY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(HEADLINE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoComponents, infoCounter));
+		panel.add(addBox(WEB, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(CONTACT, TEXT_FIELD, infoComponents, infoCounter));
 		
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
 		infoCounter++;
-		addTabPanel();
+		addTabPanel("Add Info", infoPanel, infoCounter);
 	}
 	
+	private Component initCapResourcePanel()
+	{
+		this.resourcePanel = new JTabbedPane();
+		resourcePanel.setBorder(BorderFactory.createEtchedBorder());
+		this.resourceIndexPanels = new ArrayList<JPanel>();
+		this.resourceComponents = new ArrayList<HashMap<String, Component>>();
+
+		this.resourceCounter = 0;
+		addResourceIndexPanel();
+		resourcePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		return resourcePanel;
+	}
+	
+	public void addResourceIndexPanel()
+	{
+		removeTabPanel(resourcePanel);
+		resourceComponents.add(new HashMap<>());
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.add(addBox(RESOURCE_DESC, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(MIME_TYPE, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(URI, TEXT_FIELD, resourceComponents, resourceCounter));
+		
+		resourceIndexPanels.add(panel);
+		resourcePanel.addTab("Resource" + resourceCounter, resourceIndexPanels.get(resourceCounter));
+		resourceCounter++;
+		addTabPanel("Add Resource", resourcePanel, resourceCounter);
+	}
+	
+	private Component initCapAreaPanel()
+	{
+		this.areaPanel = new JTabbedPane();
+		areaPanel.setBorder(BorderFactory.createEtchedBorder());
+		this.areaIndexPanels = new ArrayList<JPanel>();
+		this.areaComponents = new ArrayList<HashMap<String, Component>>();
+
+		this.areaCounter = 0;
+		addAreaIndexPanel();
+		areaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		return areaPanel;
+	}
+	
+	public void addAreaIndexPanel()
+	{
+		removeTabPanel(areaPanel);
+		areaComponents.add(new HashMap<>());
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.add(addBox(AREA_DESC, TEXT_FIELD, areaComponents, areaCounter));
+		panel.add(addBox(GEO_CODE, TEXT_FIELD, areaComponents, areaCounter));
+		
+		areaIndexPanels.add(panel);
+		areaPanel.addTab("Area" + areaCounter, areaIndexPanels.get(areaCounter));
+		areaCounter++;
+		addTabPanel("Add Area", areaPanel, areaCounter);
+	}
+
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
@@ -279,7 +374,7 @@ public class AlerterCapGeneratePanel
 		}
 	}
 
-	private Box addBox(String labelName, String type, int index)
+	private Box addBox(String labelName, String type, ArrayList<HashMap<String, Component>> components, int index)
 	{
 		Box box = Box.createHorizontalBox();
 
@@ -298,44 +393,45 @@ public class AlerterCapGeneratePanel
 				comboboxModel.addElement(value);		
 			}
 			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
-			infoComponents.get(index).put(labelName + index, comboBox);
+			components.get(index).put(labelName + index, comboBox);
 			box.add(comboBox);
 			return box;
 		case TEXT_FIELD:
 			JTextField textField = new JTextField();
-			infoComponents.get(index).put(labelName + index, textField);
+			components.get(index).put(labelName + index, textField);
 			box.add(textField);
 			return box;
 		case TEXT_AREA:
 			JTextArea textArea = new JTextArea();
-			infoComponents.get(index).put(labelName + index, textArea);
+			components.get(index).put(labelName + index, textArea);
 			box.add(textArea);
 			return box;
 		default:
 			return box;
 		}
 	}
-
-	private void addTabPanel()
-	{
+	
+	private JPanel addTabPanel(String name, JTabbedPane target, int index) {
 		JPanel panel =  new JPanel();
-		createAndAddInfoAddButton("Add Info", panel);
-		infoPanel.addTab("+", panel);
-		infoPanel.setSelectedIndex(infoCounter - 1);
+		createAndAddAddButton(name, panel);
+		target.addTab("+", panel);
+		target.setSelectedIndex(index - 1);
+		
+		return panel;
 	}
 
-	private void removeTabPanel()
+	private void removeTabPanel(JTabbedPane target)
 	{
-		for(int i = 0 ; i < infoPanel.getComponentCount(); i++)
+		for(int i = 0 ; i < target.getComponentCount(); i++)
 		{
-			if(infoPanel.getTitleAt(i).equals("+"))
+			if(target.getTitleAt(i).equals("+"))
 			{
-				infoPanel.remove(infoPanel.getSelectedComponent());
+				target.remove(target.getSelectedComponent());
 			}
 		}
 	}
-
-	private JButton createAndAddInfoAddButton(String name, JPanel panel)
+	
+	private JButton createAndAddAddButton(String name, JPanel panel)
 	{
 		JButton button = new JButton(name);
 		button.addActionListener(alerterActionListener);
@@ -401,6 +497,7 @@ public class AlerterCapGeneratePanel
 	
 	public void updateView(String target, String value)
 	{
+		
 		if(target.equals(TEXT_AREA))
 		{
 			this.mTextArea.setText(value);
@@ -432,6 +529,8 @@ public class AlerterCapGeneratePanel
 				}
 			}
 		}
+		
+		//infoPanel updateView
 		for(int j = 0; j < infoCounter; j++)
 		{
 			if(j > 0)
@@ -459,12 +558,65 @@ public class AlerterCapGeneratePanel
 				((JTextArea) infoComponents.get(j).get(target)).setText(value);
 				return;
 			}
+		}		
+		//resourcePanel updateView
+		for(int j = 0; j < resourceCounter; j++)
+		{
+			if(j > 0)
+			{
+				addResourceIndexPanel();
+			}
+			if (resourceComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) resourceComponents.get(j).get(target)).setText(value);
+				return;
+			}
+			if (resourceComponents.get(j).get(target) instanceof JComboBox<?>)
+			{
+				for(int i = 0; i < ((JComboBox<?>) resourceComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) resourceComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) resourceComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (resourceComponents.get(j).get(target) instanceof JTextArea)
+			{
+				((JTextArea) resourceComponents.get(j).get(target)).setText(value);
+				return;
+			}
 		}
-	}
-	
-	public String getViewProperty(String target, String value)
-	{
-		return null;
+		//areaPanel updateView
+		for(int j = 0; j < areaCounter; j++)
+		{
+			if(j > 0)
+			{
+				addAreaIndexPanel();
+			}
+			if (areaComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) areaComponents.get(j).get(target)).setText(value);
+				return;
+			}
+			if (areaComponents.get(j).get(target) instanceof JComboBox<?>)
+			{
+				for(int i = 0; i < ((JComboBox<?>) areaComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) areaComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) areaComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (areaComponents.get(j).get(target) instanceof JTextArea)
+			{
+				((JTextArea) areaComponents.get(j).get(target)).setText(value);
+				return;
+			}
+		}
 	}
 	
 	public String getLoadTextField()
