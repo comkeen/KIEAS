@@ -46,7 +46,7 @@ public class AlerterCapGeneratePanelModel
 
 	private Vector<HashMap<String, String>> mInfoValues;
 	private HashMap<String, String> mInfoIndexValues;
-	private int mInfoCounter;
+	private int mInfoIndex;
 	private String mLanguage;
 	private String mCategory;
 	private String mEvent;
@@ -170,10 +170,17 @@ public class AlerterCapGeneratePanelModel
 
 	private Vector<HashMap<String, String>> initInfoPanelComponents()
 	{
-		this.mInfoValues = new Vector<>();
-		this.mInfoCounter = 0;
+		if(mInfoValues != null)
+		{
+			this.mInfoValues.clear();			
+		}
+		else
+		{
+			this.mInfoValues = new Vector<>();
+		}
+		this.mInfoIndex = 0;
 		
-		mInfoValues.addElement(addInfoIndexValues(mInfoCounter));
+		mInfoValues.addElement(addInfoIndexValues(mInfoIndex));
 		
 		return mInfoValues;
 	}
@@ -205,8 +212,8 @@ public class AlerterCapGeneratePanelModel
 	
 	public void addInfoIndex()
 	{
-		mInfoCounter++;
-		addInfoIndexValues(mInfoCounter);
+		mInfoIndex++;
+		addInfoIndexValues(mInfoIndex);
 	}
 	
 	private Vector<HashMap<String, String>> initResourcePanelComponents()
@@ -277,7 +284,7 @@ public class AlerterCapGeneratePanelModel
 				if (component instanceof HashMap<?, ?>)
 				{
 					System.out.println("Vector target = " + target);
-//					System.out.println("Vector memberName = " + memberName);
+					System.out.println("Vector memberName = " + memberName);
 //					System.out.println("Vector value = " + value);
 					
 //					if(memberName.equals("mCategory"))
@@ -290,7 +297,6 @@ public class AlerterCapGeneratePanelModel
 					alerterModelManager.updateView(mViewName, target, value);
 					return;
 				}
-				//??
 				if (component instanceof Vector<?>)
 				{
 					
@@ -338,9 +344,10 @@ public class AlerterCapGeneratePanelModel
 
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
-		mInfoCounter = ieasMessage.getInfoCount();
-		System.out.println("infocount : " + mInfoCounter);
-		for(int i = 0; i < mInfoCounter; i++)
+		initInfoPanelComponents();
+		mInfoIndex = ieasMessage.getInfoCount();	
+		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(mInfoIndex));
+		for(int i = 0; i < mInfoIndex; i++)
 		{
 			setModelProperty(AlerterCapGeneratePanel.LANGUAGE + i, ieasMessage.getLanguage(i));
 			setModelProperty(AlerterCapGeneratePanel.CATEGORY + i, ieasMessage.getCategory(i));

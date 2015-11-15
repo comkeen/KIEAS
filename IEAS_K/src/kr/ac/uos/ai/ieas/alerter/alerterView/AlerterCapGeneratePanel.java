@@ -85,6 +85,7 @@ public class AlerterCapGeneratePanel
 	public static final String SCOPE = "Scope";
 	public static final String CODE = "Code";
 
+	public static final String INFO_INDEX = "InfoIndex";
 	public static final String LANGUAGE = "Language";
 	public static final String CATEGORY = "Category";
 	public static final String EVENT = "Event";
@@ -234,6 +235,15 @@ public class AlerterCapGeneratePanel
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		return infoPanel;
+	}
+	
+	private void resetCapInfoPanel()
+	{
+		this.infoPanel.removeAll();
+		this.infoIndexPanels.clear();
+		this.infoComponents.clear();
+		this.infoCounter = 0;
+		addInfoIndexPanel();
 	}
 
 	public void addInfoIndexPanel()
@@ -493,8 +503,20 @@ public class AlerterCapGeneratePanel
 	}
 	
 	public void updateView(String target, String value)
-	{
-		
+	{		
+//		if(target.equals(INFO_INDEX))
+//		{
+//			int index = Integer.parseInt(value);
+//			infoCounter = index;
+//			System.out.println("view infocounter = "+ infoCounter);
+//			resetCapInfoPanel();
+//			for(int i = 0; i < index; i++)
+//			{
+//				System.out.println();
+//				addInfoIndexPanel();
+//			}
+//			return;
+//		}
 		if(target.equals(TEXT_AREA))
 		{
 			this.mTextArea.setText(value);
@@ -526,13 +548,12 @@ public class AlerterCapGeneratePanel
 				}
 			}
 		}
-		
-		//infoPanel updateView
-		for(int j = 0; j < infoCounter; j++)
+
+		for(int j = 0; j < infoCounter ; j++)
 		{
 			if(j > 0)
 			{
-				addInfoIndexPanel();
+//				addInfoIndexPanel();
 			}
 			if (infoComponents.get(j).get(target) instanceof JTextField)
 			{
