@@ -203,6 +203,12 @@ public class AlerterCapGeneratePanelModel
 		return mInfoIndexValues;
 	}
 	
+	public void addInfoIndex()
+	{
+		mInfoCounter++;
+		addInfoIndexValues(mInfoCounter);
+	}
+	
 	private Vector<HashMap<String, String>> initResourcePanelComponents()
 	{
 		this.mResourceValues = new Vector<>();

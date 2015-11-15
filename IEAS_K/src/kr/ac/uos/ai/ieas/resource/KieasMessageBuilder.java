@@ -456,7 +456,7 @@ public class KieasMessageBuilder
 	
 	public String getMessage()
 	{
-		try 
+		try
 		{
 			this.xmlMessage = capXmlBuilder.toXml(alert);
 			return xmlMessage;
