@@ -21,6 +21,7 @@ public class _AlerterTopView
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AlerterDatabasePanel alerterDatabasePanel;
+	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 
 	public static _AlerterTopView getInstance(AleterViewActionListener alerterActionListener)
 	{
@@ -38,13 +39,15 @@ public class _AlerterTopView
 	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
 		initLookAndFeel();
+		this.alerterAlertGeneratePanel = AlerterAlertGeneratePanel.getInstance(alerterActionListener);
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 
 		initFrame("alertViewPanel");
 	}
 
-	private void initFrame(String name) {
+	private void initFrame(String name)
+	{
 		this.mainFrame = new JFrame(name);
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
@@ -54,6 +57,7 @@ public class _AlerterTopView
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
+		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
 

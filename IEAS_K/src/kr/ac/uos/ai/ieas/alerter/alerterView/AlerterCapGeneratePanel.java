@@ -124,10 +124,10 @@ public class AlerterCapGeneratePanel
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
-		initFrame("alertViewPanel");			
+		initPanel();			
 	}
 
-	private void initFrame(String name)
+	private void initPanel()
 	{		
 		this.mViewComponents = new Vector<>();		
 		this.panelComponenets = new HashMap<>();		
