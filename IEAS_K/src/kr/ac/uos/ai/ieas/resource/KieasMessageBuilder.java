@@ -50,10 +50,10 @@ public class KieasMessageBuilder
 	private CapXmlParser 	capXmlParser;
 	private CapValidator 	capValidator;
 
-	private Alert 			alert;
-	private Info 			info;
-//	private Resource 		resource;
-//	private Area 			area;
+	private Alert 			mAlert;
+	private Info 			mInfo;
+//	private Resource 		mResource;
+//	private Area 			mArea;
 	
 	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
@@ -374,16 +374,16 @@ public class KieasMessageBuilder
 	
 	public void buildDefaultMessage() {
 		
-		this.alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 				.setIdentifier("Identifier")
 				.setSender("Sender")
 				.setSent("Sent")
-				.setStatus(Alert.Status.SYSTEM)
+				.setStatus(Alert.Status.EXERCISE)
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.PUBLIC)
 				.buildPartial();
 		
-		this.info = Info.newBuilder()
+		this.mInfo = Info.newBuilder()
 				.setLanguage("ko-KR")
 				.addCategory(Info.Category.SAFETY)
 				.setEvent("event")
@@ -395,14 +395,14 @@ public class KieasMessageBuilder
 //		this.resource = Resource.newBuilder().buildPartial();		
 //		this.area = Area.newBuilder().buildPartial();
 				
-		alert = Alert.newBuilder(alert).addInfo(info).build();
+		mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();
 	}
 	
 	public boolean validateMessage()
 	{
 		try
 		{
-			capValidator.validateAlert(alert);
+			capValidator.validateAlert(mAlert);
 			return true;
 		}
 		catch (CapException e)
@@ -413,7 +413,7 @@ public class KieasMessageBuilder
 	
 	public void build()
 	{		
-		alert = Alert.newBuilder(alert).clearInfo().addInfo(info).build();
+		mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();
 	}	
 
 	private String dateToString(Date date)
@@ -441,24 +441,24 @@ public class KieasMessageBuilder
 		
 	public int getInfoCount()
 	{
-		return alert.getInfoCount();
+		return mAlert.getInfoCount();
 	}
 
 	public int getResourceCount(int index)
 	{
-		return alert.getInfo(index).getResourceCount();
+		return mAlert.getInfo(index).getResourceCount();
 	}
 	
 	public int getAreaCount(int index)
 	{
-		return alert.getInfo(index).getAreaCount();
+		return mAlert.getInfo(index).getAreaCount();
 	}
 	
 	public String getMessage()
 	{
 		try
 		{
-			this.xmlMessage = capXmlBuilder.toXml(alert);
+			this.xmlMessage = capXmlBuilder.toXml(mAlert);
 			return xmlMessage;
 		}
 		catch (NotCapException e)
@@ -472,8 +472,8 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			alert = capXmlParser.parseFrom(message);
-			return alert;
+			mAlert = capXmlParser.parseFrom(message);
+			return mAlert;
 		} 
 		catch (NotCapException | SAXParseException | CapException e)
 		{
@@ -487,7 +487,7 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			return alert.getIdentifier();
+			return mAlert.getIdentifier();
 		}
 		catch (NotCapException e)
 		{
@@ -500,7 +500,7 @@ public class KieasMessageBuilder
 	{
 		try 
 		{
-			return alert.getSender();
+			return mAlert.getSender();
 
 		} 
 		catch (NotCapException e)
@@ -514,7 +514,7 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			return alert.getSent();
+			return mAlert.getSent();
 
 		} 
 		catch (NotCapException e)
@@ -528,7 +528,7 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			return alert.getSent();
+			return mAlert.getSent();
 
 		} 
 		catch (NotCapException e)
@@ -540,34 +540,34 @@ public class KieasMessageBuilder
 
 	public String getStatus()
 	{
-		return alert.getStatus().toString();
+		return mAlert.getStatus().toString();
 	}
 
 	public String getMsgType() 
 	{
-		return alert.getMsgType().toString();
+		return mAlert.getMsgType().toString();
 	}
 
 	public String getSource() 
 	{
-		return alert.getSource().toString();
+		return mAlert.getSource().toString();
 	}
 	
 	public String getScope()
 	{
-		return alert.getScope().toString();
+		return mAlert.getScope().toString();
 	}
 	
 	public String getRestriction()
 	{
-		return alert.getRestriction().toString();
+		return mAlert.getRestriction().toString();
 	}
 
 	public String getAddresses()
 	{
 		try
 		{
-			return alert.getAddresses().getValue(0);
+			return mAlert.getAddresses().getValue(0);
 		}
 		catch (NotCapException e)
 		{
@@ -578,24 +578,24 @@ public class KieasMessageBuilder
 	
 	public String getCode()
 	{
-		return alert.getCode(0).toString();
+		return mAlert.getCode(0).toString();
 	}		
 
 	public String getLanguage(int index)
 	{
-		return alert.getInfo(index).getLanguage().toString();
+		return mAlert.getInfo(index).getLanguage().toString();
 	}
 
 	public String getCategory(int index)
 	{
-		return alert.getInfo(index).getCategory(0).toString();
+		return mAlert.getInfo(index).getCategory(0).toString();
 	}
 
 	public String getEvent(int index)
 	{
 		try
 		{
-			return alert.getInfo(index).getEvent();
+			return mAlert.getInfo(index).getEvent();
 		}
 		catch (NotCapException e)
 		{
@@ -606,77 +606,77 @@ public class KieasMessageBuilder
 
 	public String getUrgency(int index)
 	{
-		return alert.getInfo(index).getUrgency().toString();
+		return mAlert.getInfo(index).getUrgency().toString();
 	}
 
 	public String getSeverity(int index)
 	{
-		return alert.getInfo(index).getSeverity().toString();
+		return mAlert.getInfo(index).getSeverity().toString();
 	}
 
 	public String getCertainty(int index)
 	{
-		return alert.getInfo(index).getCertainty().toString();
+		return mAlert.getInfo(index).getCertainty().toString();
 	}
 
 	public String getEventCode(int index) 
 	{
-		return alert.getInfo(index).getEventCodeList().get(0).getValue().toString();
+		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
 	}
 
 	public String getEffective(int index)
 	{
-		return alert.getInfo(index).getEffective().toString();
+		return mAlert.getInfo(index).getEffective().toString();
 	}
 
 	public String getSenderName(int index)
 	{
-		return alert.getInfo(index).getSenderName().toString();
+		return mAlert.getInfo(index).getSenderName().toString();
 	}
 
 	public String getHeadline(int index)
 	{
-		return alert.getInfo(index).getHeadline().toString();
+		return mAlert.getInfo(index).getHeadline().toString();
 	}
 
 	public String getDescrpition(int index)
 	{
-		return alert.getInfo(index).getDescription().toString();
+		return mAlert.getInfo(index).getDescription().toString();
 	}
 
 	public String getWeb(int index)
 	{
-		return alert.getInfo(index).getWeb().toString();
+		return mAlert.getInfo(index).getWeb().toString();
 	}
 
 	public String getContact(int index)
 	{
-		return alert.getInfo(index).getContact().toString();
+		return mAlert.getInfo(index).getContact().toString();
 	}
 
 	public String getResourceDesc(int infoIndex, int index)
 	{
-		return alert.getInfo(infoIndex).getResource(index).getResourceDesc();
+		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
 	}
 	
 	public String getMimeType(int infoIndex, int index)
 	{
-		return alert.getInfo(infoIndex).getResource(index).getMimeType();
+		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
 	}
 
 	public String getUri(int infoIndex, int index)
 	{
-		return alert.getInfo(infoIndex).getResource(index).getUri();
+		return mAlert.getInfo(infoIndex).getResource(index).getUri();
 	}
 	
 	public String getAreaDesc(int infoIndex, int index)
 	{
-		return alert.getInfo(infoIndex).getArea(index).getAreaDesc();
+		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
 	}
 	
 	public String getGeoCode(int infoIndex, int index)
 	{
-		return alert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();
+		return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();
 	}
 	
 
@@ -685,22 +685,22 @@ public class KieasMessageBuilder
 	//CAP 요소 Setter
 	public void setIdentifier(String text)
 	{
-		alert = Alert.newBuilder(alert).setIdentifier(text).build();
+		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).build();
 	}	
 	
 	public void setSender(String sender)
 	{
-		alert = Alert.newBuilder(alert).setSender(sender).build();
+		mAlert = Alert.newBuilder(mAlert).setSender(sender).build();
 	}
 	
 	public void setSent(String text)
 	{
-		alert = Alert.newBuilder(alert).setSent(text).build();
+		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
 	}
 	
 	public void setSent(GregorianCalendar cal)
 	{
-		alert = Alert.newBuilder(alert).setSent(CapUtil.formatCapDate(cal)).build();
+		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
 	}	
 
 	public Status setStatus(String text)
@@ -710,8 +710,15 @@ public class KieasMessageBuilder
 		{
 			if(text.equals(status.toString()))
 			{
-				alert = Alert.newBuilder(alert).setStatus(status).build();
-				return status;
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setStatus(status).build();
+					return status;					
+				}
+				else
+				{
+					return status;
+				}
 			}
 		}
 		return null;
@@ -723,8 +730,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(msgType.toString()))
 			{
-				alert = Alert.newBuilder(alert).setMsgType(msgType).build();		
-				return msgType;
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setMsgType(msgType).build();
+					return msgType;					
+				}
+				else
+				{	
+					return msgType;
+				}
 			}
 		}
 		return null;
@@ -732,7 +746,7 @@ public class KieasMessageBuilder
 
 	public void setSource(String source) 
 	{
-		alert = Alert.newBuilder(alert).setSource(source).build();
+		mAlert = Alert.newBuilder(mAlert).setSource(source).build();
 	}
 	
 	public Scope setScope(String text)
@@ -741,8 +755,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(scope.toString()))
 			{
-				alert = Alert.newBuilder(alert).setScope(scope).build();		
-				return scope;
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setScope(scope).build();		
+					return scope;				
+				}
+				else
+				{	
+					return scope;
+				}
 			}
 		}
 		return null;
@@ -750,17 +771,17 @@ public class KieasMessageBuilder
 	
 	public void setAddresses(String string) 
 	{
-		alert = Alert.newBuilder(alert).setAddresses(Group.newBuilder().addValue(string).build()).build();		
+		mAlert = Alert.newBuilder(mAlert).setAddresses(Group.newBuilder().addValue(string).build()).build();		
 	}
 
 	public void setCode(String code) 
 	{
-		alert = Alert.newBuilder(alert).setCode(0, code).build();
+		mAlert = Alert.newBuilder(mAlert).setCode(0, code).build();
 	}
 
 	public void setLanguage(String text)
 	{
-		info = Info.newBuilder(info).setLanguage(text).build();
+		mInfo = Info.newBuilder(mInfo).setLanguage(text).build();
 	}
 
 	public Category setCategory(String text)
@@ -769,7 +790,7 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(category.toString()))
 			{
-				info = Info.newBuilder(info).setCategory(0, category).build();				
+				mInfo = Info.newBuilder(mInfo).setCategory(0, category).build();				
 				return category;
 			}
 		}
@@ -778,7 +799,7 @@ public class KieasMessageBuilder
 		
 	public void setEvent(String event) 
 	{
-		info = Info.newBuilder(info).setEvent(event).build();
+		mInfo = Info.newBuilder(mInfo).setEvent(event).build();
 	}
 
 	public Urgency setUrgency(String text)
@@ -787,7 +808,7 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(urgency.toString()))
 			{
-				info = Info.newBuilder(info).setUrgency(urgency).build();				
+				mInfo = Info.newBuilder(mInfo).setUrgency(urgency).build();				
 				return urgency;
 			}
 		}
@@ -800,7 +821,7 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(severity.toString()))
 			{
-				info = Info.newBuilder(info).setSeverity(severity).build();				
+				mInfo = Info.newBuilder(mInfo).setSeverity(severity).build();				
 				return severity;
 			}
 		}
@@ -813,7 +834,7 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(certainty.toString()))
 			{
-				info = Info.newBuilder(info).setCertainty(certainty).build();				
+				mInfo = Info.newBuilder(mInfo).setCertainty(certainty).build();				
 				return certainty;
 			}
 		}
@@ -822,35 +843,35 @@ public class KieasMessageBuilder
 
 	public void setEventCode(String text)
 	{
-		info = Info.newBuilder(info).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("?먯뿰?щ궃").setValue(text).build()).build();
+		mInfo = Info.newBuilder(mInfo).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("?먯뿰?щ궃").setValue(text).build()).build();
 	}
 
 	public void setEffective(GregorianCalendar cal)
 	{
-		info = Info.newBuilder(info).setEffective(CapUtil.formatCapDate(cal)).build();
+		mInfo = Info.newBuilder(mInfo).setEffective(CapUtil.formatCapDate(cal)).build();
 	}
 
 	public void setSenderName(String senderName)
 	{
-		info = Info.newBuilder(info).setSenderName(senderName).build();
+		mInfo = Info.newBuilder(mInfo).setSenderName(senderName).build();
 	}
 
 	public void setHeadline(String headline) {
-		info = Info.newBuilder(info).setHeadline(headline).build();
+		mInfo = Info.newBuilder(mInfo).setHeadline(headline).build();
 	}
 
 	public void setDescription(String description) {
-		info = Info.newBuilder(info).setDescription(description).build();
+		mInfo = Info.newBuilder(mInfo).setDescription(description).build();
 	}
 
 	public void setWeb(String web)
 	{
-		info = Info.newBuilder(info).setWeb(web).build();
+		mInfo = Info.newBuilder(mInfo).setWeb(web).build();
 	}
 
 	public void setContact(String contact)
 	{
-		info = Info.newBuilder(info).setContact(contact).build();
+		mInfo = Info.newBuilder(mInfo).setContact(contact).build();
 	}
 	
 	
@@ -878,7 +899,7 @@ public class KieasMessageBuilder
 		
 		for (CAPAlert capAlert : alertList)
 		{
-			Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+			Alert mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 					.setIdentifier(capAlert.getIdentifier())
 					.setSender(capAlert.getSender())
 					.setSent(this.dateToString(capAlert.getSent()))
@@ -890,7 +911,7 @@ public class KieasMessageBuilder
 
 			for (CAPInfo capInfo : capAlert.getInfoList())
 			{
-				Info info = Info.newBuilder()
+				Info mInfo = Info.newBuilder()
 						.setLanguage(capInfo.getLanguage().toString())
 						.addCategory(this.setCategory(capInfo.getCategory().toString()))
 						.setEvent(capInfo.getEvent().toString())
@@ -918,7 +939,7 @@ public class KieasMessageBuilder
 //							.setDigest(capResource.getDigest().toString())
 							.buildPartial();
 					
-					info = Info.newBuilder(info)
+					mInfo = Info.newBuilder(mInfo)
 							.addResource(resource)
 							.buildPartial();
 				}
@@ -929,15 +950,15 @@ public class KieasMessageBuilder
 //							.addGeocode(ValuePair.newBuilder().setValueName("G1").setValue(capArea.getGeocode()).build())
 							.buildPartial();
 					
-					info = Info.newBuilder(info)
+					mInfo = Info.newBuilder(mInfo)
 							.addArea(area)
 							.buildPartial();
 				}
-				alert = Alert.newBuilder(alert)
-						.addInfo(info)
+				mAlert = Alert.newBuilder(mAlert)
+						.addInfo(mInfo)
 						.build();
 			}			
-			capList.add(capXmlBuilder.toXml(alert));
+			capList.add(capXmlBuilder.toXml(mAlert));
 		}
 		return capList;
 	}
