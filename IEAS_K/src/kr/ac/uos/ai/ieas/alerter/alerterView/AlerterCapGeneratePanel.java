@@ -261,7 +261,7 @@ public class AlerterCapGeneratePanel
 		panel.add(addBox(CERTAINTY, COMBO_BOX, infoComponents, infoCounter));
 		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoComponents, infoCounter));
 		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoComponents, infoCounter));
-		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter)); 
 		panel.add(addBox(HEADLINE, TEXT_FIELD, infoComponents, infoCounter));
 		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoComponents, infoCounter));
 		panel.add(addBox(WEB, TEXT_FIELD, infoComponents, infoCounter));

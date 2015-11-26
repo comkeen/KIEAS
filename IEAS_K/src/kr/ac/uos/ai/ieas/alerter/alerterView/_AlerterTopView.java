@@ -104,6 +104,7 @@ public class _AlerterTopView
 
 	public void getQueryResult(ArrayList<String> results)
 	{
+		System.out.println("topview getquery");
 		alerterDatabasePanel.getQueryResult(results);
 	}
 

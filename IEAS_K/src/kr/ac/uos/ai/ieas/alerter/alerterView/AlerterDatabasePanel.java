@@ -212,6 +212,7 @@ public class AlerterDatabasePanel {
 
 	public void getQueryResult(ArrayList<String> results)
 	{	
+		System.out.println("panel getquery");
 		alertTableModel.getTableModel().setRowCount(0);
 		addAlertTableRow(results);
 	}

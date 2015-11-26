@@ -125,7 +125,7 @@ public class _AlerterController
 	 */
 	public void getQueryResult()
 	{
-		alerterTopView.getQueryResult(alerterModelManager.getQueryResult(alerterTopView.getQuery()));
+		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("eventCode", alerterTopView.getQuery()));
 	}
 
 	/**

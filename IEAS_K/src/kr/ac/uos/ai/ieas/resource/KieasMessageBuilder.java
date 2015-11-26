@@ -711,7 +711,7 @@ public class KieasMessageBuilder
 			if(text.equals(status.toString()))
 			{
 				alert = Alert.newBuilder(alert).setStatus(status).build();
-				return status;		
+				return status;
 			}
 		}
 		return null;

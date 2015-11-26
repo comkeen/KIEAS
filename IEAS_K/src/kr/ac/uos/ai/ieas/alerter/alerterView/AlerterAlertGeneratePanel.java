@@ -22,15 +22,14 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 public class AlerterAlertGeneratePanel {
 
-	private static final String NEW_ALERT_BUTTON = null;
+	private static final String NEW_ALERT_BUTTON = "NewAlert";
 
-	private static final String ORGANIZATION_NAME = null;
-	private static final String USER_NAME = null;
+	public static final String ORGANIZATION_NAME = "기관이름";
+	public static final String USER_NAME = "발령자이름";
 
-
-	public static final String TEXT_AREA = "TextArea";
-	public static final String TEXT_FIELD = "TextField";
-	public static final String COMBO_BOX = "ComboBox";
+	private static final String TEXT_AREA = "TextArea";
+	private static final String TEXT_FIELD = "TextField";
+	private static final String COMBO_BOX = "ComboBox";
 
 	private static final int BASE_LINE = 100;
 
@@ -49,6 +48,10 @@ public class AlerterAlertGeneratePanel {
 
 	private HashMap<Object, Object> alertComponents;
 
+	private JTextArea mTextArea;
+	private JScrollPane textAreaPane;
+
+	private JPanel alertPanel;
 
 	
 
@@ -60,7 +63,6 @@ public class AlerterAlertGeneratePanel {
 		}
 		return alerterAlertGeneratePanel;
 	}
-
 	
 	private AlerterAlertGeneratePanel(AleterViewActionListener alerterActionListener)
 	{
@@ -71,12 +73,13 @@ public class AlerterAlertGeneratePanel {
 	}
 
 	private void initMainPanel()
-	{		
-		this.mViewComponents = new Vector<>();		
-		this.panelComponenets = new HashMap<>();		
-		this.alertGeneratePanel = new JPanel();
+	{
+		this.mViewComponents = new Vector<>();
+		this.panelComponenets = new HashMap<>();
+		this.alertGeneratePanel = new JPanel();		
 		alertGeneratePanel.setLayout(new BoxLayout(alertGeneratePanel, BoxLayout.Y_AXIS));
-
+		
+		alertGeneratePanel.add(initTextArea());
 		alertGeneratePanel.add(initButtonPanel());
 		alertGeneratePanel.add(initAlertGeneratePanel());
 		
@@ -85,18 +88,33 @@ public class AlerterAlertGeneratePanel {
 		this.alertGenerateScrollPanel = new JScrollPane(alertGeneratePanel);
 	}
 	
+	private Component initTextArea()
+	{
+		System.out.println("init textarea");
+		this.mTextArea = new JTextArea(20, 20);
+		mTextArea.setEditable(true);
+		
+		this.textAreaPane = new JScrollPane(mTextArea);
+		panelComponenets.put("TextArea", mTextArea);
+		textAreaPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		return textAreaPane;
+	}
+	
 	private Component initButtonPanel()
 	{
+		System.out.println("init button");
 		this.buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
 
-		Box box = Box.createHorizontalBox();		
+		Box box = Box.createHorizontalBox();
 		this.newAlertButton = createButton(NEW_ALERT_BUTTON);
-		box.add(newAlertButton);		
+		box.add(newAlertButton);
 		
 		JComboBox patternList = new JComboBox();
 		patternList.setEditable(true);
-		patternList.addActionListener(alerterActionListener);		
+		patternList.addActionListener(alerterActionListener);
+		box.add(patternList);
 		box.setBorder(BorderFactory.createLoweredBevelBorder());
 		buttonPane.add(box);
 
@@ -107,16 +125,16 @@ public class AlerterAlertGeneratePanel {
 	
 	private JPanel initAlertGeneratePanel()
 	{
-		this.alertGeneratePanel = new JPanel();
-		alertGeneratePanel.setLayout(new BoxLayout(alertGeneratePanel, BoxLayout.Y_AXIS));
+		System.out.println("init alertPanel");
+		this.alertPanel = new JPanel();
+		alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
 		
 		this.alertComponents = new HashMap<>();
-
-		alertGeneratePanel.add(addBox(ORGANIZATION_NAME, TEXT_FIELD));
-		alertGeneratePanel.add(addBox(USER_NAME, TEXT_FIELD));
-		alertGeneratePanel.setBorder(BorderFactory.createTitledBorder("경보메시지"));
+		alertPanel.add(addBox(ORGANIZATION_NAME, TEXT_FIELD));
+		alertPanel.add(addBox(USER_NAME, TEXT_FIELD));
+		alertPanel.setBorder(BorderFactory.createTitledBorder("경보메시지"));
 		
-		return alertGeneratePanel;
+		return alertPanel;
 	}
 	
 	private Box addBox(String labelName, String type)
@@ -167,7 +185,6 @@ public class AlerterAlertGeneratePanel {
 		
 		return button;
 	}
-
 
 	public Component getPanel()
 	{

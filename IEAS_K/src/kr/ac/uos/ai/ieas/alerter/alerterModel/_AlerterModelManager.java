@@ -58,9 +58,9 @@ public class _AlerterModelManager{
 		return cal;
 	}
 			
-	public ArrayList<String> getQueryResult(String query)
+	public ArrayList<String> getQueryResult(String target, String query)
 	{	
-		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapLibraryObject(databaseHandler.getQueryResult(query.toUpperCase()));
+		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapLibraryObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
 		return result;
 	}	
 

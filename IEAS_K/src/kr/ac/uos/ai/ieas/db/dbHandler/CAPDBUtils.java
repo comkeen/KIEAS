@@ -130,7 +130,7 @@ public class CAPDBUtils
 			return null;
 		}
 	}
-
+	
 	public ArrayList<CAPAlert> searchCAPsByEventType(DisasterEventType type)
 	{
 		String query = "select * from info where eventCode=?";
@@ -162,6 +162,36 @@ public class CAPDBUtils
 		}
 	}
 	
+	public ArrayList<CAPAlert> searchCAPsByStatus(String status)
+	{
+		String query = "select * from alert where status=?";
+		//System.out.println("ecode = " + ecode);
+		try
+		{
+			DataTransaction transaction = new DataTransaction(true);
+			Connection conn = transaction.connection;
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, status);
+			System.out.println("pstmt = " + pstmt.toString());
+			ResultSet rs = pstmt.executeQuery();
+			BeanProcessor alertBp = new BeanProcessor();
+			ArrayList<CAPAlert> list = new ArrayList<CAPAlert>();
+			
+			while(rs.next())
+			{
+				list.add((CAPAlert) alertBp.toBean(rs, CAPAlert.class));
+			}
+			
+			ArrayList<CAPAlert> result = this.searchFullCAPsByAlertElement(list);
+			return result;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+		
 	public ArrayList<CAPAlert> searchFullCAPsByInfoElement(ArrayList<CAPInfo> infoList)
 	{
 		String alertIdList = "";
@@ -185,7 +215,7 @@ public class CAPDBUtils
 		ArrayList<CAPResource> resList = new ArrayList<CAPResource>();
 		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
 		
-		String alertQuery = "SELECT * FROM alert WHERE alert_eid in " + alertIdList;
+		String alertQuery = "SELECT * FROM alert WHERE alert_eid in " + alertIdList; // + "and type="actual"
 		String resQuery = "SELECT * FROM resource WHERE info_eid in " + infoIdList;
 		String areaQuery = "SELECT * FROM area WHERE info_eid in " + infoIdList;
 		
@@ -205,6 +235,89 @@ public class CAPDBUtils
 			}
 			
 //			System.out.println("alertList 완료");
+			
+			Statement stmtRes = conn.createStatement();
+			ResultSet rsRes = stmtRes.executeQuery(resQuery);
+			BeanProcessor resBp = new BeanProcessor();
+			
+			while(rsRes.next())
+			{
+				resList.add((CAPResource) resBp.toBean(rsRes, CAPResource.class));
+			}
+			
+//			System.out.println("resList 완료");
+			
+			Statement stmtArea = conn.createStatement();
+			ResultSet rsArea = stmtArea.executeQuery(areaQuery);
+			BeanProcessor areaBp = new BeanProcessor();
+			
+			while(rsArea.next()) 
+			{
+				areaList.add((CAPArea) areaBp.toBean(rsArea, CAPArea.class));
+			}
+			
+//			System.out.println("areaList 완료");
+			
+			ArrayList<CAPAlert> fullList = buildFullCap(alertList, infoList, resList, areaList);
+			return fullList;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ArrayList<CAPAlert> searchFullCAPsByAlertElement(ArrayList<CAPAlert> alertList)
+	{
+		String alertIdList = "";
+		String infoIdList = "";
+		
+		for (int i=0; i < alertList.size(); i++) 
+		{
+			alertIdList += alertList.get(i).getAlert_eid();
+			if(i != alertList.size() - 1)
+			{
+				alertIdList += ", ";
+			}
+		}
+		
+		alertIdList = "(" + alertIdList + ");";
+		
+		ArrayList<CAPInfo> infoList = new ArrayList<CAPInfo>();
+		ArrayList<CAPResource> resList = new ArrayList<CAPResource>();
+		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
+		
+		String infoQuery = "SELECT * FROM info WHERE info_eid in " + alertIdList;
+		
+		try
+		{
+			DataTransaction transaction = new DataTransaction(true);
+			Connection conn = transaction.connection;
+					
+//			System.out.println("alertList 완료");
+			
+			Statement stmtInfo = conn.createStatement();
+			ResultSet rsInfo = stmtInfo.executeQuery(infoQuery);
+			BeanProcessor infoBp = new BeanProcessor();
+			
+			while(rsInfo.next())
+			{
+				infoList.add((CAPInfo) infoBp.toBean(rsInfo, CAPInfo.class));
+			}
+			
+			for (int i=0; i < infoList.size(); i++) 
+			{
+				infoIdList += infoList.get(i).getInfo_eid();
+				if(i != infoList.size() - 1)
+				{
+					infoIdList += ", ";
+				}
+			}
+			infoIdList = "(" + infoIdList + ");";
+
+			String resQuery = "SELECT * FROM resource WHERE info_eid in " + infoIdList;
+			String areaQuery = "SELECT * FROM area WHERE info_eid in " + infoIdList;
 			
 			Statement stmtRes = conn.createStatement();
 			ResultSet rsRes = stmtRes.executeQuery(resQuery);
