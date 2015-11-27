@@ -30,8 +30,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	public void actionPerformed(ActionEvent event)
 	{
 		String actionCommand = event.getActionCommand();
-		
-		switch (actionCommand) {
+		System.out.println("action triggered : " + actionCommand);
+		switch (actionCommand)
+		{
 		case "GenerateCap":
 //			controller.generateCap();
 			return;			

@@ -255,7 +255,7 @@ public class KieasMessageBuilder
 			String modifiedValue = "";
 			if(value.toString().equals(Info.Certainty.OBSERVED.toString()))
 			{
-				modifiedValue = value.toString() + " (지리)";
+				modifiedValue = value.toString() + " (이미 발생하였거나 진행 중)";
 			}
 			else if(value.toString().equals(Info.Certainty.VERY_LIKELY.toString()))
 			{
@@ -263,19 +263,19 @@ public class KieasMessageBuilder
 			}
 			else if(value.toString().equals(Info.Certainty.LIKELY.toString()))
 			{
-				modifiedValue = value.toString() + " (일어날 가능성 50% 이상)";
+				modifiedValue = value.toString() + " (50%를 초과하는 가능성)";
 			}
 			else if(value.toString().equals(Info.Certainty.POSSIBLE.toString()))
 			{
-				modifiedValue = value.toString() + " (일어날 가능성 50% 미만)";
+				modifiedValue = value.toString() + " (50% 이하의 가능성)";
 			}
 			else if(value.toString().equals(Info.Certainty.UNLIKELY.toString()))
 			{
-				modifiedValue = value.toString() + " (일어날 가능성 거의 없음)";
+				modifiedValue = value.toString() + " (희박한 가능성)";
 			}
 			else if(value.toString().equals(Info.Certainty.UNKNOWN_CERTAINTY.toString()))
 			{
-				modifiedValue = value.toString() + " (일어날 가능성 알수없음)";
+				modifiedValue = value.toString() + " (미상)";
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
@@ -296,23 +296,23 @@ public class KieasMessageBuilder
 			String modifiedValue = "";
 			if(value.toString().equals(Info.Severity.EXTREME.toString()))
 			{
-				modifiedValue = value.toString() + " (치명적인 피해 발생 예상)";
+				modifiedValue = value.toString() + " (이례적인 피해)";
 			}
 			else if(value.toString().equals(Info.Severity.SEVERE.toString()))
 			{
-				modifiedValue = value.toString() + " (심각한 피해 발생 예상)";
+				modifiedValue = value.toString() + " (심각한 피해)";
 			}
 			else if(value.toString().equals(Info.Severity.MODERATE.toString()))
 			{
-				modifiedValue = value.toString() + " (피해 발생 가능성 있음)";
+				modifiedValue = value.toString() + " (피해 가능성 존재)";
 			}
 			else if(value.toString().equals(Info.Severity.MINOR.toString()))
 			{
-				modifiedValue = value.toString() + " (피해 발생 가능성 낮음)";
+				modifiedValue = value.toString() + " (피해 가능성 낮음)";
 			}
 			else if(value.toString().equals(Info.Severity.UNKNOWN_SEVERITY.toString()))
 			{
-				modifiedValue = value.toString() + " (피해 정도를 알수없음)";
+				modifiedValue = value.toString() + " (미상)";
 			}
 			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
@@ -324,23 +324,23 @@ public class KieasMessageBuilder
 			String modifiedValue = "";
 			if(value.toString().equals(Info.Urgency.IMMEDIATE.toString()))
 			{
-				modifiedValue = value.toString() + " (사건 발생 촉박)";
+				modifiedValue = value.toString() + " (즉각적인 대응이 필요함)";
 			}
 			else if(value.toString().equals(Info.Urgency.EXPECTED.toString()))
 			{
-				modifiedValue = value.toString() + " (곧 사건  발생 예상)";
+				modifiedValue = value.toString() + " (한 시간 이내의 빠른 대응이 필요함)";
 			}
 			else if(value.toString().equals(Info.Urgency.FUTURE.toString()))
 			{
-				modifiedValue = value.toString() + " (가까운 미래에 사건  발생 예상)";
+				modifiedValue = value.toString() + " (근시일 내의 대응이 필요함)";
 			}
 			else if(value.toString().equals(Info.Urgency.PAST.toString()))
 			{
-				modifiedValue = value.toString() + " (과거에 사건 발생 했었음)";
+				modifiedValue = value.toString() + " (대응이 필요 없음)";
 			}
 			else if(value.toString().equals(Info.Urgency.UNKNOWN_URGENCY.toString()))
 			{
-				modifiedValue = value.toString() + " (사건 발생 시점 알수없음)";
+				modifiedValue = value.toString() + " (미상)";
 			}
 			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
