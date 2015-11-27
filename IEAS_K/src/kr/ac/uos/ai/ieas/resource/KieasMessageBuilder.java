@@ -790,8 +790,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(category.toString()))
 			{
-				mInfo = Info.newBuilder(mInfo).setCategory(0, category).build();				
-				return category;
+				if(mInfo != null)
+				{
+					mInfo = Info.newBuilder(mInfo).setCategory(0, category).build();				
+					return category;			
+				}
+				else
+				{	
+					return category;
+				}
 			}
 		}
 		return null;
@@ -808,8 +815,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(urgency.toString()))
 			{
-				mInfo = Info.newBuilder(mInfo).setUrgency(urgency).build();				
-				return urgency;
+				if(mInfo != null)
+				{
+					mInfo = Info.newBuilder(mInfo).setUrgency(urgency).build();				
+					return urgency;		
+				}
+				else
+				{	
+					return urgency;
+				}
 			}
 		}
 		return null;
@@ -821,8 +835,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(severity.toString()))
 			{
-				mInfo = Info.newBuilder(mInfo).setSeverity(severity).build();				
-				return severity;
+				if(mInfo != null)
+				{
+					mInfo = Info.newBuilder(mInfo).setSeverity(severity).build();				
+					return severity;	
+				}
+				else
+				{	
+					return severity;
+				}
 			}
 		}
 		return null;
@@ -834,8 +855,15 @@ public class KieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(certainty.toString()))
 			{
-				mInfo = Info.newBuilder(mInfo).setCertainty(certainty).build();				
-				return certainty;
+				if(mInfo != null)
+				{
+					mInfo = Info.newBuilder(mInfo).setCertainty(certainty).build();				
+					return certainty;	
+				}
+				else
+				{	
+					return certainty;
+				}
 			}
 		}
 		return null;
@@ -923,8 +951,8 @@ public class KieasMessageBuilder
 						.setSenderName(capInfo.getSenderName())
 						.setHeadline(capInfo.getHeadline())
 						.setDescription(capInfo.getDescription())
-						.setWeb(capInfo.getWeb())
-						.setContact(capInfo.getContact())
+//						.setWeb(capInfo.getWeb())
+//						.setContact(capInfo.getContact())
 						.buildPartial();
 				
 
