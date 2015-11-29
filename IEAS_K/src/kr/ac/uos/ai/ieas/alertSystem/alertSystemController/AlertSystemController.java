@@ -42,7 +42,7 @@ public class AlertSystemController {
 			
 			alertSystemView.setTextArea(message);
 			Thread.sleep(1000);
-			sendAckMessage(message, KieasConfiguration.IeasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+			sendAckMessage(message, KieasConfiguration.KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

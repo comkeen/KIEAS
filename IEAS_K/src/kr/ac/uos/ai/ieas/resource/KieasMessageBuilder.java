@@ -356,14 +356,14 @@ public class KieasMessageBuilder
 		capEnumMap.put("EventCode", capEnum6);
 		
 		ArrayList<Item> capEnum7 = new ArrayList<>();
-		for (String value : KieasConfiguration.IEAS_List.LANGUAGE_LIST)
+		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
 		{
 			String modifiedValue = "";
-			if(value.toString().equals(KieasConfiguration.IEAS_List.LANGUAGE_LIST[0]))
+			if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[0]))
 			{
 				modifiedValue = value.toString() + " (한국어)";
 			}
-			else if(value.toString().equals(KieasConfiguration.IEAS_List.LANGUAGE_LIST[1]))
+			else if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[1]))
 			{
 				modifiedValue = value.toString() + " (영어)";
 			}

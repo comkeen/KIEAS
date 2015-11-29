@@ -1,13 +1,5 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -246,16 +238,10 @@ public class AlerterAlertGeneratePanelModel
 			{
 				if (component instanceof HashMap<?, ?>)
 				{
-					System.out.println("Vector target = " + target);
-					System.out.println("Vector memberName = " + memberName);
+//					System.out.println("Vector target = " + target);
+//					System.out.println("Vector memberName = " + memberName);
 //					System.out.println("Vector value = " + value);
-					
-//					if(memberName.equals("mCategory"))
-//					{
-//						((HashMap<String, String>) component).replace(target, value);
-//						alerterModelManager.updateView(mViewName, target, value);
-//						return;
-//					}
+
 					((HashMap<String, String>) component).replace(target, value);
 					alerterModelManager.updateView(mViewName, target, value);
 					return;

@@ -2,12 +2,15 @@ package kr.ac.uos.ai.ieas.alerter.alerterController;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 
-public class AleterViewActionListener implements ActionListener, ListSelectionListener
+public class AleterViewActionListener implements ActionListener, ListSelectionListener, WindowListener
 {	
 	private _AlerterController controller;
 	
@@ -38,12 +41,6 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 			return;			
 		case "Send":
 			controller.sendMessage();
-			return;
-		case "TextAreaSend":
-			controller.sendTextAreaMessage();
-			return;
-		case "ConnectServer":
-			controller.connectToServer();
 			return;
 		case "Load Cap":
 			controller.loadCap();
@@ -80,4 +77,35 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	{
 		controller.selectTableEvent();
 	}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {}
+
+
+	@Override
+	public void windowClosed(WindowEvent e) {}
+
+
+	@Override
+	public void windowClosing(WindowEvent e)
+	{
+		controller.systemExit();
+	}
+
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {}
+
+
+	@Override
+	public void windowIconified(WindowEvent e) {}
+
+
+	@Override
+	public void windowOpened(WindowEvent e) {}
 }

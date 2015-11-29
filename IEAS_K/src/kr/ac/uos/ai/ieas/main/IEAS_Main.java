@@ -6,8 +6,7 @@ public class IEAS_Main
 {
 	public IEAS_Main()
 	{
-		new _AlerterController();
-//		GatewayController.getInstance();
+		_AlerterController.getInstance();
 	}
 
 	public static void main(String[] args) 

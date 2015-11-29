@@ -1,9 +1,12 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView;
 
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -22,7 +25,9 @@ public class _AlerterTopView
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AlerterDatabasePanel alerterDatabasePanel;
 	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
+	private AleterViewActionListener alerterActionListener;
 
+	
 	public static _AlerterTopView getInstance(AleterViewActionListener alerterActionListener)
 	{
 		if (alerterTopView == null)
@@ -38,20 +43,22 @@ public class _AlerterTopView
 	 */
 	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
+		this.alerterActionListener = alerterActionListener;
 		initLookAndFeel();
 		this.alerterAlertGeneratePanel = AlerterAlertGeneratePanel.getInstance(alerterActionListener);
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 
-		initFrame("alertViewPanel");
+		initFrame("표준경보발령대");
 	}
 
 	private void initFrame(String name)
 	{
-		this.mainFrame = new JFrame(name);
+		this.mainFrame = new JFrame();
+		mainFrame.setName(name);
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.addWindowListener(alerterActionListener);
 
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = mainFrame.getContentPane();
@@ -78,7 +85,8 @@ public class _AlerterTopView
 		}
 	}
 
-	public void receiveGatewayAck(String identifier) {
+	public void receiveGatewayAck(String identifier)
+	{
 		alerterLogPanel.receiveGatewayAck(identifier);
 	}
 
@@ -156,5 +164,15 @@ public class _AlerterTopView
 	public String getSaveTextField()
 	{
 		return alerterCapGeneratePanel.getSaveTextField();
+	}
+
+	public void setId(String name) 
+	{
+		this.mainFrame.setName(name);
+	}
+
+	public Component getFrame() 
+	{
+		return this.mainFrame;
 	}
 }

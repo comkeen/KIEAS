@@ -1,40 +1,62 @@
 
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
+import javax.swing.JOptionPane;
+
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
+import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterLogPanel;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _AlerterController
 { 
+	private static _AlerterController alerterController;
 	private KieasMessageBuilder kieasMessage;
 	private AlerterTransmitter alerterTransmitter;
 	private _AlerterTopView alerterTopView;
 	private _AlerterModelManager alerterModelManager;
 	private AleterViewActionListener alerterActionListener;
 	
+	private String alerterId;
+	
+
+
+	public static _AlerterController getInstance()
+	{
+		if (alerterController == null)
+		{
+			alerterController = new _AlerterController(alerterController);
+		}
+		return alerterController;
+	}
+	
+	
 	/**
 	 * Model과 View 초기화.
-	 */	
-	public _AlerterController()
+	 * @param alerterController 
+	 */		
+	private _AlerterController(_AlerterController alerterController)
 	{
+		
 		this.alerterActionListener = new AleterViewActionListener(this);
 		this.alerterTopView = _AlerterTopView.getInstance(alerterActionListener);
 		this.alerterModelManager = new _AlerterModelManager(this);
+		this.alerterTransmitter = new AlerterTransmitter(this);
+		
+		init();
 	}
 	
-	public void sendMessage() 
+	private void init()
 	{
-		sendMessageToGateway();
+		this.alerterId = "표준경보발령대";
+		
+		alerterTopView.setId(alerterId);
+		alerterTransmitter.setId(alerterId);
+		alerterTransmitter.openConnection();
 	}
 
-	public void sendTextAreaMessage()
-	{
-//		sendTextAreaMessageToGateway(alerterModelManager.getAlerterTextAreaText());
-	}
-
-	public void sendMessageToGateway()
+	public void sendMessage()
 	{
 		//		alerterView.addAlertTableRow(id, event, addresses);
 //		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
@@ -69,28 +91,6 @@ public class _AlerterController
 		{
 			e.printStackTrace();
 		}
-	}
-
-	public void sendTextAreaMessageToGateway(String message)
-	{
-		kieasMessage.setMessage(message);
-
-		String id = kieasMessage.getIdentifier();
-		String event = kieasMessage.getEvent(0);
-		String addresses = kieasMessage.getAddresses();
-
-		alerterTopView.addAlertTableRow(id, event, addresses);
-		alerterTransmitter.sendMessage(message);
-	}
-
-	public void saveCap(String capMessage)
-	{
-		System.out.println("saveCap");
-	}
-
-	public void connectToServer()
-	{
-		this.alerterTransmitter = new AlerterTransmitter(this, "Alerter");
 	}
 
 	/**
@@ -161,12 +161,31 @@ public class _AlerterController
 	 * @param target 값이 표시되는 Component의 이름
 	 * @param value 표시되는 값
 	 */
-	public void updateView(String view, String target, String value) {
+	public void updateView(String view, String target, String value)
+	{
 		alerterTopView.updateView(view, target, value);
 	}
 
-	public void insertDatabase() {
+	public void insertDatabase()
+	{
 		System.out.println("insert to database : todo");
+	}
+
+
+	public void systemExit()
+	{
+		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
+		String title = "프로그램 종료";
+		
+		if (JOptionPane.showConfirmDialog(alerterTopView.getFrame(),
+			question,
+			title,
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+	    {	
+			alerterTransmitter.closeConnection();
+	        System.exit(0);
+	    }
 	}
 
 }
