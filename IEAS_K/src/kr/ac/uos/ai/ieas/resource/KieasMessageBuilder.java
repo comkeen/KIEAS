@@ -59,6 +59,36 @@ public class KieasMessageBuilder
 	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
 	
+	public static final String IDENTIFIER = "Identifier";
+	public static final String SENDER = "Sender";
+	public static final String SENT = "Sent";
+	public static final String STATUS = "Status";
+	public static final String MSG_TYPE = "MsgType";
+	public static final String SCOPE = "Scope";
+	public static final String RESTRICTION = "Restriction";
+	public static final String CODE = "Code";
+
+	public static final String LANGUAGE = "Language";
+	public static final String CATEGORY = "Category";
+	public static final String EVENT = "Event";
+	public static final String URGENCY = "Urgency";
+	public static final String SEVERITY = "Severity";
+	public static final String CERTAINTY = "Certainty";
+	public static final String EVENT_CODE = "EventCode";
+	public static final String EFFECTIVE = "Effective";
+	public static final String SENDER_NAME = "SenderName";
+	public static final String HEADLINE = "Headline";
+	public static final String DESCRIPTION = "Description";
+	public static final String WEB = "Web";
+	public static final String CONTACT = "Contact";
+
+	public static final String RESOURCE_DESC = "ResourceDesc";
+	public static final String MIME_TYPE = "MimeType";
+	public static final String URI = "Uri";
+	
+	public static final String AREA_DESC = "AreaDesc";
+	public static final String GEO_CODE = "GeoCode";
+	
 
 	public KieasMessageBuilder()  {
 
@@ -457,7 +487,15 @@ public class KieasMessageBuilder
 	{		
 		mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();
 	}	
-
+	
+	private GregorianCalendar getDateCalendar()
+	{
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
+		cal.setGregorianChange(new Date());
+		cal.setTime(new Date());
+		return cal;
+	}
+	
 	private String dateToString(Date date)
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
@@ -733,6 +771,17 @@ public class KieasMessageBuilder
 
 	
 	//CAP 요소 Setter
+	public void setAlert(HashMap<String, String> alertList)
+	{
+		mAlert = Alert.newBuilder().setIdentifier(alertList.get(IDENTIFIER))
+				.setSender(alertList.get(SENDER))
+				.setSent(CapUtil.formatCapDate(getDateCalendar()))
+				.setStatus(this.setStatus(alertList.get(IDENTIFIER)))
+				.setMsgType(this.setMsgType(alertList.get(IDENTIFIER)))
+				.setSource(alertList.get(IDENTIFIER))
+				.buildPartial();
+	}	
+	
 	public void setIdentifier(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).build();
@@ -819,9 +868,14 @@ public class KieasMessageBuilder
 		return null;
 	}
 	
-	public void setAddresses(String string) 
+	public void setAddresses(String address) 
 	{
-		mAlert = Alert.newBuilder(mAlert).setAddresses(Group.newBuilder().addValue(string).build()).build();		
+		mAlert = Alert.newBuilder(mAlert).setAddresses(Group.newBuilder().addValue(address).build()).build();		
+	}
+	
+	public void setRestricion(String restriction)
+	{
+		mAlert = Alert.newBuilder(mAlert).setRestriction(restriction).build();
 	}
 
 	public void setCode(String code) 
@@ -936,6 +990,14 @@ public class KieasMessageBuilder
 
 	public void setHeadline(String headline) {
 		mInfo = Info.newBuilder(mInfo).setHeadline(headline).build();
+	}
+	
+	public void setHeadline(String headline, int index)
+	{
+		if(mAlert.getInfo(index) != null)
+		{
+			Info info = Info.newBuilder(mAlert.getInfo(index)).setHeadline(headline).build();			
+		}
 	}
 
 	public void setDescription(String description) {

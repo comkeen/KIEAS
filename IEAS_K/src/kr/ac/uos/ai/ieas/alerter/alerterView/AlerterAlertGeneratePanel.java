@@ -37,8 +37,6 @@ public class AlerterAlertGeneratePanel
 
 	private Vector<Object> mViewComponents;
 	private HashMap<String, Component> panelComponenets;
-	private JScrollPane textAreaPane;
-	private JTextArea mTextArea;
 	
 	private JPanel buttonPane;
 
@@ -58,9 +56,6 @@ public class AlerterAlertGeneratePanel
 	
 	private JButton sendButton;
 	private JTextField mInsertDatabaseTextField;
-	private AlertTableModel alertTableModel;
-	private JTable alertTable;
-	private JScrollPane tableScrollPane;
 	
 
 	public static final String TEXT_AREA = "TextArea";
@@ -129,10 +124,9 @@ public class AlerterAlertGeneratePanel
 		this.mViewComponents = new Vector<>();
 		this.panelComponenets = new HashMap<>();
 		this.alertGeneratePanel = new JPanel();
+		
 		alertGeneratePanel.setLayout(new BoxLayout(alertGeneratePanel, BoxLayout.Y_AXIS));
 
-		alertGeneratePanel.add(initTextArea());
-		alertGeneratePanel.add(initDataTable());
 		alertGeneratePanel.add(initButtonPanel());	
 		alertGeneratePanel.add(initCapAlertPanel());
 		
@@ -142,18 +136,6 @@ public class AlerterAlertGeneratePanel
 		mViewComponents.addElement(areaComponents);
 
 		this.alertGenerateScrollPanel = new JScrollPane(alertGeneratePanel);
-	}
-
-	private Component initTextArea()
-	{
-		this.mTextArea = new JTextArea(20, 20);
-		mTextArea.setEditable(false);
-		
-		this.textAreaPane = new JScrollPane(mTextArea);
-		panelComponenets.put("TextArea", mTextArea);
-		textAreaPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		
-		return textAreaPane;
 	}
 
 	private Component initButtonPanel()
@@ -177,18 +159,6 @@ public class AlerterAlertGeneratePanel
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		return buttonPane;
-	}
-
-	private Component initDataTable() {
-
-		this.alertTableModel = new AlertTableModel();
-		this.alertTable = new JTable(alertTableModel.getTableModel());
-		this.tableScrollPane = new JScrollPane(alertTable);
-
-		alertTable.setEnabled(true);
-		alertTable.getSelectionModel().addListSelectionListener(alerterActionListener);
-		
-		return tableScrollPane;
 	}
 	
 	private JPanel initCapAlertPanel()
@@ -226,15 +196,6 @@ public class AlerterAlertGeneratePanel
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		return infoPanel;
-	}
-	
-	private void resetCapInfoPanel()
-	{
-		this.infoPanel.removeAll();
-		this.infoIndexPanels.clear();
-		this.infoComponents.clear();
-		this.infoCounter = 0;
-		addInfoIndexPanel();
 	}
 
 	public void addInfoIndexPanel()
@@ -479,24 +440,11 @@ public class AlerterAlertGeneratePanel
 	
 	public void updateView(String target, String value)
 	{		
-//		if(target.equals(INFO_INDEX))
+//		if(TEXT_AREA.equals(target))
 //		{
-//			int index = Integer.parseInt(value);
-//			infoCounter = index;
-//			System.out.println("view infocounter = "+ infoCounter);
-//			resetCapInfoPanel();
-//			for(int i = 0; i < index; i++)
-//			{
-//				System.out.println();
-//				addInfoIndexPanel();
-//			}
+//			this.mTextArea.setText(value);
 //			return;
 //		}
-		if(TEXT_AREA.equals(target))
-		{
-			this.mTextArea.setText(value);
-			return;
-		}
 		if (alertComponents.get(target) instanceof JTextField)
 		{
 			((JTextField) alertComponents.get(target)).setText(value);

@@ -71,14 +71,6 @@ public class _AlerterModelManager{
 //		return identifier;		
 //	}
 			
-	public GregorianCalendar getDateCalendar()
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
-		cal.setGregorianChange(new Date());
-		cal.setTime(new Date());
-		return cal;
-	}
-			
 	public ArrayList<String> getQueryResult(String target, String query)
 	{	
 		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));

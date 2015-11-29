@@ -32,22 +32,16 @@ public class AlerterDataBasePanelModel
 		
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
-		
-		this.textAreaText = "";
-		this.queryTextFieldText = "";
+				
+		init();
 	}   
 	
 	private void init()
 	{
-		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
-	}
-		
-	public GregorianCalendar getDateCalendar()
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
-		cal.setGregorianChange(new Date());
-		cal.setTime(new Date());
-		return cal;
+		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");		
+
+		this.textAreaText = "";
+		this.queryTextFieldText = "";
 	}
 
 	public void setQueryResult(ArrayList<String> result)

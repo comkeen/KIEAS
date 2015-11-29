@@ -75,38 +75,8 @@ public class AlerterCapGeneratePanel
 	public static final String LOAD_CAP_BUTTON = "Load Cap";
 	public static final String SAVE_CAP_BUTTON = "Save Cap";
 	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
-	
-	
-	public static final String IDENTIFIER = "Identifier";
-	public static final String SENDER = "Sender";
-	public static final String SENT = "Sent";
-	public static final String STATUS = "Status";
-	public static final String MSG_TYPE = "MsgType";
-	public static final String SCOPE = "Scope";
-	public static final String CODE = "Code";
 
 	public static final String INFO_INDEX = "InfoIndex";
-	public static final String LANGUAGE = "Language";
-	public static final String CATEGORY = "Category";
-	public static final String EVENT = "Event";
-	public static final String URGENCY = "Urgency";
-	public static final String SEVERITY = "Severity";
-	public static final String CERTAINTY = "Certainty";
-	public static final String EVENT_CODE = "EventCode";
-	public static final String EFFECTIVE = "Effective";
-	public static final String SENDER_NAME = "SenderName";
-	public static final String HEADLINE = "Headline";
-	public static final String DESCRIPTION = "Description";
-	public static final String WEB = "Web";
-	public static final String CONTACT = "Contact";
-
-	public static final String RESOURCE_DESC = "ResourceDesc";
-	public static final String MIME_TYPE = "MimeType";
-	public static final String URI = "Uri";
-	
-	public static final String AREA_DESC = "AreaDesc";
-	public static final String GEO_CODE = "GeoCode";
-	
 	private static final int BASE_LINE = 100;
 
 	
@@ -208,13 +178,13 @@ public class AlerterCapGeneratePanel
 		
 		this.alertComponents = new HashMap<>();
 
-		alertPanel.add(addBox(IDENTIFIER, TEXT_FIELD));
-		alertPanel.add(addBox(SENDER, TEXT_FIELD));
-		alertPanel.add(addBox(SENT, TEXT_FIELD));
-		alertPanel.add(addBox(STATUS, COMBO_BOX));
-		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
-		alertPanel.add(addBox(SCOPE, COMBO_BOX));
-		alertPanel.add(addBox(CODE, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.IDENTIFIER, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.SENDER, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.SENT, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.STATUS, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.MSG_TYPE, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.SCOPE, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.CODE, TEXT_FIELD));
 		alertPanel.add(initCapInfoPanel());
 		alertPanel.add(initCapResourcePanel());	
 		alertPanel.add(initCapAreaPanel());	
@@ -253,19 +223,19 @@ public class AlerterCapGeneratePanel
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(LANGUAGE, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(CATEGORY, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(EVENT, TEXT_FIELD, infoComponents, infoCounter));
-		panel.add(addBox(URGENCY, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(SEVERITY, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(CERTAINTY, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoComponents, infoCounter));
-		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoComponents, infoCounter));
-		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter)); 
-		panel.add(addBox(HEADLINE, TEXT_FIELD, infoComponents, infoCounter));
-		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoComponents, infoCounter));
-		panel.add(addBox(WEB, TEXT_FIELD, infoComponents, infoCounter));
-		panel.add(addBox(CONTACT, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.LANGUAGE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CATEGORY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EVENT, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.URGENCY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.SEVERITY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CERTAINTY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EFFECTIVE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter)); 
+		panel.add(addBox(KieasMessageBuilder.HEADLINE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, TEXT_AREA, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.WEB, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CONTACT, TEXT_FIELD, infoComponents, infoCounter));
 		
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
@@ -294,9 +264,9 @@ public class AlerterCapGeneratePanel
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(RESOURCE_DESC, TEXT_FIELD, resourceComponents, resourceCounter));
-		panel.add(addBox(MIME_TYPE, TEXT_FIELD, resourceComponents, resourceCounter));
-		panel.add(addBox(URI, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(KieasMessageBuilder.RESOURCE_DESC, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(KieasMessageBuilder.MIME_TYPE, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(KieasMessageBuilder.URI, TEXT_FIELD, resourceComponents, resourceCounter));
 		
 		resourceIndexPanels.add(panel);
 		resourcePanel.addTab("Resource" + resourceCounter, resourceIndexPanels.get(resourceCounter));
@@ -325,8 +295,8 @@ public class AlerterCapGeneratePanel
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(AREA_DESC, TEXT_FIELD, areaComponents, areaCounter));
-		panel.add(addBox(GEO_CODE, TEXT_FIELD, areaComponents, areaCounter));
+		panel.add(addBox(KieasMessageBuilder.AREA_DESC, TEXT_FIELD, areaComponents, areaCounter));
+		panel.add(addBox(KieasMessageBuilder.GEO_CODE, TEXT_FIELD, areaComponents, areaCounter));
 		
 		areaIndexPanels.add(panel);
 		areaPanel.addTab("Area" + areaCounter, areaIndexPanels.get(areaCounter));

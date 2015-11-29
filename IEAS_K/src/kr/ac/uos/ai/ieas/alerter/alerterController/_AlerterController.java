@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
-import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterLogPanel;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;

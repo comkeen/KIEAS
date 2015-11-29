@@ -63,6 +63,12 @@ public class AlerterAlertGeneratePanelModel
 	private int mAreaCounter;
 	private String mAreaDesc;
 	private String mGeoCode;
+	private String message;
+	
+	private boolean hasEnglish;
+	private boolean hasRestriction;
+	
+	private static final String RESTRITION = "Restriction";
 
 	
 	public AlerterAlertGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
@@ -78,10 +84,8 @@ public class AlerterAlertGeneratePanelModel
 	{
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
 		
-		this.mTextArea = "";		
-		this.mLoadTextField = "cap/HRA.xml";
-		this.mSaveTextField = "cap/out.xml";
-
+		this.hasEnglish = false;
+		
 		this.mOrganization = "";
 		this.mDomain = "";
 		this.mUser = "";
@@ -105,7 +109,6 @@ public class AlerterAlertGeneratePanelModel
 		this.mMimeType = "";
 		this.mUri = "";
 
-		this.mAreaDesc = "";
 		this.mGeoCode = "";
 	}
 
@@ -170,19 +173,19 @@ public class AlerterAlertGeneratePanelModel
 	private HashMap<String, String> addInfoIndexValues(int index)
 	{
 		this.mInfoIndexValues = new HashMap<>();
-		mInfoIndexValues.put(AlerterCapGeneratePanel.LANGUAGE + index, mLanguage);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CATEGORY + index, mCategory);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT + index, mEvent);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.URGENCY + index, mUrgency);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.SEVERITY + index, mSeverity);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CERTAINTY + index, mCertainty);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT_CODE + index, mEventCode);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EFFECTIVE + index, mEffective);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.SENDER_NAME + index, mSenderName);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.HEADLINE + index, mHeadline);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.DESCRIPTION + index, mDescription);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.WEB + index, mWeb);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CONTACT + index, mContact);
+		mInfoIndexValues.put(KieasMessageBuilder.LANGUAGE + index, mLanguage);
+		mInfoIndexValues.put(KieasMessageBuilder.CATEGORY + index, mCategory);
+		mInfoIndexValues.put(KieasMessageBuilder.EVENT + index, mEvent);
+		mInfoIndexValues.put(KieasMessageBuilder.URGENCY + index, mUrgency);
+		mInfoIndexValues.put(KieasMessageBuilder.SEVERITY + index, mSeverity);
+		mInfoIndexValues.put(KieasMessageBuilder.CERTAINTY + index, mCertainty);
+		mInfoIndexValues.put(KieasMessageBuilder.EVENT_CODE + index, mEventCode);
+		mInfoIndexValues.put(KieasMessageBuilder.EFFECTIVE + index, mEffective);
+		mInfoIndexValues.put(KieasMessageBuilder.SENDER_NAME + index, mSenderName);
+		mInfoIndexValues.put(KieasMessageBuilder.HEADLINE + index, mHeadline);
+		mInfoIndexValues.put(KieasMessageBuilder.DESCRIPTION + index, mDescription);
+		mInfoIndexValues.put(KieasMessageBuilder.WEB + index, mWeb);
+		mInfoIndexValues.put(KieasMessageBuilder.CONTACT + index, mContact);
 
 		return mInfoIndexValues;
 	}
@@ -206,9 +209,9 @@ public class AlerterAlertGeneratePanelModel
 	private HashMap<String, String> addResourceIndexValues(int index)
 	{
 		this.mResourceIndexValues = new HashMap<>();
-		mResourceIndexValues.put(AlerterCapGeneratePanel.RESOURCE_DESC + index, mResourceDesc);
-		mResourceIndexValues.put(AlerterCapGeneratePanel.MIME_TYPE + index, mMimeType);
-		mResourceIndexValues.put(AlerterCapGeneratePanel.URI + index, mUri);
+		mResourceIndexValues.put(KieasMessageBuilder.RESOURCE_DESC + index, mResourceDesc);
+		mResourceIndexValues.put(KieasMessageBuilder.MIME_TYPE + index, mMimeType);
+		mResourceIndexValues.put(KieasMessageBuilder.URI + index, mUri);
 
 		return mResourceIndexValues;
 	}
@@ -226,8 +229,8 @@ public class AlerterAlertGeneratePanelModel
 	private HashMap<String, String> addAreaIndexValues(int index)
 	{
 		this.mAreaIndexValues = new HashMap<>();
-		mAreaIndexValues.put(AlerterCapGeneratePanel.AREA_DESC + index, mAreaDesc);
-		mAreaIndexValues.put(AlerterCapGeneratePanel.GEO_CODE + index, mGeoCode);
+		mAreaIndexValues.put(KieasMessageBuilder.AREA_DESC + index, mAreaDesc);
+		mAreaIndexValues.put(KieasMessageBuilder.GEO_CODE + index, mGeoCode);
 
 		return mAreaIndexValues;
 	}
@@ -279,13 +282,13 @@ public class AlerterAlertGeneratePanelModel
 	
 	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		setModelProperty(AlerterCapGeneratePanel.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		setModelProperty(AlerterCapGeneratePanel.SENDER, kieasMessageBuilder.getSender());
-		setModelProperty(AlerterCapGeneratePanel.SENT, kieasMessageBuilder.getSent());
-		setModelProperty(AlerterCapGeneratePanel.STATUS, kieasMessageBuilder.getStatus());
-		setModelProperty(AlerterCapGeneratePanel.MSG_TYPE, kieasMessageBuilder.getMsgType());
-		setModelProperty(AlerterCapGeneratePanel.SCOPE, kieasMessageBuilder.getScope());
-		setModelProperty(AlerterCapGeneratePanel.CODE, kieasMessageBuilder.getCode());		
+		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
+		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
+		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
+		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());		
 		
 		setInfoPanel(kieasMessageBuilder);
 		setResourcePanel(kieasMessageBuilder);
@@ -299,19 +302,19 @@ public class AlerterAlertGeneratePanelModel
 		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(mInfoIndex));
 		for(int i = 0; i < mInfoIndex; i++)
 		{
-			setModelProperty(AlerterCapGeneratePanel.LANGUAGE + i, ieasMessage.getLanguage(i));
-			setModelProperty(AlerterCapGeneratePanel.CATEGORY + i, ieasMessage.getCategory(i));
-			setModelProperty(AlerterCapGeneratePanel.EVENT + i, ieasMessage.getEvent(i));
-			setModelProperty(AlerterCapGeneratePanel.URGENCY + i, ieasMessage.getUrgency(i));
-			setModelProperty(AlerterCapGeneratePanel.SEVERITY + i, ieasMessage.getSeverity(i));
-			setModelProperty(AlerterCapGeneratePanel.CERTAINTY + i, ieasMessage.getCertainty(i));
-			setModelProperty(AlerterCapGeneratePanel.EVENT_CODE + i, ieasMessage.getEventCode(i));
-			setModelProperty(AlerterCapGeneratePanel.EFFECTIVE + i, ieasMessage.getEffective(i));
-			setModelProperty(AlerterCapGeneratePanel.SENDER_NAME + i, ieasMessage.getSenderName(i));
-			setModelProperty(AlerterCapGeneratePanel.HEADLINE + i, ieasMessage.getHeadline(i));
-			setModelProperty(AlerterCapGeneratePanel.DESCRIPTION + i, ieasMessage.getDescrpition(i));
-			setModelProperty(AlerterCapGeneratePanel.WEB + i, ieasMessage.getWeb(i));
-			setModelProperty(AlerterCapGeneratePanel.CONTACT + i, ieasMessage.getContact(i));
+			setModelProperty(KieasMessageBuilder.LANGUAGE + i, ieasMessage.getLanguage(i));
+			setModelProperty(KieasMessageBuilder.CATEGORY + i, ieasMessage.getCategory(i));
+			setModelProperty(KieasMessageBuilder.EVENT + i, ieasMessage.getEvent(i));
+			setModelProperty(KieasMessageBuilder.URGENCY + i, ieasMessage.getUrgency(i));
+			setModelProperty(KieasMessageBuilder.SEVERITY + i, ieasMessage.getSeverity(i));
+			setModelProperty(KieasMessageBuilder.CERTAINTY + i, ieasMessage.getCertainty(i));
+			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, ieasMessage.getEventCode(i));
+			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, ieasMessage.getEffective(i));
+			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, ieasMessage.getSenderName(i));
+			setModelProperty(KieasMessageBuilder.HEADLINE + i, ieasMessage.getHeadline(i));
+			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, ieasMessage.getDescrpition(i));
+			setModelProperty(KieasMessageBuilder.WEB + i, ieasMessage.getWeb(i));
+			setModelProperty(KieasMessageBuilder.CONTACT + i, ieasMessage.getContact(i));
 		}
 	}
 
@@ -321,9 +324,9 @@ public class AlerterAlertGeneratePanelModel
 		System.out.println("resourceCount : " + mResourceCounter);
 		for(int i = 0; i < mResourceCounter; i++)
 		{
-			setModelProperty(AlerterCapGeneratePanel.RESOURCE_DESC + i, ieasMessage.getResourceDesc(0, i));
-			setModelProperty(AlerterCapGeneratePanel.MIME_TYPE + i, ieasMessage.getMimeType(0, i));
-			setModelProperty(AlerterCapGeneratePanel.URI + i, ieasMessage.getUri(0, i));
+			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, ieasMessage.getResourceDesc(0, i));
+			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, ieasMessage.getMimeType(0, i));
+			setModelProperty(KieasMessageBuilder.URI + i, ieasMessage.getUri(0, i));
 		}
 	}
 	
@@ -333,8 +336,8 @@ public class AlerterAlertGeneratePanelModel
 		System.out.println("areaCount : " + mAreaCounter);
 		for(int i = 0; i < mAreaCounter; i++)
 		{
-			setModelProperty(AlerterCapGeneratePanel.AREA_DESC + i, ieasMessage.getAreaDesc(0, i));
-			setModelProperty(AlerterCapGeneratePanel.GEO_CODE + i, ieasMessage.getGeoCode(0, i));
+			setModelProperty(KieasMessageBuilder.AREA_DESC + i, ieasMessage.getAreaDesc(0, i));
+			setModelProperty(KieasMessageBuilder.GEO_CODE + i, ieasMessage.getGeoCode(0, i));
 		}
 	}
 	
@@ -352,6 +355,29 @@ public class AlerterAlertGeneratePanelModel
 		kieasMessageBuilder.setMessage(content);
 		setModelProperty("TextArea", content);
 		setAlertPanel(kieasMessageBuilder);
+	}
+	
+	public String buildCapMessage()
+	{
+		kieasMessageBuilder.setIdentifier("");
+		kieasMessageBuilder.setSender("");
+		kieasMessageBuilder.setSent("");
+		kieasMessageBuilder.setStatus("");
+		kieasMessageBuilder.setMsgType("");
+		kieasMessageBuilder.setScope("");
+		if(hasRestriction)
+		{
+			kieasMessageBuilder.setScope("Restricted");
+		}
+		else
+		{
+			kieasMessageBuilder.setScope("Public");			
+		}
+		if(!hasEnglish)
+		{
+			kieasMessageBuilder.setHeadline("", 1);
+		}
+		return message;
 	}
 	
 	private String capLoader(String path)
