@@ -186,7 +186,7 @@ public class AlerterDatabasePanel {
 			alertTableModel.addTableRowData(getAlertElementMap(message));	
 			kieasMessageBuilder.setMessage(message);
 			putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
-		}		
+		}
 	}
 	
 	public void putAlertMessageMap(String key, String message)

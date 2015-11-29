@@ -1,6 +1,8 @@
 
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
@@ -20,7 +22,6 @@ public class _AlerterController
 	
 	private String alerterId;
 	
-
 
 	public static _AlerterController getInstance()
 	{
@@ -59,7 +60,7 @@ public class _AlerterController
 	public void sendMessage()
 	{
 		//		alerterView.addAlertTableRow(id, event, addresses);
-//		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
+		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
 
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
@@ -93,6 +94,26 @@ public class _AlerterController
 		}
 	}
 
+	public void systemExit()
+	{
+		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
+		String title = "프로그램 종료";
+		
+		if (JOptionPane.showConfirmDialog(alerterTopView.getFrame(),
+			question,
+			title,
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+	    {	
+			alerterTransmitter.closeConnection();
+	        System.exit(0);
+	    }
+		else
+		{
+			System.out.println("cancel exit program");
+		}
+	}
+	
 	/**
 	 * CapGeneratePanel에 Cap 메시지를 불러올 때 호출됨.
 	 */
@@ -125,7 +146,12 @@ public class _AlerterController
 	 */
 	public void getQueryResult()
 	{
-		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("eventCode", alerterTopView.getQuery()));
+		alerterModelManager.getQueryResult("eventCode", alerterTopView.getQuery());		
+	}
+
+	public void loadDraft() 
+	{
+		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", alerterTopView.getQuery()));
 	}
 
 	/**
@@ -165,27 +191,15 @@ public class _AlerterController
 	{
 		alerterTopView.updateView(view, target, value);
 	}
+	
+	public void updateView(String view, String target, ArrayList<String> value)
+	{
+		alerterTopView.updateView(view, target, value);
+	}
 
 	public void insertDatabase()
 	{
-		System.out.println("insert to database : todo");
-	}
-
-
-	public void systemExit()
-	{
-		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
-		String title = "프로그램 종료";
-		
-		if (JOptionPane.showConfirmDialog(alerterTopView.getFrame(),
-			question,
-			title,
-			JOptionPane.YES_NO_OPTION,
-			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
-	    {	
-			alerterTransmitter.closeConnection();
-	        System.exit(0);
-	    }
+		System.out.println("insert to database : <<todo>>");
 	}
 
 }

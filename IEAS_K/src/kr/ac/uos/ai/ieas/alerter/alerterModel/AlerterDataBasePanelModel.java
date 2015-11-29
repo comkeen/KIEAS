@@ -1,5 +1,6 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -11,7 +12,8 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class AlerterDataBasePanelModel 
 {	
-	private KieasMessageBuilder kieasMessage;
+	private _AlerterModelManager alerterModelManager;
+	private KieasMessageBuilder kieasMessageBuilder;
 
 	private HashMap<String, String> alertElementMap;
 	private HashMap<String, String> alertMessageMap;
@@ -19,10 +21,14 @@ public class AlerterDataBasePanelModel
 	private String textAreaText;
 	private String queryTextFieldText;
 	
+	private String mViewName;
+
 	
-	public AlerterDataBasePanelModel(_AlerterController alerterController)
+	
+	public AlerterDataBasePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
-		this.kieasMessage = new KieasMessageBuilder();
+		this.alerterModelManager = _AlerterModelManager;
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
@@ -30,6 +36,11 @@ public class AlerterDataBasePanelModel
 		this.textAreaText = "";
 		this.queryTextFieldText = "";
 	}   
+	
+	private void init()
+	{
+		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
+	}
 		
 	public GregorianCalendar getDateCalendar()
 	{
@@ -37,5 +48,11 @@ public class AlerterDataBasePanelModel
 		cal.setGregorianChange(new Date());
 		cal.setTime(new Date());
 		return cal;
+	}
+
+	public void setQueryResult(ArrayList<String> result)
+	{
+		alerterModelManager.updateView(mViewName, "alertTable", result);
+		
 	}	
 }

@@ -56,16 +56,16 @@ public class AlerterTransmitter {
 		this.setQueueListener(id);
 	}
 
-
 	public void closeConnection()
 	{
 		try 
 		{
 			if(connection != null)
 			{
+				session.close();
 				connection.close();			
 			}
-			System.out.println("Connection Close");
+			System.out.println("Alerter Connection Close");
 		}
 		catch (JMSException e)
 		{
@@ -76,7 +76,7 @@ public class AlerterTransmitter {
 	public void sendMessage(String message) 
 	{
 		try
-		{
+		{			
 			Destination queueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 			this.producer = this.session.createProducer(queueDestination);
 			this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -106,7 +106,7 @@ public class AlerterTransmitter {
 
 						try
 						{
-							controller.acceptMessage(textMessage.getText());					
+							controller.acceptMessage(textMessage.getText());				
 						}
 						catch (JMSException e)
 						{

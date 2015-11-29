@@ -49,15 +49,15 @@ public class _AlerterTopView
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
 
-		initFrame("표준경보발령대");
+		initFrame();
 	}
 
-	private void initFrame(String name)
+	private void initFrame()
 	{
 		this.mainFrame = new JFrame();
-		mainFrame.setName(name);
 		mainFrame.setSize(1200, 900);
 		mainFrame.setLocationRelativeTo(null);
+		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(alerterActionListener);
 
 		this.mainTabbedPane = new JTabbedPane();
@@ -68,8 +68,8 @@ public class _AlerterTopView
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
 
-		//	this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
-		//	mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
+		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
+		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
 
 		mainFrame.setVisible(true);
 	}
@@ -112,7 +112,7 @@ public class _AlerterTopView
 
 	public void getQueryResult(ArrayList<String> results)
 	{
-		System.out.println("topview getquery");
+		System.out.println("topView getQueryResult");
 		alerterDatabasePanel.getQueryResult(results);
 	}
 
@@ -149,6 +149,19 @@ public class _AlerterTopView
 		case "AlerterCapGeneratePanel":
 			alerterCapGeneratePanel.updateView(target, value);
 			break;
+		default:
+			System.out.println("there is no such a view " + view);
+			break;
+		}
+	}
+	
+	public void updateView(String view, String target, ArrayList<String> value)
+	{
+		switch (view)
+		{
+		case "AlerterDatabasePanel":
+			alerterDatabasePanel.getQueryResult(value);
+			break;
 
 		default:
 			System.out.println("there is no such a view " + view);
@@ -168,7 +181,7 @@ public class _AlerterTopView
 
 	public void setId(String name) 
 	{
-		this.mainFrame.setName(name);
+		this.mainFrame.setTitle(name);
 	}
 
 	public Component getFrame() 

@@ -1,5 +1,9 @@
 package kr.ac.uos.ai.ieas.resource;
 
+import java.util.Vector;
+
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
+
 public class KieasConfiguration {
 	
 	public final static String PACKAGE_NAME 				= "kieas.";
@@ -32,11 +36,12 @@ public class KieasConfiguration {
 	
 	public static class KIEAS_Constant
 	{
+		public static final String CODE = "대한민국정부1.0";
 		
 	}
 	
-	public static class KieasList 
-	{		
+	public static class KieasList
+	{			
 		public static final String[] ALERT_SYSTEM_TYPE_LIST =
 		{
 			"자동우량경보시스템",

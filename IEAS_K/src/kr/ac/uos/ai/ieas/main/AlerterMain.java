@@ -2,15 +2,15 @@ package kr.ac.uos.ai.ieas.main;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 
-public class IEAS_Main
+public class AlerterMain
 {
-	public IEAS_Main()
+	public AlerterMain()
 	{
 		_AlerterController.getInstance();
 	}
 
 	public static void main(String[] args) 
 	{
-		new IEAS_Main();
+		new AlerterMain();
 	}	
 }

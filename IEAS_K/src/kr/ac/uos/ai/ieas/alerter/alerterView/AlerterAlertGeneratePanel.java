@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
@@ -125,8 +126,8 @@ public class AlerterAlertGeneratePanel
 
 	private void initPanel()
 	{		
-		this.mViewComponents = new Vector<>();		
-		this.panelComponenets = new HashMap<>();		
+		this.mViewComponents = new Vector<>();
+		this.panelComponenets = new HashMap<>();
 		this.alertGeneratePanel = new JPanel();
 		alertGeneratePanel.setLayout(new BoxLayout(alertGeneratePanel, BoxLayout.Y_AXIS));
 
@@ -164,10 +165,11 @@ public class AlerterAlertGeneratePanel
 		loadBox.setBorder(BorderFactory.createRaisedBevelBorder());
 		buttonPane.add(addBox(LOAD_DRAFT_BUTTON, BUTTON));
 		
-		buttonPane.add(Box.createRigidArea(new Dimension(200, 0)));
+//		buttonPane.add(Box.createRigidArea(new Dimension(200, 0)));
 		
 		Box sendBox = Box.createHorizontalBox();
-		this.sendButton = createButton(SEND_BUTTON);
+		this.sendButton = createButton(SEND_BUTTON_K);
+		sendButton.setActionCommand(SEND_BUTTON);
 		sendButton.setPreferredSize(new Dimension(200, 10));
 		sendBox.add(sendButton);
 		
@@ -204,7 +206,7 @@ public class AlerterAlertGeneratePanel
 		alertPanel.add(addBox(SEVERITY, COMBO_BOX));
 		alertPanel.add(addBox(CERTAINTY, COMBO_BOX));
 		alertPanel.add(addBox(EVENT_CODE, COMBO_BOX));
-		alertPanel.add(addBox("지역추가", BUTTON));
+		alertPanel.add(addBox(GEO_CODE, BUTTON));
 		alertPanel.add(initCapInfoPanel());
 //		alertPanel.add(initCapAreaPanel());	
 		alertPanel.setBorder(BorderFactory.createTitledBorder("경보메시지"));
@@ -284,20 +286,10 @@ public class AlerterAlertGeneratePanel
 
 	private JButton createButton(String name)
 	{
-		if(SEND_BUTTON.equals(name))
-		{
-			JButton button = new JButton(SEND_BUTTON_K);
-			button.addActionListener(alerterActionListener);
-			button.setAlignmentX(Component.LEFT_ALIGNMENT);
-			return button;
-		}
-		else
-		{
-			JButton button = new JButton(name);
-			button.addActionListener(alerterActionListener);
-			button.setAlignmentX(Component.LEFT_ALIGNMENT);
-			return button;
-		}		
+		JButton button = new JButton(name);
+		button.addActionListener(alerterActionListener);
+		button.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return button;
 	}
 
 	private Box addBox(String labelName, String type)
@@ -319,10 +311,12 @@ public class AlerterAlertGeneratePanel
 			{
 				comboboxModel.addElement(value);
 			}
+
 			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
 			alertComponents.put(labelName, comboBox);
 			box.add(comboBox);
-			return box;			
+			return box;	
+					
 		case TEXT_FIELD:
 			JTextField textField = new JTextField();
 			alertComponents.put(labelName, textField);
@@ -337,10 +331,21 @@ public class AlerterAlertGeneratePanel
 			JButton button = createButton(labelName);
 			box.add(button);		
 			Vector<Item> buttonComboboxModel = new Vector<>();
-			for (Item value : kieasMessageBuilder.getCapEnumMap().get(EVENT_CODE))
+			if(LOAD_DRAFT_BUTTON.equals(labelName))
 			{
-				buttonComboboxModel.addElement(value);
+				for (Item value : kieasMessageBuilder.getCapEnumMap().get(EVENT_CODE))
+				{
+					buttonComboboxModel.addElement(value);
+				}
 			}
+			else
+			{
+				for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+				{
+					buttonComboboxModel.addElement(value);
+				}
+			}
+			
 			JComboBox<Item> buttonComboBox = new JComboBox<>(buttonComboboxModel);
 			AutoCompletionComboBox autoCompeletionComboBox = new AutoCompletionComboBox(buttonComboBox);
 			panelComponenets.put(labelName, autoCompeletionComboBox.getComoboBox());
@@ -367,7 +372,7 @@ public class AlerterAlertGeneratePanel
 			Vector<Item> comboboxModel = new Vector<>();
 			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
-				comboboxModel.addElement(value);		
+				comboboxModel.addElement(value);
 			}
 			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
 			components.get(index).put(labelName + index, comboBox);
@@ -487,7 +492,7 @@ public class AlerterAlertGeneratePanel
 //			}
 //			return;
 //		}
-		if(target.equals(TEXT_AREA))
+		if(TEXT_AREA.equals(target))
 		{
 			this.mTextArea.setText(value);
 			return;

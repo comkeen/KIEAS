@@ -135,7 +135,7 @@ public class AlerterCapGeneratePanel
 		capGeneratePanel.setLayout(new BoxLayout(capGeneratePanel, BoxLayout.Y_AXIS));
 
 		capGeneratePanel.add(initTextArea());
-		capGeneratePanel.add(initButtonPanel());	
+		capGeneratePanel.add(initButtonPanel());
 		capGeneratePanel.add(initCapAlertPanel());
 		
 		mViewComponents.addElement(panelComponenets);

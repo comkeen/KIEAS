@@ -66,8 +66,11 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Add Area":
 			controller.addAreaIndexPanel();
 			return;
+		case "Load Draft":
+			controller.loadDraft();
+			return;
 		default:
-			System.out.println("there is no such a actionCommand " + actionCommand);
+			System.out.println("There is no such a actionCommand : " + actionCommand);
 			return;
 		}
 	}

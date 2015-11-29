@@ -53,13 +53,13 @@ public class GatewayController {
 
 	public void openGateway() {
 
-		gatewayTransmitter.open();
+		gatewayTransmitter.startConnection();
 		System.out.println("(" + gatewayID + ")" + " Open");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 	}
 
 	public void closeGateway() {
-		gatewayTransmitter.close();
+		gatewayTransmitter.stopConnection();
 		System.out.println("(" + gatewayID + ")" + " Close");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Close");
 	}

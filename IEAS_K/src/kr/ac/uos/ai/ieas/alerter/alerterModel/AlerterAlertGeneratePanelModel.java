@@ -1,5 +1,11 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -264,11 +270,11 @@ public class AlerterAlertGeneratePanelModel
 		}
 		catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) 
 		{
-			System.out.println("there is no such a memberName " + memberName);
+			System.out.println("There is no such a memberName : " + memberName);
 			e.printStackTrace();
 			return;
 		}
-		System.out.println("there is no such a ModelPropertyName " + target);
+		System.out.println("There is no such a ModelPropertyName : " + target);
 	}
 	
 	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
@@ -337,5 +343,37 @@ public class AlerterAlertGeneratePanelModel
 	{
 		target = "m" + target.replaceAll("[0-9]+", "").trim();
 		return target;
+	}
+
+	public void setQueryResult(ArrayList<String> result)
+	{
+		String content = capLoader("cap/HRW");
+		
+		kieasMessageBuilder.setMessage(content);
+		setModelProperty("TextArea", content);
+		setAlertPanel(kieasMessageBuilder);
+	}
+	
+	private String capLoader(String path)
+	{
+		String temp = "";
+		String content = "";
+
+		try
+		{
+			FileInputStream fileInputStream = new FileInputStream(new File(path));
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+			BufferedReader 	bufferedReader = new BufferedReader(inputStreamReader);
+
+			while((temp = bufferedReader.readLine()) != null)
+			{
+				content += temp + "\n";
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return content;
 	}
 }

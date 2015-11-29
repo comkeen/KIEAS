@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SimpleTimeZone;
+import java.util.Vector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ public class KieasMessageBuilder
 	 * @author byun-ai
 	 *
 	 */
-	public class Item
+	public static class Item
 	{
 		private String key;
 		private String value;
@@ -89,6 +90,11 @@ public class KieasMessageBuilder
 		public String getKey()
 		{
 			return key;
+		}
+		
+		public String getValue()
+		{
+			return value;
 		}
 		
 		public String toString()
@@ -370,9 +376,44 @@ public class KieasMessageBuilder
 			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put("Language", capEnum7);
+		
+		ArrayList<Item> capEnum8 = new ArrayList<>();
+		Item item1 = new Item("1100000000", "서울특별시");
+		Item item2 = new Item("2600000000", "부산광역시");
+		Item item3 = new Item("2700000000", "대구광역시");
+		Item item4 = new Item("2800000000", "인천광역시");
+		Item item5 = new Item("2900000000", "광주광역시");
+		Item item6 = new Item("3000000000", "대전광역시");
+		Item item7 = new Item("3100000000", "울산광역시");
+		Item item8 = new Item("4100000000", "경기도");
+		Item item9 = new Item("4200000000", "강원도");
+		Item item10 = new Item("4300000000", "충청북도");
+		Item item11 = new Item("4400000000", "충청남도");
+		Item item12 = new Item("4500000000", "전라북도");
+		Item item13 = new Item("4600000000", "전라남도");
+		Item item14 = new Item("4700000000", "경상북도");
+		Item item15 = new Item("4800000000", "경상남도");
+		Item item16 = new Item("5000000000", "제주특별자치도");		
+		capEnum8.add(new Item(item1.getKey(), item1.getKey() + " (" + item1.getValue() + ")" ));
+		capEnum8.add(new Item(item2.getKey(), item2.getKey() + " (" + item2.getValue() + ")" ));
+		capEnum8.add(new Item(item3.getKey(), item3.getKey() + " (" + item3.getValue() + ")" ));
+		capEnum8.add(new Item(item4.getKey(), item4.getKey() + " (" + item4.getValue() + ")" ));
+		capEnum8.add(new Item(item5.getKey(), item5.getKey() + " (" + item5.getValue() + ")" ));
+		capEnum8.add(new Item(item6.getKey(), item6.getKey() + " (" + item6.getValue() + ")" ));
+		capEnum8.add(new Item(item7.getKey(), item7.getKey() + " (" + item7.getValue() + ")" ));
+		capEnum8.add(new Item(item8.getKey(), item8.getKey() + " (" + item8.getValue() + ")" ));
+		capEnum8.add(new Item(item9.getKey(), item9.getKey() + " (" + item9.getValue() + ")" ));
+		capEnum8.add(new Item(item10.getKey(), item10.getKey() + " (" + item10.getValue() + ")" ));
+		capEnum8.add(new Item(item11.getKey(), item11.getKey() + " (" + item11.getValue() + ")" ));
+		capEnum8.add(new Item(item12.getKey(), item12.getKey() + " (" + item12.getValue() + ")" ));
+		capEnum8.add(new Item(item13.getKey(), item13.getKey() + " (" + item13.getValue() + ")" ));
+		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
+		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
+		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
+		capEnumMap.put("GeoCode", capEnum8);
 	}
 	
-	public void buildDefaultMessage() {
+	public String buildDefaultMessage() {
 		
 		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 				.setIdentifier("Identifier")
@@ -396,6 +437,7 @@ public class KieasMessageBuilder
 //		this.area = Area.newBuilder().buildPartial();
 				
 		mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();
+		return capXmlBuilder.toXml(mAlert);
 	}
 	
 	public boolean validateMessage()
@@ -465,7 +507,8 @@ public class KieasMessageBuilder
 		{
 			e.printStackTrace();
 		}
-		return null;
+		System.out.println("There is no CAP message");
+		return "";
 	}
 	
 	public Alert setMessage(String message) 
@@ -578,7 +621,14 @@ public class KieasMessageBuilder
 	
 	public String getCode()
 	{
-		return mAlert.getCode(0).toString();
+		if(mAlert.getCode(0) != null)
+		{
+			return mAlert.getCode(0).toString();			
+		}
+		else 
+		{
+			return KieasConfiguration.KIEAS_Constant.CODE;			
+		}
 	}		
 
 	public String getLanguage(int index)
@@ -921,8 +971,8 @@ public class KieasMessageBuilder
 	 * @param alertList Database에서 사용하는 CAP 객체들의 리스트.
 	 * @return Google CAP Library에서 사용하는 CAP 객체들의 리스트.
 	 */	
-	public ArrayList<String> databaseObjectToCapLibraryObject(ArrayList<CAPAlert> alertList) {
-		
+	public ArrayList<String> databaseObjectToCapObject(ArrayList<CAPAlert> alertList)
+	{		
 		ArrayList<String> capList = new ArrayList<String>();
 		
 		for (CAPAlert capAlert : alertList)
