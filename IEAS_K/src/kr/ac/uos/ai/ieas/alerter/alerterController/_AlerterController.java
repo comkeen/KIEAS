@@ -49,7 +49,7 @@ public class _AlerterController
 	
 	private void init()
 	{
-		this.alerterId = "표준경보발령대";
+		this.alerterId = "alerter";
 		
 		alerterTopView.setId(alerterId);
 		alerterTransmitter.setId(alerterId);
@@ -68,6 +68,7 @@ public class _AlerterController
 	{
 		try 
 		{
+			System.out.println("alerter acceptMessage");
 			kieasMessage.setMessage(message);
 
 			String sender = kieasMessage.getSender();

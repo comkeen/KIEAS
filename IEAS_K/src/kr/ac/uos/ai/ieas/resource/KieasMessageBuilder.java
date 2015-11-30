@@ -650,7 +650,14 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			return mAlert.getAddresses().getValue(0);
+			if(mAlert.getAddresses().getValue(0) != null)
+			{
+				return mAlert.getAddresses().getValue(0);
+			}
+			else
+			{
+				return "";				
+			}
 		}
 		catch (NotCapException e)
 		{

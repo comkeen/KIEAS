@@ -11,13 +11,13 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.RedeliveryPolicy;
 
-public class AlerterTransmitter {
-
+public class AlerterTransmitter 
+{
 	private _AlerterController controller;
 
 	private Connection connection;
@@ -38,7 +38,7 @@ public class AlerterTransmitter {
 	
 	public void setId(String id)
 	{
-		this.id = id;		
+		this.id = id;
 	}
 
 	public void openConnection()
@@ -49,18 +49,12 @@ public class AlerterTransmitter {
 			this.connection = factory.createConnection();
 			this.connection.start();
 			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			
-			RedeliveryPolicy policy = factory.getRedeliveryPolicy();
-			policy.setInitialRedeliveryDelay(500);
-			policy.setBackOffMultiplier(2);
-			policy.setUseExponentialBackOff(true);
-			policy.setMaximumRedeliveries(2);
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
 		}
-		this.setQueueListener(id);
+		setQueueListener();
 	}
 
 	public void closeConnection()
@@ -84,16 +78,13 @@ public class AlerterTransmitter {
 	{
 		try
 		{			
-			connection.start();
-			
 			Destination queueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+			System.out.println("alerter to gw dest : " + queueDestination);
 			this.producer = this.session.createProducer(queueDestination);
-			this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
-			this.producer.send(textMessage);
-			
-			connection.stop();
+			producer.send(textMessage);
 		}
 		catch (Exception e) 
 		{
@@ -101,11 +92,12 @@ public class AlerterTransmitter {
 		}
 	}
 
-	private void setQueueListener(String id)
+	private void setQueueListener()
 	{
 		try 
 		{
 			Destination destination = this.session.createQueue(id);
+			System.out.println("gw to alerter Dest : " + destination);
 			this.consumer = session.createConsumer(destination);
 			MessageListener listener = new MessageListener()
 			{
@@ -117,6 +109,7 @@ public class AlerterTransmitter {
 
 						try
 						{
+							System.out.println("alerter receive message");
 							controller.acceptMessage(textMessage.getText());				
 						}
 						catch (JMSException e)

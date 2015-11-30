@@ -28,7 +28,7 @@ public class GatewayAlertTableModel {
 		columnNames.add("Identifier");
 		columnNames.add("Sent");
 		columnNames.add("Event");
-		columnNames.add("Addresses");
+//		columnNames.add("Addresses");
 		columnNames.add("Ack");
 
 		this.rowData = columnNames;
@@ -47,8 +47,8 @@ public class GatewayAlertTableModel {
 		rowData.set(2, alertElementMap.get("identifier"));
 		rowData.set(3, alertElementMap.get("sent"));
 		rowData.set(4, alertElementMap.get("event"));
-		rowData.set(5, alertElementMap.get("addresses"));
-		rowData.set(6, "NACK");
+//		rowData.set(5, alertElementMap.get("addresses"));
+		rowData.set(5, "NACK");
 
 		tableModel.addRow(rowData.toArray());
 	}
@@ -56,9 +56,9 @@ public class GatewayAlertTableModel {
 	public void receiveAck(String identifier) {
 
 		for (int i=0; i<tableModel.getRowCount(); i++) {
-			if(tableModel.getValueAt(i, 6).toString().equals("NACK")) {
+			if(tableModel.getValueAt(i, 5).toString().equals("NACK")) {
 				if(tableModel.getValueAt(i, 2).toString().equals(identifier)) {
-					getTableModel().setValueAt("COMP", i, 6);
+					getTableModel().setValueAt("COMP", i, 5);
 					return;
 				}
 			}

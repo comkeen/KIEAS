@@ -8,6 +8,7 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasName;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
@@ -44,12 +45,11 @@ public class GatewayController {
 	private GatewayController()
 	{
 		this.gatewayID = KieasConfiguration.IeasName.GATEWAY_NAME;
-		this.kieasMessageBuilder = new KieasMessageBuilder();
-		
-		this.gatewayTransmitter = new GatewayTransmitter(this);
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
+		this.gatewayTransmitter = new GatewayTransmitter(this);
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 
@@ -57,6 +57,8 @@ public class GatewayController {
 		this.identifier = "";
 		this.addresses = "";
 		this.event = "";
+		
+		sendAcknowledge("aa", "alerter");
 	}
 
 	public void openGateway()
@@ -73,40 +75,15 @@ public class GatewayController {
 		gatewayView.appendLog("(" + gatewayID + ")" + " Close");
 	}
 
-	private void sendAcknowledge(String message, String destination)
-	{
-		gatewayTransmitter.sendQueueMessage(message, destination);
-
-		System.out.println("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
-		gatewayView.appendLog("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
-	}
-
-	private void broadcastMessage(String message) {		
-
-		addresses = gatewayModelManager.getAlertElementMap(message).get("addresses");
-		event = gatewayModelManager.getAlertElementMap(message).get("event");
-
-		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
-		{
-			if (addresses.equals(item.getValue())) {
-				gatewayTransmitter.sendTopicMessage(message, addresses);	
-
-				System.out.println("(" + gatewayID + ")" + " Broadcast Message To ("+ addresses +") : ");
-				gatewayView.appendLog("(" + gatewayID + ")" + " Broadcast Message To ("+ addresses +") : "+event);
-			}
-		}
-	}
-
 	public void acceptAleterMessage(String message)
 	{
-		System.out.println("acceptMessage");
 		sender = gatewayModelManager.getAlertElementMap(message).get("Sender");
 		identifier = gatewayModelManager.getAlertElementMap(message).get("Identifier");
+		System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : ");
+		System.out.println();
+		gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
 
 		try {
-			System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : ");
-			gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
-			System.out.println();
 
 			gatewayModelManager.addAlertTableRow(message);
 			gatewayModelManager.addAlerterInfoTableRow(message);
@@ -130,6 +107,31 @@ public class GatewayController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+
+	private void sendAcknowledge(String message, String destination)
+	{
+		gatewayTransmitter.sendQueueMessage(message, destination);
+
+		System.out.println("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
+		gatewayView.appendLog("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
+	}
+
+	private void broadcastMessage(String message) {		
+
+		addresses = gatewayModelManager.getAlertElementMap(message).get("addresses");
+		event = gatewayModelManager.getAlertElementMap(message).get("event");
+
+		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
+		{
+			if (addresses.equals(item.getValue())) {
+				gatewayTransmitter.sendTopicMessage(message, addresses);	
+
+				System.out.println("(" + gatewayID + ")" + " Broadcast Message To ("+ addresses +") : ");
+				gatewayView.appendLog("(" + gatewayID + ")" + " Broadcast Message To ("+ addresses +") : "+event);
+			}
 		}
 	}
 

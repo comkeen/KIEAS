@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class GatewayModelManager {
-	
+public class GatewayModelManager
+{	
 	private static GatewayModelManager gatewayModelManager;
 	
 	private HashMap<String, String> alertMessageMap;
@@ -17,15 +17,16 @@ public class GatewayModelManager {
 	
 	private KieasMessageBuilder ieasMessage;
 
-
 	
-	public static GatewayModelManager getInstance() {
+	public static GatewayModelManager getInstance()
+	{
 		if (gatewayModelManager == null) 
 			gatewayModelManager = new GatewayModelManager();
 			return gatewayModelManager;
 	}
-	private GatewayModelManager() {
-
+	
+	private GatewayModelManager()
+	{
 		this.alertTableModel = new GatewayAlertTableModel();
 		this.alerterInfoTableModel = new GatewayAlerterInfoTableModel();
 		this.alertSystemInfoTableModel = new GatewayAlertSystemInfoTableModel();
@@ -38,20 +39,20 @@ public class GatewayModelManager {
 		initAlertElementMap();
 	}
 	
-	private void initAlertElementMap() {
-
+	private void initAlertElementMap()
+	{
 		String sender = "sender";
 		String identifier = "identifier";
 		String sent = "sent";
 		String event = "event";
-		String addresses = "addresses";
+//		String addresses = "addresses";
 		String ack = "ack";
 		
 		alertElementMap.put(sender, sender);
 		alertElementMap.put(identifier, identifier);
 		alertElementMap.put(sent, sent);
 		alertElementMap.put(event, event);
-		alertElementMap.put(addresses, addresses);
+//		alertElementMap.put(addresses, addresses);
 		alertElementMap.put(ack, ack);
 	}
 		
@@ -71,11 +72,13 @@ public class GatewayModelManager {
 		alertElementMap.replace("sender", ieasMessage.getSender());
 		alertElementMap.replace("identifier", ieasMessage.getIdentifier());
 		alertElementMap.replace("event", ieasMessage.getEvent(0));
-		alertElementMap.replace("addresses", ieasMessage.getAddresses());
+//		alertElementMap.replace("addresses", ieasMessage.getAddresses());
 		alertElementMap.replace("sent", ieasMessage.getSent());
 
 		return alertElementMap;
 	}
+
+
 	
 	public void putAlertMessageMap(String key, String message) {
 		alertMessageMap.put(key, message);

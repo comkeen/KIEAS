@@ -20,14 +20,16 @@ public class GatewayTransmitter
 {
 	private GatewayController controller;
 
-	private ActiveMQConnectionFactory factory;
 	public Connection connection;
 	public Session session;
-
 	private MessageProducer queueProducer;	
 	private MessageProducer topicProducer;
 
+	private MessageConsumer alerterConsumer;
+	private MessageConsumer alertsystemConsumer;
+	
 	private String MqServerIP;
+
 
 
 	public GatewayTransmitter(GatewayController controller)
@@ -42,9 +44,9 @@ public class GatewayTransmitter
 	{
 		try
 		{
-			this.factory = new ActiveMQConnectionFactory(MqServerIP);
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(MqServerIP);
 			this.connection = factory.createConnection();
-			startConnection();
+			this.connection.start();
 			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		}
 		catch (Exception ex)
@@ -73,6 +75,7 @@ public class GatewayTransmitter
 		{
 			if(connection != null)
 			{
+				session.close();
 				connection.close();			
 			}
 			System.out.println("Gateway Connection Close");
@@ -88,6 +91,7 @@ public class GatewayTransmitter
 		try
 		{
 			this.connection.stop();
+			System.out.println("Gateway Connection Stop");
 		}
 		catch (JMSException e)
 		{
@@ -101,10 +105,10 @@ public class GatewayTransmitter
 		{
 			Destination queueDestination = this.session.createQueue(destination);
 			this.queueProducer = this.session.createProducer(queueDestination);
-			this.queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
-			this.queueProducer.send(textMessage);
+			queueProducer.send(textMessage);
 		}
 		catch (Exception e)
 		{
@@ -146,10 +150,11 @@ public class GatewayTransmitter
 	{
 		try
 		{
-			Destination alerterQueueDestination = session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-			MessageConsumer alerterConsumer = session.createConsumer(alerterQueueDestination);
+			Destination alerterQueueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+			System.out.println("alerterToGateway Dest : " + alerterQueueDestination);
+			this.alerterConsumer = session.createConsumer(alerterQueueDestination);
 			Destination alertsystemQueueDestination = session.createQueue(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
-			MessageConsumer alertsystemConsumer = session.createConsumer(alertsystemQueueDestination);
+			this.alertsystemConsumer = session.createConsumer(alertsystemQueueDestination);
 			
 			MessageListener listener = new MessageListener()
 			{
@@ -162,8 +167,7 @@ public class GatewayTransmitter
 						{
 							System.out.println("gateway received message : " + textMessage.getText());
 							controller.acceptAleterMessage(textMessage.getText());
-							return;
-							
+												
 //							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
 //							{
 //								gateway.acceptAleterMessage(textMessage.getText());
