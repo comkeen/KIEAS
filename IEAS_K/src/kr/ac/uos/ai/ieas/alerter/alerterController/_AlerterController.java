@@ -1,6 +1,10 @@
 
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
@@ -8,69 +12,54 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _AlerterController
 { 
+	private static _AlerterController alerterController;
 	private KieasMessageBuilder kieasMessage;
 	private AlerterTransmitter alerterTransmitter;
 	private _AlerterTopView alerterTopView;
 	private _AlerterModelManager alerterModelManager;
 	private AleterViewActionListener alerterActionListener;
+	
+	private String alerterId;
+	
 
-//	public static final String ALERT_TEXTAREA_TEXT_PROPERTY = "Textarea";
-//	public static final String ALERT_LOCATION_COMBOBOX_TEXT_PROPERTY = "LocationCombobox";
-//	public static final String ALERT_EVENT_COMBOBOX_TEXT_PROPERTY = "EventCombobox";
-//
-//	public static final String DBPANEL_TEXTAREA_TEXT_PROPERTY = "DbPanelTextArea";
-//	public static final String DBPANEL_TABLE_PROPERTY = "DbPanelTableModel";
-//	
-//	public static final String CGPANEL_TEXT_AREA_PROPERTY = "TextArea";
-//	public static final String CGPANEL_LOAD_TEXT_FEILD_PROPERTY = "LoadTextField";
-//	public static final String CGPANEL_SAVE_TEXT_FEILD_PROPERTY = "SaveTextField";
-//	
-//	public static final String CGPANEL_IDENTIFIER_PROPERTY = "Identifier";
-//	public static final String CGPANEL_SENDER_PROPERTY = "Sender";
-//	public static final String CGPANEL_SENT_PROPERTY = "Sent";
-//	public static final String CGPANEL_STATUS_PROPERTY = "Status";
-//	public static final String CGPANEL_MSG_TYPE_PROPERTY = "MsgType";
-//	public static final String CGPANEL_SCOPE_PROPERTY = "Scope";
-//	public static final String CGPANEL_CODE_PROPERTY = "Code";
-//
-//	public static final String CGPANEL_LANGUAGE_PROPERTY = "Language";
-//	public static final String CGPANEL_CATEGORY_PROPERTY = "Category";
-//	public static final String CGPANEL_EVENT_PROPERTY = "Event";
-//	public static final String CGPANEL_URGENCY_PROPERTY = "Urgency";
-//	public static final String CGPANEL_SEVERITY_PROPERTY = "Severity";
-//	public static final String CGPANEL_CERTAINTY_PROPERTY = "Certainty";
-//	public static final String CGPANEL_EVENT_CODE_PROPERTY = "EventCode";
-//	public static final String CGPANEL_EFFECTIVE_PROPERTY = "Effective";
-//	public static final String CGPANEL_SENDER_NAME_PROPERTY = "SenderName";
-//	public static final String CGPANEL_HEADLINE_PROPERTY = "Headline";
-//	public static final String CGPANEL_DESCRIPTION_PROPERTY = "Description";
-//	public static final String CGPANEL_WEB_PROPERTY = "PanelWeb";
-//	public static final String CGPANEL_CONTACT_PROPERTY = "Contact";
+	public static _AlerterController getInstance()
+	{
+		if (alerterController == null)
+		{
+			alerterController = new _AlerterController(alerterController);
+		}
+		return alerterController;
+	}
+	
 	
 	/**
 	 * Model과 View 초기화.
-	 */	
-	public _AlerterController()
+	 * @param alerterController 
+	 */		
+	private _AlerterController(_AlerterController alerterController)
 	{
+		
 		this.alerterActionListener = new AleterViewActionListener(this);
 		this.alerterTopView = _AlerterTopView.getInstance(alerterActionListener);
 		this.alerterModelManager = new _AlerterModelManager(this);
+		this.alerterTransmitter = new AlerterTransmitter(this);
+		
+		init();
 	}
 	
-	public void sendMessage() 
+	private void init()
 	{
-		sendMessageToGateway();
+		this.alerterId = "표준경보발령대";
+		
+		alerterTopView.setId(alerterId);
+		alerterTransmitter.setId(alerterId);
+		alerterTransmitter.openConnection();
 	}
 
-	public void sendTextAreaMessage()
-	{
-//		sendTextAreaMessageToGateway(alerterModelManager.getAlerterTextAreaText());
-	}
-
-	public void sendMessageToGateway()
+	public void sendMessage()
 	{
 		//		alerterView.addAlertTableRow(id, event, addresses);
-//		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
+		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
 
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
@@ -104,34 +93,37 @@ public class _AlerterController
 		}
 	}
 
-
-	public void sendTextAreaMessageToGateway(String message)
+	public void systemExit()
 	{
-		kieasMessage.setMessage(message);
-
-		String id = kieasMessage.getIdentifier();
-		String event = kieasMessage.getEvent(0);
-		String addresses = kieasMessage.getAddresses();
-
-		alerterTopView.addAlertTableRow(id, event, addresses);
-		alerterTransmitter.sendMessage(message);
+		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
+		String title = "프로그램 종료";
+		
+		if (JOptionPane.showConfirmDialog(alerterTopView.getFrame(),
+			question,
+			title,
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+	    {	
+			alerterTransmitter.closeConnection();
+	        System.exit(0);
+	    }
+		else
+		{
+			System.out.println("cancel exit program");
+		}
 	}
-
-	public void saveCap(String capMessage)
-	{
-		System.out.println("saveCap");
-	}
-
-	public void connectToServer()
-	{
-		this.alerterTransmitter = new AlerterTransmitter(this, "Alerter");
-	}
-
+	
+	/**
+	 * CapGeneratePanel에 Cap 메시지를 불러올 때 호출됨.
+	 */
 	public void loadCap()
 	{
 		alerterModelManager.loadCap(alerterTopView.getLoadTextField());
 	}
-
+	
+	/**
+	 * CapGeneratePanel에서 작성된 Cap 메시지를 파일로 저장할 때 호출됨.
+	 */
 	public void saveCap()
 	{
 		alerterModelManager.saveCap(alerterTopView.getSaveTextField());
@@ -148,19 +140,65 @@ public class _AlerterController
 	}
 	
 	/**
-	 * 데이터베이스에서 이벤트코드에 맞는 결과값들을 가져온다.
+	 * View 콤포넌트인 DatabasePanel Class의 "Query"버튼에 의해 호출된다.
+	 * QueryTextField에 기재된 이벤트코드에 의해 데이터베이스에서 해당하는 결과값들을 가져온다.
 	 */
 	public void getQueryResult()
 	{
-		alerterTopView.getQueryResult(alerterModelManager.getQueryResult(alerterTopView.getQuery()));
+		alerterModelManager.getQueryResult("eventCode", alerterTopView.getQuery());		
 	}
 
+	public void loadDraft() 
+	{
+		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", alerterTopView.getQuery()));
+	}
+
+	/**
+	 * View 클래스인 CapGeneratePanel의 InfoPanel에 포함된 "Add Info"버튼에 의해 호출된다.
+	 * InfoPanel의 Tab이 하나 추가 된다.
+	 */
 	public void addInfoIndexPanel() 
 	{
 		alerterTopView.addInfoIndexPanel();
 	}
 
-	public void updateView(String view, String target, String value) {
+	/**
+	 * View 클래스인 CapGeneratePanel의 ResourcePanel에 포함된 "Add Resource"버튼에 의해 호출된다.
+	 * ResourcePanel의 Tab이 하나 추가 된다.
+	 */
+	public void addResourceIndexPanel() 
+	{
+		alerterTopView.addResourceIndexPanel();
+	}
+	
+	/**
+	 * View 클래스인 CapGeneratePanel의 AreaPanel에 포함된 "Add Area"버튼에 의해 호출된다.
+	 * AreaPanel의 Tab이 하나 추가 된다.
+	 */
+	public void addAreaIndexPanel()
+	{
+		alerterTopView.addAreaIndexPanel();
+	}
+	
+	/**
+	 * Model의 데이터 값이 바뀌었을 경우 View 갱신을 위해 Model에 의해 호출된다.
+	 * @param view 갱신되어야 하는 View 클래스 이름
+	 * @param target 값이 표시되는 Component의 이름
+	 * @param value 표시되는 값
+	 */
+	public void updateView(String view, String target, String value)
+	{
 		alerterTopView.updateView(view, target, value);
 	}
+	
+	public void updateView(String view, String target, ArrayList<String> value)
+	{
+		alerterTopView.updateView(view, target, value);
+	}
+
+	public void insertDatabase()
+	{
+		System.out.println("insert to database : <<todo>>");
+	}
+
 }

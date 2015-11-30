@@ -13,7 +13,7 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasAddress;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 public class AlertSystemTransmitter {
 
@@ -36,7 +36,7 @@ public class AlertSystemTransmitter {
 
 	private void init() {
 		try {
-			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(IeasAddress.ACTIVEMQ_SERVER_IP);
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KieasAddress.ACTIVEMQ_SERVER_IP);
 			this.connection = factory.createConnection();
 			this.connection.start();
 			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

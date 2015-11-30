@@ -26,15 +26,17 @@ public class GatewayController {
 	private String event;
 
 
-	public static GatewayController getInstance() {
-		if (gatewayController == null) {
+	public static GatewayController getInstance()
+	{
+		if (gatewayController == null)
+		{
 			gatewayController = new GatewayController();
 		}
 		return gatewayController;
 	}
 
-	private GatewayController() {
-
+	private GatewayController()
+	{
 		this.gatewayID = KieasConfiguration.IeasName.GATEWAY_NAME;
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
@@ -51,13 +53,13 @@ public class GatewayController {
 
 	public void openGateway() {
 
-		gatewayTransmitter.open();
+		gatewayTransmitter.startConnection();
 		System.out.println("(" + gatewayID + ")" + " Open");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 	}
 
 	public void closeGateway() {
-		gatewayTransmitter.close();
+		gatewayTransmitter.stopConnection();
 		System.out.println("(" + gatewayID + ")" + " Close");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Close");
 	}
@@ -74,7 +76,7 @@ public class GatewayController {
 		addresses = gatewayModelManager.getAlertElementMap(message).get("addresses");
 		event = gatewayModelManager.getAlertElementMap(message).get("event");
 
-		for (String location : KieasConfiguration.IEAS_List.LOCATION_LIST) {
+		for (String location : KieasConfiguration.KieasList.LOCATION_LIST) {
 
 			if (addresses.equals(location)) {
 				gatewayTransmitter.sendTopicMessage(message, addresses);	

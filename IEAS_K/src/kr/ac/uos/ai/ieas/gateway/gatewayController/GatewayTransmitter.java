@@ -15,11 +15,11 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasAddress;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 
-public class GatewayTransmitter {
-
+public class GatewayTransmitter 
+{
 	private GatewayController gateway;
 
 	private ActiveMQConnectionFactory factory;
@@ -29,44 +29,94 @@ public class GatewayTransmitter {
 	private MessageProducer queueProducer;	
 	private MessageProducer topicProducer;
 
+	private String MqServerIP;
 
-	public GatewayTransmitter(GatewayController gateway) {
 
-		this.gateway = gateway;
+	public GatewayTransmitter(GatewayController controller)
+	{
+		this.gateway = controller;
+		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP;
 
-		init();
+		openConnection();
 	}
 
-	private void init() {
-		try {
-			this.factory = new ActiveMQConnectionFactory(IeasAddress.ACTIVEMQ_SERVER_IP);
+	private void openConnection()
+	{
+		try
+		{
+			this.factory = new ActiveMQConnectionFactory(MqServerIP);
 			this.connection = factory.createConnection();
-			this.connection.start();
+			startConnection();
 			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			ex.printStackTrace();
 		}
-		setQueueMessageListener();
-
-		//		new GatewayTransmitterRestarterThread().run();
+		setQueueListener();
+	}
+	
+	public void startConnection()
+	{
+		try
+		{
+			this.connection.start();
+			System.out.println("Gateway Connection Start");
+		}
+		catch (JMSException e)
+		{
+			e.printStackTrace();
+		}		
 	}
 
-	public void sendQueueMessage(String message, String destination) {
-		try {
+	public void closeConnection()
+	{
+		try
+		{
+			if(connection != null)
+			{
+				connection.close();			
+			}
+			System.out.println("Gateway Connection Close");
+		}
+		catch (JMSException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void stopConnection()
+	{
+		try
+		{
+			this.connection.stop();
+		}
+		catch (JMSException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendQueueMessage(String message, String destination)
+	{
+		try
+		{
 			Destination queueDestination = this.session.createQueue(destination);
 			this.queueProducer = this.session.createProducer(queueDestination);
 			this.queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
 			this.queueProducer.send(textMessage);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
 	public void broadcastMessage(String message) {
 		try {
-			Destination destination = this.session.createTopic(IeasAddress.GATEWAY_TOPIC_DESTINATION);
+			Destination destination = this.session.createTopic(KieasAddress.GATEWAY_TOPIC_DESTINATION);
 			this.topicProducer = this.session.createProducer(destination);
 			this.topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
@@ -78,38 +128,51 @@ public class GatewayTransmitter {
 	}
 
 	public void sendTopicMessage(String message, String topic) {
-		try {
+		try
+		{
 			Destination destination = this.session.createTopic(topic);
 			this.topicProducer = this.session.createProducer(destination);
 			this.topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
 			this.topicProducer.send(textMessage);			
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	private void setQueueMessageListener() {
-		try {
-			Destination alerterQueueDestination = session.createQueue(IeasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+	private void setQueueListener()
+	{
+		try
+		{
+			Destination alerterQueueDestination = session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 			MessageConsumer alerterConsumer = session.createConsumer(alerterQueueDestination);
-			Destination alertsystemQueueDestination = session.createQueue(IeasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+			Destination alertsystemQueueDestination = session.createQueue(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 			MessageConsumer alertsystemConsumer = session.createConsumer(alertsystemQueueDestination);
 
-			MessageListener listener = new MessageListener() {
-				public void onMessage(Message message) {
-					if (message instanceof TextMessage) {
+			MessageListener listener = new MessageListener()
+			{
+				public void onMessage(Message message)
+				{
+					System.out.println("gateway received message");
+					if (message instanceof TextMessage)
+					{
 						TextMessage textMessage = (TextMessage) message;
-
-						try {
-							if (message.getJMSDestination().toString().equals("queue://"+IeasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION)) {
-
+						try 
+						{
+							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
+							{
 								gateway.acceptAleterMessage(textMessage.getText());
-							} else if (message.getJMSDestination().toString().equals("queue://"+IeasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION)) {
+							}
+							else if (message.getJMSDestination().toString().equals("queue://"  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
+							{
 								gateway.acceptAletSystemMessage(textMessage.getText());
 							}
-						} catch (JMSException e) {
+						}
+						catch (JMSException e)
+						{
 							e.printStackTrace();
 						}					
 					}
@@ -118,70 +181,10 @@ public class GatewayTransmitter {
 			//register to eventListener
 			alerterConsumer.setMessageListener(listener);
 			alertsystemConsumer.setMessageListener(listener);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-	}
-
-	public void open() {
-		try {
-
-			this.connection.start();
-
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
+		catch (Exception e)
+		{
 			e.printStackTrace();
-		}		
-	}
-
-	public void close() {
-		try {
-
-			this.connection.stop();
-
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public class GatewayTransmitterRestarterThread extends Thread{
-		public void run() {
-			try {
-
-				while(true) {
-					Thread.sleep(600000);
-					System.out.println(new Date().toString() + " : create new connection");
-					factory = new ActiveMQConnectionFactory(IeasAddress.ACTIVEMQ_SERVER_IP);
-					connection = factory.createConnection();
-					connection.start();
-					session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				}
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}	
-		}
-	}
-
-	public class GatewayTransmitterRestarter implements Runnable{
-
-		@Override
-		public void run() {
-			try {
-
-				while(true) {
-					Thread.sleep(600000);
-					System.out.println(new Date().toString() + " : create new connection");
-					factory = new ActiveMQConnectionFactory(IeasAddress.ACTIVEMQ_SERVER_IP);
-					connection = factory.createConnection();
-					connection.start();
-					session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				}
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}			
 		}
 	}
 }

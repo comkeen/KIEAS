@@ -2,12 +2,15 @@ package kr.ac.uos.ai.ieas.alerter.alerterController;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 
-public class AleterViewActionListener implements ActionListener, ListSelectionListener
+public class AleterViewActionListener implements ActionListener, ListSelectionListener, WindowListener
 {	
 	private _AlerterController controller;
 	
@@ -30,25 +33,23 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	public void actionPerformed(ActionEvent event)
 	{
 		String actionCommand = event.getActionCommand();
-		
-		switch (actionCommand) {
+		System.out.println("action triggered : " + actionCommand);
+		switch (actionCommand)
+		{
 		case "GenerateCap":
 //			controller.generateCap();
 			return;			
 		case "Send":
 			controller.sendMessage();
 			return;
-		case "TextAreaSend":
-			controller.sendTextAreaMessage();
-			return;
-		case "ConnectServer":
-			controller.connectToServer();
-			return;
 		case "Load Cap":
 			controller.loadCap();
 			return;
 		case "Save Cap":
 			controller.saveCap();
+			return;
+		case "Insert DB":
+			controller.insertDatabase();
 			return;
 		case "Apply":
 			controller.applyAlertElement();
@@ -59,8 +60,17 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Add Info":
 			controller.addInfoIndexPanel();
 			return;
+		case "Add Resource":
+			controller.addResourceIndexPanel();
+			return;
+		case "Add Area":
+			controller.addAreaIndexPanel();
+			return;
+		case "Load Draft":
+			controller.loadDraft();
+			return;
 		default:
-			System.out.println("there is no such a actionCommand " + actionCommand);
+			System.out.println("There is no such a actionCommand : " + actionCommand);
 			return;
 		}
 	}
@@ -70,4 +80,35 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	{
 		controller.selectTableEvent();
 	}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {}
+
+
+	@Override
+	public void windowClosed(WindowEvent e) {}
+
+
+	@Override
+	public void windowClosing(WindowEvent e)
+	{
+		controller.systemExit();
+	}
+
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {}
+
+
+	@Override
+	public void windowIconified(WindowEvent e) {}
+
+
+	@Override
+	public void windowOpened(WindowEvent e) {}
 }

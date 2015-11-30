@@ -46,7 +46,7 @@ public class AlerterCapGeneratePanelModel
 
 	private Vector<HashMap<String, String>> mInfoValues;
 	private HashMap<String, String> mInfoIndexValues;
-	private int mInfoCounter;
+	private int mInfoIndex;
 	private String mLanguage;
 	private String mCategory;
 	private String mEvent;
@@ -60,7 +60,24 @@ public class AlerterCapGeneratePanelModel
 	private String mDescription;
 	private String mWeb;
 	private String mContact;
+	
+	private Vector<HashMap<String, String>> mResourceValues;
+	private HashMap<String, String> mResourceIndexValues;
+	private int mResourceCounter;
+	private String mResourceDesc;
+	private String mMimeType;
+	private String mUri;
+	
+	private Vector<HashMap<String, String>> mAreaValues;
+	private HashMap<String, String> mAreaIndexValues;
+	private int mAreaCounter;
+	private String mAreaDesc;
+	private String mGeoCode;
 
+	/**
+	 * CAP 메시지를 다루기 위해 사용되는 KieasMessageBuilder 객체 생성.
+	 * @param _AlerterModelManager Model들을 관리하는 ModelManager. 
+	 */
 	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
@@ -70,11 +87,14 @@ public class AlerterCapGeneratePanelModel
 		initComponents();
 	}
 
+	/**
+	 * 멤버변수 초기화.
+	 * mViewName - 이 Model의 표적이 되는 View 클래스의 이름.
+	 */
 	private void init()
 	{
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
-		this.mInfoCounter = 0;
-
+		
 		this.mTextArea = "";		
 		this.mLoadTextField = "cap/HRA.xml";
 		this.mSaveTextField = "cap/out.xml";
@@ -100,8 +120,19 @@ public class AlerterCapGeneratePanelModel
 		this.mDescription = "";
 		this.mWeb = "";
 		this.mContact = "";
+
+		this.mResourceDesc = "";
+		this.mMimeType = "";
+		this.mUri = "";
+
+		this.mAreaDesc = "";
+		this.mGeoCode = "";
 	}
 
+	/**
+	 * View 적용될 데이터 값을 가지고있는 Model Vector 생성 및 초기화.
+	 * HashMap<String name, String value> name - 데이터 이름, value - 값	
+	 */
 	private void initComponents()
 	{
 		this.mViewComponentProperties = new Vector<>();
@@ -109,8 +140,11 @@ public class AlerterCapGeneratePanelModel
 		mViewComponentProperties.addElement(initSaveLoadPanelComponents());
 		mViewComponentProperties.addElement(initAlertPanelComponents());
 		mViewComponentProperties.addElement(initInfoPanelComponents());
+		mViewComponentProperties.addElement(initResourcePanelComponents());
+		mViewComponentProperties.addElement(initAreaPanelComponents());
 	}
 
+	
 	private HashMap<String, String> initSaveLoadPanelComponents()
 	{
 		this.mComponents = new HashMap<>();
@@ -123,47 +157,120 @@ public class AlerterCapGeneratePanelModel
 	private HashMap<String, String> initAlertPanelComponents()
 	{
 		this.mAlertValues = new HashMap<>();
-		mAlertValues.put(AlerterCapGeneratePanel.IDENTIFIER, mIdentifier);
-		mAlertValues.put(AlerterCapGeneratePanel.SENDER, mSender);
-		mAlertValues.put(AlerterCapGeneratePanel.SENT, mSent);
-		mAlertValues.put(AlerterCapGeneratePanel.STATUS, mStatus);
-		mAlertValues.put(AlerterCapGeneratePanel.MSG_TYPE, mMsgType);
-		mAlertValues.put(AlerterCapGeneratePanel.SCOPE, mScope);
-		mAlertValues.put(AlerterCapGeneratePanel.CODE, mCode);
+		mAlertValues.put(KieasMessageBuilder.IDENTIFIER, mIdentifier);
+		mAlertValues.put(KieasMessageBuilder.SENDER, mSender);
+		mAlertValues.put(KieasMessageBuilder.SENT, mSent);
+		mAlertValues.put(KieasMessageBuilder.STATUS, mStatus);
+		mAlertValues.put(KieasMessageBuilder.MSG_TYPE, mMsgType);
+		mAlertValues.put(KieasMessageBuilder.SCOPE, mScope);
+		mAlertValues.put(KieasMessageBuilder.CODE, mCode);
 		
 		return mAlertValues;
 	}
 
 	private Vector<HashMap<String, String>> initInfoPanelComponents()
 	{
-		this.mInfoValues = new Vector<>();
-		this.mInfoCounter = 0;
+		if(mInfoValues != null)
+		{
+			this.mInfoValues.clear();			
+		}
+		else
+		{
+			this.mInfoValues = new Vector<>();
+		}
+		this.mInfoIndex = 0;
 		
-		mInfoValues.addElement(addInfoIndexValues(mInfoCounter));
+		mInfoValues.addElement(addInfoIndexValues(mInfoIndex));
 		
 		return mInfoValues;
 	}
 
+	/**
+	 * InfoIndex의 추가.	 * 
+	 * @param index 추가되는 Info의 Index.
+	 * @return HashMap<String, String>
+	 */	
 	private HashMap<String, String> addInfoIndexValues(int index)
 	{
 		this.mInfoIndexValues = new HashMap<>();
-		mInfoIndexValues.put(AlerterCapGeneratePanel.LANGUAGE + index, mLanguage);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CATEGORY + index, mCategory);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT + index, mEvent);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.URGENCY + index, mUrgency);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.SEVERITY + index, mSeverity);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CERTAINTY + index, mCertainty);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EVENT_CODE + index, mEventCode);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.EFFECTIVE + index, mEffective);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.SENDER_NAME + index, mSenderName);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.HEADLINE + index, mHeadline);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.DESCRIPTION + index, mDescription);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.WEB + index, mWeb);
-		mInfoIndexValues.put(AlerterCapGeneratePanel.CONTACT + index, mContact);
+		mInfoIndexValues.put(KieasMessageBuilder.LANGUAGE + index, mLanguage);
+		mInfoIndexValues.put(KieasMessageBuilder.CATEGORY + index, mCategory);
+		mInfoIndexValues.put(KieasMessageBuilder.EVENT + index, mEvent);
+		mInfoIndexValues.put(KieasMessageBuilder.URGENCY + index, mUrgency);
+		mInfoIndexValues.put(KieasMessageBuilder.SEVERITY + index, mSeverity);
+		mInfoIndexValues.put(KieasMessageBuilder.CERTAINTY + index, mCertainty);
+		mInfoIndexValues.put(KieasMessageBuilder.EVENT_CODE + index, mEventCode);
+		mInfoIndexValues.put(KieasMessageBuilder.EFFECTIVE + index, mEffective);
+		mInfoIndexValues.put(KieasMessageBuilder.SENDER_NAME + index, mSenderName);
+		mInfoIndexValues.put(KieasMessageBuilder.HEADLINE + index, mHeadline);
+		mInfoIndexValues.put(KieasMessageBuilder.DESCRIPTION + index, mDescription);
+		mInfoIndexValues.put(KieasMessageBuilder.WEB + index, mWeb);
+		mInfoIndexValues.put(KieasMessageBuilder.CONTACT + index, mContact);
 
 		return mInfoIndexValues;
 	}
+	
+	public void addInfoIndex()
+	{
+		mInfoIndex++;
+		addInfoIndexValues(mInfoIndex);
+	}
+	
+	private Vector<HashMap<String, String>> initResourcePanelComponents()
+	{
+		this.mResourceValues = new Vector<>();
+		this.mResourceCounter = 0;
+		
+		mResourceValues.addElement(addResourceIndexValues(mResourceCounter));
+		
+		return mResourceValues;
+	}
+	
+	/**
+	 * ResourceIndex의 추가.
+	 * @param index 추가되는 Resource Index.
+	 * @return HashMap<String, String>
+	 */
+	private HashMap<String, String> addResourceIndexValues(int index)
+	{
+		this.mResourceIndexValues = new HashMap<>();
+		mResourceIndexValues.put(KieasMessageBuilder.RESOURCE_DESC + index, mResourceDesc);
+		mResourceIndexValues.put(KieasMessageBuilder.MIME_TYPE + index, mMimeType);
+		mResourceIndexValues.put(KieasMessageBuilder.URI + index, mUri);
 
+		return mResourceIndexValues;
+	}
+	
+	private Vector<HashMap<String, String>> initAreaPanelComponents()
+	{
+		this.mAreaValues = new Vector<>();
+		this.mAreaCounter = 0;
+		
+		mAreaValues.addElement(addAreaIndexValues(mAreaCounter));
+		
+		return mAreaValues;
+	}
+	
+	/**
+	 * AreaIndex의 추가.
+	 * @param index 추가되는 Area Index.
+	 * @return HashMap<String, String>
+	 */
+	private HashMap<String, String> addAreaIndexValues(int index)
+	{
+		this.mAreaIndexValues = new HashMap<>();
+		mAreaIndexValues.put(KieasMessageBuilder.AREA_DESC + index, mAreaDesc);
+		mAreaIndexValues.put(KieasMessageBuilder.GEO_CODE + index, mGeoCode);
+
+		return mAreaIndexValues;
+	}
+
+	/**
+	 * Model Vector의 값을 변경할 때 사용됨.
+	 * 값이 변경되면 updateView 호출을 통해 View에 변경된 값을 갱신.
+	 * @param target 변경될 데이터의 이름
+	 * @param value 변경될 데이터의 값
+	 */
 	public void setModelProperty(String target, String value)
 	{
 		String memberName = transformToMemberName(target);
@@ -175,13 +282,24 @@ public class AlerterCapGeneratePanelModel
 			for (Object component : mViewComponentProperties)
 			{
 				if (component instanceof HashMap<?, ?>)
-				{				
+				{
+					System.out.println("Vector target = " + target);
+					System.out.println("Vector memberName = " + memberName);
+//					System.out.println("Vector value = " + value);
+					
+//					if(memberName.equals("mCategory"))
+//					{
+//						((HashMap<String, String>) component).replace(target, value);
+//						alerterModelManager.updateView(mViewName, target, value);
+//						return;
+//					}
 					((HashMap<String, String>) component).replace(target, value);
 					alerterModelManager.updateView(mViewName, target, value);
 					return;
 				}
 				if (component instanceof Vector<?>)
 				{
+					
 					for (HashMap<String, String> hashMap : (Vector<HashMap<String, String>>) component)
 					{
 						if(hashMap.containsKey(target))
@@ -192,6 +310,7 @@ public class AlerterCapGeneratePanelModel
 						}
 					}
 				}
+				
 			}
 		}
 		catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) 
@@ -203,40 +322,76 @@ public class AlerterCapGeneratePanelModel
 		System.out.println("there is no such a ModelPropertyName " + target);
 	}
 
-	private void setAlertPanel(KieasMessageBuilder ieasMessage)
+	/**
+	 * Cap메시지를 로드했을 시 호출됨.
+	 * Alert패널의 데이터들을 일괄 변경, 갱신함.
+	 * @param kieasMessageBuilder 갱신되는 Cap 메시지 객체.
+	 */
+	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		setModelProperty(AlerterCapGeneratePanel.IDENTIFIER, ieasMessage.getIdentifier());
-		setModelProperty(AlerterCapGeneratePanel.SENDER, ieasMessage.getSender());
-		setModelProperty(AlerterCapGeneratePanel.SENT, ieasMessage.getSent());
-		setModelProperty(AlerterCapGeneratePanel.STATUS, ieasMessage.getStatus());
-		setModelProperty(AlerterCapGeneratePanel.MSG_TYPE, ieasMessage.getMsgType());
-		setModelProperty(AlerterCapGeneratePanel.SCOPE, ieasMessage.getScope());
-		setModelProperty(AlerterCapGeneratePanel.CODE, ieasMessage.getCode());		
+		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
+		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
+		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
+		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());		
 		
-		setInfoPanel(ieasMessage);
+		setInfoPanel(kieasMessageBuilder);
+		setResourcePanel(kieasMessageBuilder);
+		setAreaPanel(kieasMessageBuilder);
 	}
 
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
 	{
-		mInfoCounter = ieasMessage.getInfoCount();
-		for(int i = 0; i < mInfoCounter; i++)
+		initInfoPanelComponents();
+		mInfoIndex = ieasMessage.getInfoCount();	
+		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(mInfoIndex));
+		for(int i = 0; i < mInfoIndex; i++)
 		{
-			setModelProperty(AlerterCapGeneratePanel.LANGUAGE + i, ieasMessage.getLanguage(i));
-			setModelProperty(AlerterCapGeneratePanel.CATEGORY + i, ieasMessage.getCategory(i));
-			setModelProperty(AlerterCapGeneratePanel.EVENT + i, ieasMessage.getEvent(i));
-			setModelProperty(AlerterCapGeneratePanel.URGENCY + i, ieasMessage.getUrgency(i));
-			setModelProperty(AlerterCapGeneratePanel.SEVERITY + i, ieasMessage.getSeverity(i));
-			setModelProperty(AlerterCapGeneratePanel.CERTAINTY + i, ieasMessage.getCertainty(i));
-			setModelProperty(AlerterCapGeneratePanel.EVENT_CODE + i, ieasMessage.getEventCode(i));
-			setModelProperty(AlerterCapGeneratePanel.EFFECTIVE + i, ieasMessage.getEffective(i));
-			setModelProperty(AlerterCapGeneratePanel.SENDER_NAME + i, ieasMessage.getSenderName(i));
-			setModelProperty(AlerterCapGeneratePanel.HEADLINE + i, ieasMessage.getHeadline(i));
-			setModelProperty(AlerterCapGeneratePanel.DESCRIPTION + i, ieasMessage.getDescrpition(i));
-			setModelProperty(AlerterCapGeneratePanel.WEB + i, ieasMessage.getWeb(i));
-			setModelProperty(AlerterCapGeneratePanel.CONTACT + i, ieasMessage.getContact(i));
+			setModelProperty(KieasMessageBuilder.LANGUAGE + i, ieasMessage.getLanguage(i));
+			setModelProperty(KieasMessageBuilder.CATEGORY + i, ieasMessage.getCategory(i));
+			setModelProperty(KieasMessageBuilder.EVENT + i, ieasMessage.getEvent(i));
+			setModelProperty(KieasMessageBuilder.URGENCY + i, ieasMessage.getUrgency(i));
+			setModelProperty(KieasMessageBuilder.SEVERITY + i, ieasMessage.getSeverity(i));
+			setModelProperty(KieasMessageBuilder.CERTAINTY + i, ieasMessage.getCertainty(i));
+			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, ieasMessage.getEventCode(i));
+			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, ieasMessage.getEffective(i));
+			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, ieasMessage.getSenderName(i));
+			setModelProperty(KieasMessageBuilder.HEADLINE + i, ieasMessage.getHeadline(i));
+			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, ieasMessage.getDescrpition(i));
+			setModelProperty(KieasMessageBuilder.WEB + i, ieasMessage.getWeb(i));
+			setModelProperty(KieasMessageBuilder.CONTACT + i, ieasMessage.getContact(i));
 		}
 	}
 
+	private void setResourcePanel(KieasMessageBuilder ieasMessage)
+	{
+		mResourceCounter = ieasMessage.getResourceCount(0);
+		System.out.println("resourceCount : " + mResourceCounter);
+		for(int i = 0; i < mResourceCounter; i++)
+		{
+			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, ieasMessage.getResourceDesc(0, i));
+			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, ieasMessage.getMimeType(0, i));
+			setModelProperty(KieasMessageBuilder.URI + i, ieasMessage.getUri(0, i));
+		}
+	}
+	
+	private void setAreaPanel(KieasMessageBuilder ieasMessage)
+	{
+		mAreaCounter = ieasMessage.getAreaCount(0);
+		System.out.println("areaCount : " + mAreaCounter);
+		for(int i = 0; i < mAreaCounter; i++)
+		{
+			setModelProperty(KieasMessageBuilder.AREA_DESC + i, ieasMessage.getAreaDesc(0, i));
+			setModelProperty(KieasMessageBuilder.GEO_CODE + i, ieasMessage.getGeoCode(0, i));
+		}
+	}
+	
+	/**
+	 * Cap 메시지를 불러올 때 호출됨.
+	 * @param path 불러올 Cap의 경로
+	 */
 	public void loadCap(String path)
 	{
 		String content = capLoader(path);
@@ -246,6 +401,10 @@ public class AlerterCapGeneratePanelModel
 		setAlertPanel(kieasMessageBuilder);
 	}
 
+	/**
+	 * 작성된 Cap 메시지를 파일로 쓸 때 호출됨.
+	 * @param path 파일이 저장될 경로
+	 */
 	public void saveCap(String path)
 	{
 		capWriter(path);

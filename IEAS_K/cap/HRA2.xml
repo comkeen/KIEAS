@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>기상청0123456789</identifier>
+  <sender>[yourName]@weather.kma.go.kr</sender>
+  <sent>2015-01-01T00:00:00+09:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <code>대한민국정부1.1</code>
+  <info>
+    <language>ko-KR</language>
+    <category>Met</category>
+    <event>호우주의보</event>
+    <urgency>Expected</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>TTAS.KO-07.0046/R5 재난 종류 코드</valueName>
+      <value>HRA</value>
+    </eventCode>
+    <effective>2015-01-01T00:00:00+09:00</effective>
+    <senderName>총괄예보관</senderName>
+    <headline>호우주의보 발표</headline>
+    <description>
+    <![CDATA[
+□ 발효시각
+호우주의보 발표 : [yyyy년 mm월 dd일 hh시 mm분]
+
+□ 해당구역
+호우주의보 발표 : [GeoNames]
+
+□ 내용
+호우주의보 발표
+o 현재 강수량([Tense] ~ 현재): [Value]mm
+o 예상 강수량(현재~[Tense]): [Value]mm
+o 총 예상 강수량: [Value]mm
+	]]>
+    </description>
+    <web>http://www.kma.go.kr/weather/warning/status.jsp</web>
+    <contact>전국 국번없이 131</contact>
+    <resource>
+      <resourceDesc>지도</resourceDesc>
+      <mimeType>[imageType]/[imageExtension]</mimeType>
+    <uri>http://www.kma.go.kr/repositary/image/wrn/img/imageName.png</uri>
+    </resource>    
+    <area>
+      <areaDesc>[GeoName]</areaDesc>
+      <geocode>
+        <valueName>행정구역코드</valueName>
+        <value>[GeoCode]</value>
+      </geocode>
+    </area>
+  </info>
+   <info>
+    <language>ko-KR</language>
+    <category>Met</category>
+    <event>호우주의보</event>
+    <urgency>Expected</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>TTAS.KO-07.0046/R5 재난 종류 코드</valueName>
+      <value>HRA</value>
+    </eventCode>
+    <effective>2015-01-01T00:00:00+09:00</effective>
+    <senderName>총괄예보관</senderName>
+    <headline>호우주의보 발표2</headline>
+    <description>
+    <![CDATA[
+□ 발효시각
+호우주의보 발표 : [yyyy년 mm월 dd일 hh시 mm분]
+
+□ 해당구역
+호우주의보 발표 : [GeoNames]
+
+□ 내용
+호우주의보 발표
+o 현재 강수량([Tense] ~ 현재): [Value]mm
+o 예상 강수량(현재~[Tense]): [Value]mm
+o 총 예상 강수량: [Value]mm
+	]]>
+    </description>
+    <web>http://www.kma.go.kr/weather/warning/status.jsp</web>
+    <contact>전국 국번없이 131</contact>
+  </info>
+</alert>

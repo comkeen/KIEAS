@@ -45,9 +45,10 @@ public class AlerterLogPanel
 	private JButton connectServerButton;
 	
 
-	public static AlerterLogPanel getInstance(AleterViewActionListener alerterActionListener) {
-		if (alerterViewPanel == null) {
-
+	public static AlerterLogPanel getInstance(AleterViewActionListener alerterActionListener) 
+	{
+		if (alerterViewPanel == null)
+		{
 			alerterViewPanel = new AlerterLogPanel(alerterActionListener);
 		}
 		return alerterViewPanel;
@@ -56,7 +57,6 @@ public class AlerterLogPanel
 	
 	private AlerterLogPanel(AleterViewActionListener alerterActionListener)
 	{
-
 		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();
 		
@@ -215,10 +215,6 @@ public class AlerterLogPanel
 				}
 			}
 		}
-	}
-
-	public void saveCap() {
-		alerterController.saveCap(capMessage);
 	}
 
 	public JComboBox<String> getLocationCombobox() {

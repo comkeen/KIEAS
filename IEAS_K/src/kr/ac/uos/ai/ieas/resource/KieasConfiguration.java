@@ -1,5 +1,9 @@
 package kr.ac.uos.ai.ieas.resource;
 
+import java.util.Vector;
+
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
+
 public class KieasConfiguration {
 	
 	public final static String PACKAGE_NAME 				= "kieas.";
@@ -13,11 +17,12 @@ public class KieasConfiguration {
 		public final static String OLD_ALERT_SYSTEM 		= PACKAGE_NAME + "oldAlertSystem";
 	}
 	
-	public static class IeasAddress 
+	public static class KieasAddress 
 	{
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://localhost:61616";
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://127.0.0.1:61616";
-		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.196:61616"; //host window
+		public final static String ACTIVEMQ_SERVER_IP = "tcp://192.168.0.7:61616"; //home window
+//		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.196:61616"; //host window
 //		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.173:61616"; //vm window
 		
 		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
@@ -31,11 +36,12 @@ public class KieasConfiguration {
 	
 	public static class KIEAS_Constant
 	{
+		public static final String CODE = "대한민국정부1.0";
 		
 	}
 	
-	public static class IEAS_List 
-	{		
+	public static class KieasList
+	{			
 		public static final String[] ALERT_SYSTEM_TYPE_LIST =
 		{
 			"자동우량경보시스템",
@@ -81,8 +87,8 @@ public class KieasConfiguration {
 		
 		public static final String[] LANGUAGE_LIST =
 		{
-			"ko-KR (한국어)",
-			"us-EN (영어)"
+			"ko-KR",
+			"us-EN"
 		};
 
 		public static final String[] LOCATION_LIST = 

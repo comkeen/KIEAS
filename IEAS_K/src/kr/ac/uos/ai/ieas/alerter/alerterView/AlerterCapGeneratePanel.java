@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 
 public class AlerterCapGeneratePanel
@@ -51,7 +52,17 @@ public class AlerterCapGeneratePanel
 	private ArrayList<JPanel> infoIndexPanels;
 	private int infoCounter;
 	
-	private StringBuffer stringBuffer;
+	private JTabbedPane areaPanel;
+	private ArrayList<JPanel> areaIndexPanels;
+	private ArrayList<HashMap<String, Component>> areaComponents;
+	private int areaCounter;
+	
+	private JTabbedPane resourcePanel;
+	private ArrayList<JPanel> resourceIndexPanels;
+	private ArrayList<HashMap<String, Component>> resourceComponents;
+	private int resourceCounter;
+	private JButton insertDatabaseButton;
+	private JTextField mInsertDatabaseTextField;
 	
 
 	public static final String TEXT_AREA = "TextArea";
@@ -60,32 +71,12 @@ public class AlerterCapGeneratePanel
 
 	public static final String LOAD_TEXT_FIELD = "LoadTextField";
 	public static final String SAVE_TEXT_FIELD = "SaveTextField";
+	private static final String INSERT_DATABASE_TEXT_FIELD = "InsertDatabaseTextField";
 	public static final String LOAD_CAP_BUTTON = "Load Cap";
 	public static final String SAVE_CAP_BUTTON = "Save Cap";
-	
-	
-	public static final String IDENTIFIER = "Identifier";
-	public static final String SENDER = "Sender";
-	public static final String SENT = "Sent";
-	public static final String STATUS = "Status";
-	public static final String MSG_TYPE = "MsgType";
-	public static final String SCOPE = "Scope";
-	public static final String CODE = "Code";
+	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
 
-	public static final String LANGUAGE = "Language";
-	public static final String CATEGORY = "Category";
-	public static final String EVENT = "Event";
-	public static final String URGENCY = "Urgency";
-	public static final String SEVERITY = "Severity";
-	public static final String CERTAINTY = "Certainty";
-	public static final String EVENT_CODE = "EventCode";
-	public static final String EFFECTIVE = "Effective";
-	public static final String SENDER_NAME = "SenderName";
-	public static final String HEADLINE = "Headline";
-	public static final String DESCRIPTION = "Description";
-	public static final String WEB = "Web";
-	public static final String CONTACT = "Contact";
-
+	public static final String INFO_INDEX = "InfoIndex";
 	private static final int BASE_LINE = 100;
 
 	
@@ -103,10 +94,10 @@ public class AlerterCapGeneratePanel
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
-		initFrame("alertViewPanel");			
+		initPanel();			
 	}
 
-	private void initFrame(String name)
+	private void initPanel()
 	{		
 		this.mViewComponents = new Vector<>();		
 		this.panelComponenets = new HashMap<>();		
@@ -114,13 +105,13 @@ public class AlerterCapGeneratePanel
 		capGeneratePanel.setLayout(new BoxLayout(capGeneratePanel, BoxLayout.Y_AXIS));
 
 		capGeneratePanel.add(initTextArea());
-		capGeneratePanel.add(initButtonPanel());	
+		capGeneratePanel.add(initButtonPanel());
 		capGeneratePanel.add(initCapAlertPanel());
-		capGeneratePanel.add(initCapInfoPanel());
 		
 		mViewComponents.addElement(panelComponenets);
 		mViewComponents.addElement(alertComponents);
 		mViewComponents.addElement(infoComponents);
+		mViewComponents.addElement(areaComponents);
 
 		this.capGenerateScrollPanel = new JScrollPane(capGeneratePanel);
 	}
@@ -162,6 +153,16 @@ public class AlerterCapGeneratePanel
 		saveBox.setBorder(BorderFactory.createLoweredBevelBorder());
 		buttonPane.add(saveBox);
 
+		Box insertDatabaseBox = Box.createHorizontalBox();
+		this.insertDatabaseButton = createButton(INSERT_DATABASE_BUTTON);
+		insertDatabaseBox.add(insertDatabaseButton);
+		this.mInsertDatabaseTextField = new JTextField();
+		panelComponenets.put(INSERT_DATABASE_TEXT_FIELD, mInsertDatabaseTextField);
+		mInsertDatabaseTextField.setText("ALERT ID");
+		insertDatabaseBox.add(mInsertDatabaseTextField);
+		insertDatabaseBox.setBorder(BorderFactory.createLoweredBevelBorder());
+		buttonPane.add(insertDatabaseBox);
+		
 		this.alertApplyButton = createButton("Apply");
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		buttonPane.add(alertApplyButton);
@@ -174,17 +175,20 @@ public class AlerterCapGeneratePanel
 	{
 		this.alertPanel = new JPanel();
 		alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
-		alertPanel.setBorder(BorderFactory.createEtchedBorder());
+		
 		this.alertComponents = new HashMap<>();
 
-		alertPanel.add(addBox(IDENTIFIER, TEXT_FIELD));
-		alertPanel.add(addBox(SENDER, TEXT_FIELD));
-		alertPanel.add(addBox(SENT, TEXT_FIELD));
-		alertPanel.add(addBox(STATUS, COMBO_BOX));
-		alertPanel.add(addBox(MSG_TYPE, COMBO_BOX));
-		alertPanel.add(addBox(SCOPE, COMBO_BOX));
-		alertPanel.add(addBox(CODE, TEXT_FIELD));
-		alertPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		alertPanel.add(addBox(KieasMessageBuilder.IDENTIFIER, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.SENDER, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.SENT, TEXT_FIELD));
+		alertPanel.add(addBox(KieasMessageBuilder.STATUS, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.MSG_TYPE, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.SCOPE, COMBO_BOX));
+		alertPanel.add(addBox(KieasMessageBuilder.CODE, TEXT_FIELD));
+		alertPanel.add(initCapInfoPanel());
+		alertPanel.add(initCapResourcePanel());	
+		alertPanel.add(initCapAreaPanel());	
+		alertPanel.setBorder(BorderFactory.createTitledBorder("Alert"));
 		
 		return alertPanel;
 	}
@@ -202,34 +206,104 @@ public class AlerterCapGeneratePanel
 		
 		return infoPanel;
 	}
+	
+	private void resetCapInfoPanel()
+	{
+		this.infoPanel.removeAll();
+		this.infoIndexPanels.clear();
+		this.infoComponents.clear();
+		this.infoCounter = 0;
+		addInfoIndexPanel();
+	}
 
 	public void addInfoIndexPanel()
 	{
-		removeTabPanel();
+		removeTabPanel(infoPanel);
 		infoComponents.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(LANGUAGE, COMBO_BOX, infoCounter));
-		panel.add(addBox(CATEGORY, COMBO_BOX, infoCounter));
-		panel.add(addBox(EVENT, TEXT_FIELD, infoCounter));
-		panel.add(addBox(URGENCY, COMBO_BOX, infoCounter));
-		panel.add(addBox(SEVERITY, COMBO_BOX, infoCounter));
-		panel.add(addBox(CERTAINTY, COMBO_BOX, infoCounter));
-		panel.add(addBox(EVENT_CODE, COMBO_BOX, infoCounter));
-		panel.add(addBox(EFFECTIVE, TEXT_FIELD, infoCounter));
-		panel.add(addBox(SENDER_NAME, TEXT_FIELD, infoCounter));
-		panel.add(addBox(HEADLINE, TEXT_FIELD, infoCounter));
-		panel.add(addBox(DESCRIPTION, TEXT_AREA, infoCounter));
-		panel.add(addBox(WEB, TEXT_FIELD, infoCounter));
-		panel.add(addBox(CONTACT, TEXT_FIELD, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.LANGUAGE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CATEGORY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EVENT, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.URGENCY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.SEVERITY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CERTAINTY, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, COMBO_BOX, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.EFFECTIVE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, TEXT_FIELD, infoComponents, infoCounter)); 
+		panel.add(addBox(KieasMessageBuilder.HEADLINE, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, TEXT_AREA, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.WEB, TEXT_FIELD, infoComponents, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.CONTACT, TEXT_FIELD, infoComponents, infoCounter));
 		
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
 		infoCounter++;
-		addTabPanel();
+		addTabPanel("Add Info", infoPanel, infoCounter);
 	}
 	
+	private Component initCapResourcePanel()
+	{
+		this.resourcePanel = new JTabbedPane();
+		resourcePanel.setBorder(BorderFactory.createEtchedBorder());
+		this.resourceIndexPanels = new ArrayList<JPanel>();
+		this.resourceComponents = new ArrayList<HashMap<String, Component>>();
+
+		this.resourceCounter = 0;
+		addResourceIndexPanel();
+		resourcePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		return resourcePanel;
+	}
+	
+	public void addResourceIndexPanel()
+	{
+		removeTabPanel(resourcePanel);
+		resourceComponents.add(new HashMap<>());
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.add(addBox(KieasMessageBuilder.RESOURCE_DESC, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(KieasMessageBuilder.MIME_TYPE, TEXT_FIELD, resourceComponents, resourceCounter));
+		panel.add(addBox(KieasMessageBuilder.URI, TEXT_FIELD, resourceComponents, resourceCounter));
+		
+		resourceIndexPanels.add(panel);
+		resourcePanel.addTab("Resource" + resourceCounter, resourceIndexPanels.get(resourceCounter));
+		resourceCounter++;
+		addTabPanel("Add Resource", resourcePanel, resourceCounter);
+	}
+	
+	private Component initCapAreaPanel()
+	{
+		this.areaPanel = new JTabbedPane();
+		areaPanel.setBorder(BorderFactory.createEtchedBorder());
+		this.areaIndexPanels = new ArrayList<JPanel>();
+		this.areaComponents = new ArrayList<HashMap<String, Component>>();
+
+		this.areaCounter = 0;
+		addAreaIndexPanel();
+		areaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		return areaPanel;
+	}
+	
+	public void addAreaIndexPanel()
+	{
+		removeTabPanel(areaPanel);
+		areaComponents.add(new HashMap<>());
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.add(addBox(KieasMessageBuilder.AREA_DESC, TEXT_FIELD, areaComponents, areaCounter));
+		panel.add(addBox(KieasMessageBuilder.GEO_CODE, TEXT_FIELD, areaComponents, areaCounter));
+		
+		areaIndexPanels.add(panel);
+		areaPanel.addTab("Area" + areaCounter, areaIndexPanels.get(areaCounter));
+		areaCounter++;
+		addTabPanel("Add Area", areaPanel, areaCounter);
+	}
+
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
@@ -253,11 +327,12 @@ public class AlerterCapGeneratePanel
 		switch (type)
 		{
 		case COMBO_BOX:
-			JComboBox<String> comboBox = new JComboBox<>();
-			for (String value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+			Vector<Item> comboboxModel = new Vector<>();
+			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
-				comboBox.addItem(value);
+				comboboxModel.addElement(value);
 			}
+			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
 			alertComponents.put(labelName, comboBox);
 			box.add(comboBox);
 			return box;			
@@ -276,7 +351,7 @@ public class AlerterCapGeneratePanel
 		}
 	}
 
-	private Box addBox(String labelName, String type, int index)
+	private Box addBox(String labelName, String type, ArrayList<HashMap<String, Component>> components, int index)
 	{
 		Box box = Box.createHorizontalBox();
 
@@ -289,50 +364,51 @@ public class AlerterCapGeneratePanel
 		switch (type)
 		{
 		case COMBO_BOX:
-			JComboBox<String> comboBox = new JComboBox<>();
-			for (String value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+			Vector<Item> comboboxModel = new Vector<>();
+			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
-				comboBox.addItem(value);		
+				comboboxModel.addElement(value);		
 			}
-			infoComponents.get(index).put(labelName + index, comboBox);
+			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
+			components.get(index).put(labelName + index, comboBox);
 			box.add(comboBox);
 			return box;
 		case TEXT_FIELD:
 			JTextField textField = new JTextField();
-			infoComponents.get(index).put(labelName + index, textField);
+			components.get(index).put(labelName + index, textField);
 			box.add(textField);
 			return box;
 		case TEXT_AREA:
 			JTextArea textArea = new JTextArea();
-			infoComponents.get(index).put(labelName + index, textArea);
+			components.get(index).put(labelName + index, textArea);
 			box.add(textArea);
 			return box;
 		default:
 			return box;
 		}
 	}
-
-
-	private void addTabPanel()
-	{
+	
+	private JPanel addTabPanel(String name, JTabbedPane target, int index) {
 		JPanel panel =  new JPanel();
-		createAndAddInfoAddButton("Add Info", panel);
-		infoPanel.addTab("+", panel);
-		infoPanel.setSelectedIndex(infoCounter - 1);
+		createAndAddAddButton(name, panel);
+		target.addTab("+", panel);
+		target.setSelectedIndex(index - 1);
+		
+		return panel;
 	}
 
-	private void removeTabPanel()
+	private void removeTabPanel(JTabbedPane target)
 	{
-		for(int i = 0 ; i < infoPanel.getComponentCount(); i++)
+		for(int i = 0 ; i < target.getComponentCount(); i++)
 		{
-			if(infoPanel.getTitleAt(i).equals("+"))
+			if(target.getTitleAt(i).equals("+"))
 			{
-				infoPanel.remove(infoPanel.getSelectedComponent());
+				target.remove(target.getSelectedComponent());
 			}
 		}
 	}
-
-	private JButton createAndAddInfoAddButton(String name, JPanel panel)
+	
+	private JButton createAndAddAddButton(String name, JPanel panel)
 	{
 		JButton button = new JButton(name);
 		button.addActionListener(alerterActionListener);
@@ -375,10 +451,42 @@ public class AlerterCapGeneratePanel
 //			return;
 //		}
 //	}
-
+	private int checkIndex(String target)
+	{
+		StringBuffer stringBuffer = new StringBuffer();
+		for(int i = 0; i < target.length(); i++)
+		{
+			char currentChar = target.charAt(i);
+			if(Character.isDigit(currentChar))
+			{
+				stringBuffer.append(currentChar);			
+			}
+		}
+		if(stringBuffer.length() == 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return Integer.parseInt(stringBuffer.toString());			
+		}
+	}
 	
-	public void updateView(String target, String value) {
-
+	public void updateView(String target, String value)
+	{		
+//		if(target.equals(INFO_INDEX))
+//		{
+//			int index = Integer.parseInt(value);
+//			infoCounter = index;
+//			System.out.println("view infocounter = "+ infoCounter);
+//			resetCapInfoPanel();
+//			for(int i = 0; i < index; i++)
+//			{
+//				System.out.println();
+//				addInfoIndexPanel();
+//			}
+//			return;
+//		}
 		if(target.equals(TEXT_AREA))
 		{
 			this.mTextArea.setText(value);
@@ -401,38 +509,102 @@ public class AlerterCapGeneratePanel
 		}
 		if (alertComponents.get(target) instanceof JComboBox<?>)
 		{
-			
-			stringBuffer = new StringBuffer(value);
-			System.out.println(stringBuffer.toString());
-			stringBuffer.replace(stringBuffer.indexOf("("), stringBuffer.indexOf(")"), "");
-			stringBuffer.trimToSize();
-			System.out.println("sb = " + stringBuffer.toString());
-			((JComboBox<?>) alertComponents.get(target)).setSelectedItem(value);
-			return;
+			for(int i = 0; i < ((JComboBox<?>) alertComponents.get(target)).getItemCount(); i++)
+			{
+				if((((Item) ((JComboBox<?>) alertComponents.get(target)).getItemAt(i)).getKey()).equals(value))
+				{
+					((JComboBox<?>) alertComponents.get(target)).setSelectedIndex(i);
+					return;
+				}
+			}
 		}
-		for(int i = 0; i < infoCounter; i++)
+
+		for(int j = 0; j < infoCounter ; j++)
 		{
-			if (infoComponents.get(i).get(target) instanceof JTextField)
+			if(j > 0)
 			{
-				((JTextField) infoComponents.get(i).get(target)).setText(value);
+//				addInfoIndexPanel();
+			}
+			if (infoComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) infoComponents.get(j).get(target)).setText(value);
 				return;
 			}
-			if (infoComponents.get(i).get(target) instanceof JComboBox<?>)
+			if (infoComponents.get(j).get(target) instanceof JComboBox<?>)
 			{
-				((JComboBox<?>) infoComponents.get(i).get(target)).setSelectedItem(value);
+				for(int i = 0; i < ((JComboBox<?>) infoComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) infoComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) infoComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (infoComponents.get(j).get(target) instanceof JTextArea)
+			{
+				((JTextArea) infoComponents.get(j).get(target)).setText(value);
 				return;
 			}
-			if (infoComponents.get(i).get(target) instanceof JTextArea)
+		}		
+		//resourcePanel updateView
+		for(int j = 0; j < resourceCounter; j++)
+		{
+			if(j > 0)
 			{
-				((JTextArea) infoComponents.get(i).get(target)).setText(value);
+				addResourceIndexPanel();
+			}
+			if (resourceComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) resourceComponents.get(j).get(target)).setText(value);
+				return;
+			}
+			if (resourceComponents.get(j).get(target) instanceof JComboBox<?>)
+			{
+				for(int i = 0; i < ((JComboBox<?>) resourceComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) resourceComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) resourceComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (resourceComponents.get(j).get(target) instanceof JTextArea)
+			{
+				((JTextArea) resourceComponents.get(j).get(target)).setText(value);
 				return;
 			}
 		}
-	}
-	
-	public String getViewProperty(String target, String value)
-	{
-		return null;
+		//areaPanel updateView
+		for(int j = 0; j < areaCounter; j++)
+		{
+			if(j > 0)
+			{
+				addAreaIndexPanel();
+			}
+			if (areaComponents.get(j).get(target) instanceof JTextField)
+			{
+				((JTextField) areaComponents.get(j).get(target)).setText(value);
+				return;
+			}
+			if (areaComponents.get(j).get(target) instanceof JComboBox<?>)
+			{
+				for(int i = 0; i < ((JComboBox<?>) areaComponents.get(j).get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) areaComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) areaComponents.get(j).get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (areaComponents.get(j).get(target) instanceof JTextArea)
+			{
+				((JTextArea) areaComponents.get(j).get(target)).setText(value);
+				return;
+			}
+		}
 	}
 	
 	public String getLoadTextField()
