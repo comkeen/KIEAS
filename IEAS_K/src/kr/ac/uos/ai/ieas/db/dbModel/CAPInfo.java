@@ -30,16 +30,19 @@ public class CAPInfo implements CAPBean {
 	private ArrayList<CAPResource> resList;
 	private ArrayList<CAPArea> areaList;
 
-	public enum Language {
+	public enum Language
+	{
 		koKR("ko-KR"), enUS("en-US");
 
 		private String codename;
 
-		private Language(String codename) {
+		private Language(String codename)
+		{
 			this.codename = codename;
 		}
 
-		public String toString() {
+		public String toString()
+		{
 			return this.codename;
 		}
 	}

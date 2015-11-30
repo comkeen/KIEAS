@@ -22,7 +22,8 @@ public class CAPDBInsertUtils {
 			+ "`description`, `instruction`, `web`, `contact`, `parameter`, `alert_eid`"
 			+ ") VALUES \n(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public void insertCAP(CAPAlert alert) {
+	public void insertCAP(CAPAlert alert)
+	{
 		try {
 			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;

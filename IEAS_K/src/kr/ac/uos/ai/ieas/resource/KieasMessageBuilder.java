@@ -55,10 +55,10 @@ public class KieasMessageBuilder
 	private Info 			mInfo;
 	private Resource 		mResource;
 	private Area 			mArea;
-	
+
 	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
-	
+
 	public static final String IDENTIFIER = "Identifier";
 	public static final String SENDER = "Sender";
 	public static final String SENT = "Sent";
@@ -86,20 +86,20 @@ public class KieasMessageBuilder
 	public static final String RESOURCE_DESC = "ResourceDesc";
 	public static final String MIME_TYPE = "MimeType";
 	public static final String URI = "Uri";
-	
+
 	public static final String AREA_DESC = "AreaDesc";
 	public static final String GEO_CODE = "GeoCode";
-	
+
 
 	public KieasMessageBuilder()  {
 
 		this.capXmlBuilder = new CapXmlBuilder();
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
-		
-//		buildDefaultMessage();
+
+		//		buildDefaultMessage();
 	}
-	
+
 	/**
 	 * View에 사용될 Enum을 Item으로 사용하여 Value를 디스플레이하고 Key에 의해 아이템 판별이 이루어진다.
 	 * 
@@ -110,30 +110,30 @@ public class KieasMessageBuilder
 	{
 		private String key;
 		private String value;
-		
-		
+
+
 		public Item(String key, String value)
 		{
 			this.key = key;
 			this.value = value;
 		}
-		
+
 		public String getKey()
 		{
 			return key;
 		}
-		
+
 		public String getValue()
 		{
 			return value;
 		}
-		
+
 		public String toString()
 		{
 			return value;
 		}
 	}
-	
+
 	/**
 	 * CAP 요소에서 사용하는 Enum들을 가져옴.
 	 * CAP 요소 이름 elementName을 Key로 사용하며 이것으로 Enum 리스트를 식별함.
@@ -147,7 +147,7 @@ public class KieasMessageBuilder
 		buildInfoCapEnumMap();
 		return capEnumMap;
 	}
-	
+
 	private void buildAlertCapEnumMap()
 	{
 		ArrayList<Item> capEnum1 = new ArrayList<>();
@@ -177,7 +177,7 @@ public class KieasMessageBuilder
 			capEnum1.add(new Item(value.toString(), modifiedValue));	
 		}
 		capEnumMap.put(STATUS, capEnum1);
-		
+
 		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
 		{
@@ -205,7 +205,7 @@ public class KieasMessageBuilder
 			capEnum2.add(new Item(value.toString(), modifiedValue));	
 		}
 		capEnumMap.put(MSG_TYPE, capEnum2);
-		
+
 		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
 		{
@@ -226,7 +226,7 @@ public class KieasMessageBuilder
 		}
 		capEnumMap.put(SCOPE, capEnum3);	
 	}
-	
+
 	private void buildInfoCapEnumMap()
 	{
 		//Category
@@ -285,7 +285,7 @@ public class KieasMessageBuilder
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(CATEGORY, capEnum1);
-		
+
 		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
 		{
@@ -317,7 +317,7 @@ public class KieasMessageBuilder
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(CERTAINTY, capEnum2);
-		
+
 		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
 		{			
@@ -326,7 +326,7 @@ public class KieasMessageBuilder
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(RESPONSETYPE, capEnum3);
-		
+
 		ArrayList<Item> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
 		{
@@ -354,7 +354,7 @@ public class KieasMessageBuilder
 			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(SEVERITY, capEnum4);
-		
+
 		ArrayList<Item> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
 		{
@@ -382,7 +382,7 @@ public class KieasMessageBuilder
 			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(URGENCY, capEnum5);
-		
+
 		ArrayList<Item> capEnum6 = new ArrayList<>();
 		for (DisasterEventType value : DisasterEventType.values())
 		{
@@ -391,7 +391,7 @@ public class KieasMessageBuilder
 			capEnum6.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(EVENT_CODE, capEnum6);
-		
+
 		ArrayList<Item> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
 		{
@@ -407,7 +407,7 @@ public class KieasMessageBuilder
 			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
 		capEnumMap.put(LANGUAGE, capEnum7);
-		
+
 		ArrayList<Item> capEnum8 = new ArrayList<>();
 		Item item1 = new Item("1100000000", "서울특별시");
 		Item item2 = new Item("2600000000", "부산광역시");
@@ -443,7 +443,7 @@ public class KieasMessageBuilder
 		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
 		capEnumMap.put(GEO_CODE, capEnum8);
 	}
-	
+
 	public String buildDefaultMessage()
 	{		
 		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
@@ -454,7 +454,7 @@ public class KieasMessageBuilder
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.PUBLIC)
 				.buildPartial();
-		
+
 		this.mInfo = Info.newBuilder()
 				.setLanguage("ko-KR")
 				.addCategory(Info.Category.SAFETY)
@@ -463,14 +463,14 @@ public class KieasMessageBuilder
 				.setSeverity(Info.Severity.UNKNOWN_SEVERITY)
 				.setCertainty(Info.Certainty.UNKNOWN_CERTAINTY)
 				.buildPartial();
-		
-//		this.resource = Resource.newBuilder().buildPartial();		
-//		this.area = Area.newBuilder().buildPartial();
-				
+
+		//		this.resource = Resource.newBuilder().buildPartial();		
+		//		this.area = Area.newBuilder().buildPartial();
+
 		mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();
 		return capXmlBuilder.toXml(mAlert);
 	}
-	
+
 	public boolean validateMessage()
 	{
 		try
@@ -483,12 +483,12 @@ public class KieasMessageBuilder
 			return false;
 		}
 	}
-	
+
 	public void build()
 	{		
 		mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();
 	}	
-	
+
 	private GregorianCalendar getDateCalendar()
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
@@ -496,19 +496,19 @@ public class KieasMessageBuilder
 		cal.setTime(new Date());
 		return cal;
 	}
-	
+
 	private String dateToString(Date date)
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
 		cal.setTime(date);
 		return CapUtil.formatCapDate(cal);
 	}
-	
+
 	public String transformToYmdhms(String date)
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
 		cal.setTime(CapUtil.toJavaDate(date));
-		
+
 		StringBuffer sb = new StringBuffer();
 		sb.append(cal.get(Calendar.YEAR)).append("년")
 		.append(cal.get(Calendar.MONTH)+1).append("월")
@@ -516,10 +516,10 @@ public class KieasMessageBuilder
 		.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
 		.append(cal.get(Calendar.MINUTE)).append("분")
 		.append(cal.get(Calendar.SECOND)).append("초");
-		
+
 		return sb.toString();
 	}
-		
+
 	public int getInfoCount()
 	{
 		return mAlert.getInfoCount();
@@ -529,12 +529,12 @@ public class KieasMessageBuilder
 	{
 		return mAlert.getInfo(index).getResourceCount();
 	}
-	
+
 	public int getAreaCount(int index)
 	{
 		return mAlert.getInfo(index).getAreaCount();
 	}
-		
+
 	public String getMessage()
 	{
 		try
@@ -549,7 +549,7 @@ public class KieasMessageBuilder
 		System.out.println("There is no CAP message");
 		return "";
 	}
-	
+
 	public Alert setMessage(String message) 
 	{
 		try
@@ -577,7 +577,7 @@ public class KieasMessageBuilder
 			return null;
 		}
 	}
-	
+
 	public String getSender()
 	{
 		try 
@@ -605,7 +605,7 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-	
+
 	public String getSentCalendar()
 	{
 		try
@@ -634,12 +634,12 @@ public class KieasMessageBuilder
 	{
 		return mAlert.getSource().toString();
 	}
-	
+
 	public String getScope()
 	{
 		return mAlert.getScope().toString();
 	}
-	
+
 	public String getRestriction()
 	{
 		return mAlert.getRestriction().toString();
@@ -657,7 +657,7 @@ public class KieasMessageBuilder
 			return null;
 		}
 	}
-	
+
 	public String getCode()
 	{
 		if(mAlert.getCode(0) != null)
@@ -747,7 +747,7 @@ public class KieasMessageBuilder
 	{
 		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
 	}
-	
+
 	public String getMimeType(int infoIndex, int index)
 	{
 		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
@@ -757,19 +757,19 @@ public class KieasMessageBuilder
 	{
 		return mAlert.getInfo(infoIndex).getResource(index).getUri();
 	}
-	
+
 	public String getAreaDesc(int infoIndex, int index)
 	{
 		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
 	}
-	
+
 	public String getGeoCode(int infoIndex, int index)
 	{
 		return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();
 	}
-	
 
-	
+
+
 	//CAP 요소 Setter
 	public void setAlert(HashMap<String, String> alertElementList)
 	{
@@ -783,11 +783,11 @@ public class KieasMessageBuilder
 				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
 				.buildPartial();
 	}
-	
+
 	public void setInfo(ArrayList<HashMap<String, String>> infoElementList)
 	{
 		mAlert = Alert.newBuilder(mAlert).clearInfo().buildPartial();
-		
+
 		for(int i = 0; i < infoElementList.size(); i++)
 		{
 			Info info = Info.newBuilder()
@@ -806,7 +806,7 @@ public class KieasMessageBuilder
 			mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
 		}
 	}
-	
+
 	public void setArea(HashMap<String, String> areaElementList)
 	{
 		for(int i = 0; i < areaElementList.size(); i++)
@@ -818,22 +818,22 @@ public class KieasMessageBuilder
 			mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();			
 		}
 	}	
-	
+
 	public void setIdentifier(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).build();
 	}	
-	
+
 	public void setSender(String sender)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSender(sender).build();
 	}
-	
+
 	public void setSent(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
 	}
-	
+
 	public void setSent(GregorianCalendar cal)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
@@ -884,7 +884,7 @@ public class KieasMessageBuilder
 	{
 		mAlert = Alert.newBuilder(mAlert).setSource(source).build();
 	}
-	
+
 	public Scope setScope(String text)
 	{
 		for (Scope scope : Alert.Scope.values())
@@ -904,12 +904,12 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-	
+
 	public void setAddresses(String address) 
 	{
 		mAlert = Alert.newBuilder(mAlert).setAddresses(Group.newBuilder().addValue(address).build()).build();		
 	}
-	
+
 	public void setRestricion(String restriction)
 	{
 		mAlert = Alert.newBuilder(mAlert).setRestriction(restriction).build();
@@ -944,7 +944,7 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-		
+
 	public void setEvent(String event) 
 	{
 		mInfo = Info.newBuilder(mInfo).setEvent(event).build();
@@ -969,7 +969,7 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-	
+
 	public Severity setSeverity(String text) 
 	{
 		for (Severity severity : Info.Severity.values())
@@ -989,7 +989,7 @@ public class KieasMessageBuilder
 		}
 		return null;
 	}
-	
+
 	public Certainty setCertainty(String text)
 	{
 		for (Certainty certainty : Info.Certainty.values())
@@ -1044,9 +1044,9 @@ public class KieasMessageBuilder
 	{
 		mInfo = Info.newBuilder(mInfo).setContact(contact).build();
 	}
-	
-	
-	
+
+
+
 	private String getValueInJasonObject(String jsonInput)
 	{		
 		try 
@@ -1060,7 +1060,7 @@ public class KieasMessageBuilder
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Database에서 사용하는 CAP 객체를 Google CAP Library에서 사용하는 CAP 객체로 변환.
 	 * 
@@ -1070,7 +1070,7 @@ public class KieasMessageBuilder
 	public ArrayList<String> databaseObjectToCapObject(ArrayList<CAPAlert> alertList)
 	{		
 		ArrayList<String> capList = new ArrayList<String>();
-		
+
 		for (CAPAlert capAlert : alertList)
 		{
 			Alert mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
@@ -1080,7 +1080,7 @@ public class KieasMessageBuilder
 					.setStatus(this.setStatus(capAlert.getStatus().toString()))
 					.setMsgType(this.setMsgType(capAlert.getMsgType().toString()))
 					.setScope(this.setScope(capAlert.getScope().toString()))
-//					.addCode(capAlert.getCode())
+					//					.addCode(capAlert.getCode())
 					.buildPartial();
 
 			for (CAPInfo capInfo : capAlert.getInfoList())
@@ -1093,14 +1093,14 @@ public class KieasMessageBuilder
 						.setSeverity(this.setSeverity(capInfo.getSeverity().toString()))
 						.setCertainty(this.setCertainty(capInfo.getCertainty().toString()))
 						.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(getValueInJasonObject(capInfo.getEventCode())).build())
-//						.setEffective(this.dateToString(capInfo.getEffective()))
+						//						.setEffective(this.dateToString(capInfo.getEffective()))
 						.setSenderName(capInfo.getSenderName())
 						.setHeadline(capInfo.getHeadline())
 						.setDescription(capInfo.getDescription())
-//						.setWeb(capInfo.getWeb())
-//						.setContact(capInfo.getContact())
+						//						.setWeb(capInfo.getWeb())
+						//						.setContact(capInfo.getContact())
 						.buildPartial();
-				
+
 
 				for (CAPResource capResource : capInfo.getResList())
 				{
@@ -1109,10 +1109,10 @@ public class KieasMessageBuilder
 							.setMimeType(capResource.getMimeType())
 							.setSize((long)capResource.getSize())
 							.setUri(capResource.getUri())
-//							.setDerefUri(capResource.getDeferURI())
-//							.setDigest(capResource.getDigest().toString())
+							//							.setDerefUri(capResource.getDeferURI())
+							//							.setDigest(capResource.getDigest().toString())
 							.buildPartial();
-					
+
 					mInfo = Info.newBuilder(mInfo)
 							.addResource(resource)
 							.buildPartial();
@@ -1121,9 +1121,9 @@ public class KieasMessageBuilder
 				{
 					Area area = Area.newBuilder()
 							.setAreaDesc(capArea.getAreaDesc())
-//							.addGeocode(ValuePair.newBuilder().setValueName("G1").setValue(capArea.getGeocode()).build())
+							//							.addGeocode(ValuePair.newBuilder().setValueName("G1").setValue(capArea.getGeocode()).build())
 							.buildPartial();
-					
+
 					mInfo = Info.newBuilder(mInfo)
 							.addArea(area)
 							.buildPartial();
@@ -1136,4 +1136,92 @@ public class KieasMessageBuilder
 		}
 		return capList;
 	}
+
+	public CAPAlert capObjectToDatabaseObject(String capMessage)
+	{	
+		CAPAlert capAlert = new CAPAlert();
+		CAPInfo capInfo = new CAPInfo();
+
+		try
+		{
+			mAlert = capXmlParser.parseFrom(capMessage);
+
+			capAlert.setIdentifier(mAlert.getIdentifier());
+			capAlert.setSender(mAlert.getSender());
+			capAlert.setSent(new Date(mAlert.getSent()));
+			for (CAPAlert.Status status : CAPAlert.Status.values())
+			{
+				if(status.toString().toUpperCase().equals(mAlert.getStatus()))
+				{
+					capAlert.setStatus(status);
+				}
+			}
+			for (CAPAlert.MsgType msgType : CAPAlert.MsgType.values())
+			{
+				if(msgType.toString().toUpperCase().equals(mAlert.getMsgType()))
+				{
+					capAlert.setMsgType(msgType);
+				}
+			}
+			for (CAPAlert.Scope scope : CAPAlert.Scope.values())
+			{
+				if(scope.toString().toUpperCase().equals(mAlert.getMsgType()))
+				{
+					capAlert.setScope(scope);
+				}
+			}
+			capAlert.setCode(mAlert.getCode(0));
+
+			for (CAPInfo.Language language : CAPInfo.Language.values())
+			{
+				if(language.toString().toUpperCase().equals(mAlert.getInfo(0).getLanguage()))
+				{
+					capInfo.setLanguage(language);
+				}
+			}
+			for (CAPInfo.Category category : CAPInfo.Category.values())
+			{
+				if(category.toString().toUpperCase().equals(mAlert.getInfo(0).getCategory(0)))
+				{
+					capInfo.setCategory(category);
+				}
+			}
+			capInfo.setEvent(mAlert.getInfo(0).getEvent());
+			for (CAPInfo.Urgency urgency : CAPInfo.Urgency.values())
+			{
+				if(urgency.toString().toUpperCase().equals(mAlert.getInfo(0).getUrgency()))
+				{
+					capInfo.setUrgency(urgency);
+				}
+			}
+			for (CAPInfo.Severity severity : CAPInfo.Severity.values())
+			{
+				if(severity.toString().toUpperCase().equals(mAlert.getInfo(0).getSeverity()))
+				{
+					capInfo.setSeverity(severity);
+				}
+			}
+			for (CAPInfo.Certainty certainty : CAPInfo.Certainty.values())
+			{
+				if(certainty.toString().toUpperCase().equals(mAlert.getInfo(0).getCertainty()))
+				{
+					capInfo.setCertainty(certainty);
+				}
+			}
+			capInfo.setEventCode(mAlert.getInfo(0).getEventCode(0).getValue());
+			//Todo
+		}
+		catch (NotCapException | SAXParseException | CapException e) 
+		{
+			e.printStackTrace();
+		}
+
+
+
+
+		return capAlert;
+
+
+	}
 }
+
