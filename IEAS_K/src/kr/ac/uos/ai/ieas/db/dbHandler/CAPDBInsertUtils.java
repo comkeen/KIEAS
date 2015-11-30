@@ -29,22 +29,30 @@ public class CAPDBInsertUtils {
 
 			this.insertAlert(conn, alert);
 			int alert_eid = new CAPDBUtils().getAlertEidByObject(alert);
-			for (CAPInfo info : alert.getInfoList()) {
-				info.setAlert_eid(alert_eid);
-				System.out.println(alert_eid);
-				this.insertInfo(conn, info);
-//				for (CAPArea area : info.getAreaList()) {
-//					this.insertArea(conn, area);
-//				}
-//				for (CAPResource res : info.getResList()) {
-//					this.insertResource(conn, res);
-//				}
+
+			if (null != alert.getInfoList()) {
+				for (CAPInfo info : alert.getInfoList()) {
+					info.setAlert_eid(alert_eid);
+					System.out.println(alert_eid);
+					this.insertInfo(conn, info);
+					if (null != info.getAreaList()) {
+						for (CAPArea area : info.getAreaList()) {
+							this.insertArea(conn, area);
+						}
+					}
+					if (null != info.getResList()) {
+						for (CAPResource res : info.getResList()) {
+							this.insertResource(conn, res);
+						}
+					}
+				}
 			}
 
 			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	// For methods below, it automatically checks if elements are null for
@@ -53,8 +61,7 @@ public class CAPDBInsertUtils {
 
 	private void insertAlert(Connection conn, CAPAlert alert) {
 		try {
-			PreparedStatement pstmtAlert = conn
-					.prepareStatement(CAPDBInsertUtils.INSERT_ALERT);
+			PreparedStatement pstmtAlert = conn.prepareStatement(CAPDBInsertUtils.INSERT_ALERT);
 
 			// #1: identifier
 			pstmtAlert.setString(1, alert.getIdentifier());
@@ -136,8 +143,7 @@ public class CAPDBInsertUtils {
 
 	private void insertInfo(Connection conn, CAPInfo info) {
 		try {
-			PreparedStatement pstmtInfo = conn
-					.prepareStatement(CAPDBInsertUtils.INSERT_INFO);
+			PreparedStatement pstmtInfo = conn.prepareStatement(CAPDBInsertUtils.INSERT_INFO);
 
 			// #1: language
 			if (null == info.getLanguage()) {
@@ -186,8 +192,7 @@ public class CAPDBInsertUtils {
 			if (null == info.getEffective()) {
 				pstmtInfo.setNull(10, java.sql.Types.VARCHAR);
 			} else {
-				pstmtInfo.setString(10,
-						DataFormatUtils.convertDateObjectType(info.getEffective()));
+				pstmtInfo.setString(10, DataFormatUtils.convertDateObjectType(info.getEffective()));
 			}
 
 			// #11: onset
@@ -238,24 +243,24 @@ public class CAPDBInsertUtils {
 			} else {
 				pstmtInfo.setString(17, info.getWeb());
 			}
-			
+
 			// #18: contact
 			if (null == info.getContact()) {
 				pstmtInfo.setNull(18, java.sql.Types.VARCHAR);
 			} else {
 				pstmtInfo.setString(18, info.getContact());
 			}
-			
+
 			// #19: parameter
 			if (null == info.getParameter()) {
 				pstmtInfo.setNull(19, java.sql.Types.VARCHAR);
 			} else {
 				pstmtInfo.setString(19, info.getParameter());
 			}
-			
+
 			// #20: alert_eid
 			pstmtInfo.setInt(20, 1);
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -268,7 +273,6 @@ public class CAPDBInsertUtils {
 	private void insertResource(Connection conn, CAPResource res) {
 
 	}
-
 
 	// test code
 	public static void main(String[] args) {
