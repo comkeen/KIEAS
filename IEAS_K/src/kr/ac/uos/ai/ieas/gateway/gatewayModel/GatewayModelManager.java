@@ -76,8 +76,6 @@ public class GatewayModelManager {
 
 		return alertElementMap;
 	}
-
-
 	
 	public void putAlertMessageMap(String key, String message) {
 		alertMessageMap.put(key, message);

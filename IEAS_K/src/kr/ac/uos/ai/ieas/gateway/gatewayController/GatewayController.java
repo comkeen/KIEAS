@@ -44,18 +44,19 @@ public class GatewayController {
 	private GatewayController()
 	{
 		this.gatewayID = KieasConfiguration.IeasName.GATEWAY_NAME;
+		this.kieasMessageBuilder = new KieasMessageBuilder();
+		
+		this.gatewayTransmitter = new GatewayTransmitter(this);
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
-		this.gatewayTransmitter = new GatewayTransmitter(this);
-		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 
-		this.sender = null;
-		this.identifier = null;
-		this.addresses = null;
-		this.event = null;
+		this.sender = "";
+		this.identifier = "";
+		this.addresses = "";
+		this.event = "";
 	}
 
 	public void openGateway()
@@ -96,7 +97,9 @@ public class GatewayController {
 		}
 	}
 
-	public void acceptAleterMessage(String message) {
+	public void acceptAleterMessage(String message)
+	{
+		System.out.println("acceptMessage");
 		sender = gatewayModelManager.getAlertElementMap(message).get("Sender");
 		identifier = gatewayModelManager.getAlertElementMap(message).get("Identifier");
 

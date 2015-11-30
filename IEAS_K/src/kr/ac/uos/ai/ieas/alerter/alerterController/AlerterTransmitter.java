@@ -14,6 +14,7 @@ import javax.jms.TextMessage;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 
 public class AlerterTransmitter {
 
@@ -48,6 +49,12 @@ public class AlerterTransmitter {
 			this.connection = factory.createConnection();
 			this.connection.start();
 			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			
+			RedeliveryPolicy policy = factory.getRedeliveryPolicy();
+			policy.setInitialRedeliveryDelay(500);
+			policy.setBackOffMultiplier(2);
+			policy.setUseExponentialBackOff(true);
+			policy.setMaximumRedeliveries(2);
 		}
 		catch (Exception ex)
 		{
@@ -77,12 +84,16 @@ public class AlerterTransmitter {
 	{
 		try
 		{			
+			connection.start();
+			
 			Destination queueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 			this.producer = this.session.createProducer(queueDestination);
 			this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
 			this.producer.send(textMessage);
+			
+			connection.stop();
 		}
 		catch (Exception e) 
 		{

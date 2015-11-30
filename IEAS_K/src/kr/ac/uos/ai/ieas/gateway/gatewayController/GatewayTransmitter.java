@@ -18,7 +18,7 @@ import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 public class GatewayTransmitter 
 {
-	private GatewayController gateway;
+	private GatewayController controller;
 
 	private ActiveMQConnectionFactory factory;
 	public Connection connection;
@@ -32,7 +32,7 @@ public class GatewayTransmitter
 
 	public GatewayTransmitter(GatewayController controller)
 	{
-		this.gateway = controller;
+		this.controller = controller;
 		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP;
 
 		openConnection();
@@ -161,7 +161,7 @@ public class GatewayTransmitter
 						try 
 						{
 							System.out.println("gateway received message : " + textMessage.getText());
-							gateway.acceptAleterMessage(textMessage.getText());
+							controller.acceptAleterMessage(textMessage.getText());
 							return;
 							
 //							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
