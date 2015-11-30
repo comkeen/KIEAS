@@ -14,13 +14,16 @@ import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 
 public class AlerterLogPanel 
 {
 	private static AlerterLogPanel alerterViewPanel;
-	private _AlerterController alerterController;
 	private AleterViewActionListener alerterActionListener;
+	private KieasMessageBuilder kieasMessageBuilder;
 
 	private JButton generateCapButton;
 	private JButton messageSendButton;
@@ -29,8 +32,8 @@ public class AlerterLogPanel
 	private JPanel buttonPane;
 	private JScrollPane textAreaPane;
 	private JTextArea textArea;
-	private JComboBox<String> locationCombobox;
-	private JComboBox<String> eventComboBox;
+	private JComboBox<Item> geoCodeCombobox;
+	private JComboBox<String> alertSystemTypeComboBox;
 	private JScrollPane scrollPane;
 	private GridBagConstraints gbc;
 
@@ -58,6 +61,7 @@ public class AlerterLogPanel
 	private AlerterLogPanel(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.gbc = new GridBagConstraints();
 		
 		initFrame("alertViewPanel");
@@ -162,13 +166,21 @@ public class AlerterLogPanel
 	}
 
 	private void initComboBox() {
-		this.locationCombobox = new JComboBox<String>();
-		locationCombobox.addActionListener(alerterActionListener);
-		this.eventComboBox = new JComboBox<String>();
-		eventComboBox.addActionListener(alerterActionListener);
-
-		buttonPane.add(locationCombobox, BorderLayout.WEST);
-		buttonPane.add(eventComboBox, BorderLayout.WEST);
+		this.geoCodeCombobox = new JComboBox<Item>();
+		geoCodeCombobox.addActionListener(alerterActionListener);
+		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
+		{
+			geoCodeCombobox.addItem(item);
+		}
+		
+		this.alertSystemTypeComboBox = new JComboBox<String>();
+		alertSystemTypeComboBox.addActionListener(alerterActionListener);
+		for (String item : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
+		{
+			alertSystemTypeComboBox.addItem(item);
+		}
+		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
+		buttonPane.add(alertSystemTypeComboBox, BorderLayout.WEST);
 	}
 
 	private void initTextAreaPane() {
@@ -217,17 +229,29 @@ public class AlerterLogPanel
 		}
 	}
 
-	public JComboBox<String> getLocationCombobox() {
-		return this.locationCombobox;
+	public JComboBox<Item> getLocationCombobox() {
+		return geoCodeCombobox;
 	}
 
 	public JComboBox<String> getEventComboBox() {
-		return this.eventComboBox;
+		return alertSystemTypeComboBox;
 	}
 
 
 	public JTextArea getTextArea() {
 		return textArea;
+	}
+
+
+	public String getGeoCode()
+	{
+		return geoCodeCombobox.getSelectedItem().toString();
+	}
+
+
+	public String getAlertSystemType()
+	{
+		return alertSystemTypeComboBox.getSelectedItem().toString();
 	}
 
 }

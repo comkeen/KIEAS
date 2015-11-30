@@ -37,7 +37,7 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		switch (actionCommand)
 		{
 		case "GenerateCap":
-//			controller.generateCap();
+			controller.generateCap();
 			return;			
 		case "Send":
 			controller.sendMessage();

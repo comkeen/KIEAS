@@ -449,10 +449,11 @@ public class KieasMessageBuilder
 		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 				.setIdentifier("Identifier")
 				.setSender("Sender")
-				.setSent("Sent")
+				.setSent(CapUtil.formatCapDate(getDateCalendar()))
 				.setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT)
-				.setScope(Alert.Scope.PUBLIC)
+				.setScope(Alert.Scope.RESTRICTED)
+				.setRestriction("Restriction")
 				.buildPartial();
 
 		this.mInfo = Info.newBuilder()
@@ -556,7 +557,7 @@ public class KieasMessageBuilder
 		{
 			mAlert = capXmlParser.parseFrom(message);
 			return mAlert;
-		} 
+		}
 		catch (NotCapException | SAXParseException | CapException e)
 		{
 			e.printStackTrace();
@@ -1012,7 +1013,7 @@ public class KieasMessageBuilder
 
 	public void setEventCode(String text)
 	{
-		mInfo = Info.newBuilder(mInfo).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("").setValue(text).build()).build();
+		mInfo = Info.newBuilder(mInfo).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(text).build()).build();
 	}
 
 	public void setEffective(GregorianCalendar cal)

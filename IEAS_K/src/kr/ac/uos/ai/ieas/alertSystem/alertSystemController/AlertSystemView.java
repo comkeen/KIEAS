@@ -86,7 +86,7 @@ public class AlertSystemView {
 	private void initAlertPane()
 	{
 		this.alertPane = new JPanel();
-		alertPane.setLayout(new GridBagLayout());		
+		alertPane.setLayout(new GridBagLayout());
 		
 		this.alertArea = new JTextArea(5, 20);
 		this.alertAreaPane = new JScrollPane(alertArea);	
@@ -124,9 +124,9 @@ public class AlertSystemView {
 		
 		this.alertSystemTypeCombobox = new JComboBox<String>();
 		alertSystemTypeCombobox.addItemListener(alertSystemActionListener);		
-		for (String location : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
+		for (String type : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
-			alertSystemTypeCombobox.addItem(location);
+			alertSystemTypeCombobox.addItem(type);
 		}
 	}
 	

@@ -1,11 +1,6 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
-//import java.util.UUID;
-
 
 
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
@@ -113,5 +108,31 @@ public class _AlerterModelManager{
 	public String getMessage()
 	{
 		return message;
+	}
+
+	public void generateCap(String geoCode, String alertSystemType)
+	{
+		String cap = kieasMessageBuilder.buildDefaultMessage();
+		kieasMessageBuilder.setMessage(cap);
+		kieasMessageBuilder.setRestricion(alertSystemType);
+		
+		this.message = kieasMessageBuilder.getMessage();
+		System.out.println("message = " + message);
+		alerterController.setTextArea(message);
+	}
+
+	public String getId()
+	{
+		return kieasMessageBuilder.getIdentifier();
+	}
+
+	public String getEvent()
+	{
+		return kieasMessageBuilder.getEvent(0);
+	}
+
+	public String getAddresses()
+	{
+		return kieasMessageBuilder.getRestriction();
 	}
 }

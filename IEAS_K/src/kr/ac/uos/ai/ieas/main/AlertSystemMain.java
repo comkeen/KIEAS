@@ -8,6 +8,7 @@ public class AlertSystemMain
 	public AlertSystemMain()
 	{
 		new AlertSystemController();
+		new AlertSystemController();
 	}
 	
 	public static void main(String[] args)

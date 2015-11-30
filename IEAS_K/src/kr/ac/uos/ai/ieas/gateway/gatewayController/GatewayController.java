@@ -60,7 +60,6 @@ public class GatewayController {
 
 	public void openGateway()
 	{
-
 		gatewayTransmitter.startConnection();
 		System.out.println("(" + gatewayID + ")" + " Open");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
@@ -98,8 +97,8 @@ public class GatewayController {
 	}
 
 	public void acceptAleterMessage(String message) {
-		sender = gatewayModelManager.getAlertElementMap(message).get("sender");
-		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
+		sender = gatewayModelManager.getAlertElementMap(message).get("Sender");
+		identifier = gatewayModelManager.getAlertElementMap(message).get("Identifier");
 
 		try {
 			System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : ");
@@ -109,11 +108,11 @@ public class GatewayController {
 			gatewayModelManager.addAlertTableRow(message);
 			gatewayModelManager.addAlerterInfoTableRow(message);
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 			this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
 			sendAcknowledge(ackMessage, sender);

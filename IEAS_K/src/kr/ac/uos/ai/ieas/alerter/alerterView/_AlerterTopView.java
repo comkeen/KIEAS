@@ -41,8 +41,8 @@ public class _AlerterTopView
 	 */
 	private _AlerterTopView(AleterViewActionListener alerterActionListener)
 	{
-		this.alerterActionListener = alerterActionListener;
 		initLookAndFeel();
+		this.alerterActionListener = alerterActionListener;
 		this.alerterAlertGeneratePanel = AlerterAlertGeneratePanel.getInstance(alerterActionListener);
 		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
 		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
@@ -53,7 +53,7 @@ public class _AlerterTopView
 	private void initFrame()
 	{
 		this.mainFrame = new JFrame();
-		mainFrame.setSize(1024, 512);
+		mainFrame.setSize(1024, 768);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(alerterActionListener);
@@ -63,11 +63,11 @@ public class _AlerterTopView
 		container.add(mainTabbedPane);
 
 		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
-		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
-		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());
-
 		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
 		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
+		
+		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
+		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());		
 
 		mainFrame.setVisible(true);
 	}
@@ -185,5 +185,20 @@ public class _AlerterTopView
 	public Component getFrame() 
 	{
 		return this.mainFrame;
+	}
+
+	public String getGeoCode()
+	{		
+		return alerterLogPanel.getGeoCode();
+	}
+
+	public String getAlertSystemType() 
+	{
+		return alerterLogPanel.getAlertSystemType();
+	}
+
+	public void setTextArea(String message)
+	{
+		alerterLogPanel.setTextArea(message);
 	}
 }

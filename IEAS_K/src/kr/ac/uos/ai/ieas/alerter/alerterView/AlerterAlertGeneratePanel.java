@@ -107,7 +107,6 @@ public class AlerterAlertGeneratePanel
 	{
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-
 	
 		initPanel();			
 	}
@@ -120,7 +119,7 @@ public class AlerterAlertGeneratePanel
 		
 		alertGeneratePanel.setLayout(new BoxLayout(alertGeneratePanel, BoxLayout.Y_AXIS));
 
-		alertGeneratePanel.add(initButtonPanel());	
+		alertGeneratePanel.add(initButtonPanel());
 		alertGeneratePanel.add(initCapAlertPanel());
 		
 		mViewComponents.addElement(panelComponenets);
@@ -183,7 +182,7 @@ public class AlerterAlertGeneratePanel
 		infoPanel.setBorder(BorderFactory.createEtchedBorder());
 		this.infoIndexPanels = new ArrayList<JPanel>();
 		this.infoComponents = new ArrayList<HashMap<String, Component>>();
-
+		
 		addInfoIndexPanel();
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
@@ -197,15 +196,14 @@ public class AlerterAlertGeneratePanel
 		infoComponents.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		
-		
+				
 		panel.add(addBox(HEADLINE, TEXT_FIELD, map));
 		panel.add(addBox(DESCRIPTION, TEXT_AREA, map));
 		
 		infoComponents.add(map);
 		infoIndexPanels.add(panel);
 		infoPanel.addTab("한국어", infoIndexPanels.get(0));
-		addTabPanel("Add Launguage", infoPanel, 0);
+		addTabPanel("Add Launguage", infoPanel, 1);
 	}	
 	
 	private Component initCapAreaPanel()
@@ -270,6 +268,14 @@ public class AlerterAlertGeneratePanel
 			{
 				for (Item value : kieasMessageBuilder.getCapEnumMap().get(EVENT_CODE))
 				{
+					buttonComboboxModel.addElement(value);
+				}
+			}
+			else if(GEO_CODE.equals(labelName))
+			{
+				for (Item value : kieasMessageBuilder.getCapEnumMap().get(GEO_CODE))
+				{
+					button.setText("지역추가");
 					buttonComboboxModel.addElement(value);
 				}
 			}

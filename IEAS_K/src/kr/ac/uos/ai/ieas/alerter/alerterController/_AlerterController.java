@@ -58,9 +58,8 @@ public class _AlerterController
 
 	public void sendMessage()
 	{
-		//		alerterView.addAlertTableRow(id, event, addresses);
+		alerterTopView.addAlertTableRow(alerterModelManager.getId(), alerterModelManager.getEvent(), alerterModelManager.getAddresses());
 		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
-
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -145,7 +144,7 @@ public class _AlerterController
 	 */
 	public void getQueryResult()
 	{
-		alerterModelManager.getQueryResult("eventCode", alerterTopView.getQuery());		
+		alerterModelManager.getQueryResult("EventCode", alerterTopView.getQuery());		
 	}
 
 	public void loadDraft() 
@@ -199,6 +198,17 @@ public class _AlerterController
 	public void insertDatabase()
 	{
 		System.out.println("insert to database : <<todo>>");
+	}
+
+	public void generateCap()
+	{		
+		alerterModelManager.generateCap(alerterTopView.getGeoCode(), alerterTopView.getAlertSystemType());
+	}
+
+
+	public void setTextArea(String message)
+	{
+		alerterTopView.setTextArea(message);
 	}
 
 }

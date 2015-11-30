@@ -1,7 +1,5 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayController;
 
-import java.util.Date;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -127,7 +125,8 @@ public class GatewayTransmitter
 		}
 	}
 
-	public void sendTopicMessage(String message, String topic) {
+	public void sendTopicMessage(String message, String topic)
+	{
 		try
 		{
 			Destination destination = this.session.createTopic(topic);
@@ -151,25 +150,36 @@ public class GatewayTransmitter
 			MessageConsumer alerterConsumer = session.createConsumer(alerterQueueDestination);
 			Destination alertsystemQueueDestination = session.createQueue(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 			MessageConsumer alertsystemConsumer = session.createConsumer(alertsystemQueueDestination);
-
+			
 			MessageListener listener = new MessageListener()
 			{
 				public void onMessage(Message message)
 				{
-					System.out.println("gateway received message");
 					if (message instanceof TextMessage)
 					{
 						TextMessage textMessage = (TextMessage) message;
 						try 
 						{
-							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
-							{
-								gateway.acceptAleterMessage(textMessage.getText());
-							}
-							else if (message.getJMSDestination().toString().equals("queue://"  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
-							{
-								gateway.acceptAletSystemMessage(textMessage.getText());
-							}
+							System.out.println("gateway received message : " + textMessage.getText());
+							gateway.acceptAleterMessage(textMessage.getText());
+							return;
+							
+//							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
+//							{
+//								gateway.acceptAleterMessage(textMessage.getText());
+//								return;
+//							}
+//							else if (message.getJMSDestination().toString().equals("queue://"  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
+//							{
+//								gateway.acceptAletSystemMessage(textMessage.getText());
+//								return;
+//							}
+//							else
+//							{
+//								gateway.acceptAleterMessage(textMessage.getText());
+//								return;
+//							}
+							
 						}
 						catch (JMSException e)
 						{
