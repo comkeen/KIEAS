@@ -3,6 +3,7 @@ package kr.ac.uos.ai.ieas.db.dbHandler;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +18,10 @@ public class DataFormatUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(datetime);
 	}
+
+//	public static String buildJsonFromElements(String rootName, HashMap<String, String> elements){
+//		
+//	}
 	
 	public static String jsonToXML(String jsonInput) {
 		String xmlContent = null;
