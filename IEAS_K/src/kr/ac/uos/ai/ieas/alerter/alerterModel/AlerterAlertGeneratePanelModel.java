@@ -359,24 +359,9 @@ public class AlerterAlertGeneratePanelModel
 	
 	public String buildCapMessage()
 	{
-		kieasMessageBuilder.setIdentifier("");
-		kieasMessageBuilder.setSender("");
-		kieasMessageBuilder.setSent("");
-		kieasMessageBuilder.setStatus("");
-		kieasMessageBuilder.setMsgType("");
-		kieasMessageBuilder.setScope("");
-		if(hasRestriction)
-		{
-			kieasMessageBuilder.setScope("Restricted");
-		}
-		else
-		{
-			kieasMessageBuilder.setScope("Public");			
-		}
-		if(!hasEnglish)
-		{
-			kieasMessageBuilder.setHeadline("", 1);
-		}
+//		kieasMessageBuilder.setAlert();
+//		kieasMessageBuilder.setInfo();
+//		kieasMessageBuilder.setArea();
 		return message;
 	}
 	

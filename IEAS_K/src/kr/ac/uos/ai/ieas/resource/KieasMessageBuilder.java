@@ -53,8 +53,8 @@ public class KieasMessageBuilder
 
 	private Alert 			mAlert;
 	private Info 			mInfo;
-//	private Resource 		mResource;
-//	private Area 			mArea;
+	private Resource 		mResource;
+	private Area 			mArea;
 	
 	private HashMap<String, ArrayList<Item>> capEnumMap;
 	private String xmlMessage;
@@ -70,6 +70,7 @@ public class KieasMessageBuilder
 
 	public static final String LANGUAGE = "Language";
 	public static final String CATEGORY = "Category";
+	public static final String RESPONSETYPE = "ResponseType";
 	public static final String EVENT = "Event";
 	public static final String URGENCY = "Urgency";
 	public static final String SEVERITY = "Severity";
@@ -175,7 +176,7 @@ public class KieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));	
 		}
-		capEnumMap.put("Status", capEnum1);
+		capEnumMap.put(STATUS, capEnum1);
 		
 		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
@@ -203,7 +204,7 @@ public class KieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));	
 		}
-		capEnumMap.put("MsgType", capEnum2);
+		capEnumMap.put(MSG_TYPE, capEnum2);
 		
 		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
@@ -223,7 +224,7 @@ public class KieasMessageBuilder
 			}
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Scope", capEnum3);	
+		capEnumMap.put(SCOPE, capEnum3);	
 	}
 	
 	private void buildInfoCapEnumMap()
@@ -247,7 +248,7 @@ public class KieasMessageBuilder
 			}
 			else if(value.toString().equals(Info.Category.SECURITY.toString()))
 			{
-				modifiedValue = value.toString() + " (보안)";
+				modifiedValue = value.toString() + " (안보)";
 			}
 			else if(value.toString().equals(Info.Category.RESCUE.toString()))
 			{
@@ -283,7 +284,7 @@ public class KieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Category", capEnum1);
+		capEnumMap.put(CATEGORY, capEnum1);
 		
 		ArrayList<Item> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
@@ -315,7 +316,7 @@ public class KieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Certainty", capEnum2);
+		capEnumMap.put(CERTAINTY, capEnum2);
 		
 		ArrayList<Item> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
@@ -324,7 +325,7 @@ public class KieasMessageBuilder
 			modifiedValue = value.toString();
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("ResponseType", capEnum3);
+		capEnumMap.put(RESPONSETYPE, capEnum3);
 		
 		ArrayList<Item> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
@@ -352,7 +353,7 @@ public class KieasMessageBuilder
 			}
 			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Severity", capEnum4);
+		capEnumMap.put(SEVERITY, capEnum4);
 		
 		ArrayList<Item> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
@@ -380,7 +381,7 @@ public class KieasMessageBuilder
 			}
 			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Urgency", capEnum5);
+		capEnumMap.put(URGENCY, capEnum5);
 		
 		ArrayList<Item> capEnum6 = new ArrayList<>();
 		for (DisasterEventType value : DisasterEventType.values())
@@ -389,7 +390,7 @@ public class KieasMessageBuilder
 			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
 			capEnum6.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("EventCode", capEnum6);
+		capEnumMap.put(EVENT_CODE, capEnum6);
 		
 		ArrayList<Item> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
@@ -405,7 +406,7 @@ public class KieasMessageBuilder
 			}
 			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put("Language", capEnum7);
+		capEnumMap.put(LANGUAGE, capEnum7);
 		
 		ArrayList<Item> capEnum8 = new ArrayList<>();
 		Item item1 = new Item("1100000000", "서울특별시");
@@ -440,16 +441,16 @@ public class KieasMessageBuilder
 		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
 		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
 		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
-		capEnumMap.put("GeoCode", capEnum8);
+		capEnumMap.put(GEO_CODE, capEnum8);
 	}
 	
-	public String buildDefaultMessage() {
-		
+	public String buildDefaultMessage()
+	{		
 		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 				.setIdentifier("Identifier")
 				.setSender("Sender")
 				.setSent("Sent")
-				.setStatus(Alert.Status.EXERCISE)
+				.setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.PUBLIC)
 				.buildPartial();
@@ -533,7 +534,7 @@ public class KieasMessageBuilder
 	{
 		return mAlert.getInfo(index).getAreaCount();
 	}
-	
+		
 	public String getMessage()
 	{
 		try
@@ -768,18 +769,54 @@ public class KieasMessageBuilder
 	}
 	
 
-
 	
 	//CAP 요소 Setter
-	public void setAlert(HashMap<String, String> alertList)
+	public void setAlert(HashMap<String, String> alertElementList)
 	{
-		mAlert = Alert.newBuilder().setIdentifier(alertList.get(IDENTIFIER))
-				.setSender(alertList.get(SENDER))
+		mAlert = Alert.newBuilder()
+				.setIdentifier(alertElementList.get(IDENTIFIER))
+				.setSender(alertElementList.get(SENDER))
 				.setSent(CapUtil.formatCapDate(getDateCalendar()))
-				.setStatus(this.setStatus(alertList.get(IDENTIFIER)))
-				.setMsgType(this.setMsgType(alertList.get(IDENTIFIER)))
-				.setSource(alertList.get(IDENTIFIER))
+				.setStatus(this.setStatus(alertElementList.get(STATUS)))
+				.setMsgType(this.setMsgType(alertElementList.get(MSG_TYPE)))
+				.setScope(this.setScope(alertElementList.get(SCOPE)))
+				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
 				.buildPartial();
+	}
+	
+	public void setInfo(ArrayList<HashMap<String, String>> infoElementList)
+	{
+		mAlert = Alert.newBuilder(mAlert).clearInfo().buildPartial();
+		
+		for(int i = 0; i < infoElementList.size(); i++)
+		{
+			Info info = Info.newBuilder()
+					.setLanguage(infoElementList.get(i).get(LANGUAGE))
+					.setCategory(0, this.setCategory(infoElementList.get(i).get(CATEGORY)))
+					.setEvent(infoElementList.get(i).get(EVENT))
+					.setUrgency(this.setUrgency(infoElementList.get(i).get(URGENCY)))
+					.setSeverity(this.setSeverity(infoElementList.get(i).get(SEVERITY)))
+					.setCertainty(this.setCertainty(infoElementList.get(i).get(CERTAINTY)))
+					.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName(infoElementList.get(i).get(EVENT)).setValue(infoElementList.get(i).get(EVENT)) )
+					.setSenderName(infoElementList.get(i).get(SENDER_NAME))
+					.setHeadline(infoElementList.get(i).get(HEADLINE))
+					.setDescription(infoElementList.get(i).get(DESCRIPTION))
+					.setContact(infoElementList.get(i).get(CONTACT))
+					.buildPartial();
+			mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
+		}
+	}
+	
+	public void setArea(HashMap<String, String> areaElementList)
+	{
+		for(int i = 0; i < areaElementList.size(); i++)
+		{
+			Area area = Area.newBuilder()
+					.setAreaDesc("")
+					.addGeocode(Area.newBuilder().addGeocodeBuilder().setValueName(areaElementList.get(GEO_CODE)).setValue(areaElementList.get(GEO_CODE)))
+					.buildPartial();
+			mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();			
+		}
 	}	
 	
 	public void setIdentifier(String text)
@@ -880,12 +917,12 @@ public class KieasMessageBuilder
 
 	public void setCode(String code) 
 	{
-		mAlert = Alert.newBuilder(mAlert).setCode(0, code).build();
+		mAlert = Alert.newBuilder(mAlert).clearCode().setCode(0, code).build();
 	}
 
-	public void setLanguage(String text)
+	public void setLanguage(String language)
 	{
-		mInfo = Info.newBuilder(mInfo).setLanguage(text).build();
+		mInfo = Info.newBuilder(mInfo).setLanguage(language).build();
 	}
 
 	public Category setCategory(String text)
@@ -975,7 +1012,7 @@ public class KieasMessageBuilder
 
 	public void setEventCode(String text)
 	{
-		mInfo = Info.newBuilder(mInfo).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("?먯뿰?щ궃").setValue(text).build()).build();
+		mInfo = Info.newBuilder(mInfo).setEventCode(0, Info.newBuilder().addEventCodeBuilder().setValueName("").setValue(text).build()).build();
 	}
 
 	public void setEffective(GregorianCalendar cal)
@@ -988,19 +1025,13 @@ public class KieasMessageBuilder
 		mInfo = Info.newBuilder(mInfo).setSenderName(senderName).build();
 	}
 
-	public void setHeadline(String headline) {
+	public void setHeadline(String headline)
+	{
 		mInfo = Info.newBuilder(mInfo).setHeadline(headline).build();
 	}
-	
-	public void setHeadline(String headline, int index)
-	{
-		if(mAlert.getInfo(index) != null)
-		{
-			Info info = Info.newBuilder(mAlert.getInfo(index)).setHeadline(headline).build();			
-		}
-	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description) 
+	{
 		mInfo = Info.newBuilder(mInfo).setDescription(description).build();
 	}
 
@@ -1016,12 +1047,15 @@ public class KieasMessageBuilder
 	
 	
 	
-	private String getValueInJasonObject(String jsonInput) {
-		
-		try {
+	private String getValueInJasonObject(String jsonInput)
+	{		
+		try 
+		{
 			JSONObject jsonObj = new JSONObject(jsonInput);
 			return jsonObj.getString("value");
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 			return null;
 		}

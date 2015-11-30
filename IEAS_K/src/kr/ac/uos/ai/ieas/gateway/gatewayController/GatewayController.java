@@ -1,11 +1,15 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayController;
 
+import javax.swing.JOptionPane;
+
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertSystemInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 public class GatewayController {
 
@@ -15,6 +19,7 @@ public class GatewayController {
 	private GatewayTransmitter gatewayTransmitter;
 	private GatewayView gatewayView;
 	private GatewayModelManager gatewayModelManager;
+	private KieasMessageBuilder kieasMessageBuilder;
 
 	private String gatewayID;
 
@@ -24,6 +29,7 @@ public class GatewayController {
 	private String identifier;
 	private String addresses;
 	private String event;
+
 
 
 	public static GatewayController getInstance()
@@ -42,7 +48,8 @@ public class GatewayController {
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
 		this.gatewayTransmitter = new GatewayTransmitter(this);
-
+		this.kieasMessageBuilder = new KieasMessageBuilder();
+		
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 
 		this.sender = null;
@@ -51,20 +58,23 @@ public class GatewayController {
 		this.event = null;
 	}
 
-	public void openGateway() {
+	public void openGateway()
+	{
 
 		gatewayTransmitter.startConnection();
 		System.out.println("(" + gatewayID + ")" + " Open");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 	}
 
-	public void closeGateway() {
+	public void closeGateway()
+	{
 		gatewayTransmitter.stopConnection();
 		System.out.println("(" + gatewayID + ")" + " Close");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Close");
 	}
 
-	private void sendAcknowledge(String message, String destination) {
+	private void sendAcknowledge(String message, String destination)
+	{
 		gatewayTransmitter.sendQueueMessage(message, destination);
 
 		System.out.println("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
@@ -76,9 +86,9 @@ public class GatewayController {
 		addresses = gatewayModelManager.getAlertElementMap(message).get("addresses");
 		event = gatewayModelManager.getAlertElementMap(message).get("event");
 
-		for (String location : KieasConfiguration.KieasList.LOCATION_LIST) {
-
-			if (addresses.equals(location)) {
+		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
+		{
+			if (addresses.equals(item.getValue())) {
 				gatewayTransmitter.sendTopicMessage(message, addresses);	
 
 				System.out.println("(" + gatewayID + ")" + " Broadcast Message To ("+ addresses +") : ");
@@ -169,5 +179,25 @@ public class GatewayController {
 	
 	public GatewayAlertSystemInfoTableModel getAlertSystemInfoTableModel() {
 		return gatewayModelManager.getAlertSystemInfoTableModel();
+	}
+
+	public void systemExit()
+	{
+		String question = "통합게이트웨이 프로그램을 종료하시겠습니까?";
+		String title = "프로그램 종료";
+		
+		if (JOptionPane.showConfirmDialog(gatewayView.getFrame(),
+			question,
+			title,
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+	    {	
+			gatewayTransmitter.closeConnection();
+	        System.exit(0);
+	    }
+		else
+		{
+			System.out.println("cancel exit program");
+		}
 	}
 }

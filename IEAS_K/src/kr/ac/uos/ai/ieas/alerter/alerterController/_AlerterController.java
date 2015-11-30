@@ -103,7 +103,7 @@ public class _AlerterController
 			title,
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
-	    {	
+	    {
 			alerterTransmitter.closeConnection();
 	        System.exit(0);
 	    }

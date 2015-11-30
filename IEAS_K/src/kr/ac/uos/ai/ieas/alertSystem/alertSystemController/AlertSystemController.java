@@ -4,35 +4,47 @@ import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
-public class AlertSystemController {
-
+public class AlertSystemController
+{
 	private KieasMessageBuilder ieasMessage;
 	private AlertSystemTransmitter alertSystemTransmitter;
 	private AlertSystemView alertSystemView;
 
 	private String alertSystemID;
-	private String location;
+	private String geoCode;
 	private String ackMessage;
 
-	public AlertSystemController()  {		
-
-		this.alertSystemID = "alertSystem-Jeju-V2";
-		this.location = "Jeju";
-		
+	public AlertSystemController()
+	{		
 		this.ieasMessage = new KieasMessageBuilder();
-		this.alertSystemTransmitter = new AlertSystemTransmitter(this, location);		
-		this.alertSystemView = new AlertSystemView(this, alertSystemID);
+		this.alertSystemTransmitter = new AlertSystemTransmitter(this);
+		this.alertSystemView = new AlertSystemView(this);
+		
+		init();
+	}
+	
+	private void init()
+	{
+		this.alertSystemID = "alertSystem@aaa.bbb.ccc.ddd";
+		this.geoCode = "5000000000";
+		
+		alertSystemView.setAlertSystemId(alertSystemID);	
+		alertSystemTransmitter.setGeoCodeTopicListener(geoCode);
+		alertSystemTransmitter.setAlertSystemTypeTopicListener(alertSystemID);
 	}
 
-	public void sendAckMessage(String message, String destination) {
+	public void sendAckMessage(String message, String destination)
+	{
 		ackMessage = createAckMessage(message);
 		alertSystemTransmitter.sendMessage(ackMessage, destination);
 
 		System.out.println("(" + alertSystemID + ")" + " Send Message to " + "(gateway) : ");
 	}
 
-	public void acceptMessage(String message) {
-		try {
+	public void acceptMessage(String message) 
+	{
+		try
+		{
 			ieasMessage.setMessage(message);
 
 			String sender = ieasMessage.getSender();
@@ -43,14 +55,16 @@ public class AlertSystemController {
 			alertSystemView.setTextArea(message);
 			Thread.sleep(1000);
 			sendAckMessage(message, KieasConfiguration.KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
-			
-		} catch (Exception e) {
+		}
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
 
 	}
 	
-	private String createAckMessage(String message) {
+	private String createAckMessage(String message)
+	{
 		ieasMessage.setMessage(message);
 		
 		ieasMessage.setAddresses(ieasMessage.getSender());
@@ -61,15 +75,23 @@ public class AlertSystemController {
 		return ieasMessage.getMessage();
 	}
 
-	public String getID() {		
+	public String getID()
+	{		
 		return this.alertSystemID;
 	}
 
-	public void selectTopic(String topic) {
-		alertSystemTransmitter.selectTopic(topic);		
+	public void selectTopic(String topic)
+	{
+		alertSystemTransmitter.selectTopic(topic);
 	}
 
-	public String getLocation() {
-		return location;
+	public String getLocation()
+	{
+		return geoCode;
+	}
+
+	public void closeConnection()
+	{
+		alertSystemTransmitter.closeConnection();
 	}
 }

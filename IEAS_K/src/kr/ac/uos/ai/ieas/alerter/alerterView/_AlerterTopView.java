@@ -2,11 +2,9 @@ package kr.ac.uos.ai.ieas.alerter.alerterView;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -55,7 +53,7 @@ public class _AlerterTopView
 	private void initFrame()
 	{
 		this.mainFrame = new JFrame();
-		mainFrame.setSize(1200, 900);
+		mainFrame.setSize(1024, 512);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(alerterActionListener);

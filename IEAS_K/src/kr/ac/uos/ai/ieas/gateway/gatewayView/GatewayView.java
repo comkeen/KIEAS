@@ -1,5 +1,6 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayView;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 
@@ -62,8 +63,9 @@ public class GatewayView {
 		frame.setSize(1024, 512);
 		frame.setPreferredSize(new Dimension(400,200));
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(gatewayActionListener);
+		
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
@@ -109,5 +111,10 @@ public class GatewayView {
 
 	public GatewayAlertSystemInfoTableModel getAlertSystemInfoTableModel() {
 		return gatewayController.getAlertSystemInfoTableModel();
+	}
+
+	public Component getFrame() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

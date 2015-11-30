@@ -21,8 +21,8 @@ public class KieasConfiguration {
 	{
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://localhost:61616";
 //		protected static String ACTIVEMQ_SERVER_IP = "tcp://127.0.0.1:61616";
-		public final static String ACTIVEMQ_SERVER_IP = "tcp://192.168.0.7:61616"; //home window
-//		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.196:61616"; //host window
+//		public final static String ACTIVEMQ_SERVER_IP = "tcp://192.168.0.7:61616"; //home window
+		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.135:61616"; //host window
 //		public final static String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.173:61616"; //vm window
 		
 		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
@@ -90,12 +90,6 @@ public class KieasConfiguration {
 			"ko-KR",
 			"us-EN"
 		};
-
-		public static final String[] LOCATION_LIST = 
-		{
-			"location1",
-			"location2"
-		};	
 	}	
 }
 
