@@ -18,6 +18,10 @@ import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 
 public class CAPDBUtils
 {	
+	
+	private static String SEARCH_ALERT_EID = "SELECT `alert_eid` from `alert` WHERE "
+			+ "(identifier=? and sender=? and sent=?);";
+	
 	public CAPDBUtils()
 	{
 		
@@ -406,6 +410,30 @@ public class CAPDBUtils
 		}
 	}
 	
+	protected int getAlertEidByObject(CAPAlert alert) {
+		DataTransaction transaction = new DataTransaction(true);
+		Connection conn = transaction.connection;
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(CAPDBUtils.SEARCH_ALERT_EID);
+			pstmt.setString(1, alert.getIdentifier());
+			pstmt.setString(2, alert.getSender());
+			pstmt.setString(3, DataFormatUtils.convertDateObjectType(alert.getSent()));
+			
+			ResultSet rs = pstmt.executeQuery();
+			BeanProcessor bpAlert = new BeanProcessor();
+			while(rs.next()) {
+				CAPAlert result = bpAlert.toBean(rs, CAPAlert.class);
+				return result.getAlert_eid();
+			};
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return 0;
+	}
 	
 	private ArrayList<CAPAlert> buildFullCap(ArrayList<CAPAlert> alertList,	ArrayList<CAPInfo> infoList, ArrayList<CAPResource> resList, ArrayList<CAPArea> areaList)
 	{

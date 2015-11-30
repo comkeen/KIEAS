@@ -13,6 +13,11 @@ public class DataFormatUtils {
 	private DataFormatUtils() {
 	}
 
+	public static String convertDateObjectType(java.util.Date datetime) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(datetime);
+	}
+	
 	public static String jsonToXML(String jsonInput) {
 		String xmlContent = null;
 		try {

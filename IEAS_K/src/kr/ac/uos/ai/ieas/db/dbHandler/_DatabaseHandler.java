@@ -20,7 +20,7 @@ public class _DatabaseHandler {
 		this.capDbUtils = new CAPDBUtils();
 		this.searchResult = new ArrayList<CAPAlert>();		
 	}
-
+	
 	public ArrayList<CAPAlert> getQueryResult(String target, String value)
 	{
 		switch (target)
@@ -45,5 +45,6 @@ public class _DatabaseHandler {
 		}		
 
 		return searchResult;
-	}	
+	}
+	
 }
