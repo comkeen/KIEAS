@@ -18,6 +18,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/GoogleDrive/lib/apache-activemq-5.12.1/activemq-all-5.12.1.jar"/>
+	<classpathentry kind="lib" path="lib/activemq-all-5.12.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -169,7 +169,6 @@ public class CAPDBUtils
 	public ArrayList<CAPAlert> searchCAPsByStatus(String status)
 	{
 		String query = "select * from alert where status=?";
-		//System.out.println("ecode = " + ecode);
 		try
 		{
 			DataTransaction transaction = new DataTransaction(true);
@@ -293,13 +292,12 @@ public class CAPDBUtils
 		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
 		
 		String infoQuery = "SELECT * FROM info WHERE info_eid in " + alertIdList;
+		System.out.println(infoQuery);
 		
 		try
 		{
 			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
-					
-//			System.out.println("alertList 완료");
 			
 			Statement stmtInfo = conn.createStatement();
 			ResultSet rsInfo = stmtInfo.executeQuery(infoQuery);

@@ -32,20 +32,16 @@ public class AlertSystemTransmitter
 	public AlertSystemTransmitter(AlertSystemController alertSystem)
 	{
 		this.alertSystem = alertSystem;
-		this.geoCode = "";
-		this.alertSystemType = "";
-
-		openConnection();
 	}
 
-	private void openConnection()
+	public void openConnection()
 	{
 		try
 		{
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KieasAddress.ACTIVEMQ_SERVER_IP);
 			this.connection = factory.createConnection();
-			this.connection.start();
-			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			connection.start();
+			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		}
 		catch (Exception ex) 
 		{
@@ -54,7 +50,18 @@ public class AlertSystemTransmitter
 		setGeoCodeTopicListener(geoCode);
 		setAlertSystemTypeTopicListener(alertSystemType);
 	}
+	
+	public void setGeoCode(String geoCode)
+	{
+		this.geoCode = geoCode;
+	}
 
+	public void setAlertSystemType(String alertSystemType)
+	{
+		this.alertSystemType = alertSystemType;
+	}
+
+	
 	public void closeConnection()
 	{
 		try
@@ -75,7 +82,7 @@ public class AlertSystemTransmitter
 	{
 		try
 		{
-			Destination queueDestination = this.session.createQueue(destination);
+			Destination queueDestination = session.createQueue(destination);
 			this.producer = this.session.createProducer(queueDestination);
 			this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
@@ -89,14 +96,16 @@ public class AlertSystemTransmitter
 		}
 	}
 
-	public void setGeoCodeTopicListener(String location)
+	public void setGeoCodeTopicListener(String topic)
 	{
 		try
 		{
-			Destination destination = this.session.createTopic(location);
+			System.out.println("topic : " + topic);
+			Destination destination = session.createTopic(topic);
 			this.geoCodeConsumer = session.createConsumer(destination);
+			
 			MessageListener listener = new MessageListener()
-			{				
+			{
 				public void onMessage(Message message)
 				{
 					if (message instanceof TextMessage)
@@ -121,15 +130,16 @@ public class AlertSystemTransmitter
 			e.printStackTrace();
 		}
 	}
-
-	public void setAlertSystemTypeTopicListener(String alertSystemType)
+	
+	public void setAlertSystemTypeTopicListener(String topic)
 	{
 		try
 		{
-			Destination destination = this.session.createTopic(alertSystemType);
-			this.alertSystemTypeConsumer = session.createConsumer(destination);
+			Destination alertSystemTypeDestination = this.session.createTopic(topic);
+			this.alertSystemTypeConsumer = session.createConsumer(alertSystemTypeDestination);
+			
 			MessageListener listener = new MessageListener()
-			{				
+			{
 				public void onMessage(Message message)
 				{
 					if (message instanceof TextMessage)
@@ -154,18 +164,36 @@ public class AlertSystemTransmitter
 			e.printStackTrace();
 		}
 	}
-	
-	public void selectTopic(String topic)
-	{
-		try 
+
+	public void selectGeoCodeTopic(String topic)
+	{	
+		try
 		{
+			session.close();
 			session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("Creating session with topic: " + topic);
-			setGeoCodeTopicListener(topic);
+			System.out.println("Creating session with topic : " + topic);
+
+			setGeoCodeTopicListener(topic);	
 		}
 		catch (JMSException e)
 		{
 			e.printStackTrace();
-		}	
+		}		
+	}
+	
+	public void selectAlertSystemTypeTopic(String topic)
+	{	
+		try
+		{
+			session.close();
+			session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			System.out.println("Creating session with topic : " + topic);
+
+			setAlertSystemTypeTopicListener(topic);	
+		}
+		catch (JMSException e)
+		{
+			e.printStackTrace();
+		}		
 	}
 }

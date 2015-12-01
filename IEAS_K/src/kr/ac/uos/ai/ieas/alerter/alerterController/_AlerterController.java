@@ -150,7 +150,7 @@ public class _AlerterController
 
 	public void loadDraft() 
 	{
-		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", alerterTopView.getQuery()));
+		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", "Draft"));
 	}
 
 	/**

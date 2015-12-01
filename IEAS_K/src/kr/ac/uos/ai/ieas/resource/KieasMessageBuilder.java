@@ -486,8 +486,15 @@ public class KieasMessageBuilder
 	}
 
 	public void build()
-	{		
-		mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();
+	{	
+		if(mInfo != null)
+		{
+			mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();			
+		}
+		else
+		{
+			mAlert = Alert.newBuilder(mAlert).build();
+		}
 	}	
 
 	private GregorianCalendar getDateCalendar()
@@ -692,12 +699,19 @@ public class KieasMessageBuilder
 	{
 		try
 		{
-			return mAlert.getInfo(index).getEvent();
+			if(mAlert.getInfo(index).getEvent() != null)
+			{
+				return mAlert.getInfo(index).getEvent();				
+			}
+			else
+			{
+				return "";
+			}
 		}
 		catch (NotCapException e)
 		{
 			e.printStackTrace();
-			return null;
+			return "";
 		}
 	}
 

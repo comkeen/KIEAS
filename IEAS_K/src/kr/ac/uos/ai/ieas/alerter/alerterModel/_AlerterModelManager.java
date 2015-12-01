@@ -68,6 +68,7 @@ public class _AlerterModelManager{
 			
 	public ArrayList<String> getQueryResult(String target, String query)
 	{	
+		System.out.println("getQuery target, query : " + target + " " + query);
 		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
 		
 		switch (target)

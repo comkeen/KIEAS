@@ -150,8 +150,7 @@ public class GatewayTransmitter
 	{
 		try
 		{
-			Destination alerterQueueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-			System.out.println("alerterToGateway Dest : " + alerterQueueDestination);
+			Destination alerterQueueDestination = session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 			this.alerterConsumer = session.createConsumer(alerterQueueDestination);
 			Destination alertsystemQueueDestination = session.createQueue(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 			this.alertsystemConsumer = session.createConsumer(alertsystemQueueDestination);

@@ -13,12 +13,16 @@ public class AlertSystemController
 	private String alertSystemID;
 	private String geoCode;
 	private String ackMessage;
+	
+	public static final String GEO_CODE = "GeoCode";
+	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
+	
 
 	public AlertSystemController()
 	{		
 		this.ieasMessage = new KieasMessageBuilder();
-		this.alertSystemTransmitter = new AlertSystemTransmitter(this);
 		this.alertSystemView = new AlertSystemView(this);
+		this.alertSystemTransmitter = new AlertSystemTransmitter(this);
 		
 		init();
 	}
@@ -26,11 +30,12 @@ public class AlertSystemController
 	private void init()
 	{
 		this.alertSystemID = "alertSystem@aaa.bbb.ccc.ddd";
-		this.geoCode = "5000000000";
 		
 		alertSystemView.setAlertSystemId(alertSystemID);	
-		alertSystemTransmitter.setGeoCodeTopicListener(geoCode);
-		alertSystemTransmitter.setAlertSystemTypeTopicListener(alertSystemID);
+		
+		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
+		alertSystemTransmitter.setAlertSystemType(alertSystemView.getSelectedAlertSystemType());
+		alertSystemTransmitter.openConnection();
 	}
 
 	public void sendAckMessage(String message, String destination)
@@ -80,9 +85,23 @@ public class AlertSystemController
 		return this.alertSystemID;
 	}
 
-	public void selectTopic(String topic)
+	public void selectTopic(String target, String topic)
 	{
-		alertSystemTransmitter.selectTopic(topic);
+		switch (target)
+		{
+		case GEO_CODE:
+		{
+			alertSystemTransmitter.selectGeoCodeTopic(topic);
+			break;
+		}
+		case ALERT_SYSTEM_TYPE:
+		{
+			alertSystemTransmitter.selectAlertSystemTypeTopic(topic);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 
 	public String getLocation()

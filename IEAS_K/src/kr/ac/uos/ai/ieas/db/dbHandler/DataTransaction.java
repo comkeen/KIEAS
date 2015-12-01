@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
+
+
 public class DataTransaction
 {
 	private static final String username = "root";
 	private static final String password = "dlsrhdwlsmd";
-	private static final String url = "jdbc:mysql://172.16.165.135:3306/capkorean?useUnicode=true& useUnicode=true&characterEncoding=euc_kr";
+	private static final String urlPostfix = "/capkorean?useUnicode=true& useUnicode=true&characterEncoding=euc_kr";
 	public Connection connection = null;
 	public static int connectionCount = 0;
 
@@ -28,6 +31,8 @@ public class DataTransaction
 
 	public void setConnectionTest() throws SQLException
 	{
+		System.out.println("db connection start");
+		String url = KieasAddress.DATABASE_SERVER_IP + urlPostfix;
 		try
 		{
 			if (dataSource == null)

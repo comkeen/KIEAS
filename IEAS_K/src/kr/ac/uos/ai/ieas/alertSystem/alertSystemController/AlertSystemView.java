@@ -5,6 +5,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -37,13 +40,11 @@ public class AlertSystemView {
 	
 	private JComboBox<Item> geoCodeCombobox;
 	private JComboBox<String> alertSystemTypeCombobox;
-
-	private String alertSystemId;
 	
 	
-	public AlertSystemView(AlertSystemController alertSystem)
+	public AlertSystemView(AlertSystemController alertSystemController)
 	{		
-		this.controller = alertSystem;
+		this.controller = alertSystemController;
 		this.alertSystemActionListener = new AlertSystemActionListener(this);
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
@@ -115,19 +116,33 @@ public class AlertSystemView {
 	
 	private void initComboBox()
 	{
-		this.geoCodeCombobox = new JComboBox<Item>();
-		geoCodeCombobox.addItemListener(alertSystemActionListener);		
+		Vector<Item> comboboxModel = new Vector<>();	
 		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
 		{
-			geoCodeCombobox.addItem(item);
-		}
+			comboboxModel.addElement(item);
+		}		
+		this.geoCodeCombobox = new JComboBox<>(comboboxModel);
+		geoCodeCombobox.addItemListener(new ItemListener()
+		{
+	        public void itemStateChanged(ItemEvent e)
+	        {
+	        	controller.selectTopic(AlertSystemController.GEO_CODE, e.getItem().toString());
+	        }
+	    });
 		
-		this.alertSystemTypeCombobox = new JComboBox<String>();
-		alertSystemTypeCombobox.addItemListener(alertSystemActionListener);		
+		Vector<String> comboboxModel2 = new Vector<>();		
 		for (String type : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
-			alertSystemTypeCombobox.addItem(type);
+			comboboxModel2.addElement(type);
 		}
+		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel2);
+		alertSystemTypeCombobox.addItemListener(new ItemListener()
+		{
+	        public void itemStateChanged(ItemEvent e)
+	        {
+	        	controller.selectTopic(AlertSystemController.ALERT_SYSTEM_TYPE, e.getItem().toString());
+	        }
+	    });
 	}
 	
 	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)
@@ -145,14 +160,8 @@ public class AlertSystemView {
 		alertArea.setText(message);	
 	}
 
-	public void selectTopic(String topic)
-	{
-		controller.selectTopic(topic);
-	}
-
 	public void setAlertSystemId(String alertSystemId)
 	{
-		this.alertSystemId = alertSystemId;
 		frame.setTitle(alertSystemId);
 	}
 
@@ -174,5 +183,15 @@ public class AlertSystemView {
 		{
 			System.out.println("cancel exit program");
 		}
+	}
+
+	public String getSelectedGeoCode()
+	{		
+		return geoCodeCombobox.getSelectedItem().toString();
+	}
+
+	public String getSelectedAlertSystemType()
+	{
+		return alertSystemTypeCombobox.getSelectedItem().toString();
 	}
 }
