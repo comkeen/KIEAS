@@ -31,16 +31,19 @@ public class GatewayAlertSystemInfoTableModel {
 		this.tableModel = new DefaultTableModel(columnNames.toArray(), 0);
 	}
 
-	public void addTableRowData(HashMap<String, String> alertElementMap) {
-		for(int i=0; i<tableModel.getRowCount(); i++) {
-			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get("sender"))){
+	public void addTableRowData(HashMap<String, String> alertElementMap)
+	{
+		for(int i=0; i<tableModel.getRowCount(); i++)
+		{
+			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(GatewayModelManager.SENDER)))
+			{
 				return;
 			}
 		}
 		
 		alertSystemCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alertSystemCount));
-		rowData.set(1, alertElementMap.get("sender"));
+		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
 
 		tableModel.addRow(rowData.toArray());
 	}

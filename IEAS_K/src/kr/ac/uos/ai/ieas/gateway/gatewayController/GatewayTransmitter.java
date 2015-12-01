@@ -164,24 +164,21 @@ public class GatewayTransmitter
 						TextMessage textMessage = (TextMessage) message;
 						try 
 						{
-							System.out.println("gateway received message : " + textMessage.getText());
-							controller.acceptAleterMessage(textMessage.getText());
-												
-//							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
-//							{
-//								gateway.acceptAleterMessage(textMessage.getText());
-//								return;
-//							}
-//							else if (message.getJMSDestination().toString().equals("queue://"  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
-//							{
-//								gateway.acceptAletSystemMessage(textMessage.getText());
-//								return;
-//							}
-//							else
-//							{
-//								gateway.acceptAleterMessage(textMessage.getText());
-//								return;
-//							}
+							if (message.getJMSDestination().toString().equals("queue://" + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
+							{
+								controller.acceptAleterMessage(textMessage.getText());
+								return;
+							}
+							else if (message.getJMSDestination().toString().equals("queue://"  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
+							{
+								controller.acceptAletSystemMessage(textMessage.getText());
+								return;
+							}
+							else
+							{
+								controller.acceptAleterMessage(textMessage.getText());
+								return;
+							}
 							
 						}
 						catch (JMSException e)

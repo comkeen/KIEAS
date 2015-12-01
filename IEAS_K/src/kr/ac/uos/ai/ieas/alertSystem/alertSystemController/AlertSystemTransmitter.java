@@ -47,7 +47,7 @@ public class AlertSystemTransmitter
 		{
 			ex.printStackTrace();
 		}
-		setGeoCodeTopicListener(geoCode);
+//		setGeoCodeTopicListener(geoCode);
 		setAlertSystemTypeTopicListener(alertSystemType);
 	}
 	
@@ -100,7 +100,6 @@ public class AlertSystemTransmitter
 	{
 		try
 		{
-			System.out.println("topic : " + topic);
 			Destination destination = session.createTopic(topic);
 			this.geoCodeConsumer = session.createConsumer(destination);
 			
@@ -135,6 +134,7 @@ public class AlertSystemTransmitter
 	{
 		try
 		{
+			System.out.println("Creating session with topic : " + topic);
 			Destination alertSystemTypeDestination = this.session.createTopic(topic);
 			this.alertSystemTypeConsumer = session.createConsumer(alertSystemTypeDestination);
 			
@@ -171,7 +171,6 @@ public class AlertSystemTransmitter
 		{
 			session.close();
 			session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("Creating session with topic : " + topic);
 
 			setGeoCodeTopicListener(topic);	
 		}
@@ -187,7 +186,6 @@ public class AlertSystemTransmitter
 		{
 			session.close();
 			session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("Creating session with topic : " + topic);
 
 			setAlertSystemTypeTopicListener(topic);	
 		}

@@ -45,6 +45,8 @@ public class AlertTableModel
 
 	public void addTableRowData(HashMap<String, String> alertElementMap)
 	{
+		System.out.println("addTableRow message : ");
+		
 		alertCount = tableModel.getRowCount() + 1;
 		rowData.set(0, Integer.toString(alertCount));
 		rowData.set(1, alertElementMap.get(_AlerterModelManager.SENDER));

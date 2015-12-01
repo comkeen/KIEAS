@@ -58,16 +58,16 @@ public class GatewayModelManager
 		String sent = "sent";
 		String event = "event";
 		String restriction = "restriction";
-		String geoCode = "geoCode";
-		//		String ack = "ack";
+//		String geoCode = "geoCode";
+//		String ack = "ack";
 
 		alertElementMap.put(SENDER, sender);
 		alertElementMap.put(IDENTIFIER, identifier);
 		alertElementMap.put(SENT, sent);
 		alertElementMap.put(EVENT, event);
 		alertElementMap.put(RESTRICTION, restriction);
-		alertElementMap.put(GEO_CODE, geoCode);
-		//		alertElementMap.put(ACK, ack);
+//		alertElementMap.put(GEO_CODE, geoCode);
+//		alertElementMap.put(ACK, ack);
 	}
 
 	public GatewayAlertTableModel getAlertTableModel()
@@ -100,7 +100,7 @@ public class GatewayModelManager
 		{
 			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());			
 		}
-		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
+//		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
 		return alertElementMap;
 	}

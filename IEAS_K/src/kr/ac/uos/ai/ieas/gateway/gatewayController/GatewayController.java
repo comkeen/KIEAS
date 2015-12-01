@@ -7,11 +7,11 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 
 public class GatewayController {
+
 
 	private static GatewayController gatewayController;
 
@@ -29,6 +29,7 @@ public class GatewayController {
 	private String alertSystemType;
 	private String event;
 
+	private static final long DELAY = 1000;
 
 	public static GatewayController getInstance()
 	{
@@ -77,7 +78,7 @@ public class GatewayController {
 		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
 		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
 		
-		String log = "(" + gatewayID + ")" + " Received Message From (" + sender + ") : ";
+		String log = "(" + gatewayID + ")" + " Received Message From Alerter (" + sender + ") : ";
 		System.out.println(log);
 		gatewayView.appendLog(log + identifier);
 
@@ -97,10 +98,42 @@ public class GatewayController {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void acceptAletSystemMessage(String message)
+	{
+		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);	
+		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
+		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("addresses");
+
+		try 
+		{
+			String log = "(" + gatewayID + ")" + " Received Message From AlertSystem : " + identifier;
+			System.out.println(log);
+			gatewayView.appendLog(log);
+
+			gatewayModelManager.addAlertSystemInfoTableRow(message);
+			
+			sendAcknowledge(message, sender);
+			gatewayModelManager.receiveAck(identifier);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}	
 
 	private void sendAcknowledge(String message, String destination)
 	{
+		try
+		{
+			Thread.sleep(DELAY);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
 		gatewayTransmitter.sendQueueMessage(message, destination);
 
 		String log = "(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ";
@@ -123,30 +156,6 @@ public class GatewayController {
 				System.out.println(log);
 				gatewayView.appendLog(log + event);
 			}
-		}
-	}
-
-	public void acceptAletSystemMessage(String message)
-	{
-		sender = gatewayModelManager.getAlertElementMap(message).get("sender");
-		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
-		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("addresses");
-
-		try 
-		{
-			String log = "(" + gatewayID + ")" + " Received Message From (" + sender + ") : " + identifier;
-			System.out.println(log);
-			gatewayView.appendLog(log);
-
-			gatewayModelManager.addAlertSystemInfoTableRow(message);
-			
-			sendAcknowledge(message, alertSystemType);
-			gatewayModelManager.receiveAck(identifier);
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 

@@ -111,9 +111,9 @@ public class AlertSystemView {
 		initComboBox();
 		JButton clearButton = new JButton("Clear");
 		clearButton.addActionListener(alertSystemActionListener);
-		
-		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
+
 		buttonPane.add(alertSystemTypeCombobox, BorderLayout.WEST);
+//		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
 		buttonPane.add(clearButton, BorderLayout.WEST);
 		
 		alertPane.add(buttonPane, gbc);
@@ -121,26 +121,12 @@ public class AlertSystemView {
 	
 	private void initComboBox()
 	{
-		Vector<Item> comboboxModel = new Vector<>();	
-		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
-		{
-			comboboxModel.addElement(item);
-		}		
-		this.geoCodeCombobox = new JComboBox<>(comboboxModel);
-		geoCodeCombobox.addItemListener(new ItemListener()
-		{
-	        public void itemStateChanged(ItemEvent e)
-	        {
-	        	controller.selectTopic(AlertSystemController.GEO_CODE, e.getItem().toString());
-	        }
-	    });
-		
-		Vector<String> comboboxModel2 = new Vector<>();		
+		Vector<String> comboboxModel1 = new Vector<>();		
 		for (String type : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
-			comboboxModel2.addElement(type);
+			comboboxModel1.addElement(type);
 		}
-		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel2);
+		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel1);
 		alertSystemTypeCombobox.addItemListener(new ItemListener()
 		{
 	        public void itemStateChanged(ItemEvent e)
@@ -148,6 +134,20 @@ public class AlertSystemView {
 	        	controller.selectTopic(AlertSystemController.ALERT_SYSTEM_TYPE, e.getItem().toString());
 	        }
 	    });
+		
+//		Vector<Item> comboboxModel2 = new Vector<>();	
+//		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
+//		{
+//			comboboxModel2.addElement(item);
+//		}		
+//		this.geoCodeCombobox = new JComboBox<>(comboboxModel2);
+//		geoCodeCombobox.addItemListener(new ItemListener()
+//		{
+//	        public void itemStateChanged(ItemEvent e)
+//	        {
+//	        	controller.selectTopic(AlertSystemController.GEO_CODE, e.getItem().toString());
+//	        }
+//	    });		
 	}
 	
 	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)

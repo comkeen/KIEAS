@@ -1,6 +1,8 @@
 package kr.ac.uos.ai.ieas.alertSystem.alertSystemController;
 
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 
 
 public class AlertSystemController
@@ -16,6 +18,8 @@ public class AlertSystemController
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 	
+	public static final long DELAY = 1000;
+	
 
 	public AlertSystemController()
 	{		
@@ -28,21 +32,13 @@ public class AlertSystemController
 	
 	private void init()
 	{
-		this.alertSystemID = "alertSystem@aaa.bbb.ccc.ddd";
+		this.alertSystemID = KieasName.STANDARD_ALERT_SYSTEM;
 		
 		alertSystemView.setAlertSystemId(alertSystemID);	
 		
-		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
+//		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
 		alertSystemTransmitter.setAlertSystemType(alertSystemView.getSelectedAlertSystemType());
 		alertSystemTransmitter.openConnection();
-	}
-
-	public void sendAckMessage(String message, String destination)
-	{
-		ackMessage = createAckMessage(message);
-		alertSystemTransmitter.sendMessage(ackMessage, destination);
-
-		System.out.println("(" + alertSystemID + ")" + " Send Message to " + "(gateway) : ");
 	}
 
 	public void acceptMessage(String message) 
@@ -57,13 +53,29 @@ public class AlertSystemController
 			System.out.println();
 			
 			alertSystemView.setTextArea(message);
-//			sendAckMessage(message, KieasConfiguration.KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+			sendAckMessage(message, KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
+	}
 
+	public void sendAckMessage(String message, String destination)
+	{		
+		try
+		{
+			Thread.sleep(DELAY);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+
+		ackMessage = createAckMessage(message);
+		alertSystemTransmitter.sendMessage(ackMessage, destination);
+
+		System.out.println("(" + alertSystemID + ")" + " Send Message to Gateway :");
 	}
 	
 	private String createAckMessage(String message)

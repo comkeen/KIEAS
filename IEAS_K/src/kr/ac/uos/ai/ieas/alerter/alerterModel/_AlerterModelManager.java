@@ -156,6 +156,13 @@ public class _AlerterModelManager{
 	{
 		return kieasMessageBuilder.getIdentifier();
 	}
+	
+	public String generateIdentifier()
+	{
+		String identifier = "identifier";
+		
+		return identifier;
+	}
 
 	public String getEvent()
 	{
@@ -174,7 +181,6 @@ public class _AlerterModelManager{
 
 	public void addAlertTableRow()
 	{
-		System.out.println("addTableRow message = " + message);
 		kieasMessageBuilder.setMessage(message);
 		alertTableModel.addTableRowData(getAlertElementMap(message));
 		
@@ -193,7 +199,7 @@ public class _AlerterModelManager{
 		{
 			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());			
 		}
-		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
+//		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
 		return alertElementMap;
 	}
