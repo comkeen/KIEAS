@@ -110,7 +110,8 @@ public class GatewayController {
 	{
 		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("Restriction");
 		event = gatewayModelManager.getAlertElementMap(message).get("Event");
-
+		System.out.println("alertSystemType " + alertSystemType);
+		System.out.println("event " + event);
 		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.EVENT_CODE))
 		{
 			if (alertSystemType.equals(item.getValue()))
