@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -108,8 +109,12 @@ public class AlertSystemView {
 		this.buttonPane = new JPanel();
 		
 		initComboBox();
+		JButton clearButton = new JButton("Clear");
+		clearButton.addActionListener(alertSystemActionListener);
+		
 		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
 		buttonPane.add(alertSystemTypeCombobox, BorderLayout.WEST);
+		buttonPane.add(clearButton, BorderLayout.WEST);
 		
 		alertPane.add(buttonPane, gbc);
 	}

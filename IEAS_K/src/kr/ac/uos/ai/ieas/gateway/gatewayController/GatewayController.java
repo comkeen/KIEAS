@@ -9,6 +9,7 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasName;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
@@ -74,8 +75,8 @@ public class GatewayController {
 
 	public void acceptAleterMessage(String message)
 	{
-		sender = gatewayModelManager.getAlertElementMap(message).get("Sender");
-		identifier = gatewayModelManager.getAlertElementMap(message).get("Identifier");
+		sender = gatewayModelManager.getAlertElementMap(message).get("sender");
+		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
 		System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : ");
 		System.out.println();
 		gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
@@ -86,7 +87,7 @@ public class GatewayController {
 			gatewayModelManager.addAlerterInfoTableRow(message);
 
 			this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
-			sendAcknowledge(ackMessage, sender);
+//			sendAcknowledge(ackMessage, sender);
 
 			broadcastMessage(message);
 
@@ -100,7 +101,7 @@ public class GatewayController {
 
 	private void sendAcknowledge(String message, String destination)
 	{
-//		gatewayTransmitter.sendQueueMessage(message, destination);
+		gatewayTransmitter.sendQueueMessage(message, destination);
 
 		System.out.println("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
 		gatewayView.appendLog("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
@@ -108,13 +109,13 @@ public class GatewayController {
 
 	private void broadcastMessage(String message)
 	{
-		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("Restriction");
-		event = gatewayModelManager.getAlertElementMap(message).get("Event");
+		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("restriction");
+		event = gatewayModelManager.getAlertElementMap(message).get("event");
 		System.out.println("alertSystemType " + alertSystemType);
 		System.out.println("event " + event);
-		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.EVENT_CODE))
+		for (String item : KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
-			if (alertSystemType.equals(item.getValue()))
+			if (item.equals(alertSystemType))
 			{
 				gatewayTransmitter.sendTopicMessage(message, alertSystemType);	
 
@@ -124,13 +125,14 @@ public class GatewayController {
 		}
 	}
 
-	public void acceptAletSystemMessage(String message) {
-
+	public void acceptAletSystemMessage(String message)
+	{
 		sender = gatewayModelManager.getAlertElementMap(message).get("sender");
 		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
 		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("addresses");
 
-		try {
+		try 
+		{
 			System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
 			gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
 			System.out.println();
@@ -140,37 +142,45 @@ public class GatewayController {
 			sendAcknowledge(message, alertSystemType);
 			gatewayModelManager.receiveAck(identifier);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	public void clearLog() {
+	public void clearLog()
+	{
 		gatewayView.clearLog();
 	}
 
-	public GatewayAlertTableModel getAlertTableModel() {
-
+	public GatewayAlertTableModel getAlertTableModel()
+	{
 		return gatewayModelManager.getAlertTableModel();
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return gatewayID;
 	}
 
-	public String getAlertMessage(String identifier) {
+	public String getAlertMessage(String identifier)
+	{
 		return gatewayModelManager.getAlertMessage(identifier);
 	}
 
-	public void selectTableEvent() {
+	public void selectTableEvent()
+	{
 		gatewayView.selectTableEvent();
 	}
 
-	public GatewayAlerterInfoTableModel getAlerterInfoTableModel() {
+	public GatewayAlerterInfoTableModel getAlerterInfoTableModel()
+	{
 		return gatewayModelManager.getAlerterInfoTableModel();
 	}
 	
-	public GatewayAlertSystemInfoTableModel getAlertSystemInfoTableModel() {
+	public GatewayAlertSystemInfoTableModel getAlertSystemInfoTableModel()
+	{
 		return gatewayModelManager.getAlertSystemInfoTableModel();
 	}
 

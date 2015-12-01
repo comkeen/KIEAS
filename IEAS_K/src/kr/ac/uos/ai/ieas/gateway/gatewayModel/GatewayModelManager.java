@@ -45,34 +45,36 @@ public class GatewayModelManager
 		String identifier = "identifier";
 		String sent = "sent";
 		String event = "event";
-//		String addresses = "addresses";
+		String restriction = "restriction";
 		String ack = "ack";
 		
 		alertElementMap.put(sender, sender);
 		alertElementMap.put(identifier, identifier);
 		alertElementMap.put(sent, sent);
 		alertElementMap.put(event, event);
-//		alertElementMap.put(addresses, addresses);
+		alertElementMap.put(restriction, restriction);
 		alertElementMap.put(ack, ack);
 	}
 		
-	public GatewayAlertTableModel getAlertTableModel() {
-		
+	public GatewayAlertTableModel getAlertTableModel()
+	{		
 		return alertTableModel;
 	}
 	
-	public void receiveAck(String identifier) {
+	public void receiveAck(String identifier)
+	{
 		alertTableModel.receiveAck(identifier);
 	}
 	
-	public HashMap<String, String> getAlertElementMap(String message) {
-		
+	public HashMap<String, String> getAlertElementMap(String message)
+	{
 		ieasMessage.setMessage(message);
 
 		alertElementMap.replace("sender", ieasMessage.getSender());
 		alertElementMap.replace("identifier", ieasMessage.getIdentifier());
+		alertElementMap.replace("sent", ieasMessage.getSent());
 		alertElementMap.replace("event", ieasMessage.getEvent(0));
-//		alertElementMap.replace("addresses", ieasMessage.getAddresses());
+		alertElementMap.replace("restriction", ieasMessage.getRestriction());
 		alertElementMap.replace("sent", ieasMessage.getSent());
 
 		return alertElementMap;
@@ -80,15 +82,18 @@ public class GatewayModelManager
 
 
 	
-	public void putAlertMessageMap(String key, String message) {
+	public void putAlertMessageMap(String key, String message)
+	{
 		alertMessageMap.put(key, message);
 	}
 	
-	public String getAlertMessage(String identifier) {
+	public String getAlertMessage(String identifier)
+	{
 		return alertMessageMap.get(identifier);
 	}
 	
-	public HashMap<String, String> getAlertMessageMap() {
+	public HashMap<String, String> getAlertMessageMap()
+	{
 		return alertMessageMap;
 	}
 	

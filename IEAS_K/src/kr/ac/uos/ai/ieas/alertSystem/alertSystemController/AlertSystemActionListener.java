@@ -16,9 +16,12 @@ public class AlertSystemActionListener implements ActionListener, WindowListener
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent event)
+	public void actionPerformed(ActionEvent e)
 	{
-
+		if(e.getActionCommand().equals("Clear"))
+		{
+			view.setTextArea("");
+		}
 	}
 
 	@Override
