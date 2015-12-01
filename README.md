@@ -10,6 +10,9 @@
 
 * 우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
 
+#### [ 2015 공통경보프로토콜 기술설명회 ] ####
+ * [기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)
+
 
 #### [ CAP/EDXL 표준 (외부 링크) ] ####
 
