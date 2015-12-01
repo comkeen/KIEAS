@@ -26,8 +26,7 @@ public class _DatabaseHandler {
 	public void insertCap(CAPAlert alert)
 	{
 		capDbInsertUtils.insertCAP(alert);
-	}
-	
+	}	
 	
 	public ArrayList<CAPAlert> getQueryResult(String target, String value)
 	{
@@ -41,7 +40,8 @@ public class _DatabaseHandler {
 					searchResult = capDbUtils.searchCAPsByEventType(disasterEventType);					
 				}
 			}
-			for (CAPAlert capAlert : searchResult) {
+			for (CAPAlert capAlert : searchResult)
+			{
 				System.out.println(capAlert.getStatus());
 			}
 			break;

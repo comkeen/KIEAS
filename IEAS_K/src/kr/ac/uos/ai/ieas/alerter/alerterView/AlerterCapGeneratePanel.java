@@ -25,7 +25,6 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 public class AlerterCapGeneratePanel
 {
-	private static AlerterCapGeneratePanel alerterCapElementPanel;
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
 
@@ -79,17 +78,8 @@ public class AlerterCapGeneratePanel
 	public static final String INFO_INDEX = "InfoIndex";
 	private static final int BASE_LINE = 100;
 
-	
-	public static AlerterCapGeneratePanel getInstance(AleterViewActionListener alerterActionListener)
-	{
-		if (alerterCapElementPanel == null)
-		{
-			alerterCapElementPanel = new AlerterCapGeneratePanel(alerterActionListener);
-		}
-		return alerterCapElementPanel;
-	}
 
-	private AlerterCapGeneratePanel(AleterViewActionListener alerterActionListener)
+	public AlerterCapGeneratePanel(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();

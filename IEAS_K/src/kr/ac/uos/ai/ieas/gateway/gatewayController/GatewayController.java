@@ -8,10 +8,8 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.IeasName;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
-import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
-import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 
 public class GatewayController {
 
@@ -21,7 +19,6 @@ public class GatewayController {
 	private GatewayTransmitter gatewayTransmitter;
 	private GatewayView gatewayView;
 	private GatewayModelManager gatewayModelManager;
-	private KieasMessageBuilder kieasMessageBuilder;
 
 	private String gatewayID;
 
@@ -44,42 +41,45 @@ public class GatewayController {
 
 	private GatewayController()
 	{
-		this.gatewayID = KieasConfiguration.IeasName.GATEWAY_NAME;
+		this.gatewayID = KieasName.GATEWAY_NAME;
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
-		this.gatewayTransmitter = new GatewayTransmitter(this);
-		this.kieasMessageBuilder = new KieasMessageBuilder();
-		
+		this.gatewayTransmitter = new GatewayTransmitter(this);		
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 
 		this.sender = "";
 		this.identifier = "";
-		this.alertSystemType = "";
 		this.event = "";
+		this.alertSystemType = "";
 	}
 
 	public void openGateway()
 	{
 		gatewayTransmitter.startConnection();
-		System.out.println("(" + gatewayID + ")" + " Open");
-		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
+		
+		String log = "(" + gatewayID + ")" + " Open";
+		System.out.println(log);
+		gatewayView.appendLog(log);
 	}
 
 	public void closeGateway()
 	{
 		gatewayTransmitter.stopConnection();
-		System.out.println("(" + gatewayID + ")" + " Close");
-		gatewayView.appendLog("(" + gatewayID + ")" + " Close");
+		
+		String log = "(" + gatewayID + ")" + " Close";
+		System.out.println(log);
+		gatewayView.appendLog(log);
 	}
 
 	public void acceptAleterMessage(String message)
 	{
-		sender = gatewayModelManager.getAlertElementMap(message).get("sender");
-		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
-		System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : ");
-		System.out.println();
-		gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
+		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
+		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
+		
+		String log = "(" + gatewayID + ")" + " Received Message From (" + sender + ") : ";
+		System.out.println(log);
+		gatewayView.appendLog(log + identifier);
 
 		try 
 		{
@@ -87,7 +87,7 @@ public class GatewayController {
 			gatewayModelManager.addAlerterInfoTableRow(message);
 
 			this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
-//			sendAcknowledge(ackMessage, sender);
+			sendAcknowledge(ackMessage, sender);
 
 			broadcastMessage(message);
 
@@ -103,24 +103,25 @@ public class GatewayController {
 	{
 		gatewayTransmitter.sendQueueMessage(message, destination);
 
-		System.out.println("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
-		gatewayView.appendLog("(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ");
+		String log = "(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ";
+		System.out.println(log);
+		gatewayView.appendLog(log);
 	}
 
 	private void broadcastMessage(String message)
 	{
-		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("restriction");
-		event = gatewayModelManager.getAlertElementMap(message).get("event");
-		System.out.println("alertSystemType " + alertSystemType);
-		System.out.println("event " + event);
+		alertSystemType = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.RESTRICTION);
+		event = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.EVENT);
+		
 		for (String item : KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
 			if (item.equals(alertSystemType))
 			{
 				gatewayTransmitter.sendTopicMessage(message, alertSystemType);	
 
-				System.out.println("(" + gatewayID + ")" + " Broadcast Message To ("+ alertSystemType +") : ");
-				gatewayView.appendLog("(" + gatewayID + ")" + " Broadcast Message To ("+ alertSystemType +") : "+event);
+				String log = "(" + gatewayID + ")" + " Broadcast Message To ("+ alertSystemType +") : ";
+				System.out.println(log);
+				gatewayView.appendLog(log + event);
 			}
 		}
 	}
@@ -133,9 +134,9 @@ public class GatewayController {
 
 		try 
 		{
-			System.out.println("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
-			gatewayView.appendLog("(" + gatewayID + ")" + " Received Message From (" + sender + ") : "+ identifier);
-			System.out.println();
+			String log = "(" + gatewayID + ")" + " Received Message From (" + sender + ") : " + identifier;
+			System.out.println(log);
+			gatewayView.appendLog(log);
 
 			gatewayModelManager.addAlertSystemInfoTableRow(message);
 			

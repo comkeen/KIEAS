@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -40,6 +39,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 			controller.generateCap();
 			return;			
 		case "Send":
+			controller.sendMessage();
+			return;
+		case "TextAreaSend":
 			controller.sendMessage();
 			return;
 		case "Load Cap":

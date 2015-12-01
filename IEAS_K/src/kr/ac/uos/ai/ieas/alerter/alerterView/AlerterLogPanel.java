@@ -10,10 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
@@ -21,53 +20,39 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 public class AlerterLogPanel 
 {
-	private static AlerterLogPanel alerterViewPanel;
+	private _AlerterTopView alerterTopView;
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
-
-	private JButton generateCapButton;
-	private JButton messageSendButton;
+	private GridBagConstraints gbc;
 
 	private JPanel logPanel;
 	private JPanel buttonPane;
 	private JScrollPane textAreaPane;
 	private JTextArea textArea;
+	
+	private JButton generateCapButton;
+	private JButton messageSendButton;
+	private JButton textAreaMessageSendButton;
+	
 	private JComboBox<Item> geoCodeCombobox;
 	private JComboBox<String> alertSystemTypeComboBox;
-	private JScrollPane scrollPane;
-	private GridBagConstraints gbc;
 
+	private JScrollPane tableScrollPane;
+	private AlertTableModel alertTableModel;
 	private JTable alertTable;
-	private DefaultTableModel alertModel;
-
-	private String capMessage;
-	private int alertCount;
-	private String[] rowData;
-	private String[] columnNames;
-	private JButton textAreaMessageSendButton;
-	private JButton connectServerButton;
 	
-
-	public static AlerterLogPanel getInstance(AleterViewActionListener alerterActionListener) 
-	{
-		if (alerterViewPanel == null)
-		{
-			alerterViewPanel = new AlerterLogPanel(alerterActionListener);
-		}
-		return alerterViewPanel;
-	}
-
 	
-	private AlerterLogPanel(AleterViewActionListener alerterActionListener)
+	public AlerterLogPanel(_AlerterTopView topView, AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;
+		this.alerterTopView = topView;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.gbc = new GridBagConstraints();
 		
 		initFrame("alertViewPanel");
 	}
 	
-	public JPanel getLogPanel()
+	public JPanel getPanel()
 	{
 		return this.logPanel;
 	}
@@ -78,8 +63,7 @@ public class AlerterLogPanel
 	}
 
 	private void initFrame(String name)
-	{
-		
+	{		
 		this.logPanel = new JPanel();
 		logPanel.setLayout(new GridBagLayout());
 
@@ -98,7 +82,8 @@ public class AlerterLogPanel
 		this.initComboBox();
 	}
 
-	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
+	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)
+	{
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.gridwidth = gridwidth;
@@ -107,43 +92,20 @@ public class AlerterLogPanel
 		gbc.weighty = weighty;
 	}
 
-	private void initTable() {
+	private void initTable()
+	{
+		this.alertTableModel = alerterTopView.getAlertTableModel();
+		this.alertTable = new JTable(alertTableModel.getTableModel());
+		this.tableScrollPane = new JScrollPane(alertTable);
+		
+		alertTable.setEnabled(true);
+		alertTable.getSelectionModel().addListSelectionListener(alerterActionListener);
 
-		alertCount = 1;
-
-		initColumnNames();
-
-		alertModel = new DefaultTableModel(columnNames, 0);
-
-		this.alertTable = new JTable(alertModel);
-		this.scrollPane = new JScrollPane(alertTable);
-
-		this.initRowData();
-
-		logPanel.add(scrollPane, gbc);
+		logPanel.add(tableScrollPane, gbc);
 	}
 
-	private void initColumnNames() {
-
-		this.columnNames = new String[5];
-		columnNames[0] = "No.";
-		columnNames[1] = "MessageID";
-		columnNames[2] = "Event";
-		columnNames[3] = "TartgetArea";
-		columnNames[4] = "Ack";
-	}
-
-	private void initRowData() {
-
-		rowData = new String[5];
-		rowData[0] = "no-string";
-		rowData[1] = "MessgaeID-string";
-		rowData[2] = "Event-string";
-		rowData[3] = "Location-string";
-		rowData[4] = "Ack-string{NACK,GWAY,COMP}";
-	}
-
-	private void initButtonPane() {
+	private void initButtonPane()
+	{
 		this.buttonPane = new JPanel();
 
 		this.generateCapButton = new JButton("GenerateCap");
@@ -158,14 +120,15 @@ public class AlerterLogPanel
 		textAreaMessageSendButton.addActionListener(alerterActionListener);
 		buttonPane.add(textAreaMessageSendButton, BorderLayout.EAST);
 		
-		this.connectServerButton = new JButton("ConnectServer");
-		connectServerButton.addActionListener(alerterActionListener);
-		buttonPane.add(connectServerButton, BorderLayout.EAST);
+//		this.connectServerButton = new JButton("ConnectServer");
+//		connectServerButton.addActionListener(alerterActionListener);
+//		buttonPane.add(connectServerButton, BorderLayout.EAST);m,./>
 
 		logPanel.add(buttonPane, gbc);
 	}
 
-	private void initComboBox() {
+	private void initComboBox()
+	{
 		this.geoCodeCombobox = new JComboBox<Item>();
 		geoCodeCombobox.addActionListener(alerterActionListener);
 		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
@@ -183,7 +146,8 @@ public class AlerterLogPanel
 		buttonPane.add(alertSystemTypeComboBox, BorderLayout.WEST);
 	}
 
-	private void initTextAreaPane() {
+	private void initTextAreaPane()
+	{
 		this.textArea = new JTextArea(20, 20);
 		this.textAreaPane = new JScrollPane(textArea);	
 
@@ -192,48 +156,28 @@ public class AlerterLogPanel
 		logPanel.add(textAreaPane, gbc);
 	}
 
-	public void setTextArea(String message) {
+	public void setTextArea(String message)
+	{
 		textArea.setText(message);
 	}
-
-
-	public void addAlertTableRow(String id, String event, String addresses) {
-		rowData[0] = Integer.toString(alertCount++);
-		rowData[1] = id;
-		rowData[2] = event;
-		rowData[3] = addresses;
-		rowData[4] = "NACK";
-
-		alertModel.addRow(rowData);
-	}
-
-	public void receiveGatewayAck(String identifier) {
-		for(int i=0;i<alertModel.getRowCount();i++) {
-			if(alertModel.getValueAt(i, 4).toString().equals("NACK")) {
-				if(alertModel.getValueAt(i, 1).toString().equals(identifier)) {
-					alertModel.setValueAt("GWAY", i, 4);
-					return;
-				}
-			}
+	
+	public void setDataTextArea()
+	{
+		if(alertTable.getSelectedRow() > -1)
+		{
+			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();
+			String message = alerterTopView.getAlertMessage(identifier);
+			textArea.setText(message);
 		}
 	}
 
-	public void receiveAlertSystemAck(String identifier) {
-		for(int i=0;i<alertModel.getRowCount();i++) {
-			if(alertModel.getValueAt(i, 4).toString().equals("GWAY")) {
-				if(alertModel.getValueAt(i, 1).toString().equals(identifier)) {
-					alertModel.setValueAt("COMP", i, 4);
-					return;
-				}
-			}
-		}
-	}
-
-	public JComboBox<Item> getLocationCombobox() {
+	public JComboBox<Item> getLocationCombobox()
+	{
 		return geoCodeCombobox;
 	}
 
-	public JComboBox<String> getEventComboBox() {
+	public JComboBox<String> getEventComboBox()
+	{
 		return alertSystemTypeComboBox;
 	}
 

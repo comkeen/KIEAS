@@ -1,10 +1,8 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayView;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -13,10 +11,8 @@ import javax.swing.JTextArea;
 import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayActionListener;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 
-public class GatewayDataPane {
-	
-	private static GatewayDataPane gatewayDataPane;
-
+public class GatewayDataPane
+{	
 	private GatewayView gatewayView;
 	private GatewayActionListener gatewayActionListener;
 	private GatewayAlertTableModel alertTableModel;
@@ -26,7 +22,6 @@ public class GatewayDataPane {
 	private JPanel dataPane;
 	private JPanel dataButtonPane;
 
-	private JButton testTableButton;
 	private JTextArea dataTextArea;
 	private JScrollPane dataTextAreaPane;
 
@@ -34,17 +29,8 @@ public class GatewayDataPane {
 	private JTable alertTable;
 
 
-
-	public static GatewayDataPane getInstance(GatewayView gatewayView, GatewayActionListener gatewayActionListener) {
-		if (gatewayDataPane == null) {
-
-			gatewayDataPane = new GatewayDataPane(gatewayView, gatewayActionListener);
-		}
-		return gatewayDataPane;
-	}
-
-	private GatewayDataPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener) {
-		
+	public GatewayDataPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener)
+	{		
 		this.gatewayActionListener = gatewayActionListener;
 		this.gatewayView = gatewayView;
 		this.gbc = new GridBagConstraints();
@@ -52,12 +38,13 @@ public class GatewayDataPane {
 		initDataPane();
 	}
 	
-	public JPanel getDataPane() {
+	public JPanel getDataPane()
+	{
 		return dataPane;
 	}
 	
-	private void initDataPane() {
-
+	private void initDataPane()
+	{
 		this.dataPane = new JPanel();
 		dataPane.setLayout(new GridBagLayout());
 		gbc.anchor = GridBagConstraints.SOUTH;
@@ -75,7 +62,8 @@ public class GatewayDataPane {
 		initDataTextAreaPane();
 	}
 	
-	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
+	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)
+	{
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.gridwidth = gridwidth;
@@ -84,18 +72,19 @@ public class GatewayDataPane {
 		gbc.weighty = weighty;
 	}
 	
-	private void initDataButtonPane() {
+	private void initDataButtonPane()
+	{
 		this.dataButtonPane = new JPanel();
 		
-		this.testTableButton = new JButton("TestTable");
-		testTableButton.addActionListener(gatewayActionListener);
-
-		dataButtonPane.add(testTableButton, BorderLayout.WEST);
+//		this.testTableButton = new JButton("TestTable");
+//		testTableButton.addActionListener(gatewayActionListener);
+//		dataButtonPane.add(testTableButton, BorderLayout.WEST);
 
 		dataPane.add(dataButtonPane, gbc);
 	}
 
-	private void initDataTextAreaPane() {
+	private void initDataTextAreaPane()
+	{
 		this.dataTextArea = new JTextArea(5, 20);
 		this.dataTextAreaPane = new JScrollPane(dataTextArea);
 
@@ -104,8 +93,8 @@ public class GatewayDataPane {
 		dataPane.add(dataTextAreaPane, gbc);
 	}
 	
-	private void initDataTable() {
-
+	private void initDataTable()
+	{
 		this.alertTableModel = gatewayView.getAlertTableModel();
 		this.alertTable = new JTable(alertTableModel.getTableModel());
 		this.tableScrollPane = new JScrollPane(alertTable);
@@ -115,16 +104,20 @@ public class GatewayDataPane {
 		dataPane.add(tableScrollPane, gbc);
 	}
 
-	public void setDataTextArea() {
-		if(alertTable.getSelectedRow() > -1) {
+	public void setDataTextArea()
+	{
+		if(alertTable.getSelectedRow() > -1)
+		{
 			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();
 			String message = gatewayView.getAlertMessage(identifier);
 			dataTextArea.setText(message);
 		}
 	}
 	
-	public boolean isAlertTableSelected() {
-		if(alertTable.getSelectedRow() > -1) {
+	public boolean isAlertTableSelected()
+	{
+		if(alertTable.getSelectedRow() > -1)
+		{
 			return true;
 		}
 		return false;

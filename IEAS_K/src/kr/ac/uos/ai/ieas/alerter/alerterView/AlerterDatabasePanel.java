@@ -19,9 +19,8 @@ import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
-public class AlerterDatabasePanel {
-	
-	private static AlerterDatabasePanel alerterDataPane;	
+public class AlerterDatabasePanel
+{		
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
 	private GridBagConstraints gbc;
@@ -42,18 +41,9 @@ public class AlerterDatabasePanel {
 	private HashMap<String, String> alertMessageMap;
 	
 	private JTextField queryTextField;
+	
 
-
-	public static AlerterDatabasePanel getInstance(AleterViewActionListener alerterActionListener)
-	{
-		if (alerterDataPane == null)
-		{
-			alerterDataPane = new AlerterDatabasePanel(alerterActionListener);
-		}
-		return alerterDataPane;
-	}
-
-	private AlerterDatabasePanel(AleterViewActionListener alerterActionListener)
+	public AlerterDatabasePanel(AleterViewActionListener alerterActionListener)
 	{		
 		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();

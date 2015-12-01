@@ -43,9 +43,14 @@ public class GatewayView
 
 	private GatewayView(GatewayController gatewayController, GatewayActionListener gatewayActionListener)
 	{
-		this.gatewayActionListener = gatewayActionListener;
-		this.gatewayController = gatewayController;
 		initLookAndFeel();
+		this.gatewayActionListener = gatewayActionListener;
+		this.gatewayController = gatewayController;		
+
+		this.gatewayLogPane = new GatewayLogPane(gatewayActionListener);
+		this.gatewayDataPane = new GatewayDataPane(this, gatewayActionListener);
+		this.gatewayInfoPane = new GatewayInfoPane(this, gatewayActionListener);
+		
 		initFrame(gatewayController.getName());
 	}
 
@@ -74,13 +79,8 @@ public class GatewayView
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
 
-		this.gatewayLogPane = GatewayLogPane.getInstance(gatewayActionListener);
-		mainTabbedPane.addTab("경보로그", gatewayLogPane.getLogPane());
-		
-		this.gatewayDataPane = GatewayDataPane.getInstance(this, gatewayActionListener);		
-		mainTabbedPane.addTab("경보메시지", gatewayDataPane.getDataPane());
-		
-		this.gatewayInfoPane = GatewayInfoPane.getInstance(this, gatewayActionListener);		
+		mainTabbedPane.addTab("경보로그", gatewayLogPane.getLogPane());				
+		mainTabbedPane.addTab("경보메시지", gatewayDataPane.getDataPane());				
 		mainTabbedPane.addTab("정보", gatewayInfoPane.getInfoPane());
 	}
 

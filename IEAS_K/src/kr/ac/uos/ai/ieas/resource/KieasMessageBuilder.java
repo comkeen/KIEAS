@@ -787,7 +787,14 @@ public class KieasMessageBuilder
 
 	public String getGeoCode(int infoIndex, int index)
 	{
-		return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();
+		if(mArea != null)
+		{
+			return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();			
+		}
+		else
+		{
+			return "";
+		}
 	}
 
 

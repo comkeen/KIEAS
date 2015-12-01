@@ -11,6 +11,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
+import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 
 
 public class _AlerterTopView
@@ -19,6 +21,7 @@ public class _AlerterTopView
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
 
+	private _AlerterController controller;
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AlerterDatabasePanel alerterDatabasePanel;
@@ -26,11 +29,11 @@ public class _AlerterTopView
 	private AleterViewActionListener alerterActionListener;
 
 	
-	public static _AlerterTopView getInstance(AleterViewActionListener alerterActionListener)
+	public static _AlerterTopView getInstance(_AlerterController controller, AleterViewActionListener alerterActionListener)
 	{
 		if (alerterTopView == null)
 		{
-			alerterTopView = new _AlerterTopView(alerterActionListener);
+			alerterTopView = new _AlerterTopView(controller, alerterActionListener);
 		}
 		return alerterTopView;
 	}
@@ -39,13 +42,15 @@ public class _AlerterTopView
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	private _AlerterTopView(AleterViewActionListener alerterActionListener)
+	private _AlerterTopView(_AlerterController controller, AleterViewActionListener alerterActionListener)
 	{
 		initLookAndFeel();
+		this.controller = controller;
 		this.alerterActionListener = alerterActionListener;
-		this.alerterAlertGeneratePanel = AlerterAlertGeneratePanel.getInstance(alerterActionListener);
-		this.alerterCapGeneratePanel = AlerterCapGeneratePanel.getInstance(alerterActionListener);
-		this.alerterDatabasePanel = AlerterDatabasePanel.getInstance(alerterActionListener);
+		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
+		this.alerterCapGeneratePanel = new AlerterCapGeneratePanel(alerterActionListener);
+		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
+		this.alerterDatabasePanel = new AlerterDatabasePanel(alerterActionListener);
 
 		initFrame();
 	}
@@ -63,9 +68,7 @@ public class _AlerterTopView
 		container.add(mainTabbedPane);
 
 		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
-		this.alerterLogPanel = AlerterLogPanel.getInstance(alerterActionListener);
-		mainTabbedPane.addTab("경보로그", alerterLogPanel.getLogPanel());
-		
+		mainTabbedPane.addTab("경보로그", alerterLogPanel.getPanel());		
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
 		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());		
 
@@ -81,21 +84,6 @@ public class _AlerterTopView
 		{
 			e.printStackTrace();
 		}
-	}
-
-	public void receiveGatewayAck(String identifier)
-	{
-		alerterLogPanel.receiveGatewayAck(identifier);
-	}
-
-	public void receiveAlertSystemAck(String identifier)
-	{
-		alerterLogPanel.receiveAlertSystemAck(identifier);		
-	}
-
-	public void addAlertTableRow(String id, String event, String addresses)
-	{
-		alerterLogPanel.addAlertTableRow(id, event, addresses);		
 	}
 
 	public void applyAlertElement()
@@ -129,7 +117,8 @@ public class _AlerterTopView
 		alerterCapGeneratePanel.addResourceIndexPanel();
 	}
 	
-	public void addAreaIndexPanel() {
+	public void addAreaIndexPanel()
+	{
 		alerterCapGeneratePanel.addAreaIndexPanel();
 	}	
 	
@@ -160,7 +149,6 @@ public class _AlerterTopView
 		case "AlerterDatabasePanel":
 			alerterDatabasePanel.getQueryResult(value);
 			break;
-
 		default:
 			System.out.println("there is no such a view " + view);
 			break;
@@ -200,5 +188,15 @@ public class _AlerterTopView
 	public void setTextArea(String message)
 	{
 		alerterLogPanel.setTextArea(message);
+	}
+	
+	public AlertTableModel getAlertTableModel()
+	{
+		return controller.getAlertTableModel();
+	}
+
+	public String getAlertMessage(String identifier)
+	{
+		return controller.getAlertMessage(identifier);
 	}
 }

@@ -5,7 +5,7 @@ public class KieasConfiguration
 {	
 	public final static String PACKAGE_NAME 				= "kieas.";
 		
-	public static class IeasName 
+	public static class KieasName 
 	{
 		public final static String GATEWAY_NAME 			= PACKAGE_NAME + "gateway";
 		public final static String STANDARD_ALERTER 		= PACKAGE_NAME + "standardAlerter";

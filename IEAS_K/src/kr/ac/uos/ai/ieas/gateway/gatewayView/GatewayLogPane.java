@@ -12,10 +12,8 @@ import javax.swing.JTextArea;
 
 import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayActionListener;
 
-public class GatewayLogPane {
-	
-	private static GatewayLogPane gatewayLogPane;
-
+public class GatewayLogPane
+{
 	private GatewayActionListener gatewayActionListener;
 	
 	private JPanel logPane;
@@ -29,29 +27,23 @@ public class GatewayLogPane {
 	private JButton openGatewayButton;
 	private JButton closeGatewayButton;
 	private JButton clearLogButton;
-	
 
-	public static GatewayLogPane getInstance(GatewayActionListener gatewayActionListener) {
-		if (gatewayLogPane == null) {
 
-			gatewayLogPane = new GatewayLogPane(gatewayActionListener);
-		}
-		return gatewayLogPane;
-	}
-
-	private GatewayLogPane(GatewayActionListener gatewayActionListener) {
-		
+	public GatewayLogPane(GatewayActionListener gatewayActionListener)
+	{		
 		this.gatewayActionListener = gatewayActionListener;
 		this.gbc = new GridBagConstraints();
 
 		initGatewayLogPane();
 	}
 	
-	public JPanel getLogPane() {
+	public JPanel getLogPane()
+	{
 		return logPane;
 	}
 	
-	private void initGatewayLogPane() {
+	private void initGatewayLogPane()
+	{
 		this.logPane = new JPanel();
 		logPane.setLayout(new GridBagLayout());
 		gbc.anchor = GridBagConstraints.SOUTH;
@@ -65,7 +57,8 @@ public class GatewayLogPane {
 		initLogTextAreaPane();
 	}
 	
-	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
+	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)
+	{
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.gridwidth = gridwidth;
@@ -75,7 +68,8 @@ public class GatewayLogPane {
 	}
 	
 
-	private void initLogTextAreaPane() {
+	private void initLogTextAreaPane()
+	{
 		this.logTextArea = new JTextArea(5, 20);
 		this.logTextAreaPane = new JScrollPane(logTextArea);
 
@@ -84,7 +78,8 @@ public class GatewayLogPane {
 		logPane.add(logTextAreaPane, gbc);
 	}
 	
-	private void initLogButtonPane() {
+	private void initLogButtonPane()
+	{
 		this.logButtonPane = new JPanel();
 
 		this.openGatewayButton = new JButton("OpenGateway");
@@ -103,16 +98,19 @@ public class GatewayLogPane {
 		logPane.add(logButtonPane, gbc);
 	}
 
-	public void setLogTextArea(String message) {
+	public void setLogTextArea(String message)
+	{
 		logTextArea.setText(message);
 	}
 
-	public void appendLog(String text) {
+	public void appendLog(String text)
+	{
 		logTextArea.append(new Date().toString() + " : " + text+"\n");
 		logTextAreaPane.getVerticalScrollBar().setValue(logTextAreaPane.getVerticalScrollBar().getMaximum());
 	}
 
-	public void clearLog() {
+	public void clearLog() 
+	{
 		logTextArea.setText("");
 	}
 }

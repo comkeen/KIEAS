@@ -15,12 +15,13 @@ public class GatewayAlerterInfoTableModel {
 	private int alerterCount;
 
 
-	public GatewayAlerterInfoTableModel() {
-
+	public GatewayAlerterInfoTableModel()
+	{
 		initTable();
 	}
 
-	private void initTable() {
+	private void initTable()
+	{
 		this.columnNames = new ArrayList<String>();
 
 		columnNames.add("No.");
@@ -31,21 +32,24 @@ public class GatewayAlerterInfoTableModel {
 		this.tableModel = new DefaultTableModel(columnNames.toArray(), 0);
 	}
 
-	public void addTableRowData(HashMap<String, String> alertElementMap) {
-		for(int i=0; i<tableModel.getRowCount(); i++) {
-			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get("sender"))){
+	public void addTableRowData(HashMap<String, String> alertElementMap)
+	{
+		for(int i = 0; i < tableModel.getRowCount(); i++)
+		{
+			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(GatewayModelManager.SENDER))){
 				return;
 			}
 		}
 		
 		alerterCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alerterCount));
-		rowData.set(1, alertElementMap.get("sender"));
+		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
 
 		tableModel.addRow(rowData.toArray());
 	}
 
-	public DefaultTableModel getTableModel() {		
+	public DefaultTableModel getTableModel()
+	{		
 		return tableModel;
 	}
 }

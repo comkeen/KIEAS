@@ -11,10 +11,8 @@ import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayActionListener;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertSystemInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 
-public class GatewayInfoPane {
-
-	private static GatewayInfoPane gatewayInfoPane;
-
+public class GatewayInfoPane
+{
 	private GatewayActionListener gatewayActionListener;
 	private GatewayView gatewayView;
 	private GridBagConstraints gbc;
@@ -32,29 +30,23 @@ public class GatewayInfoPane {
 	private JTable alertSystemInfoTable;
 
 	private JScrollPane alertSystemInfoTableScrollPane;
-	
-	
-	public static GatewayInfoPane getInstance(GatewayView gatewayView, GatewayActionListener gatewayActionListener) {
-		if (gatewayInfoPane == null) {
-
-			gatewayInfoPane = new GatewayInfoPane(gatewayView, gatewayActionListener);
-		}
-		return gatewayInfoPane;
-	}
 
 
-	private GatewayInfoPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener) {
+	public GatewayInfoPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener)
+	{
 		this.gatewayActionListener = gatewayActionListener;
 		this.gatewayView = gatewayView;
 		this.gbc = new GridBagConstraints();
 
 		initInfoPane();
 	}
-	public JPanel getInfoPane() {
+	public JPanel getInfoPane()
+	{
 		return infoPane;
 	}
 	
-	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
+	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty)
+	{
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.gridwidth = gridwidth;
@@ -63,7 +55,8 @@ public class GatewayInfoPane {
 		gbc.weighty = weighty;
 	}
 	
-	private void initInfoPane() {
+	private void initInfoPane()
+	{
 		this.infoPane = new JPanel();
 		infoPane.setLayout(new GridBagLayout());
 

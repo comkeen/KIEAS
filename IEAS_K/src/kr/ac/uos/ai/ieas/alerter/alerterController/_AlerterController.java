@@ -5,9 +5,11 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _AlerterController
@@ -40,8 +42,8 @@ public class _AlerterController
 	{
 		
 		this.alerterActionListener = new AleterViewActionListener(this);
-		this.alerterTopView = _AlerterTopView.getInstance(alerterActionListener);
 		this.alerterModelManager = new _AlerterModelManager(this);
+		this.alerterTopView = _AlerterTopView.getInstance(this, alerterActionListener);
 		this.alerterTransmitter = new AlerterTransmitter(this);
 		
 		init();
@@ -49,7 +51,7 @@ public class _AlerterController
 	
 	private void init()
 	{
-		this.alerterId = "alerter";
+		this.alerterId = KieasName.STANDARD_ALERTER;
 		
 		alerterTopView.setId(alerterId);
 		alerterTransmitter.setId(alerterId);
@@ -58,7 +60,7 @@ public class _AlerterController
 
 	public void sendMessage()
 	{
-		alerterTopView.addAlertTableRow(alerterModelManager.getId(), alerterModelManager.getEvent(), alerterModelManager.getAddresses());
+		alerterModelManager.addAlertTableRow();
 		alerterTransmitter.sendMessage(alerterModelManager.getMessage());
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
@@ -77,13 +79,13 @@ public class _AlerterController
 			System.out.println("(Alerter)" + " Received Message From (" + sender + ") : ");
 			System.out.println();
 
-			if(sender.equals(KieasConfiguration.IeasName.GATEWAY_NAME))
+			if(sender.equals(KieasConfiguration.KieasName.GATEWAY_NAME))
 			{
-				alerterTopView.receiveGatewayAck(identifier);
+				alerterModelManager.receiveGatewayAck(identifier);
 			}
 			else 
 			{
-				alerterTopView.receiveAlertSystemAck(identifier);
+//				alerterTopView.receiveAlertSystemAck(identifier);
 			}
 
 		} 
@@ -212,4 +214,15 @@ public class _AlerterController
 		alerterTopView.setTextArea(message);
 	}
 
+
+	public AlertTableModel getAlertTableModel()
+	{
+		return alerterModelManager.getAlertTableModel();
+	}
+
+
+	public String getAlertMessage(String identifier)
+	{
+		return alerterModelManager.getAlertMessage(identifier);
+	}
 }
