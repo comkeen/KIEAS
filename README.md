@@ -4,13 +4,13 @@
 
 본 사이트에서 배포하는 참조 소프트웨어는, 참여 기업에 개발하는 테스트베드와는 별도의 목적으로 개발하고 있다. 참조 소프트웨어의 목적은 참조모델의 구조, 공통경보프로토콜(CAP: Common Alerting Protocol) 및 관련 표준, CAP 관련 라이브러리의 활용 방법에 대한 이해 등을 돕기 위한 것이다.
 
-톱합 운용을 위한 표준 경보메시지는 국제 표준(ITU-T X.1303)인 CAP에 기반을 두어 새로 TTA에서 제정한 **통합경보시스템을 위한 공통경보프로토콜 프로파일(TTAK.OT-06.0055/R1)**이다. CAP에 국내 경보시스템의 요구사항을 반영한 표준이다.
+톱합 운용을 위한 표준 경보메시지는 TTA에서 제정한 **통합경보시스템을 위한 공통경보프로토콜 프로파일(TTAK.OT-06.0055/R1)**이다. 이 표준은 국제 표준(ITU-T X.1303)인 CAP에 기반을 두어 국내 경보시스템의 요구사항을 반영한 것이다.
 
 본 연구결과는 국민안전처의 연구과제에 따른 것이므로, **모든 소유권은 대한민국 정부**에 있다.
 
-## 1. 배포문서 ##
+## 관련 문서 ##
 
-#### [ 2015 공통경보프로토콜 기술설명회 ] ####
+### [ 2015 공통경보프로토콜 기술설명회 ] ###
 다음은 [기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)이다.
 
  * 재난의 정의와 재난관리: 재난, 재난관리에 관한 개요
@@ -19,7 +19,7 @@
  * 통합경보시스템 참조 코드 사용 환경 구성: 참조 SW 사용 방법 소개
  * 설치 가이드라인(향후)
 
-#### [ CAP/EDXL 표준 (외부 링크) ] ####
+### [ CAP/EDXL 표준 (외부 링크) ] ###
 
 * [CAP v1.2 OASIS 표준문서](http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.pdf)
 * [CAP Feeds v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency-adopt/cap-feeds/v1.0/cap-feeds-v1.0.pdf)
@@ -28,7 +28,7 @@
 * [EDXL-CT v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-ct/v1.0/csd03/edxl-ct-v1.0-csd03.pdf)
 * [EDXL-SitRep v1.0 OASIS 표준문서](http://docs.oasis-open.org/emergency/edxl-sitrep/v1.0/cs01/edxl-sitrep-v1.0-cs01.pdf)
 
-#### [ 국내 표준 문서 (외부 링크, TTA 로그인 필요) ] ####
+### [ 국내 표준 문서 (외부 링크, TTA 로그인 필요) ] ###
 
 * ["통합경보시스템을 위한 공통경보프로토콜 프로파일" TTAK.OT-06.0055/R1](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.OT-06.0055%2FR1&standard_no=OT-06.0055&kor_standard=&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=2&acode1=&acode2=&scode1=&scode2=)
 * ["지상파 디지털 멀티미디어 방송(DMB) 재난 경보 서비스" TTAK.KO-07.0046/R5](http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&nowpage=1&pk_num=TTAK.KO-07.0046%2FR5&standard_no=07.0046&kor_standard=&publish_date=&section_code=&order=publish_date&by=desc&nowSu=1&totalSu=6&acode1=&acode2=&scode1=&scode2=)
