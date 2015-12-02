@@ -1,18 +1,20 @@
 # 통합재난경보발령시스템 #
 
-우리의 프로젝트에서는 대한민국 통합재난경보발령시스템(Korea Integrated Emergency Alert System)의 발전을 위한 참조모델의 연구개발이 진행중에 있다. 당신은 이 페이지에서 우리의 프로젝트를 이해하기 위해 필요한 자료들을 얻을 수 있다. 프로젝트에 대한 더 상세한 소개와 관련 작업 결과물(문서)은 위키 페이지(http://alertwiki.uos.ac.kr)에서 열람할 수 있다.
+**통합경보시스템**(KIEAS: Korea Integrated Emergency Alert System)은 국내 다양한(이기종) 경보시스템을 통합 운용하기 위한 시스템이다. **[한국재난정보미디어포럼](http://www.kpew.or.kr/)**에서는 ETRI를 주관기관으로 하여 국민안전처의 "지능/맞춤형 통합경보시스템 연구 개발" 과제를 공동 연구하고 있다. 이 사이트에서는 통합경보시스템 개발에 참조하기 위한 **참조 소프트웨어**를 배포한다.
 
-## 1. 필요 환경 ##
+본 연구결과는 국민안전처의 연구과제에 따른 것이므로, 모든 소유권은 대한민국 정부에 있다.
 
 
-
-## 2. 참고문서 ##
-
-* 우리 프로젝트와 관련된 모든 참고문서는 [구글 드라이브(Root)](https://drive.google.com/folderview?id=0B2mOw8eNDJEGVTdYaTZtM0lESmM&usp=sharing)에서 열람할 수 있다.
+## 1. 배포문서 ##
 
 #### [ 2015 공통경보프로토콜 기술설명회 ] ####
- * [기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)
+다음은 [기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)이다.
 
+ * 재난의 정의와 재난관리: 재난, 재난관리에 관한 개요
+ * 재난경보 전달 체계: 재난경보시스템의 개요와 국내외 현황
+ * CAP 엘리먼트 소개: 공통경보프로토콜(Common Alerting Protocol) 개요 및 메시지 구조
+ * 통합경보시스템 참조 코드 사용 환경 구성: 참조 SW 사용 방법 소개
+ * 설치 가이드라인(향후)
 
 #### [ CAP/EDXL 표준 (외부 링크) ] ####
 
