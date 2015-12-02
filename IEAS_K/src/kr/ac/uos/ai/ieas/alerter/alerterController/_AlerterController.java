@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+
 
 public class _AlerterController
 { 
@@ -51,7 +51,7 @@ public class _AlerterController
 	
 	private void init()
 	{
-		this.alerterId = KieasName.STANDARD_ALERTER;
+		this.alerterId = "기상청";
 		
 		alerterTopView.setId(alerterId);
 		alerterTransmitter.setId(alerterId);
@@ -66,6 +66,14 @@ public class _AlerterController
 		System.out.println();
 	}
 
+	public void sendAlert()
+	{
+		alerterModelManager.addAlertTableRow();
+		alerterTransmitter.sendMessage(alerterModelManager.getAlert());
+		System.out.println("Alerter Send Message to " + "(gateway) : ");
+		System.out.println();
+	}
+	
 	public void acceptMessage(String message)
 	{
 		try 
@@ -133,7 +141,7 @@ public class _AlerterController
 
 	public void applyAlertElement()
 	{
-		alerterTopView.applyAlertElement();
+		alerterModelManager.applyAlertElement(alerterTopView.getAlertElement());
 	}
 
 	public void selectTableEvent()
@@ -147,7 +155,7 @@ public class _AlerterController
 	 */
 	public void getQueryResult()
 	{
-		alerterModelManager.getQueryResult("EventCode", alerterTopView.getQuery());		
+		alerterModelManager.getQueryResult(KieasMessageBuilder.EVENT_CODE, alerterTopView.getQuery());		
 	}
 
 	public void loadDraft() 
@@ -200,12 +208,13 @@ public class _AlerterController
 
 	public void insertDatabase()
 	{
+		alerterModelManager.insertDataBase(alerterTopView.getTextArea());
 		System.out.println("insert to database : <<todo>>");
 	}
 
 	public void generateCap()
 	{		
-		alerterModelManager.generateCap(alerterTopView.getGeoCode(), alerterTopView.getAlertSystemType());
+		alerterModelManager.generateCap(alerterTopView.getAlertSystemType());
 	}
 
 
@@ -215,7 +224,7 @@ public class _AlerterController
 	}
 
 
-	public AlertTableModel getAlertTableModel()
+	public AlertLogTableModel getAlertTableModel()
 	{
 		return alerterModelManager.getAlertTableModel();
 	}
@@ -224,5 +233,11 @@ public class _AlerterController
 	public String getAlertMessage(String identifier)
 	{
 		return alerterModelManager.getAlertMessage(identifier);
+	}
+
+
+	public String getAlerterId() 
+	{
+		return alerterId;
 	}
 }

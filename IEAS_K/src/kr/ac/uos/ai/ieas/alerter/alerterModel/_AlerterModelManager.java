@@ -2,15 +2,17 @@ package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterDataBasePanel;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class _AlerterModelManager{
-
+public class _AlerterModelManager
+{
 	private static _AlerterModelManager alerterModelManager;
-	private _AlerterController alerterController;
+	private _AlerterController controller;
 	private _DatabaseHandler databaseHandler;	
 	private KieasMessageBuilder kieasMessageBuilder;
 	
@@ -19,11 +21,12 @@ public class _AlerterModelManager{
 	private AlerterDataBasePanelModel alerterDataBasePanelModel;
 	
 
-	private AlertTableModel alertTableModel;
+	private AlertLogTableModel alertLogTableModel;
 	private HashMap<String, String> alertMessageMap;
 	private HashMap<String, String> alertElementMap;
 	
 	private String message;
+	private String identifier;
 	
 
 	public static final String EVENT_CODE = "eventCode";
@@ -57,21 +60,22 @@ public class _AlerterModelManager{
 	 * Database 접근을 위한 DatabaseHandler 초기화.
 	 * @param alerterController Controller
 	 */
-	public _AlerterModelManager(_AlerterController alerterController)
+	public _AlerterModelManager(_AlerterController controller)
 	{
-		this.alerterController = alerterController;
+		this.controller = controller;
 		this.databaseHandler = new _DatabaseHandler();
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 
 		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
 		this.alerterCapGeneratePanelModel = new AlerterCapGeneratePanelModel(this);
+		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
 		
 		init();
 	}
 	
 	private void init()
 	{
-		this.alertTableModel = new AlertTableModel();
+		this.alertLogTableModel = new AlertLogTableModel();
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
 		
@@ -102,13 +106,16 @@ public class _AlerterModelManager{
 	{	
 		System.out.println("getQuery target, query : " + target + " " + query);
 		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
-		
+		for (String string : result)
+		{
+			System.out.println("query result = " + string);
+		}
 		switch (target)
 		{
-		case EVENT_CODE:
+		case KieasMessageBuilder.EVENT_CODE:
 			alerterDataBasePanelModel.setQueryResult(result);
 			break;
-		case STATUS:
+		case KieasMessageBuilder.STATUS:
 			
 			break;	
 		default:
@@ -129,12 +136,12 @@ public class _AlerterModelManager{
 
 	public void updateView(String view, String target, String value) 
 	{
-		alerterController.updateView(view, target, value);
+		controller.updateView(view, target, value);
 	}
 
 	public void updateView(String view, String target, ArrayList<String> value) 
 	{
-		alerterController.updateView(view, target, value);
+		controller.updateView(view, target, value);
 	}
 	
 	public String getMessage()
@@ -142,14 +149,16 @@ public class _AlerterModelManager{
 		return message;
 	}
 
-	public void generateCap(String geoCode, String alertSystemType)
+	public void generateCap(String alertSystemType)
 	{
+		this.identifier = generateIdentifier();
+		
 		String cap = kieasMessageBuilder.buildDefaultMessage();
 		kieasMessageBuilder.setMessage(cap);
+		kieasMessageBuilder.setIdentifier(identifier);
 		kieasMessageBuilder.setRestricion(alertSystemType);
-		
 		this.message = kieasMessageBuilder.getMessage();
-		alerterController.setTextArea(message);
+		controller.setTextArea(message);
 	}
 
 	public String getId()
@@ -159,8 +168,11 @@ public class _AlerterModelManager{
 	
 	public String generateIdentifier()
 	{
-		String identifier = "identifier";
+		String alerterId = controller.getAlerterId();
+		String idNum = Double.toString(Math.random());		
 		
+		String identifier = alerterId + idNum.substring(2, 12);
+		System.out.println("generate id = " + identifier);
 		return identifier;
 	}
 
@@ -182,7 +194,7 @@ public class _AlerterModelManager{
 	public void addAlertTableRow()
 	{
 		kieasMessageBuilder.setMessage(message);
-		alertTableModel.addTableRowData(getAlertElementMap(message));
+		alertLogTableModel.addTableRowData(getAlertElementMap(message));
 		
 		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
@@ -204,6 +216,11 @@ public class _AlerterModelManager{
 		return alertElementMap;
 	}
 	
+	public void insertDataBase(String message)
+	{
+		databaseHandler.insertCap(kieasMessageBuilder.capObjectToDatabaseObject(message));
+	}
+	
 	public void putAlertMessageMap(String key, String message)
 	{
 		alertMessageMap.put(key, message);
@@ -219,13 +236,23 @@ public class _AlerterModelManager{
 		return alertMessageMap;
 	}
 
-	public AlertTableModel getAlertTableModel()
+	public AlertLogTableModel getAlertTableModel()
 	{
-		return alertTableModel;
+		return alertLogTableModel;
 	}
 
 	public void receiveGatewayAck(String identifier)
 	{
-		alertTableModel.receiveAck(identifier);
+		alertLogTableModel.receiveAck(identifier);
+	}
+
+	public void applyAlertElement(HashMap<String, String> alertElement)
+	{
+		alerterCapGeneratePanelModel.applyAlertElement(alertElement);
+	}
+
+	public String getAlert()
+	{
+		return alerterCapGeneratePanelModel.getMessage();
 	}
 }

@@ -41,6 +41,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Send":
 			controller.sendMessage();
 			return;
+		case "SendAlert":
+			controller.sendAlert();
+			return;
 		case "TextAreaSend":
 			controller.sendMessage();
 			return;

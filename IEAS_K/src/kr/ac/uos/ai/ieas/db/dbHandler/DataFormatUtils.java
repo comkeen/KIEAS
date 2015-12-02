@@ -1,5 +1,6 @@
 package kr.ac.uos.ai.ieas.db.dbHandler;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,18 @@ public class DataFormatUtils {
 	public static String convertDateObjectType(java.util.Date datetime) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(datetime);
+	}
+	
+	public static Date convertStringToDate(String date) {
+		date = date.replace("T", " ");
+		date = date.replace("+09:00", "");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+		try {
+			return sdf.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 //	public static String buildJsonFromElements(String rootName, HashMap<String, String> elements){

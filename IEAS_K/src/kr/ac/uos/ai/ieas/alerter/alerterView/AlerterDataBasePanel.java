@@ -19,7 +19,7 @@ import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
-public class AlerterDatabasePanel
+public class AlerterDataBasePanel
 {		
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
@@ -43,7 +43,7 @@ public class AlerterDatabasePanel
 	private JTextField queryTextField;
 	
 
-	public AlerterDatabasePanel(AleterViewActionListener alerterActionListener)
+	public AlerterDataBasePanel(AleterViewActionListener alerterActionListener)
 	{		
 		this.alerterActionListener = alerterActionListener;
 		this.gbc = new GridBagConstraints();
@@ -60,17 +60,15 @@ public class AlerterDatabasePanel
 	
 	private void initAlertElementMap() {
 
-		String sender = "sender";
-		String identifier = "identifier";
-		String sent = "sent";
-		String event = "event";
-		String ack = "ack";
+		String sender = KieasMessageBuilder.SENDER;
+		String identifier = KieasMessageBuilder.IDENTIFIER;
+		String sent = KieasMessageBuilder.SENT;
+		String event = KieasMessageBuilder.EVENT;
 		
 		alertElementMap.put(sender, sender);
 		alertElementMap.put(identifier, identifier);
 		alertElementMap.put(sent, sent);
 		alertElementMap.put(event, event);
-		alertElementMap.put(ack, ack);
 	}
 	
 	private void initDatabasePanel()
@@ -86,11 +84,11 @@ public class AlerterDatabasePanel
 		initButtonPane();
 		
 		gbc.fill = GridBagConstraints.BOTH;
-		setGbc(0, 1, 3, 1, 1, 3);
+		setGbc(0, 1, 3, 1, 1, 2);
 		initDataTable();
 
 		gbc.fill = GridBagConstraints.BOTH;
-		setGbc(0, 0, 3, 1, 1, 7);
+		setGbc(0, 0, 3, 1, 1, 8);
 		initDataTextAreaPane();
 	}
 	
@@ -122,16 +120,16 @@ public class AlerterDatabasePanel
 	}
 
 	private void initDataTextAreaPane() {
-		this.dataTextArea = new JTextArea(5, 20);
+		this.dataTextArea = new JTextArea(10, 40);
 		this.dataTextAreaPane = new JScrollPane(dataTextArea);
 
-		dataTextArea.setText("\n");
+		dataTextArea.setText("\n\n\n\n\n\n\n\n\n");
 
 		databasePanel.add(dataTextAreaPane, gbc);
 	}
 	
-	private void initDataTable() {
-
+	private void initDataTable()
+	{
 		this.alertTable = new JTable(alertTableModel.getTableModel());
 		this.tableScrollPane = new JScrollPane(alertTable);
 
@@ -192,12 +190,11 @@ public class AlerterDatabasePanel
 	public HashMap<String, String> getAlertElementMap(String message) 
 	{		
 		kieasMessageBuilder.setMessage(message);
-		alertElementMap.replace("sender", kieasMessageBuilder.getSender());
-		alertElementMap.replace("identifier", kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace("sent", kieasMessageBuilder.transformToYmdhms(kieasMessageBuilder.getSent()));
-		alertElementMap.replace("event", "Event");
-//		alertElementMap.replace("event", kieasMessageBuilder.getEvent(0));
-		
+		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.transformToYmdhms(kieasMessageBuilder.getSent()));
+		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
+
 		return alertElementMap;
 	}
 

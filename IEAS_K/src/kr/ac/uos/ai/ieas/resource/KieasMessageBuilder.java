@@ -32,6 +32,7 @@ import com.google.publicalerts.cap.Info.Urgency;
 import com.google.publicalerts.cap.NotCapException;
 import com.google.publicalerts.cap.Resource;
 
+import kr.ac.uos.ai.ieas.db.dbHandler.DataFormatUtils;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
@@ -809,6 +810,7 @@ public class KieasMessageBuilder
 				.setStatus(this.setStatus(alertElementList.get(STATUS)))
 				.setMsgType(this.setMsgType(alertElementList.get(MSG_TYPE)))
 				.setScope(this.setScope(alertElementList.get(SCOPE)))
+				.setRestriction(alertElementList.get(RESTRICTION))
 				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
 				.buildPartial();
 	}
@@ -858,6 +860,11 @@ public class KieasMessageBuilder
 		mAlert = Alert.newBuilder(mAlert).setSender(sender).build();
 	}
 
+	public void setSent()
+	{
+		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(getDateCalendar())).build();
+	}
+	
 	public void setSent(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
@@ -946,7 +953,7 @@ public class KieasMessageBuilder
 
 	public void setCode(String code) 
 	{
-		mAlert = Alert.newBuilder(mAlert).clearCode().setCode(0, code).build();
+		mAlert = Alert.newBuilder(mAlert).clearCode().addCode(code).build();
 	}
 
 	public void setLanguage(String language)
@@ -1170,31 +1177,30 @@ public class KieasMessageBuilder
 	{	
 		CAPAlert capAlert = new CAPAlert();
 		CAPInfo capInfo = new CAPInfo();
-
 		try
 		{
 			mAlert = capXmlParser.parseFrom(capMessage);
 
 			capAlert.setIdentifier(mAlert.getIdentifier());
 			capAlert.setSender(mAlert.getSender());
-			capAlert.setSent(new Date(mAlert.getSent()));
+			capAlert.setSent(getDateCalendar().getTime());
 			for (CAPAlert.Status status : CAPAlert.Status.values())
 			{
-				if(status.toString().toUpperCase().equals(mAlert.getStatus()))
+				if(status.toString().toUpperCase().equals(mAlert.getStatus().toString()))
 				{
 					capAlert.setStatus(status);
 				}
 			}
 			for (CAPAlert.MsgType msgType : CAPAlert.MsgType.values())
 			{
-				if(msgType.toString().toUpperCase().equals(mAlert.getMsgType()))
+				if(msgType.toString().toUpperCase().equals(mAlert.getMsgType().toString()))
 				{
 					capAlert.setMsgType(msgType);
 				}
 			}
 			for (CAPAlert.Scope scope : CAPAlert.Scope.values())
 			{
-				if(scope.toString().toUpperCase().equals(mAlert.getMsgType()))
+				if(scope.toString().toUpperCase().equals(mAlert.getScope().toString()))
 				{
 					capAlert.setScope(scope);
 				}
@@ -1210,7 +1216,7 @@ public class KieasMessageBuilder
 			}
 			for (CAPInfo.Category category : CAPInfo.Category.values())
 			{
-				if(category.toString().toUpperCase().equals(mAlert.getInfo(0).getCategory(0)))
+				if(category.toString().toUpperCase().equals(mAlert.getInfo(0).getCategory(0).toString()))
 				{
 					capInfo.setCategory(category);
 				}
@@ -1218,39 +1224,44 @@ public class KieasMessageBuilder
 			capInfo.setEvent(mAlert.getInfo(0).getEvent());
 			for (CAPInfo.Urgency urgency : CAPInfo.Urgency.values())
 			{
-				if(urgency.toString().toUpperCase().equals(mAlert.getInfo(0).getUrgency()))
+				if(urgency.toString().toUpperCase().equals(mAlert.getInfo(0).getUrgency().toString()))
 				{
 					capInfo.setUrgency(urgency);
 				}
 			}
 			for (CAPInfo.Severity severity : CAPInfo.Severity.values())
 			{
-				if(severity.toString().toUpperCase().equals(mAlert.getInfo(0).getSeverity()))
+				if(severity.toString().toUpperCase().equals(mAlert.getInfo(0).getSeverity().toString()))
 				{
 					capInfo.setSeverity(severity);
 				}
 			}
 			for (CAPInfo.Certainty certainty : CAPInfo.Certainty.values())
 			{
-				if(certainty.toString().toUpperCase().equals(mAlert.getInfo(0).getCertainty()))
+				if(certainty.toString().toUpperCase().equals(mAlert.getInfo(0).getCertainty().toString()))
 				{
 					capInfo.setCertainty(certainty);
 				}
 			}
 			capInfo.setEventCode(mAlert.getInfo(0).getEventCode(0).getValue());
-			//Todo
+			capInfo.setEffective(DataFormatUtils.convertStringToDate(mAlert.getInfo(0).getEffective()));
+			capInfo.setSenderName(mAlert.getInfo(0).getSenderName());
+			capInfo.setHeadline(mAlert.getInfo(0).getHeadline());
+			capInfo.setDescription(mAlert.getInfo(0).getDescription());
+			capInfo.setWeb(mAlert.getInfo(0).getWeb());
+			capInfo.setContact(mAlert.getInfo(0).getContact());
+			
+			ArrayList<CAPInfo> infoList = new ArrayList<CAPInfo>();
+			infoList.add(capInfo);
+			
+			capAlert.setInfoList(infoList);
 		}
 		catch (NotCapException | SAXParseException | CapException e) 
 		{
 			e.printStackTrace();
 		}
 
-
-
-
 		return capAlert;
-
-
 	}
 }
 

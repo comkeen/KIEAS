@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 
 public class _DatabaseHandler {
@@ -32,7 +33,7 @@ public class _DatabaseHandler {
 	{
 		switch (target)
 		{
-		case _AlerterModelManager.EVENT_CODE:
+		case KieasMessageBuilder.EVENT_CODE:
 			for (DisasterEventType disasterEventType : DisasterEventType.values()) 
 			{
 				if(disasterEventType.toString().equals(value))
@@ -45,13 +46,12 @@ public class _DatabaseHandler {
 				System.out.println(capAlert.getStatus());
 			}
 			break;
-		case _AlerterModelManager.STATUS:
+		case KieasMessageBuilder.STATUS:
 			searchResult = capDbUtils.searchCAPsByStatus(value);
 			break;
 		default:
 			break;
-		}		
-
+		}	
 		return searchResult;
 	}
 	

@@ -5,8 +5,9 @@
   <sent>2015-01-01T00:00:00+09:00</sent>
   <status>Actual</status>
   <msgType>Alert</msgType>
-  <scope>Public</scope>
-  <code>대한민국정부1.1</code>
+  <scope>Restricted</scope>
+  <restriction>자동우량경보시스템</restriction>
+  <code>대한민국정부1.0</code>
   <info>
     <language>ko-KR</language>
     <category>Met</category>

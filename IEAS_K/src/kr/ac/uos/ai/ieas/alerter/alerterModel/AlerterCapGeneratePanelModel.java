@@ -143,7 +143,6 @@ public class AlerterCapGeneratePanelModel
 		mViewComponentProperties.addElement(initResourcePanelComponents());
 		mViewComponentProperties.addElement(initAreaPanelComponents());
 	}
-
 	
 	private HashMap<String, String> initSaveLoadPanelComponents()
 	{
@@ -283,8 +282,8 @@ public class AlerterCapGeneratePanelModel
 			{
 				if (component instanceof HashMap<?, ?>)
 				{
-					System.out.println("Vector target = " + target);
-					System.out.println("Vector memberName = " + memberName);
+//					System.out.println("Vector target = " + target);
+//					System.out.println("Vector memberName = " + memberName);
 //					System.out.println("Vector value = " + value);
 					
 //					if(memberName.equals("mCategory"))
@@ -340,6 +339,8 @@ public class AlerterCapGeneratePanelModel
 		setInfoPanel(kieasMessageBuilder);
 		setResourcePanel(kieasMessageBuilder);
 		setAreaPanel(kieasMessageBuilder);
+				
+		setModelProperty("TextArea", kieasMessageBuilder.getMessage());
 	}
 
 	private void setInfoPanel(KieasMessageBuilder ieasMessage)
@@ -395,8 +396,7 @@ public class AlerterCapGeneratePanelModel
 	public void loadCap(String path)
 	{
 		String content = capLoader(path);
-		kieasMessageBuilder.setMessage(content);
-		
+		kieasMessageBuilder.setMessage(content);		
 		setModelProperty("TextArea", content);
 		setAlertPanel(kieasMessageBuilder);
 	}
@@ -461,5 +461,34 @@ public class AlerterCapGeneratePanelModel
 	{
 		target = "m" + target.replaceAll("[0-9]+", "").trim();
 		return target;
+	}
+
+	public void applyAlertElement(HashMap<String, String> alertElement)
+	{
+		if(alertElement.get(KieasMessageBuilder.IDENTIFIER).length() != 0)
+		{
+			kieasMessageBuilder.setIdentifier(alertElement.get(KieasMessageBuilder.IDENTIFIER));			
+			kieasMessageBuilder.setSender(alertElement.get(KieasMessageBuilder.SENDER));
+			kieasMessageBuilder.setSent();
+			kieasMessageBuilder.setStatus(alertElement.get(KieasMessageBuilder.STATUS));
+			kieasMessageBuilder.setMsgType(alertElement.get(KieasMessageBuilder.MSG_TYPE));
+			kieasMessageBuilder.setScope(alertElement.get(KieasMessageBuilder.SCOPE));
+			kieasMessageBuilder.setRestricion(alertElement.get(KieasMessageBuilder.RESTRICTION));
+			kieasMessageBuilder.setCode(alertElement.get(KieasMessageBuilder.CODE));
+			
+			setAlertPanel(kieasMessageBuilder);
+		}
+		else
+		{
+			System.out.println("there is no element");
+			return;
+		}		
+	}
+
+	public String getMessage()
+	{
+		kieasMessageBuilder.setSent();
+		kieasMessageBuilder.setIdentifier(alerterModelManager.generateIdentifier());
+		return kieasMessageBuilder.getMessage();
 	}
 }

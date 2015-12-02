@@ -3,6 +3,7 @@ package kr.ac.uos.ai.ieas.alerter.alerterView;
 import java.awt.Component;
 import java.awt.Container;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -12,6 +13,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 
 
@@ -24,7 +26,7 @@ public class _AlerterTopView
 	private _AlerterController controller;
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
-	private AlerterDatabasePanel alerterDatabasePanel;
+	private AlerterDataBasePanel alerterDatabasePanel;
 	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 	private AleterViewActionListener alerterActionListener;
 
@@ -50,7 +52,7 @@ public class _AlerterTopView
 		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
 		this.alerterCapGeneratePanel = new AlerterCapGeneratePanel(alerterActionListener);
 		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
-		this.alerterDatabasePanel = new AlerterDatabasePanel(alerterActionListener);
+		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
 
 		initFrame();
 	}
@@ -67,10 +69,10 @@ public class _AlerterTopView
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
-		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
-		mainTabbedPane.addTab("경보로그", alerterLogPanel.getPanel());		
+//		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
-		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());		
+		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());	
+		mainTabbedPane.addTab("SimpleCap", alerterLogPanel.getPanel());			
 
 		mainFrame.setVisible(true);
 	}
@@ -146,7 +148,7 @@ public class _AlerterTopView
 	{
 		switch (view)
 		{
-		case "AlerterDatabasePanel":
+		case "AlerterDataBasePanel":
 			alerterDatabasePanel.getQueryResult(value);
 			break;
 		default:
@@ -190,7 +192,7 @@ public class _AlerterTopView
 		alerterLogPanel.setTextArea(message);
 	}
 	
-	public AlertTableModel getAlertTableModel()
+	public AlertLogTableModel getAlertLogTableModel()
 	{
 		return controller.getAlertTableModel();
 	}
@@ -198,5 +200,15 @@ public class _AlerterTopView
 	public String getAlertMessage(String identifier)
 	{
 		return controller.getAlertMessage(identifier);
+	}
+
+	public HashMap<String, String> getAlertElement()
+	{
+		return alerterCapGeneratePanel.getAlertElement();
+	}
+
+	public String getTextArea()
+	{
+		return alerterCapGeneratePanel.getTextArea();
 	}
 }

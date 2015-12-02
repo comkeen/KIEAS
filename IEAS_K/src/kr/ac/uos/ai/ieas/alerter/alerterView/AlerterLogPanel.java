@@ -12,8 +12,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
+import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
@@ -38,7 +39,7 @@ public class AlerterLogPanel
 	private JComboBox<String> alertSystemTypeComboBox;
 
 	private JScrollPane tableScrollPane;
-	private AlertTableModel alertTableModel;
+	private AlertLogTableModel alertLogTableModel;
 	private JTable alertTable;
 	
 	
@@ -49,7 +50,7 @@ public class AlerterLogPanel
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.gbc = new GridBagConstraints();
 		
-		initFrame("alertViewPanel");
+		initFrame();
 	}
 	
 	public JPanel getPanel()
@@ -62,7 +63,7 @@ public class AlerterLogPanel
 		this.alerterActionListener = alerterActionListener;
 	}
 
-	private void initFrame(String name)
+	private void initFrame()
 	{		
 		this.logPanel = new JPanel();
 		logPanel.setLayout(new GridBagLayout());
@@ -94,8 +95,8 @@ public class AlerterLogPanel
 
 	private void initTable()
 	{
-		this.alertTableModel = alerterTopView.getAlertTableModel();
-		this.alertTable = new JTable(alertTableModel.getTableModel());
+		this.alertLogTableModel = alerterTopView.getAlertLogTableModel();
+		this.alertTable = new JTable(alertLogTableModel.getTableModel());
 		this.tableScrollPane = new JScrollPane(alertTable);
 		
 		alertTable.setEnabled(true);
@@ -129,20 +130,20 @@ public class AlerterLogPanel
 
 	private void initComboBox()
 	{
-		this.geoCodeCombobox = new JComboBox<Item>();
-		geoCodeCombobox.addActionListener(alerterActionListener);
-		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
-		{
-			geoCodeCombobox.addItem(item);
-		}
+//		this.geoCodeCombobox = new JComboBox<Item>();
+//		geoCodeCombobox.addActionListener(alerterActionListener);
+//		for (Item item : kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
+//		{
+//			geoCodeCombobox.addItem(item);
+//		}
 		
 		this.alertSystemTypeComboBox = new JComboBox<String>();
 		alertSystemTypeComboBox.addActionListener(alerterActionListener);
-		for (String item : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
+		for (String item : KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
 			alertSystemTypeComboBox.addItem(item);
 		}
-		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
+//		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
 		buttonPane.add(alertSystemTypeComboBox, BorderLayout.WEST);
 	}
 
@@ -165,7 +166,7 @@ public class AlerterLogPanel
 	{
 		if(alertTable.getSelectedRow() > -1)
 		{
-			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();
+			String identifier = alertLogTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();
 			String message = alerterTopView.getAlertMessage(identifier);
 			textArea.setText(message);
 		}

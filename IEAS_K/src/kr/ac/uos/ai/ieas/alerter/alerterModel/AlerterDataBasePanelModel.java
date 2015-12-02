@@ -46,6 +46,7 @@ public class AlerterDataBasePanelModel
 
 	public void setQueryResult(ArrayList<String> result)
 	{
+		System.out.println("databasemodel setQueryResult");
 		alerterModelManager.updateView(mViewName, "alertTable", result);
 		
 	}	
