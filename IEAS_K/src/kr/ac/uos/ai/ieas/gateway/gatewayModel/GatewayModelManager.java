@@ -20,6 +20,7 @@ public class GatewayModelManager
 	public static final String NO = "No.";
 	public static final String SENDER = "Sender";
 	public static final String IDENTIFIER = "Identifier";
+	public static final String STATUS = "Status";
 	public static final String SENT = "Sent";
 	public static final String EVENT = "Event";
 	public static final String RESTRICTION = "Restriction";
@@ -52,21 +53,16 @@ public class GatewayModelManager
 	}
 
 	private void initAlertElementMap()
-	{		
-		String sender = "sender";
-		String identifier = "identifier";
-		String sent = "sent";
-		String event = "event";
-		String restriction = "restriction";
-//		String geoCode = "geoCode";
+	{
 //		String ack = "ack";
 
-		alertElementMap.put(SENDER, sender);
-		alertElementMap.put(IDENTIFIER, identifier);
-		alertElementMap.put(SENT, sent);
-		alertElementMap.put(EVENT, event);
-		alertElementMap.put(RESTRICTION, restriction);
-//		alertElementMap.put(GEO_CODE, geoCode);
+		alertElementMap.put(SENDER, SENDER);
+		alertElementMap.put(IDENTIFIER, IDENTIFIER);
+		alertElementMap.put(SENT, SENT);
+		alertElementMap.put(STATUS, STATUS);
+		alertElementMap.put(EVENT, EVENT);
+		alertElementMap.put(RESTRICTION, RESTRICTION);
+		alertElementMap.put(GEO_CODE, GEO_CODE);
 //		alertElementMap.put(ACK, ack);
 	}
 
@@ -94,7 +90,9 @@ public class GatewayModelManager
 
 		alertElementMap.replace(SENDER, kieasMessageBuilder.getSender());
 		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace(STATUS, kieasMessageBuilder.getStatus());
 		alertElementMap.replace(SENT, kieasMessageBuilder.getSent());
+		alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());
 		alertElementMap.replace(EVENT, kieasMessageBuilder.getEvent(0));
 		if(kieasMessageBuilder.getRestriction() != null)
 		{

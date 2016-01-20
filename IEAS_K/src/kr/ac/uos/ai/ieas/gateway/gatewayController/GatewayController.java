@@ -26,8 +26,10 @@ public class GatewayController {
 
 	private String sender;
 	private String identifier;
+	private String status;
 	private String alertSystemType;
 	private String event;
+
 
 	private static final long DELAY = 1000;
 
@@ -102,25 +104,51 @@ public class GatewayController {
 	public void acceptAletSystemMessage(String message)
 	{
 		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);	
-		identifier = gatewayModelManager.getAlertElementMap(message).get("identifier");
-		alertSystemType = gatewayModelManager.getAlertElementMap(message).get("addresses");
+		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
+		status = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.STATUS);
 
-		try 
-		{
-			String log = "(" + gatewayID + ")" + " Received Message From AlertSystem : " + identifier;
-			System.out.println(log);
-			gatewayView.appendLog(log);
+		switch (status)
+		{	
+		case "ACTUAL":
+			try 
+			{
+				String log = "(" + gatewayID + ")" + " Received Message From AlertSystem : " + identifier;
+				System.out.println(log);
+				gatewayView.appendLog(log);
 
-			gatewayModelManager.addAlertSystemInfoTableRow(message);
-			
-			sendAcknowledge(message, sender);
-			gatewayModelManager.receiveAck(identifier);
+				gatewayModelManager.addAlertSystemInfoTableRow(message);
+				
+				sendAcknowledge(message, sender);
+				gatewayModelManager.receiveAck(identifier);
 
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			break;
+		case "SYSTEM":
+			try 
+			{
+				String log = "(" + gatewayID + ")" + " Received Register request From AlertSystem : " + identifier;
+				System.out.println(log);
+				gatewayView.appendLog(log);
+
+				gatewayModelManager.addAlertSystemInfoTableRow(message);
+				
+				sendAcknowledge(message, sender);
+				gatewayModelManager.receiveAck(identifier);
+
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		
 	}	
 
 	private void sendAcknowledge(String message, String destination)

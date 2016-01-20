@@ -7,20 +7,31 @@ import java.awt.event.WindowListener;
 
 public class AlertSystemActionListener implements ActionListener, WindowListener
 {	
-	private AlertSystemView view;
+	private AlertSystemController controller;
 	
 	
-	public AlertSystemActionListener(AlertSystemView view)
+	public AlertSystemActionListener(AlertSystemController alertSystemController)
 	{
-		this.view = view;
+		this.controller = alertSystemController;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getActionCommand().equals("Clear"))
+		switch (e.getActionCommand().toString())
 		{
-			view.setTextArea("");
+		case "Clear":
+			controller.clear();
+			break;
+		case "Register":
+			controller.registerToGateway();			
+			break;
+		case "setId":
+			controller.setID();
+			break;
+		default:
+			System.out.println("default");
+			break;
 		}
 	}
 
@@ -33,7 +44,8 @@ public class AlertSystemActionListener implements ActionListener, WindowListener
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		view.systemExit();
+		System.out.println("win close");
+		controller.exit();
 	}
 
 	@Override

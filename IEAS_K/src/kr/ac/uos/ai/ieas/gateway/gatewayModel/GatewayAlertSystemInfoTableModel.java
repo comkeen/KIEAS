@@ -25,6 +25,8 @@ public class GatewayAlertSystemInfoTableModel {
 
 		columnNames.add("No.");
 		columnNames.add("AlertSystemID");
+		columnNames.add("AlertSystemType");
+		columnNames.add("GeoCode");
 
 		this.rowData = columnNames;
 
@@ -44,9 +46,28 @@ public class GatewayAlertSystemInfoTableModel {
 		alertSystemCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alertSystemCount));
 		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
+		rowData.set(2, alertElementMap.get(GatewayModelManager.RESTRICTION));
+		rowData.set(3, alertElementMap.get(GatewayModelManager.GEO_CODE));
 
 		tableModel.addRow(rowData.toArray());
 	}
+	
+//	public void addTableRowData(HashMap<String, String> alertElementMap)
+//	{
+//		for(int i=0; i<tableModel.getRowCount(); i++)
+//		{
+//			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(GatewayModelManager.SENDER)))
+//			{
+//				return;
+//			}
+//		}
+//		
+//		alertSystemCount = tableModel.getRowCount()+1;
+//		rowData.set(0, Integer.toString(alertSystemCount));
+//		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
+//
+//		tableModel.addRow(rowData.toArray());
+//	}
 
 	public DefaultTableModel getTableModel() {		
 		return tableModel;

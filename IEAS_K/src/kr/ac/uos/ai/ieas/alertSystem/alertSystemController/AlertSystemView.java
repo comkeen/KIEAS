@@ -25,10 +25,10 @@ import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
-public class AlertSystemView {
-	
+public class AlertSystemView
+{	
 	private AlertSystemController controller;
-	private AlertSystemActionListener alertSystemActionListener;
+	private AlertSystemActionListener actionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
 	
 	private JFrame frame;
@@ -46,9 +46,8 @@ public class AlertSystemView {
 	public AlertSystemView(AlertSystemController alertSystemController)
 	{		
 		this.controller = alertSystemController;
-		this.alertSystemActionListener = new AlertSystemActionListener(this);
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-		
+		actionListener = controller.getActionListener();
 		this.initLookAndFeel();
 		this.initFrame();
 	}
@@ -69,7 +68,8 @@ public class AlertSystemView {
 	{
 		this.frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.addWindowListener(alertSystemActionListener);
+		frame.addWindowListener(actionListener);
+		
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
@@ -110,23 +110,29 @@ public class AlertSystemView {
 		
 		initComboBox();
 		JButton clearButton = new JButton("Clear");
-		clearButton.addActionListener(alertSystemActionListener);
-
+		clearButton.addActionListener(actionListener);
+		JButton registerButton = new JButton("Register");
+		registerButton.addActionListener(actionListener);
+		JButton setIdButton = new JButton("setId");
+		setIdButton.addActionListener(actionListener);
+		
 		buttonPane.add(alertSystemTypeCombobox, BorderLayout.WEST);
 //		buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
 		buttonPane.add(clearButton, BorderLayout.WEST);
+		buttonPane.add(setIdButton, BorderLayout.WEST);
+		buttonPane.add(registerButton, BorderLayout.WEST);
 		
 		alertPane.add(buttonPane, gbc);
 	}
 	
 	private void initComboBox()
 	{
-		Vector<String> comboboxModel1 = new Vector<>();		
+		Vector<String> comboboxModel = new Vector<>();		
 		for (String type : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
-			comboboxModel1.addElement(type);
+			comboboxModel.addElement(type);
 		}
-		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel1);
+		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel);
 		alertSystemTypeCombobox.addItemListener(new ItemListener()
 		{
 	        public void itemStateChanged(ItemEvent e)

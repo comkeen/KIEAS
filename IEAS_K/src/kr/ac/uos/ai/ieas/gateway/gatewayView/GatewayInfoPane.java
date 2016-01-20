@@ -79,13 +79,14 @@ public class GatewayInfoPane
 		alerterInfoTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		alerterInfoTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 		alerterInfoTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		alerterInfoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+		alerterInfoTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 		alerterInfoTable.getSelectionModel().addListSelectionListener(gatewayActionListener);
 		
 		infoPane.add(alerterInfoTableScrollPane, gbc);
 	}
 
-	private void initAlerterInfoTablePane() {
+	private void initAlerterInfoTablePane()
+	{
 		this.alertSystemInfoTableModel = gatewayView.getAlertSystemInfoTableModel();
 		this.alertSystemInfoTable = new JTable(alertSystemInfoTableModel.getTableModel());
 		this.alertSystemInfoTableScrollPane = new JScrollPane(alertSystemInfoTable);
@@ -94,7 +95,9 @@ public class GatewayInfoPane
 		alertSystemInfoTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		alertSystemInfoTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 		alertSystemInfoTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		alertSystemInfoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+		alertSystemInfoTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+		alertSystemInfoTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+		alertSystemInfoTable.getColumnModel().getColumn(3).setPreferredWidth(200);
 		alertSystemInfoTable.getSelectionModel().addListSelectionListener(gatewayActionListener);
 		
 		infoPane.add(alertSystemInfoTableScrollPane, gbc);		
