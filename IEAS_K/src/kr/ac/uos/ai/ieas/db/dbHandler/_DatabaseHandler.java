@@ -1,16 +1,16 @@
 package kr.ac.uos.ai.ieas.db.dbHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
-import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 
 public class _DatabaseHandler {
 
 	private CAPDBUtils capDbUtils;
-	private ArrayList<CAPAlert> searchResult;
+	private List<CAPAlert> searchResult;
 	private CAPDBInsertUtils capDbInsertUtils;
 	/**
 	 * Database에 직접 접근하는 주체.
@@ -29,7 +29,7 @@ public class _DatabaseHandler {
 		capDbInsertUtils.insertCAP(alert);
 	}	
 	
-	public ArrayList<CAPAlert> getQueryResult(String target, String value)
+	public List<CAPAlert> getQueryResult(String target, String value)
 	{
 		switch (target)
 		{

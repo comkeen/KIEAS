@@ -2,8 +2,8 @@ package kr.ac.uos.ai.ieas.alerter.alerterView;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -14,7 +14,6 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
 
 
 public class _AlerterTopView
@@ -27,7 +26,7 @@ public class _AlerterTopView
 	private AlerterLogPanel alerterLogPanel;
 	private AlerterCapGeneratePanel alerterCapGeneratePanel;
 	private AlerterDataBasePanel alerterDatabasePanel;
-	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
+//	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 	private AleterViewActionListener alerterActionListener;
 
 	
@@ -49,7 +48,7 @@ public class _AlerterTopView
 		initLookAndFeel();
 		this.controller = controller;
 		this.alerterActionListener = alerterActionListener;
-		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
+//		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
 		this.alerterCapGeneratePanel = new AlerterCapGeneratePanel(alerterActionListener);
 		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
 		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
@@ -98,7 +97,7 @@ public class _AlerterTopView
 		alerterDatabasePanel.selectTableEvent();
 	}
 
-	public void getQueryResult(ArrayList<String> results)
+	public void getQueryResult(List<String> results)
 	{
 		System.out.println("topView getQueryResult");
 		alerterDatabasePanel.getQueryResult(results);
@@ -144,7 +143,7 @@ public class _AlerterTopView
 		}
 	}
 	
-	public void updateView(String view, String target, ArrayList<String> value)
+	public void updateView(String view, String target, List<String> value)
 	{
 		switch (view)
 		{

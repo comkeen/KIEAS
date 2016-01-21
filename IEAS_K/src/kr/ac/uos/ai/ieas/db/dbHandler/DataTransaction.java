@@ -15,21 +15,29 @@ public class DataTransaction
 	public Connection connection = null;
 	public static int connectionCount = 0;
 
-	public DataTransaction(boolean setCon)
+	private boolean bool;
+	
+	public DataTransaction(CAPDBUtils capdbUtils)
 	{
 		try
 		{
-			setConnectionTest();
+			this.bool = setConnectionTest();
 		}
 		catch (Exception e)
 		{
 			System.out.println("Error in Connection:" + e.toString());
+			capdbUtils.connectionFail();
 		}
+		System.out.println("DB connection : " + bool);
+	}
+
+	public DataTransaction(boolean b) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public static BasicDataSource dataSource;
 
-	public void setConnectionTest() throws SQLException
+	public boolean setConnectionTest() throws SQLException
 	{
 		System.out.println("db connection start");
 		String url = KieasAddress.DATABASE_SERVER_IP + urlPostfix;
@@ -56,6 +64,7 @@ public class DataTransaction
 				catch (SQLException e)
 				{
 					System.out.println("***Connection Requisition*** Could not connect to the database msg :" + e.getMessage());
+					return false;
 				}
 			}
 			else
@@ -67,6 +76,8 @@ public class DataTransaction
 		catch (Exception e)
 		{
 			System.out.println("open connection exception" + e);
+			return false;
 		}
+		return true;
 	}
 }

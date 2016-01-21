@@ -1,11 +1,10 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
+import java.util.Map;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterDataBasePanel;
 import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
@@ -16,33 +15,18 @@ public class _AlerterModelManager
 	private _DatabaseHandler databaseHandler;	
 	private KieasMessageBuilder kieasMessageBuilder;
 	
-	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
+//	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
 	private AlerterDataBasePanelModel alerterDataBasePanelModel;
 	
 
 	private AlertLogTableModel alertLogTableModel;
-	private HashMap<String, String> alertMessageMap;
-	private HashMap<String, String> alertElementMap;
+	private Map<String, String> alertMessageMap;
+	private Map<String, String> alertElementMap;
 	
 	private String message;
 	private String identifier;
-	
-
-	public static final String EVENT_CODE = "eventCode";
-	public static final String STATUS = "status";
-	
-	public static final String NO = "No.";
-	public static final String SENDER = "Sender";
-	public static final String IDENTIFIER = "Identifier";
-	public static final String SENT = "Sent";
-	public static final String EVENT = "Event";
-	public static final String RESTRICTION = "Restriction";
-	public static final String GEO_CODE = "GeoCode";
-	
-	public static final String ACK = "ACK";
-	public static final String NACK = "NACK";
-	public static final String COMP = "COMP";
+		
 	
 	
 	public static _AlerterModelManager getInstance(_AlerterController alerterController)
@@ -66,7 +50,7 @@ public class _AlerterModelManager
 		this.databaseHandler = new _DatabaseHandler();
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 
-		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
+//		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
 		this.alerterCapGeneratePanelModel = new AlerterCapGeneratePanelModel(this);
 		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
 		
@@ -85,27 +69,19 @@ public class _AlerterModelManager
 	
 	private void initAlertElementMap()
 	{		
-		String sender = "sender";
-		String identifier = "identifier";
-		String sent = "sent";
-		String event = "event";
-		String restriction = "restriction";
-		String geoCode = "geoCode";
-//		String ack = "ack";
-		
-		alertElementMap.put(SENDER, sender);
-		alertElementMap.put(IDENTIFIER, identifier);
-		alertElementMap.put(SENT, sent);
-		alertElementMap.put(EVENT, event);
-		alertElementMap.put(RESTRICTION, restriction);
-		alertElementMap.put(GEO_CODE, geoCode);
+		alertElementMap.put(KieasMessageBuilder.SENDER, KieasMessageBuilder.SENDER);
+		alertElementMap.put(KieasMessageBuilder.IDENTIFIER, KieasMessageBuilder.IDENTIFIER);
+		alertElementMap.put(KieasMessageBuilder.SENT, KieasMessageBuilder.SENT);
+		alertElementMap.put(KieasMessageBuilder.EVENT, KieasMessageBuilder.EVENT);
+		alertElementMap.put(KieasMessageBuilder.RESTRICTION, KieasMessageBuilder.RESTRICTION);
+		alertElementMap.put(KieasMessageBuilder.GEO_CODE, KieasMessageBuilder.GEO_CODE);
 //		alertElementMap.put(ACK, ack);
 	}
-			
-	public ArrayList<String> getQueryResult(String target, String query)
+	
+	public List<String> getQueryResult(String target, String query)
 	{	
 		System.out.println("getQuery target, query : " + target + " " + query);
-		ArrayList<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
+		List<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
 		for (String string : result)
 		{
 			System.out.println("query result = " + string);
@@ -124,30 +100,20 @@ public class _AlerterModelManager
 		return result;	
 	}	
 
-	public void loadCap(String path)
-	{
-		alerterCapGeneratePanelModel.loadCap(path);
-	}
+	public String getMessage() { return message; }
+	public void loadCap(String path) { alerterCapGeneratePanelModel.loadCap(path); }	
+	public void saveCap(String path) { alerterCapGeneratePanelModel.saveCap(path); }
 	
-	public void saveCap(String path)
-	{
-		alerterCapGeneratePanelModel.saveCap(path);		
-	}
-
 	public void updateView(String view, String target, String value) 
 	{
 		controller.updateView(view, target, value);
 	}
-
-	public void updateView(String view, String target, ArrayList<String> value) 
+	
+	public void updateView(String view, String target, List<String> value) 
 	{
 		controller.updateView(view, target, value);
 	}
 	
-	public String getMessage()
-	{
-		return message;
-	}
 
 	public void generateCap(String alertSystemType)
 	{
@@ -157,14 +123,12 @@ public class _AlerterModelManager
 		kieasMessageBuilder.setMessage(cap);
 		kieasMessageBuilder.setIdentifier(identifier);
 		kieasMessageBuilder.setRestricion(alertSystemType);
+	
 		this.message = kieasMessageBuilder.getMessage();
 		controller.setTextArea(message);
 	}
 
-	public String getId()
-	{
-		return kieasMessageBuilder.getIdentifier();
-	}
+	public String getId() {	return kieasMessageBuilder.getIdentifier(); }
 	
 	public String generateIdentifier()
 	{
@@ -176,20 +140,9 @@ public class _AlerterModelManager
 		return identifier;
 	}
 
-	public String getEvent()
-	{
-		return kieasMessageBuilder.getEvent(0);
-	}
-
-	public String getRestriction()
-	{
-		return kieasMessageBuilder.getRestriction();
-	}
-
-	public String getGeoCode()
-	{
-		return kieasMessageBuilder.getGeoCode(0, 0);
-	}
+	public String getEvent() { return kieasMessageBuilder.getEvent(0); }
+	public String getRestriction() { return kieasMessageBuilder.getRestriction(); }
+	public String getGeoCode() { return kieasMessageBuilder.getGeoCode(0, 0); }
 
 	public void addAlertTableRow()
 	{
@@ -199,17 +152,18 @@ public class _AlerterModelManager
 		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
 	
-	public HashMap<String, String> getAlertElementMap(String message)
+	public Map<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		alertElementMap.replace(SENDER, kieasMessageBuilder.getSender());
-		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace(SENT, kieasMessageBuilder.getSent());
-		alertElementMap.replace(EVENT, kieasMessageBuilder.getEvent(0));
+		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
+		
 		if(kieasMessageBuilder.getRestriction() != null)
 		{
-			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());			
+			alertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());			
 		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
@@ -231,7 +185,7 @@ public class _AlerterModelManager
 		return alertMessageMap.get(identifier);
 	}
 	
-	public HashMap<String, String> getAlertMessageMap()
+	public Map<String, String> getAlertMessageMap()
 	{
 		return alertMessageMap;
 	}
@@ -246,7 +200,7 @@ public class _AlerterModelManager
 		alertLogTableModel.receiveAck(identifier);
 	}
 
-	public void applyAlertElement(HashMap<String, String> alertElement)
+	public void applyAlertElement(Map<String, String> alertElement)
 	{
 		alerterCapGeneratePanelModel.applyAlertElement(alertElement);
 	}

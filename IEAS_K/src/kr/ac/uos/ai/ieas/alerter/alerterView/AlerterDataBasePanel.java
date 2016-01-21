@@ -4,8 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -157,17 +158,10 @@ public class AlerterDataBasePanel
 		return false;
 	}
 
-	public Component getPanel()
-	{
-		return this.databaseScrollPanel;
-	}
-
-	public void selectTableEvent()
-	{
-		setDataTextArea();
-	}
+	public Component getPanel() { return this.databaseScrollPanel; }
+	public void selectTableEvent() { setDataTextArea(); }
 	
-	public void addAlertTableRow(ArrayList<String> results) 
+	public void addAlertTableRow(List<String> results) 
 	{		
 		for (String message : results)
 		{
@@ -182,12 +176,9 @@ public class AlerterDataBasePanel
 		alertMessageMap.put(key, message);
 	}
 	
-	public String getAlertMessage(String identifier)
-	{
-		return alertMessageMap.get(identifier);
-	}
+	public String getAlertMessage(String identifier) { return alertMessageMap.get(identifier); }
 	
-	public HashMap<String, String> getAlertElementMap(String message) 
+	public Map<String, String> getAlertElementMap(String message) 
 	{		
 		kieasMessageBuilder.setMessage(message);
 		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
@@ -198,15 +189,12 @@ public class AlerterDataBasePanel
 		return alertElementMap;
 	}
 
-	public void getQueryResult(ArrayList<String> results)
+	public void getQueryResult(List<String> results)
 	{	
 		System.out.println("panel getquery");
 		alertTableModel.getTableModel().setRowCount(0);
 		addAlertTableRow(results);
 	}
 
-	public String getQuery()
-	{
-		return queryTextField.getText();
-	}
+	public String getQuery() { return queryTextField.getText(); }
 }

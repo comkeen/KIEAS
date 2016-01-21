@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterCapGeneratePanel;
@@ -30,12 +31,12 @@ public class AlerterCapGeneratePanelModel
 
 	private Vector<Object> mViewComponentProperties;
 
-	private HashMap<String, String> mComponents;
+	private Map<String, String> mComponents;
 	private String mTextArea;
 	private String mLoadTextField;
 	private String mSaveTextField;
 
-	private HashMap<String, String> mAlertValues;
+	private Map<String, String> mAlertValues;
 	private String mIdentifier;
 	private String mSender;
 	private String mSent;
@@ -44,8 +45,8 @@ public class AlerterCapGeneratePanelModel
 	private String mScope;
 	private String mCode;
 
-	private Vector<HashMap<String, String>> mInfoValues;
-	private HashMap<String, String> mInfoIndexValues;
+	private Vector<Map<String, String>> mInfoValues;
+	private Map<String, String> mInfoIndexValues;
 	private int mInfoIndex;
 	private String mLanguage;
 	private String mCategory;
@@ -61,15 +62,15 @@ public class AlerterCapGeneratePanelModel
 	private String mWeb;
 	private String mContact;
 	
-	private Vector<HashMap<String, String>> mResourceValues;
-	private HashMap<String, String> mResourceIndexValues;
+	private Vector<Map<String, String>> mResourceValues;
+	private Map<String, String> mResourceIndexValues;
 	private int mResourceCounter;
 	private String mResourceDesc;
 	private String mMimeType;
 	private String mUri;
 	
-	private Vector<HashMap<String, String>> mAreaValues;
-	private HashMap<String, String> mAreaIndexValues;
+	private Vector<Map<String, String>> mAreaValues;
+	private Map<String, String> mAreaIndexValues;
 	private int mAreaCounter;
 	private String mAreaDesc;
 	private String mGeoCode;
@@ -144,7 +145,7 @@ public class AlerterCapGeneratePanelModel
 		mViewComponentProperties.addElement(initAreaPanelComponents());
 	}
 	
-	private HashMap<String, String> initSaveLoadPanelComponents()
+	private Map<String, String> initSaveLoadPanelComponents()
 	{
 		this.mComponents = new HashMap<>();
 		mComponents.put(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, mLoadTextField);
@@ -153,7 +154,7 @@ public class AlerterCapGeneratePanelModel
 		return mComponents;
 	}
 
-	private HashMap<String, String> initAlertPanelComponents()
+	private Map<String, String> initAlertPanelComponents()
 	{
 		this.mAlertValues = new HashMap<>();
 		mAlertValues.put(KieasMessageBuilder.IDENTIFIER, mIdentifier);
@@ -167,7 +168,7 @@ public class AlerterCapGeneratePanelModel
 		return mAlertValues;
 	}
 
-	private Vector<HashMap<String, String>> initInfoPanelComponents()
+	private Vector<Map<String, String>> initInfoPanelComponents()
 	{
 		if(mInfoValues != null)
 		{
@@ -189,7 +190,7 @@ public class AlerterCapGeneratePanelModel
 	 * @param index 추가되는 Info의 Index.
 	 * @return HashMap<String, String>
 	 */	
-	private HashMap<String, String> addInfoIndexValues(int index)
+	private Map<String, String> addInfoIndexValues(int index)
 	{
 		this.mInfoIndexValues = new HashMap<>();
 		mInfoIndexValues.put(KieasMessageBuilder.LANGUAGE + index, mLanguage);
@@ -215,7 +216,7 @@ public class AlerterCapGeneratePanelModel
 		addInfoIndexValues(mInfoIndex);
 	}
 	
-	private Vector<HashMap<String, String>> initResourcePanelComponents()
+	private Vector<Map<String, String>> initResourcePanelComponents()
 	{
 		this.mResourceValues = new Vector<>();
 		this.mResourceCounter = 0;
@@ -230,7 +231,7 @@ public class AlerterCapGeneratePanelModel
 	 * @param index 추가되는 Resource Index.
 	 * @return HashMap<String, String>
 	 */
-	private HashMap<String, String> addResourceIndexValues(int index)
+	private Map<String, String> addResourceIndexValues(int index)
 	{
 		this.mResourceIndexValues = new HashMap<>();
 		mResourceIndexValues.put(KieasMessageBuilder.RESOURCE_DESC + index, mResourceDesc);
@@ -240,7 +241,7 @@ public class AlerterCapGeneratePanelModel
 		return mResourceIndexValues;
 	}
 	
-	private Vector<HashMap<String, String>> initAreaPanelComponents()
+	private Vector<Map<String, String>> initAreaPanelComponents()
 	{
 		this.mAreaValues = new Vector<>();
 		this.mAreaCounter = 0;
@@ -255,7 +256,7 @@ public class AlerterCapGeneratePanelModel
 	 * @param index 추가되는 Area Index.
 	 * @return HashMap<String, String>
 	 */
-	private HashMap<String, String> addAreaIndexValues(int index)
+	private Map<String, String> addAreaIndexValues(int index)
 	{
 		this.mAreaIndexValues = new HashMap<>();
 		mAreaIndexValues.put(KieasMessageBuilder.AREA_DESC + index, mAreaDesc);
@@ -292,14 +293,14 @@ public class AlerterCapGeneratePanelModel
 //						alerterModelManager.updateView(mViewName, target, value);
 //						return;
 //					}
-					((HashMap<String, String>) component).replace(target, value);
+					((Map<String, String>) component).replace(target, value);
 					alerterModelManager.updateView(mViewName, target, value);
 					return;
 				}
 				if (component instanceof Vector<?>)
 				{
 					
-					for (HashMap<String, String> hashMap : (Vector<HashMap<String, String>>) component)
+					for (Map<String, String> hashMap : (Vector<Map<String, String>>) component)
 					{
 						if(hashMap.containsKey(target))
 						{
@@ -463,7 +464,7 @@ public class AlerterCapGeneratePanelModel
 		return target;
 	}
 
-	public void applyAlertElement(HashMap<String, String> alertElement)
+	public void applyAlertElement(Map<String, String> alertElement)
 	{
 		if(alertElement.get(KieasMessageBuilder.IDENTIFIER).length() != 0)
 		{

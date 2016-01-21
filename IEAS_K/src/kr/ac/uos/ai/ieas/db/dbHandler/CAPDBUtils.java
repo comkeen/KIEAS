@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.dbutils.BeanProcessor;
 
@@ -17,27 +18,29 @@ import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 
 
 public class CAPDBUtils
-{	
+{
+	private DataTransaction transaction;
+	
 	
 	private static String SEARCH_ALERT_EID = "SELECT `alert_eid` from `alert` WHERE "
 			+ "(identifier=? and sender=? and sent=?);";
 	
 	public CAPDBUtils()
 	{
-		
+		this.transaction = new DataTransaction(this);
 	}	
 	
-	public ArrayList<CAPAlert> getAlerts()
+	public List<CAPAlert> getAlerts()
 	{
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			Statement statement = conn.createStatement();
 
 			ResultSet rs = statement.executeQuery("select * from alert");
 			BeanProcessor alertBp = new BeanProcessor();
-			ArrayList<CAPAlert> list = new ArrayList<CAPAlert>();
+			List<CAPAlert> list = new ArrayList<CAPAlert>();
 
 			while (rs.next())
 			{
@@ -54,17 +57,17 @@ public class CAPDBUtils
 		}
 	}
 
-	public ArrayList<CAPInfo> getInfos()
+	public List<CAPInfo> getInfos()
 	{
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			Statement statement = conn.createStatement();
 
 			ResultSet rs = statement.executeQuery("select * from info");
 			BeanProcessor alertBp = new BeanProcessor();
-			ArrayList<CAPInfo> list = new ArrayList<CAPInfo>();
+			List<CAPInfo> list = new ArrayList<CAPInfo>();
 
 			while (rs.next())
 			{
@@ -81,17 +84,17 @@ public class CAPDBUtils
 		}
 	}
 
-	public ArrayList<CAPResource> getResources()
+	public List<CAPResource> getResources()
 	{
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			Statement statement = conn.createStatement();
 
 			ResultSet rs = statement.executeQuery("select * from resource");
 			BeanProcessor alertBp = new BeanProcessor();
-			ArrayList<CAPResource> list = new ArrayList<CAPResource>();
+			List<CAPResource> list = new ArrayList<CAPResource>();
 
 			while (rs.next())
 			{
@@ -108,17 +111,17 @@ public class CAPDBUtils
 		}
 	}
 
-	public ArrayList<CAPArea> getAreas()
+	public List<CAPArea> getAreas()
 	{
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			Statement statement = conn.createStatement();
 
 			ResultSet rs = statement.executeQuery("select * from area");
 			BeanProcessor alertBp = new BeanProcessor();
-			ArrayList<CAPArea> list = new ArrayList<CAPArea>();
+			List<CAPArea> list = new ArrayList<CAPArea>();
 
 			while (rs.next())
 			{
@@ -135,28 +138,28 @@ public class CAPDBUtils
 		}
 	}
 	
-	public ArrayList<CAPAlert> searchCAPsByEventType(DisasterEventType type)
+	public List<CAPAlert> searchCAPsByEventType(DisasterEventType type)
 	{
 		String query = "select * from info where eventCode=?";
 		String ecode = "{\"valueName\":\"TTAS.KO-07.0046/R5 재난 종류 코드\",\"value\":\""+type+"\"}";
 		//System.out.println("ecode = " + ecode);
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, ecode);
 			System.out.println("pstmt = " + pstmt.toString());
 			ResultSet rs = pstmt.executeQuery();
 			BeanProcessor infoBp = new BeanProcessor();
-			ArrayList<CAPInfo> list = new ArrayList<CAPInfo>();
+			List<CAPInfo> list = new ArrayList<CAPInfo>();
 			
 			while(rs.next())
 			{
 				list.add((CAPInfo) infoBp.toBean(rs, CAPInfo.class));
 			}
 			
-			ArrayList<CAPAlert> result = this.searchFullCAPsByInfoElement(list);
+			List<CAPAlert> result = this.searchFullCAPsByInfoElement(list);
 			return result;
 		}
 		catch (SQLException e)
@@ -166,26 +169,26 @@ public class CAPDBUtils
 		}
 	}
 	
-	public ArrayList<CAPAlert> searchCAPsByStatus(String status)
+	public List<CAPAlert> searchCAPsByStatus(String status)
 	{
 		String query = "select * from alert where status=?";
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, status);
 			System.out.println("pstmt = " + pstmt.toString());
 			ResultSet rs = pstmt.executeQuery();
 			BeanProcessor alertBp = new BeanProcessor();
-			ArrayList<CAPAlert> list = new ArrayList<CAPAlert>();
+			List<CAPAlert> list = new ArrayList<CAPAlert>();
 			
 			while(rs.next())
 			{
 				list.add((CAPAlert) alertBp.toBean(rs, CAPAlert.class));
 			}
 			
-			ArrayList<CAPAlert> result = this.searchFullCAPsByAlertElement(list);
+			List<CAPAlert> result = this.searchFullCAPsByAlertElement(list);
 			return result;
 		}
 		catch (SQLException e)
@@ -195,7 +198,7 @@ public class CAPDBUtils
 		}
 	}
 		
-	public ArrayList<CAPAlert> searchFullCAPsByInfoElement(ArrayList<CAPInfo> infoList)
+	public List<CAPAlert> searchFullCAPsByInfoElement(List<CAPInfo> infoList)
 	{
 		String alertIdList = "";
 		String infoIdList = "";
@@ -214,9 +217,9 @@ public class CAPDBUtils
 		alertIdList = "(" + alertIdList + ");";
 		infoIdList = "(" + infoIdList + ");";
 		
-		ArrayList<CAPAlert> alertList = new ArrayList<CAPAlert>();
-		ArrayList<CAPResource> resList = new ArrayList<CAPResource>();
-		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
+		List<CAPAlert> alertList = new ArrayList<CAPAlert>();
+		List<CAPResource> resList = new ArrayList<CAPResource>();
+		List<CAPArea> areaList = new ArrayList<CAPArea>();
 		
 		String alertQuery = "SELECT * FROM alert WHERE alert_eid in " + alertIdList; // + "and type="actual"
 		String resQuery = "SELECT * FROM resource WHERE info_eid in " + infoIdList;
@@ -224,10 +227,9 @@ public class CAPDBUtils
 		
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
-			
-			
+						
 			Statement stmtAlert = conn.createStatement();
 			ResultSet rsAlert = stmtAlert.executeQuery(alertQuery);
 			BeanProcessor alertBp = new BeanProcessor();
@@ -261,7 +263,7 @@ public class CAPDBUtils
 			
 //			System.out.println("areaList 완료");
 			
-			ArrayList<CAPAlert> fullList = buildFullCap(alertList, infoList, resList, areaList);
+			List<CAPAlert> fullList = buildFullCap(alertList, infoList, resList, areaList);
 			return fullList;
 		}
 		catch (SQLException e)
@@ -271,7 +273,7 @@ public class CAPDBUtils
 		}
 	}
 	
-	public ArrayList<CAPAlert> searchFullCAPsByAlertElement(ArrayList<CAPAlert> alertList)
+	public List<CAPAlert> searchFullCAPsByAlertElement(List<CAPAlert> alertList)
 	{
 		String alertIdList = "";
 		String infoIdList = "";
@@ -287,16 +289,16 @@ public class CAPDBUtils
 		
 		alertIdList = "(" + alertIdList + ");";
 		
-		ArrayList<CAPInfo> infoList = new ArrayList<CAPInfo>();
-		ArrayList<CAPResource> resList = new ArrayList<CAPResource>();
-		ArrayList<CAPArea> areaList = new ArrayList<CAPArea>();
+		List<CAPInfo> infoList = new ArrayList<CAPInfo>();
+		List<CAPResource> resList = new ArrayList<CAPResource>();
+		List<CAPArea> areaList = new ArrayList<CAPArea>();
 		
 		String infoQuery = "SELECT * FROM info WHERE info_eid in " + alertIdList;
 		System.out.println(infoQuery);
 		
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			
 			Statement stmtInfo = conn.createStatement();
@@ -343,7 +345,7 @@ public class CAPDBUtils
 			
 //			System.out.println("areaList 완료");
 			
-			ArrayList<CAPAlert> fullList = buildFullCap(alertList, infoList, resList, areaList);
+			List<CAPAlert> fullList = buildFullCap(alertList, infoList, resList, areaList);
 			return fullList;
 		}
 		catch (SQLException e)
@@ -353,10 +355,10 @@ public class CAPDBUtils
 		}
 	}
 
-	public ArrayList<CAPAlert> getCAPDrafts() {
+	public List<CAPAlert> getCAPDrafts() {
 		
-		ArrayList<CAPAlert> draftList = new ArrayList<CAPAlert>();
-		ArrayList<CAPInfo> infoList = new ArrayList<CAPInfo>();
+		List<CAPAlert> draftList = new ArrayList<CAPAlert>();
+		List<CAPInfo> infoList = new ArrayList<CAPInfo>();
 		String queryAlert = "SELECT * from alert WHERE status='Draft'"; 
 		String queryInfo = "SELECT * from info WHERE alert_eid in ";
 		String alertIdList = "";
@@ -364,7 +366,7 @@ public class CAPDBUtils
 		
 		try
 		{
-			DataTransaction transaction = new DataTransaction(true);
+//			DataTransaction transaction = new DataTransaction(true);
 			Connection conn = transaction.connection;
 			
 			Statement stmtAlert = conn.createStatement();
@@ -408,11 +410,13 @@ public class CAPDBUtils
 		}
 	}
 	
-	protected int getAlertEidByObject(CAPAlert alert) {
-		DataTransaction transaction = new DataTransaction(true);
+	protected int getAlertEidByObject(CAPAlert alert)
+	{
+//		DataTransaction transaction = new DataTransaction(true);
 		Connection conn = transaction.connection;
 		
-		try {
+		try
+		{
 			PreparedStatement pstmt = conn.prepareStatement(CAPDBUtils.SEARCH_ALERT_EID);
 			pstmt.setString(1, alert.getIdentifier());
 			pstmt.setString(2, alert.getSender());
@@ -420,36 +424,38 @@ public class CAPDBUtils
 			
 			ResultSet rs = pstmt.executeQuery();
 			BeanProcessor bpAlert = new BeanProcessor();
-			while(rs.next()) {
+			while(rs.next())
+			{
 				CAPAlert result = bpAlert.toBean(rs, CAPAlert.class);
 				return result.getAlert_eid();
 			};
 			
 			
 			
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		} 
 		return 0;
 	}
 	
-	private ArrayList<CAPAlert> buildFullCap(ArrayList<CAPAlert> alertList,	ArrayList<CAPInfo> infoList, ArrayList<CAPResource> resList, ArrayList<CAPArea> areaList)
+	private List<CAPAlert> buildFullCap(List<CAPAlert> alertList,	List<CAPInfo> infoList, List<CAPResource> resList, List<CAPArea> areaList)
 	{
-
-		ArrayList<CAPAlert> alertElementList = new ArrayList<CAPAlert>();
+		List<CAPAlert> alertElementList = new ArrayList<CAPAlert>();
 		
 		for (CAPAlert alertElement : alertList) 
 		{
 			int alertIndex = alertElement.getAlert_eid();
 			
-			ArrayList<CAPInfo> infoElementList = new ArrayList<CAPInfo>();
+			List<CAPInfo> infoElementList = new ArrayList<CAPInfo>();
 			
 			for (CAPInfo infoElement : infoList)
 			{
 				int infoIndex = infoElement.getInfo_eid();
 				
-				ArrayList<CAPResource> resElementList = new ArrayList<CAPResource>();
-				ArrayList<CAPArea> areaElementList = new ArrayList<CAPArea>();
+				List<CAPResource> resElementList = new ArrayList<CAPResource>();
+				List<CAPArea> areaElementList = new ArrayList<CAPArea>();
 				
 				if(infoElement.getAlert_eid() == alertIndex) 
 				{
@@ -479,13 +485,18 @@ public class CAPDBUtils
 		}		
 		return alertElementList;
 	}
-	
-	public static void main(String[] args) {
-		ArrayList<CAPAlert> drafts = new ArrayList<CAPAlert>();
-		CAPDBUtils util = new CAPDBUtils();
-		drafts = util.getCAPDrafts();
-		System.out.println("size: " + drafts.size());
-		System.out.println("하위 info size: " + drafts.get(0).getInfoList().size());
+//	
+//	public static void main(String[] args) {
+//		ArrayList<CAPAlert> drafts = new ArrayList<CAPAlert>();
+//		CAPDBUtils util = new CAPDBUtils();
+//		drafts = util.getCAPDrafts();
+//		System.out.println("size: " + drafts.size());
+//		System.out.println("하위 info size: " + drafts.get(0).getInfoList().size());
+//	}
+
+	public void connectionFail() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

@@ -1,7 +1,7 @@
 package kr.ac.uos.ai.ieas.db.dbModel;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CAPAlert implements CAPBean {
 
@@ -20,7 +20,7 @@ public class CAPAlert implements CAPBean {
 	private String references;
 	private String incidents;
 
-	private ArrayList<CAPInfo> infoList;
+	private List<CAPInfo> infoList;
 
 	public enum Status {
 		Actual, Exercise, System, Test, Draft;
@@ -146,11 +146,11 @@ public class CAPAlert implements CAPBean {
 		this.incidents = incidents;
 	}
 
-	public ArrayList<CAPInfo> getInfoList() {
+	public List<CAPInfo> getInfoList() {
 		return infoList;
 	}
 
-	public void setInfoList(ArrayList<CAPInfo> infoList) {
+	public void setInfoList(List<CAPInfo> infoList) {
 		this.infoList = infoList;
 	}
 

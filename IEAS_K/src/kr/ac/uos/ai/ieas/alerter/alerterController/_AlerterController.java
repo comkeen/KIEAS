@@ -1,7 +1,7 @@
 
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -201,7 +201,7 @@ public class _AlerterController
 		alerterTopView.updateView(view, target, value);
 	}
 	
-	public void updateView(String view, String target, ArrayList<String> value)
+	public void updateView(String view, String target, List<String> value)
 	{
 		alerterTopView.updateView(view, target, value);
 	}

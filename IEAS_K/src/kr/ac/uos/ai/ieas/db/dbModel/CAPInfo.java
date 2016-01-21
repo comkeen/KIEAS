@@ -2,6 +2,7 @@ package kr.ac.uos.ai.ieas.db.dbModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CAPInfo implements CAPBean {
 
@@ -27,8 +28,8 @@ public class CAPInfo implements CAPBean {
 	private String parameter;
 	private int alert_eid;
 	
-	private ArrayList<CAPResource> resList;
-	private ArrayList<CAPArea> areaList;
+	private List<CAPResource> resList;
+	private List<CAPArea> areaList;
 
 	public enum Language
 	{
@@ -235,19 +236,19 @@ public class CAPInfo implements CAPBean {
 		this.alert_eid = alert_eid;
 	}
 
-	public ArrayList<CAPResource> getResList() {
+	public List<CAPResource> getResList() {
 		return resList;
 	}
 
-	public void setResList(ArrayList<CAPResource> resList) {
+	public void setResList(List<CAPResource> resList) {
 		this.resList = resList;
 	}
 
-	public ArrayList<CAPArea> getAreaList() {
+	public List<CAPArea> getAreaList() {
 		return areaList;
 	}
 
-	public void setAreaList(ArrayList<CAPArea> areaList) {
+	public void setAreaList(List<CAPArea> areaList) {
 		this.areaList = areaList;
 	}
 
