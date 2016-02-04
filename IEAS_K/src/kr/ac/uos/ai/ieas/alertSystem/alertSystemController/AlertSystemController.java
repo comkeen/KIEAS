@@ -7,7 +7,6 @@ import java.util.Enumeration;
 import java.util.Random;
 
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
@@ -23,10 +22,8 @@ public class AlertSystemController
 	private String geoCode;
 	private String ackMessage;
 
-	public static final String SYSTEM = "System";
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
-	public static final String RESTRICTED = "Restricted";
 	
 	public static final long DELAY = 1000;
 	
@@ -37,11 +34,15 @@ public class AlertSystemController
 		this.actionListener = new AlertSystemActionListener(this);
 		this.view = new AlertSystemView(this);
 		this.transmitter = new AlertSystemTransmitter(this);
+		
 		init();
 	}
 	
 	private void init()
 	{
+		this.geoCode = "1100000000";
+//		this.geoCode = "5000000000";
+		
 //		this.alertSystemID = KieasName.STANDARD_ALERT_SYSTEM;
 		setID();
 				
@@ -52,8 +53,9 @@ public class AlertSystemController
 	
 	public void setID()
 	{
-		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType();
+		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType() + "/" + geoCode;
 		this.alertSystemType = view.getSelectedAlertSystemType();
+		transmitter.setAlertSystemId(alertSystemID);
 		view.setAlertSystemId(alertSystemID);
 	}
 	
@@ -85,13 +87,13 @@ public class AlertSystemController
 		{
 			ieasMessage.setMessage(message);
 
-			String sender = ieasMessage.getSender();
+			String sender = ieasMessage.getAlertElement(KieasMessageBuilder.SENDER);
 			
 			System.out.println("(" + alertSystemID + ")" + " Received Message From (" + sender + ") : ");
 			System.out.println();
 			
 			view.setTextArea(message);
-			sendAckMessage(message, KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+//			sendAckMessage(message, KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 		}
 		catch (Exception e) 
 		{
@@ -124,10 +126,9 @@ public class AlertSystemController
 	private String createAckMessage(String message)
 	{
 		ieasMessage.setMessage(message);
-		
-		ieasMessage.setAddresses(ieasMessage.getSender());
-		ieasMessage.setMsgType("Ack");
-		ieasMessage.setSender(alertSystemID);
+
+		ieasMessage.setAlertElement(KieasMessageBuilder.SENDER, alertSystemID);
+		ieasMessage.setAlertElement(KieasMessageBuilder.MSG_TYPE, "Ack");
 		ieasMessage.build();
 		
 		return ieasMessage.getMessage();
@@ -166,10 +167,11 @@ public class AlertSystemController
 	public void registerToGateway()
 	{
 		ieasMessage.buildDefaultMessage();
-		ieasMessage.setSender(alertSystemID);
-		ieasMessage.setStatus(SYSTEM);
-		ieasMessage.setScope(RESTRICTED);
-		ieasMessage.setRestricion(alertSystemType);
+		ieasMessage.setAlertElement(KieasMessageBuilder.SENDER, alertSystemID);
+		ieasMessage.setAlertElement(KieasMessageBuilder.STATUS, KieasMessageBuilder.SYSTEM);
+		ieasMessage.setAlertElement(KieasMessageBuilder.SCOPE, KieasMessageBuilder.RESTRICTED);
+		ieasMessage.setAlertElement(KieasMessageBuilder.RESTRICTION, alertSystemType);
+		ieasMessage.setAlertElement(KieasMessageBuilder.NOTE, geoCode);
 		ieasMessage.build();
 		System.out.println(ieasMessage.getMessage());
 		

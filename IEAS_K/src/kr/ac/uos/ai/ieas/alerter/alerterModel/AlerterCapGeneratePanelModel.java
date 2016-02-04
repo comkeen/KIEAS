@@ -329,13 +329,13 @@ public class AlerterCapGeneratePanelModel
 	 */
 	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
-		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
-		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
-		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
-		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());		
+		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
+		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
+		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
+		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.STATUS));
+		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.MSG_TYPE));
+		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SCOPE));
+		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.CODE));		
 		
 		setInfoPanel(kieasMessageBuilder);
 		setResourcePanel(kieasMessageBuilder);
@@ -468,14 +468,14 @@ public class AlerterCapGeneratePanelModel
 	{
 		if(alertElement.get(KieasMessageBuilder.IDENTIFIER).length() != 0)
 		{
-			kieasMessageBuilder.setIdentifier(alertElement.get(KieasMessageBuilder.IDENTIFIER));			
-			kieasMessageBuilder.setSender(alertElement.get(KieasMessageBuilder.SENDER));
-			kieasMessageBuilder.setSent();
-			kieasMessageBuilder.setStatus(alertElement.get(KieasMessageBuilder.STATUS));
-			kieasMessageBuilder.setMsgType(alertElement.get(KieasMessageBuilder.MSG_TYPE));
-			kieasMessageBuilder.setScope(alertElement.get(KieasMessageBuilder.SCOPE));
-			kieasMessageBuilder.setRestricion(alertElement.get(KieasMessageBuilder.RESTRICTION));
-			kieasMessageBuilder.setCode(alertElement.get(KieasMessageBuilder.CODE));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, alertElement.get(KieasMessageBuilder.IDENTIFIER));			
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, alertElement.get(KieasMessageBuilder.SENDER));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, "");
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.STATUS, alertElement.get(KieasMessageBuilder.STATUS));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, alertElement.get(KieasMessageBuilder.MSG_TYPE));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SCOPE, alertElement.get(KieasMessageBuilder.SCOPE));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, alertElement.get(KieasMessageBuilder.RESTRICTION));
+			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.CODE, alertElement.get(KieasMessageBuilder.CODE));
 			
 			setAlertPanel(kieasMessageBuilder);
 		}
@@ -488,8 +488,8 @@ public class AlerterCapGeneratePanelModel
 
 	public String getMessage()
 	{
-		kieasMessageBuilder.setSent();
-		kieasMessageBuilder.setIdentifier(alerterModelManager.generateIdentifier());
+//		kieasMessageBuilder.setSent();
+//		kieasMessageBuilder.setIdentifier(alerterModelManager.generateIdentifier());
 		return kieasMessageBuilder.getMessage();
 	}
 }

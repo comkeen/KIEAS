@@ -16,17 +16,17 @@ public class KieasConfiguration
 	
 	public static class KieasAddress 
 	{
-		public static final String ACTIVEMQ_SERVER_IP = "tcp://localhost:61616";
+		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://localhost:61616";
 //		public static final String ACTIVEMQ_SERVER_IP = "tcp://127.0.0.1:61616";
 //		public static final String ACTIVEMQ_SERVER_IP = "tcp://192.168.0.7:61616"; //home window
 //		public static final String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.135:61616"; //host window
+
+		public static final String DATABASE_SERVER_IP_LOCAL = "jdbc:mysql://localhost:3306";
 //		public static final String DATABASE_SERVER_IP = "jdbc:mysql://172.16.165.135:3306";
-		public static final String DATABASE_SERVER_IP = "jdbc:mysql://localhost:3306";
 		
 		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
-		public final static String GATEWAY_TO_ALERTER_QUEUE_DESTINATION 		= PACKAGE_NAME+"gatewayToAlerterQueue";
-		
 		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
+		public final static String GATEWAY_TO_ALERTER_QUEUE_DESTINATION 		= PACKAGE_NAME+"gatewayToAlerterQueue";		
 		public final static String GATEWAY_TO_ALERTSYSTEM_QUEUE_DESTINATION 	= PACKAGE_NAME+"gatewayToAlertSystemQueue";
 		
 		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
@@ -81,6 +81,14 @@ public class KieasConfiguration
 			"Contact",
 			"Headline",
 			"Description"
+		};
+		
+		public static final String[] GEO_CODE_LIST =
+		{
+			"1100000000",
+			"2600000000",
+			"2700000000",
+			"5000000000"
 		};
 		
 		public static final String[] LANGUAGE_LIST =

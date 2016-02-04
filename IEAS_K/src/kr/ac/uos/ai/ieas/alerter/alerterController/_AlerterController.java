@@ -81,8 +81,8 @@ public class _AlerterController
 			System.out.println("alerter acceptMessage");
 			kieasMessage.setMessage(message);
 
-			String sender = kieasMessage.getSender();
-			String identifier = kieasMessage.getIdentifier();
+			String sender = kieasMessage.getAlertElement(KieasMessageBuilder.SENDER);
+			String identifier = kieasMessage.getAlertElement(KieasMessageBuilder.IDENTIFIER);
 
 			System.out.println("(Alerter)" + " Received Message From (" + sender + ") : ");
 			System.out.println();

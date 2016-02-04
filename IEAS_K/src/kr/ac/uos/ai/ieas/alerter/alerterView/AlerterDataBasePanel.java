@@ -167,7 +167,7 @@ public class AlerterDataBasePanel
 		{
 			alertTableModel.addTableRowData(getAlertElementMap(message));	
 			kieasMessageBuilder.setMessage(message);
-			putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
+			putAlertMessageMap(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER), message);
 		}
 	}
 	
@@ -181,9 +181,9 @@ public class AlerterDataBasePanel
 	public Map<String, String> getAlertElementMap(String message) 
 	{		
 		kieasMessageBuilder.setMessage(message);
-		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.transformToYmdhms(kieasMessageBuilder.getSent()));
+		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
+		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.transformToYmdhms(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT)));
 		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
 
 		return alertElementMap;

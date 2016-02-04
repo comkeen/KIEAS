@@ -81,7 +81,7 @@ public class _AlerterModelManager
 	public List<String> getQueryResult(String target, String query)
 	{	
 		System.out.println("getQuery target, query : " + target + " " + query);
-		List<String> result = kieasMessageBuilder.databaseObjectToCapObject(databaseHandler.getQueryResult(target, query.toUpperCase()));
+		List<String> result = kieasMessageBuilder.dbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
 		for (String string : result)
 		{
 			System.out.println("query result = " + string);
@@ -121,14 +121,14 @@ public class _AlerterModelManager
 		
 		String cap = kieasMessageBuilder.buildDefaultMessage();
 		kieasMessageBuilder.setMessage(cap);
-		kieasMessageBuilder.setIdentifier(identifier);
-		kieasMessageBuilder.setRestricion(alertSystemType);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, identifier);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, alertSystemType);
 	
 		this.message = kieasMessageBuilder.getMessage();
 		controller.setTextArea(message);
 	}
 
-	public String getId() {	return kieasMessageBuilder.getIdentifier(); }
+	public String getId() {	return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER); }
 	
 	public String generateIdentifier()
 	{
@@ -141,7 +141,7 @@ public class _AlerterModelManager
 	}
 
 	public String getEvent() { return kieasMessageBuilder.getEvent(0); }
-	public String getRestriction() { return kieasMessageBuilder.getRestriction(); }
+	public String getRestriction() { return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION); }
 	public String getGeoCode() { return kieasMessageBuilder.getGeoCode(0, 0); }
 
 	public void addAlertTableRow()
@@ -149,21 +149,21 @@ public class _AlerterModelManager
 		kieasMessageBuilder.setMessage(message);
 		alertLogTableModel.addTableRowData(getAlertElementMap(message));
 		
-		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
+		putAlertMessageMap(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER), message);
 	}
 	
 	public Map<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
+		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
 		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
 		
-		if(kieasMessageBuilder.getRestriction() != null)
+		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
 		{
-			alertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());			
+			alertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));			
 		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
@@ -172,7 +172,7 @@ public class _AlerterModelManager
 	
 	public void insertDataBase(String message)
 	{
-		databaseHandler.insertCap(kieasMessageBuilder.capObjectToDatabaseObject(message));
+		databaseHandler.insertCap(kieasMessageBuilder.capToDb(message));
 	}
 	
 	public void putAlertMessageMap(String key, String message)

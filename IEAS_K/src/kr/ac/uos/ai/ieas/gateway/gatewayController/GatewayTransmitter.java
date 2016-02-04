@@ -35,7 +35,7 @@ public class GatewayTransmitter
 	public GatewayTransmitter(GatewayController controller)
 	{
 		this.controller = controller;
-		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP;
+		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
 
 		openConnection();
 	}

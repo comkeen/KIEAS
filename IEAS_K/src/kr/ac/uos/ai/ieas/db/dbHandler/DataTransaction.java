@@ -40,7 +40,7 @@ public class DataTransaction
 	public boolean setConnectionTest() throws SQLException
 	{
 		System.out.println("db connection start");
-		String url = KieasAddress.DATABASE_SERVER_IP + urlPostfix;
+		String url = KieasAddress.DATABASE_SERVER_IP_LOCAL + urlPostfix;
 		try
 		{
 			if (dataSource == null)

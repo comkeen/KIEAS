@@ -29,6 +29,9 @@ public class GatewayController {
 	private String status;
 	private String alertSystemType;
 	private String event;
+	private String geoCode;
+	private String note;
+
 
 
 	private static final long DELAY = 1000;
@@ -93,7 +96,7 @@ public class GatewayController {
 			sendAcknowledge(ackMessage, sender);
 
 			broadcastMessage(message);
-
+			routeMessage(message);
 		}
 		catch (Exception e)
 		{
@@ -130,15 +133,18 @@ public class GatewayController {
 		case "SYSTEM":
 			try 
 			{
+				note = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.NOTE);
+				
 				String log = "(" + gatewayID + ")" + " Received Register request From AlertSystem : " + identifier;
 				System.out.println(log);
 				gatewayView.appendLog(log);
-
-				gatewayModelManager.addAlertSystemInfoTableRow(message);
 				
+				//approveRegister();
+				//
+				gatewayModelManager.addAlertSystemInfoTableRow(message);
 				sendAcknowledge(message, sender);
-				gatewayModelManager.receiveAck(identifier);
-
+				gatewayModelManager.receiveAck(identifier);		
+				//
 			}
 			catch (Exception e)
 			{
@@ -147,9 +153,8 @@ public class GatewayController {
 			break;
 		default:
 			break;
-		}
-		
-	}	
+		}		
+	}
 
 	private void sendAcknowledge(String message, String destination)
 	{
@@ -183,6 +188,23 @@ public class GatewayController {
 				String log = "(" + gatewayID + ")" + " Broadcast Message To ("+ alertSystemType +") : ";
 				System.out.println(log);
 				gatewayView.appendLog(log + event);
+			}
+		}
+	}
+
+	private void routeMessage(String message)
+	{
+		geoCode = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.GEO_CODE);
+		
+		for (String item : KieasList.GEO_CODE_LIST)
+		{
+			if (item.equals(geoCode))
+			{
+				gatewayTransmitter.sendQueueMessage(message, geoCode);	
+
+				String log = "(" + gatewayID + ")" + " Route Message To ("+ geoCode +") : ";
+				System.out.println(log);
+				gatewayView.appendLog(log);
 			}
 		}
 	}

@@ -25,6 +25,7 @@ public class GatewayModelManager
 	public static final String EVENT = "Event";
 	public static final String RESTRICTION = "Restriction";
 	public static final String GEO_CODE = "GeoCode";
+	public static final String NOTE = "Note";
 
 	public static final String ACK = "ACK";
 	public static final String NACK = "NACK";
@@ -63,6 +64,7 @@ public class GatewayModelManager
 		alertElementMap.put(EVENT, EVENT);
 		alertElementMap.put(RESTRICTION, RESTRICTION);
 		alertElementMap.put(GEO_CODE, GEO_CODE);
+		alertElementMap.put(NOTE, NOTE);
 //		alertElementMap.put(ACK, ack);
 	}
 
@@ -81,22 +83,23 @@ public class GatewayModelManager
 		alertTableModel.addTableRowData(getAlertElementMap(message));
 
 		kieasMessageBuilder.setMessage(message);
-		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
+		putAlertMessageMap(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER), message);
 	}
 
 	public HashMap<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		alertElementMap.replace(SENDER, kieasMessageBuilder.getSender());
-		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace(STATUS, kieasMessageBuilder.getStatus());
-		alertElementMap.replace(SENT, kieasMessageBuilder.getSent());
-		alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());
+		alertElementMap.replace(SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
+		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
+		alertElementMap.replace(STATUS, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.STATUS));
+		alertElementMap.replace(SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
+		alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));
 		alertElementMap.replace(EVENT, kieasMessageBuilder.getEvent(0));
-		if(kieasMessageBuilder.getRestriction() != null)
+		alertElementMap.replace(NOTE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.NOTE));
+		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
 		{
-			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());			
+			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));			
 		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
@@ -121,8 +124,8 @@ public class GatewayModelManager
 	public String creatAckMessage(String message, String sender)
 	{
 		kieasMessageBuilder.setMessage(message);
-		kieasMessageBuilder.setSender(sender);
-		kieasMessageBuilder.setMsgType("Ack");
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, sender);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, "Ack");
 		kieasMessageBuilder.build();
 
 		return kieasMessageBuilder.getMessage();

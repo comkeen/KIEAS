@@ -45,10 +45,10 @@ o 총 예상 강수량: [Value]mm
       <uri>http://www.kma.go.kr/repositary/image/wrn/img/imageName.png</uri>
     </resource>    
     <area>
-      <areaDesc>[GeoName]</areaDesc>
+      <areaDesc>서울</areaDesc>
       <geocode>
         <valueName>행정구역코드</valueName>
-        <value>[GeoCode]</value>
+        <value>1100000000</value>
       </geocode>
     </area>
   </info>

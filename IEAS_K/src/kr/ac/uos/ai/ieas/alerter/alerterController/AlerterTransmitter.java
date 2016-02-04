@@ -33,7 +33,7 @@ public class AlerterTransmitter
 	public AlerterTransmitter(_AlerterController controller)
 	{
 		this.controller = controller;
-		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP;
+		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
 	}
 	
 	public void setId(String id)

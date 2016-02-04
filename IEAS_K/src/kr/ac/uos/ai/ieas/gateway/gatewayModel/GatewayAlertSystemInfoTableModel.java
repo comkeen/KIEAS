@@ -47,7 +47,7 @@ public class GatewayAlertSystemInfoTableModel {
 		rowData.set(0, Integer.toString(alertSystemCount));
 		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
 		rowData.set(2, alertElementMap.get(GatewayModelManager.RESTRICTION));
-		rowData.set(3, alertElementMap.get(GatewayModelManager.GEO_CODE));
+		rowData.set(3, alertElementMap.get(GatewayModelManager.NOTE));
 
 		tableModel.addRow(rowData.toArray());
 	}

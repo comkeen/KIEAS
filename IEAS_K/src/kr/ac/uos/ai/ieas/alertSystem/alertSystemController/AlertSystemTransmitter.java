@@ -27,18 +27,23 @@ public class AlertSystemTransmitter
 
 	private String geoCode;
 	private String alertSystemType;
+	private String alertSystemId;
+
+	private MessageConsumer queueConsumer;
 
 
 	public AlertSystemTransmitter(AlertSystemController alertSystem)
 	{
 		this.alertSystem = alertSystem;
+		
+		openConnection();
 	}
 
 	public void openConnection()
 	{
 		try
 		{
-			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KieasAddress.ACTIVEMQ_SERVER_IP);
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL);
 			this.connection = factory.createConnection();
 			connection.start();
 			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -48,7 +53,7 @@ public class AlertSystemTransmitter
 			ex.printStackTrace();
 		}
 //		setGeoCodeTopicListener(geoCode);
-		setAlertSystemTypeTopicListener(alertSystemType);
+//		setAlertSystemTypeTopicListener(alertSystemType);
 	}
 	
 	public void setGeoCode(String geoCode)
@@ -96,6 +101,41 @@ public class AlertSystemTransmitter
 		}
 	}
 
+	public void setQueueListener(String queue)
+	{
+		try
+		{
+			System.out.println("queue destination : " + queue);
+			Destination destination = session.createQueue(queue);
+			this.queueConsumer = session.createConsumer(destination);
+			
+			MessageListener listener = new MessageListener()
+			{
+				public void onMessage(Message message)
+				{
+					if (message instanceof TextMessage)
+					{
+						TextMessage textMessage = (TextMessage) message;
+
+						try 
+						{
+							alertSystem.acceptMessage(textMessage.getText());
+						}
+						catch (JMSException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+			queueConsumer.setMessageListener(listener);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public void setGeoCodeTopicListener(String topic)
 	{
 		try
@@ -193,5 +233,12 @@ public class AlertSystemTransmitter
 		{
 			e.printStackTrace();
 		}		
+	}
+
+	public void setAlertSystemId(String id)
+	{
+		this.alertSystemId = id;
+
+		setQueueListener(alertSystemId);
 	}
 }
