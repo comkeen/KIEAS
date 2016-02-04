@@ -1,7 +1,5 @@
 package kr.ac.uos.ai.ieas.resource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +38,6 @@ import kr.ac.uos.ai.ieas.db.dbHandler.DataFormatUtils;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo.Language;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 
@@ -114,6 +111,15 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		this.capXmlBuilder = new CapXmlBuilder();
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
+		
+		init();
+	}
+	
+	private void init()
+	{
+		this.alertElements = new HashMap<String, Object>();
+		this.infos = new ArrayList<Map<String, Object>>();
+		this.infoElements = new HashMap<String, Object>();
 	}
 
 	/**
@@ -1183,7 +1189,15 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	public String getAlertElement(String key)
 	{
-		return alertElements.get(key).toString();		
+		if(alertElements.containsKey(key))
+		{
+			return alertElements.get(key).toString();			
+		}	
+		else
+		{
+			System.out.println("Empty alertElement about : " + key);
+			return null;
+		}
 	}
 
 	public String getInfoElement(int index, String key)
@@ -1208,7 +1222,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			switch (key)
 			{
-			case SENT:
+			case NOTE:
 				break;
 			default:
 				alertElements.replace(key, value);
@@ -1227,7 +1241,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			switch (key)
 			{
-			case EVENT_CODE:
+			case EFFECTIVE:
 				break;
 			default:
 				infos.get(index).replace(key, value);
@@ -1260,23 +1274,23 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			.setStatus(this.setStatus(alertElements.get(STATUS).toString()))
 			.setMsgType(this.setMsgType(alertElements.get(MSG_TYPE).toString()))
 			.setScope(this.setScope(alertElements.get(SCOPE).toString()))
-			.setCode(0, KieasConfiguration.KIEAS_Constant.CODE)
+			.addCode(KieasConfiguration.KIEAS_Constant.CODE)
 			.buildPartial();
 		
 		//옵션 Alert 요소들
-		if(alertElements.get(ADDRESSES).toString().length() != 0)
+		if(alertElements.get(ADDRESSES) != null)
 		{
 			mAlert = Alert.newBuilder(mAlert)
 				.setAddresses(this.setAddresses(alertElements.get(NOTE).toString()))
 				.buildPartial();
 		}	
-		if(alertElements.get(RESTRICTION).toString().length() != 0)
+		if(alertElements.get(RESTRICTION) != null)
 		{
 			mAlert = Alert.newBuilder(mAlert)
 				.setRestriction(alertElements.get(RESTRICTION).toString())
 				.buildPartial();
 		}
-		if(alertElements.get(NOTE).toString().length() != 0)
+		if(alertElements.get(NOTE) != null)
 		{
 			mAlert = Alert.newBuilder(mAlert)
 				.setNote(alertElements.get(NOTE).toString())
@@ -1389,6 +1403,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		try
 		{
 			mAlert = capXmlParser.parseFrom(message);
+			alertElements.put(IDENTIFIER, mAlert.getIdentifier());
+			alertElements.put(SENDER, mAlert.getSender());
+			alertElements.put(SENT, mAlert.getSent());
+			alertElements.put(STATUS, mAlert.getStatus());
+			alertElements.put(MSG_TYPE, mAlert.getMsgType());
+			alertElements.put(SCOPE, mAlert.getScope());
+			alertElements.put(CODE, KieasConfiguration.KIEAS_Constant.CODE);
 		}
 		catch (NotCapException | SAXParseException | CapException e)
 		{
