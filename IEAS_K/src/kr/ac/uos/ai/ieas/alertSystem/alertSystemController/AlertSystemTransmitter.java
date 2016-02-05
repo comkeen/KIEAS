@@ -235,7 +235,7 @@ public class AlertSystemTransmitter
 		}		
 	}
 
-	public void setAlertSystemId(String id)
+	public void setId(String id)
 	{
 		this.alertSystemId = id;
 

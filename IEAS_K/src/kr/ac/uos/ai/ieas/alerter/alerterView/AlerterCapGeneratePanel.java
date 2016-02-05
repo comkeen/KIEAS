@@ -66,6 +66,8 @@ public class AlerterCapGeneratePanel
 	private JButton insertDatabaseButton;
 	private JTextField mInsertDatabaseTextField;
 	private JButton sendButton;
+	private JButton registerButton;
+	private JButton setIdButton;
 	
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";
@@ -76,6 +78,8 @@ public class AlerterCapGeneratePanel
 	private static final String INSERT_DATABASE_TEXT_FIELD = "InsertDatabaseTextField";
 	public static final String LOAD_CAP_BUTTON = "Load Cap";
 	public static final String SAVE_CAP_BUTTON = "Save Cap";
+	public static final String REGISTER_BUTTON = "Register";
+	private static final String SET_ID = "Set Id";
 	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
 
 	public static final String INFO_INDEX = "InfoIndex";
@@ -162,6 +166,13 @@ public class AlerterCapGeneratePanel
 		this.sendButton = createButton("Send");
 		sendButton.setActionCommand("SendAlert");
 		buttonPane.add(sendButton);
+		this.registerButton = createButton(REGISTER_BUTTON);
+		registerButton.setActionCommand(REGISTER_BUTTON);
+		buttonPane.add(registerButton);
+		this.setIdButton = createButton(SET_ID);
+		setIdButton.setActionCommand(SET_ID);
+		buttonPane.add(setIdButton);
+		
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		return buttonPane;

@@ -132,7 +132,7 @@ public class _AlerterModelManager
 	
 	public String generateIdentifier()
 	{
-		String alerterId = controller.getAlerterId();
+		String alerterId = controller.getId();
 		String idNum = Double.toString(Math.random());		
 		
 		String identifier = alerterId + idNum.substring(2, 12);
@@ -208,5 +208,10 @@ public class _AlerterModelManager
 	public String getAlert()
 	{
 		return alerterCapGeneratePanelModel.getMessage();
+	}
+
+	public void setTextArea(String message)
+	{
+		alerterCapGeneratePanelModel.setModelProperty("TextArea", message);
 	}
 }

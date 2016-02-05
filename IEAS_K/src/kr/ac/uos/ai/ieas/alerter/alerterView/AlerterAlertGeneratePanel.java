@@ -47,7 +47,6 @@ public class AlerterAlertGeneratePanel
 	private ArrayList<Component> areaElements;
 	
 	private JButton sendButton;
-	
 
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";

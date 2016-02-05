@@ -29,16 +29,15 @@ public class AlerterTransmitter
 
 	private String MqServerIP;
 
+	private String alerterId;
+
 
 	public AlerterTransmitter(_AlerterController controller)
 	{
 		this.controller = controller;
 		this.MqServerIP = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
-	}
-	
-	public void setId(String id)
-	{
-		this.id = id;
+		this.id = controller.getId();
+		openConnection();
 	}
 
 	public void openConnection()
@@ -54,7 +53,7 @@ public class AlerterTransmitter
 		{
 			ex.printStackTrace();
 		}
-		setQueueListener();
+//		setQueueListener(id);
 	}
 
 	public void closeConnection()
@@ -92,11 +91,11 @@ public class AlerterTransmitter
 		}
 	}
 
-	private void setQueueListener()
+	private void setQueueListener(String queue)
 	{
 		try 
 		{
-			Destination destination = this.session.createQueue(id);
+			Destination destination = this.session.createQueue(queue);
 			System.out.println("gw to alerter Dest : " + destination);
 			this.consumer = session.createConsumer(destination);
 			MessageListener listener = new MessageListener()
@@ -125,6 +124,13 @@ public class AlerterTransmitter
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public void setId(String id)
+	{
+		this.alerterId = id;
+		System.out.println("set alert id : " + id);
+		setQueueListener(alerterId);
 	}
 
 	/*

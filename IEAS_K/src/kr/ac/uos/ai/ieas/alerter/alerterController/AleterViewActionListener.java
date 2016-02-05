@@ -74,6 +74,12 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Load Draft":
 			controller.loadDraft();
 			return;
+		case "Register":
+			controller.registerToGateway();
+			return;
+		case "Set Id":
+			controller.setID();
+			return;
 		default:
 			System.out.println("There is no such a actionCommand : " + actionCommand);
 			return;

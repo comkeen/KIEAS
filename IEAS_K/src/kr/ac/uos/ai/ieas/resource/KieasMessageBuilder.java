@@ -501,6 +501,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		//		this.area = Area.newBuilder().buildPartial();
 
 		mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
+		System.out.println("build default cap");
 		return capXmlBuilder.toXml(mAlert);
 	}
 
@@ -596,7 +597,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	{
 		try
 		{
-			if(mAlert.getInfo(index).getEvent() != null)
+			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
 			{
 				return mAlert.getInfo(index).getEvent();				
 			}
@@ -1218,7 +1219,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public void setAlertElement(String key, String value)
 	{
-		if(!alertElements.containsKey(key))
+		if(alertElements.containsKey(key))
 		{
 			switch (key)
 			{
@@ -1226,6 +1227,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 				break;
 			default:
 				alertElements.replace(key, value);
+				System.out.println("setAlertElement (key, value) : (" + key + ", " + value + ")");
+				System.out.println("value = " + alertElements.get(key));
 				break;
 			}
 		}

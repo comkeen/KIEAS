@@ -55,7 +55,7 @@ public class AlertSystemController
 	{
 		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType() + "/" + geoCode;
 		this.alertSystemType = view.getSelectedAlertSystemType();
-		transmitter.setAlertSystemId(alertSystemID);
+		transmitter.setId(alertSystemID);
 		view.setAlertSystemId(alertSystemID);
 	}
 	

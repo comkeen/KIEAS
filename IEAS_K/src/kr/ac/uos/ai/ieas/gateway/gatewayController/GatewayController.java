@@ -7,21 +7,22 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
+import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 
-public class GatewayController {
 
-
+public class GatewayController
+{
 	private static GatewayController gatewayController;
 
 	private GatewayActionListener gatewayActionListener;
 	private GatewayTransmitter gatewayTransmitter;
 	private GatewayView gatewayView;
 	private GatewayModelManager gatewayModelManager;
+	private KieasMessageBuilder kieasMessageBuilder;
 
 	private String gatewayID;
-
 	private String ackMessage;
 
 	private String sender;
@@ -31,6 +32,7 @@ public class GatewayController {
 	private String event;
 	private String geoCode;
 	private String note;
+
 
 
 
@@ -51,6 +53,7 @@ public class GatewayController {
 		this.gatewayActionListener = new GatewayActionListener(this);
 		this.gatewayModelManager = GatewayModelManager.getInstance();
 		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.gatewayTransmitter = new GatewayTransmitter(this);		
 		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
 
@@ -82,26 +85,52 @@ public class GatewayController {
 	{
 		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
 		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
-		
+		status = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.STATUS);
+
 		String log = "(" + gatewayID + ")" + " Received Message From Alerter (" + sender + ") : ";
 		System.out.println(log);
 		gatewayView.appendLog(log + identifier);
+	
+		switch (status)
+		{	
+		case "ACTUAL":
+			try 
+			{
+				gatewayModelManager.addAlertTableRow(message);
+				gatewayModelManager.addAlerterInfoTableRow(message);
 
-		try 
-		{
-			gatewayModelManager.addAlertTableRow(message);
-			gatewayModelManager.addAlerterInfoTableRow(message);
+				this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
+				sendAcknowledge(ackMessage, sender);
 
-			this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
-			sendAcknowledge(ackMessage, sender);
-
-			broadcastMessage(message);
-			routeMessage(message);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+				broadcastMessage(message);
+				routeMessage(message);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			break;
+		case "SYSTEM":
+			try 
+			{
+				log = "(" + gatewayID + ")" + " Received Register request From Alerter : " + identifier;
+				System.out.println(log);
+				gatewayView.appendLog(log);
+				
+				//approveRegister();
+				gatewayModelManager.addAlerterInfoTableRow(message);
+				sendAcknowledge(message, sender);
+				gatewayModelManager.receiveAck(identifier);		
+				//
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
+		}		
 	}
 
 	public void acceptAletSystemMessage(String message)
@@ -133,8 +162,6 @@ public class GatewayController {
 		case "SYSTEM":
 			try 
 			{
-				note = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.NOTE);
-				
 				String log = "(" + gatewayID + ")" + " Received Register request From AlertSystem : " + identifier;
 				System.out.println(log);
 				gatewayView.appendLog(log);
