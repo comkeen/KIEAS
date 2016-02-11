@@ -83,23 +83,22 @@ public class GatewayModelManager
 		alertTableModel.addTableRowData(getAlertElementMap(message));
 
 		kieasMessageBuilder.setMessage(message);
-		putAlertMessageMap(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER), message);
+		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
 
 	public HashMap<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		alertElementMap.replace(SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
-		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
-		alertElementMap.replace(STATUS, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.STATUS));
-		alertElementMap.replace(SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
-		alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));
-		alertElementMap.replace(EVENT, kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT));
-		alertElementMap.replace(NOTE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.NOTE));
-		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
+		alertElementMap.replace(SENDER, kieasMessageBuilder.getSender());
+		alertElementMap.replace(IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace(STATUS, kieasMessageBuilder.getStatus());
+		alertElementMap.replace(SENT, kieasMessageBuilder.getSent());
+		alertElementMap.replace(EVENT, kieasMessageBuilder.getEvent(0));
+		alertElementMap.replace(NOTE, kieasMessageBuilder.getNote());
+		if(kieasMessageBuilder.getRestriction() != null)
 		{
-			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));			
+			alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getRestriction());			
 		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 
@@ -124,8 +123,8 @@ public class GatewayModelManager
 	public String creatAckMessage(String message, String sender)
 	{
 		kieasMessageBuilder.setMessage(message);
-		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, sender);
-		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, "Ack");
+		kieasMessageBuilder.setSender(sender);
+		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ACK);
 		kieasMessageBuilder.build();
 
 		return kieasMessageBuilder.getMessage();

@@ -329,17 +329,17 @@ public class AlerterCapGeneratePanelModel
 	 */
 	private void setAlertPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
-		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
-		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
-		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.STATUS));
-		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.MSG_TYPE));
-		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SCOPE));
-		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.CODE));		
+		setModelProperty(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		setModelProperty(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		setModelProperty(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		setModelProperty(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
+		setModelProperty(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
+		setModelProperty(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
+		setModelProperty(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());		
 		
 		setInfoPanel(kieasMessageBuilder);
-		setResourcePanel(kieasMessageBuilder);
-		setAreaPanel(kieasMessageBuilder);
+//		setResourcePanel(kieasMessageBuilder);
+//		setAreaPanel(kieasMessageBuilder);
 				
 		setModelProperty("TextArea", kieasMessageBuilder.getMessage());
 	}
@@ -351,44 +351,44 @@ public class AlerterCapGeneratePanelModel
 		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(infoIndex));
 		for(int i = 0; i < infoIndex; i++)
 		{
-			setModelProperty(KieasMessageBuilder.LANGUAGE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.LANGUAGE));
-			setModelProperty(KieasMessageBuilder.CATEGORY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CATEGORY));
-			setModelProperty(KieasMessageBuilder.EVENT + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EVENT));
-			setModelProperty(KieasMessageBuilder.URGENCY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.URGENCY));
-			setModelProperty(KieasMessageBuilder.SEVERITY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.SEVERITY));
-			setModelProperty(KieasMessageBuilder.CERTAINTY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CERTAINTY));
-			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EVENT_CODE));
-			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EFFECTIVE));
-			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.SENDER_NAME));
-			setModelProperty(KieasMessageBuilder.HEADLINE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.HEADLINE));
-			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.DESCRIPTION));
-			setModelProperty(KieasMessageBuilder.WEB + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.WEB));
-			setModelProperty(KieasMessageBuilder.CONTACT + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CONTACT));
+			setModelProperty(KieasMessageBuilder.LANGUAGE + i, kieasMessageBuilder.getLanguage(infoIndex));
+			setModelProperty(KieasMessageBuilder.CATEGORY + i, kieasMessageBuilder.getCategory(infoIndex));
+			setModelProperty(KieasMessageBuilder.EVENT + i, kieasMessageBuilder.getEvent(infoIndex));
+			setModelProperty(KieasMessageBuilder.URGENCY + i, kieasMessageBuilder.getUrgency(infoIndex));
+			setModelProperty(KieasMessageBuilder.SEVERITY + i, kieasMessageBuilder.getSeverity(infoIndex));
+			setModelProperty(KieasMessageBuilder.CERTAINTY + i, kieasMessageBuilder.getCertainty(infoIndex));
+			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, kieasMessageBuilder.getEventCode(infoIndex));
+//			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, kieasMessageBuilder.getEffective(infoIndex));
+			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, kieasMessageBuilder.getSenderName(infoIndex));
+			setModelProperty(KieasMessageBuilder.HEADLINE + i, kieasMessageBuilder.getHeadline(infoIndex));
+			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, kieasMessageBuilder.getDescrpition(infoIndex));
+			setModelProperty(KieasMessageBuilder.WEB + i, kieasMessageBuilder.getWeb(infoIndex));
+			setModelProperty(KieasMessageBuilder.CONTACT + i, kieasMessageBuilder.getContact(infoIndex));
 		}
 	}
 
-	private void setResourcePanel(KieasMessageBuilder kieasMessageBuilder)
-	{
-		mResourceCounter = kieasMessageBuilder.getResourceCount(0);
-//		System.out.println("resourceCount : " + mResourceCounter);
-		for(int i = 0; i < mResourceCounter; i++)
-		{
-			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.RESOURCE_DESC));
-			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.MIME_TYPE));
-			setModelProperty(KieasMessageBuilder.URI + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.URI));
-		}
-	}
+//	private void setResourcePanel(KieasMessageBuilder kieasMessageBuilder)
+//	{
+//		mResourceCounter = kieasMessageBuilder.getResourceCount(0);
+////		System.out.println("resourceCount : " + mResourceCounter);
+//		for(int i = 0; i < mResourceCounter; i++)
+//		{
+//			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.RESOURCE_DESC));
+//			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.MIME_TYPE));
+//			setModelProperty(KieasMessageBuilder.URI + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.URI));
+//		}
+//	}
 	
-	private void setAreaPanel(KieasMessageBuilder kieasMessageBuilder)
-	{
-		mAreaCounter = kieasMessageBuilder.getAreaCount(0);
-//		System.out.println("areaCount : " + mAreaCounter);
-		for(int i = 0; i < mAreaCounter; i++)
-		{
-			setModelProperty(KieasMessageBuilder.AREA_DESC + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.AREA_DESC));
-			setModelProperty(KieasMessageBuilder.GEO_CODE + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.GEO_CODE));
-		}
-	}
+//	private void setAreaPanel(KieasMessageBuilder kieasMessageBuilder)
+//	{
+//		mAreaCounter = kieasMessageBuilder.getAreaCount(0);
+////		System.out.println("areaCount : " + mAreaCounter);
+//		for(int i = 0; i < mAreaCounter; i++)
+//		{
+//			setModelProperty(KieasMessageBuilder.AREA_DESC + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.AREA_DESC));
+//			setModelProperty(KieasMessageBuilder.GEO_CODE + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.GEO_CODE));
+//		}
+//	}
 	
 	/**
 	 * Cap 메시지를 불러올 때 호출됨.
@@ -468,14 +468,14 @@ public class AlerterCapGeneratePanelModel
 	{
 		if(alertElement.get(KieasMessageBuilder.IDENTIFIER).length() != 0)
 		{
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, alertElement.get(KieasMessageBuilder.IDENTIFIER));			
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, alertElement.get(KieasMessageBuilder.SENDER));
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, "");
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.STATUS, alertElement.get(KieasMessageBuilder.STATUS));
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, alertElement.get(KieasMessageBuilder.MSG_TYPE));
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SCOPE, alertElement.get(KieasMessageBuilder.SCOPE));
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, alertElement.get(KieasMessageBuilder.RESTRICTION));
-			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.CODE, alertElement.get(KieasMessageBuilder.CODE));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, alertElement.get(KieasMessageBuilder.IDENTIFIER));			
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, alertElement.get(KieasMessageBuilder.SENDER));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, "");
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.STATUS, alertElement.get(KieasMessageBuilder.STATUS));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, alertElement.get(KieasMessageBuilder.MSG_TYPE));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SCOPE, alertElement.get(KieasMessageBuilder.SCOPE));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, alertElement.get(KieasMessageBuilder.RESTRICTION));
+//			kieasMessageBuilder.setAlertElement(KieasMessageBuilder.CODE, alertElement.get(KieasMessageBuilder.CODE));
 			
 			setAlertPanel(kieasMessageBuilder);
 		}

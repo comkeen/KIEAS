@@ -121,14 +121,17 @@ public class _AlerterModelManager
 		
 		String cap = kieasMessageBuilder.buildDefaultMessage();
 		kieasMessageBuilder.setMessage(cap);
-		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, identifier);
-		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, alertSystemType);
+		kieasMessageBuilder.setIdentifier(identifier);
+		kieasMessageBuilder.setRestriction(alertSystemType);
 	
 		this.message = kieasMessageBuilder.getMessage();
 		controller.setTextArea(message);
 	}
 
-	public String getId() {	return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER); }
+	public String getId()
+	{
+		return kieasMessageBuilder.getIdentifier();
+	}
 	
 	public String generateIdentifier()
 	{
@@ -141,17 +144,17 @@ public class _AlerterModelManager
 	}
 	public String getRestriction()
 	{
-		return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION);
+		return kieasMessageBuilder.getRestriction();
 	}
 	
 	public String getEvent()
 	{
-		return kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT);
+		return kieasMessageBuilder.getEvent(0);
 	}
 	
 	public String getGeoCode()
 	{
-		return kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.GEO_CODE);
+		return kieasMessageBuilder.getGeoCode(0, 0);
 	}
 
 	public void addAlertTableRow()
@@ -159,21 +162,21 @@ public class _AlerterModelManager
 		kieasMessageBuilder.setMessage(message);
 		alertLogTableModel.addTableRowData(getAlertElementMap(message));
 		
-		putAlertMessageMap(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER), message);
+		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
 	
 	public Map<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
-		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
-		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
-		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT));
+		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
 		
-		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
+		if(kieasMessageBuilder.getRestriction() != null)
 		{
-			alertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));			
+			alertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());
 		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
 

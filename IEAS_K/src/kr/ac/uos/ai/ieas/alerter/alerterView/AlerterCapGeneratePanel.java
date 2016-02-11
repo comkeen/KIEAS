@@ -18,9 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import kr.ac.uos.ai.ieas.alerter.alerterController.AlerterTransmitter;
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
@@ -91,7 +89,7 @@ public class AlerterCapGeneratePanel
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
-		initPanel();			
+		initPanel();
 	}
 
 	private void initPanel()
@@ -215,14 +213,14 @@ public class AlerterCapGeneratePanel
 		return infoPanel;
 	}
 	
-	private void resetCapInfoPanel()
-	{
-		this.infoPanel.removeAll();
-		this.infoIndexPanels.clear();
-		this.infoComponents.clear();
-		this.infoCounter = 0;
-		addInfoIndexPanel();
-	}
+//	private void resetCapInfoPanel()
+//	{
+//		this.infoPanel.removeAll();
+//		this.infoIndexPanels.clear();
+//		this.infoComponents.clear();
+//		this.infoCounter = 0;
+//		addInfoIndexPanel();
+//	}
 
 	public void addInfoIndexPanel()
 	{
@@ -456,35 +454,35 @@ public class AlerterCapGeneratePanel
 		alertElementMap.put(KieasMessageBuilder.IDENTIFIER, ((JTextField) alertComponents.get(KieasMessageBuilder.IDENTIFIER)).getText());
 		alertElementMap.put(KieasMessageBuilder.SENDER, ((JTextField) alertComponents.get(KieasMessageBuilder.SENDER)).getText());
 		alertElementMap.put(KieasMessageBuilder.SENT, ((JTextField) alertComponents.get(KieasMessageBuilder.SENT)).getText());
-		alertElementMap.put(KieasMessageBuilder.STATUS, ((JComboBox) alertComponents.get(KieasMessageBuilder.STATUS)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.MSG_TYPE, ((JComboBox) alertComponents.get(KieasMessageBuilder.MSG_TYPE)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.SCOPE, ((JComboBox) alertComponents.get(KieasMessageBuilder.SCOPE)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.RESTRICTION, ((JComboBox) alertComponents.get(KieasMessageBuilder.RESTRICTION)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.STATUS, ((JComboBox<?>) alertComponents.get(KieasMessageBuilder.STATUS)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.MSG_TYPE, ((JComboBox<?>) alertComponents.get(KieasMessageBuilder.MSG_TYPE)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.SCOPE, ((JComboBox<?>) alertComponents.get(KieasMessageBuilder.SCOPE)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.RESTRICTION, ((JComboBox<?>) alertComponents.get(KieasMessageBuilder.RESTRICTION)).getSelectedItem().toString());
 		alertElementMap.put(KieasMessageBuilder.CODE, ((JTextField) alertComponents.get(KieasMessageBuilder.CODE)).getText());
 		
 		return alertElementMap;
 	}
 	
-	private int checkIndex(String target)
-	{
-		StringBuffer stringBuffer = new StringBuffer();
-		for(int i = 0; i < target.length(); i++)
-		{
-			char currentChar = target.charAt(i);
-			if(Character.isDigit(currentChar))
-			{
-				stringBuffer.append(currentChar);			
-			}
-		}
-		if(stringBuffer.length() == 0)
-		{
-			return -1;
-		}
-		else
-		{
-			return Integer.parseInt(stringBuffer.toString());			
-		}
-	}
+//	private int checkIndex(String target)
+//	{
+//		StringBuffer stringBuffer = new StringBuffer();
+//		for(int i = 0; i < target.length(); i++)
+//		{
+//			char currentChar = target.charAt(i);
+//			if(Character.isDigit(currentChar))
+//			{
+//				stringBuffer.append(currentChar);			
+//			}
+//		}
+//		if(stringBuffer.length() == 0)
+//		{
+//			return -1;
+//		}
+//		else
+//		{
+//			return Integer.parseInt(stringBuffer.toString());			
+//		}
+//	}
 	
 	public void updateView(String target, String value)
 	{		

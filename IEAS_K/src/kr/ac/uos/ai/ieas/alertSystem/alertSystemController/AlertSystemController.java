@@ -15,7 +15,7 @@ public class AlertSystemController
 	private AlertSystemTransmitter transmitter;
 	private AlertSystemView view;
 	private AlertSystemActionListener actionListener;
-	private KieasMessageBuilder ieasMessage;
+	private KieasMessageBuilder kieasMessageBuilder;
 
 	private String alertSystemID;
 	private String alertSystemType;
@@ -30,7 +30,7 @@ public class AlertSystemController
 
 	public AlertSystemController()
 	{		
-		this.ieasMessage = new KieasMessageBuilder();
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.actionListener = new AlertSystemActionListener(this);
 		this.view = new AlertSystemView(this);
 		this.transmitter = new AlertSystemTransmitter(this);
@@ -85,9 +85,9 @@ public class AlertSystemController
 		System.out.println("received message " + message);
 		try
 		{
-			ieasMessage.setMessage(message);
+			kieasMessageBuilder.setMessage(message);
 
-			String sender = ieasMessage.getAlertElement(KieasMessageBuilder.SENDER);
+			String sender = kieasMessageBuilder.getSender();
 			
 			System.out.println("(" + alertSystemID + ")" + " Received Message From (" + sender + ") : ");
 			System.out.println();
@@ -125,13 +125,13 @@ public class AlertSystemController
 	
 	private String createAckMessage(String message)
 	{
-		ieasMessage.setMessage(message);
+		kieasMessageBuilder.setMessage(message);
 
-		ieasMessage.setAlertElement(KieasMessageBuilder.SENDER, alertSystemID);
-		ieasMessage.setAlertElement(KieasMessageBuilder.MSG_TYPE, "Ack");
-		ieasMessage.build();
+		kieasMessageBuilder.setSender(alertSystemID);
+		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ACK);
+		kieasMessageBuilder.build();
 		
-		return ieasMessage.getMessage();
+		return kieasMessageBuilder.getMessage();
 	}
 
 	public String getID()
@@ -166,16 +166,16 @@ public class AlertSystemController
 
 	public void registerToGateway()
 	{
-		ieasMessage.buildDefaultMessage();
-		ieasMessage.setAlertElement(KieasMessageBuilder.SENDER, alertSystemID);
-		ieasMessage.setAlertElement(KieasMessageBuilder.STATUS, KieasMessageBuilder.SYSTEM);
-		ieasMessage.setAlertElement(KieasMessageBuilder.SCOPE, KieasMessageBuilder.RESTRICTED);
-		ieasMessage.setAlertElement(KieasMessageBuilder.RESTRICTION, alertSystemType);
-		ieasMessage.setAlertElement(KieasMessageBuilder.NOTE, geoCode);
-		ieasMessage.build();
-		System.out.println(ieasMessage.getMessage());
+		kieasMessageBuilder.buildDefaultMessage();
+		kieasMessageBuilder.setSender(alertSystemID);
+		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
+		kieasMessageBuilder.setScope(KieasMessageBuilder.RESTRICTED);
+		kieasMessageBuilder.setRestriction(alertSystemType);
+		kieasMessageBuilder.setNote(geoCode);
+		kieasMessageBuilder.build();
+		System.out.println(kieasMessageBuilder.getMessage());
 		
-		transmitter.sendMessage(ieasMessage.getMessage(), KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);	
+		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);	
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(")
@@ -187,7 +187,9 @@ public class AlertSystemController
 
 	public void exit() { view.systemExit();	}
 
-	public AlertSystemActionListener getActionListener() { 
-		System.out.println("getaction");
-		return this.actionListener; }
+	public AlertSystemActionListener getActionListener()
+	{ 
+		System.out.println("getAction");
+		return this.actionListener;
+	}
 }

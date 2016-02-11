@@ -93,6 +93,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String GEO_CODE = "GeoCode";
 	
 	public static final String SYSTEM = "System";
+	public static final String ACK = "Ack";
+	public static final String ALERT = "Alert";
 	
 	
 	
@@ -120,7 +122,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	private void init()
 	{
-		
+//		this.mAlert = Alert.newBuilder().build();
 	}
 
 	/**
@@ -567,134 +569,134 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 		return sb.toString();
 	}
-//
+
 	public int getInfoCount()
 	{
 		return mAlert.getInfoCount();
 	}
-//
+
 	public int getResourceCount(int index)
 	{
 		return mAlert.getInfo(index).getResourceCount();
 	}
-//
+
 	public int getAreaCount(int index)
 	{
 		return mAlert.getInfo(index).getAreaCount();
 	}
-//
-//
-//	public String getLanguage(int index)
-//	{
-//		return mAlert.getInfo(index).getLanguage().toString();
-//	}
-//
-//	public String getCategory(int index)
-//	{
-//		return mAlert.getInfo(index).getCategory(0).toString();
-//	}
-//
-//	public String getEvent(int index)
-//	{
-//		try
-//		{
-//			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
-//			{
-//				return mAlert.getInfo(index).getEvent();				
-//			}
-//			else
-//			{
-//				return "";
-//			}
-//		}
-//		catch (NotCapException e)
-//		{
-//			e.printStackTrace();
-//			return "";
-//		}
-//	}
-//
-//	public String getUrgency(int index)
-//	{
-//		return mAlert.getInfo(index).getUrgency().toString();
-//	}
-//
-//	public String getSeverity(int index)
-//	{
-//		return mAlert.getInfo(index).getSeverity().toString();
-//	}
-//
-//	public String getCertainty(int index)
-//	{
-//		return mAlert.getInfo(index).getCertainty().toString();
-//	}
-//
-//	public String getEventCode(int index) 
-//	{
-//		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
-//	}
-//
-//	public String getEffective(int index)
-//	{
-//		return mAlert.getInfo(index).getEffective().toString();
-//	}
-//
-//	public String getSenderName(int index)
-//	{
-//		return mAlert.getInfo(index).getSenderName().toString();
-//	}
-//
-//	public String getHeadline(int index)
-//	{
-//		return mAlert.getInfo(index).getHeadline().toString();
-//	}
-//
-//	public String getDescrpition(int index)
-//	{
-//		return mAlert.getInfo(index).getDescription().toString();
-//	}
-//
-//	public String getWeb(int index)
-//	{
-//		return mAlert.getInfo(index).getWeb().toString();
-//	}
-//
-//	public String getContact(int index)
-//	{
-//		return mAlert.getInfo(index).getContact().toString();
-//	}
-//
-//	public String getResourceDesc(int infoIndex, int index)
-//	{
-//		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
-//	}
-//
-//	public String getMimeType(int infoIndex, int index)
-//	{
-//		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
-//	}
-//
-//	public String getUri(int infoIndex, int index)
-//	{
-//		return mAlert.getInfo(infoIndex).getResource(index).getUri();
-//	}
-//
-//	public String getAreaDesc(int infoIndex, int index)
-//	{
-//		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
-//	}
-//
-//	public String getGeoCode(int infoIndex, int index)
-//	{
-//		if(mArea != null)
-//		{
-//			return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();			
-//		}
-//		else
-//		{
-//			return "";
-//		}
-//	}
+
+
+	public String getLanguage(int index)
+	{
+		return mAlert.getInfo(index).getLanguage().toString();
+	}
+
+	public String getCategory(int index)
+	{
+		return mAlert.getInfo(index).getCategory(0).toString();
+	}
+
+	public String getEvent(int index)
+	{
+		try
+		{
+			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
+			{
+				return mAlert.getInfo(index).getEvent();				
+			}
+			else
+			{
+				return "";
+			}
+		}
+		catch (NotCapException e)
+		{
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public String getUrgency(int index)
+	{
+		return mAlert.getInfo(index).getUrgency().toString();
+	}
+
+	public String getSeverity(int index)
+	{
+		return mAlert.getInfo(index).getSeverity().toString();
+	}
+
+	public String getCertainty(int index)
+	{
+		return mAlert.getInfo(index).getCertainty().toString();
+	}
+
+	public String getEventCode(int index) 
+	{
+		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
+	}
+
+	public String getEffective(int index)
+	{
+		return mAlert.getInfo(index).getEffective().toString();
+	}
+
+	public String getSenderName(int index)
+	{
+		return mAlert.getInfo(index).getSenderName().toString();
+	}
+
+	public String getHeadline(int index)
+	{
+		return mAlert.getInfo(index).getHeadline().toString();
+	}
+
+	public String getDescrpition(int index)
+	{
+		return mAlert.getInfo(index).getDescription().toString();
+	}
+
+	public String getWeb(int index)
+	{
+		return mAlert.getInfo(index).getWeb().toString();
+	}
+
+	public String getContact(int index)
+	{
+		return mAlert.getInfo(index).getContact().toString();
+	}
+
+	public String getResourceDesc(int infoIndex, int index)
+	{
+		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
+	}
+
+	public String getMimeType(int infoIndex, int index)
+	{
+		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
+	}
+
+	public String getUri(int infoIndex, int index)
+	{
+		return mAlert.getInfo(infoIndex).getResource(index).getUri();
+	}
+
+	public String getAreaDesc(int infoIndex, int index)
+	{
+		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
+	}
+
+	public String getGeoCode(int infoIndex, int index)
+	{		
+		if(mAlert.getInfo(infoIndex).getArea(0).getGeocode(0) != null)
+		{
+			return mAlert.getInfo(infoIndex).getArea(0).getGeocode(0).getValue();
+		}
+		else
+		{
+			return "";
+		}
+	}
 
 	//CAP 요소 Setter
 //	public void setAlert(HashMap<String, String> alertElementList)
@@ -747,17 +749,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		}
 //	}	
 
-//	private void setSent(String text)
-//	{
-//		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
-//	}
-//
-//	private void setSent(GregorianCalendar cal)
-//	{
-//		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
-//	}	
-
-	private Status setStatus(String text)
+	private Status convertToStatus(String text)
 	{
 		text = text.toUpperCase();
 		for (Status status : Alert.Status.values())
@@ -777,8 +769,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 		return null;
 	}
-
-	private MsgType setMsgType(String text)
+	
+	private MsgType convertToMsgType(String text)
 	{
 		for (MsgType msgType : Alert.MsgType.values())
 		{
@@ -787,7 +779,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 				if(mAlert != null)
 				{
 					mAlert = Alert.newBuilder(mAlert).setMsgType(msgType).build();
-					return msgType;					
+					return msgType;			
 				}
 				else
 				{	
@@ -798,7 +790,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private Scope setScope(String text)
+	private Scope convertToScope(String text)
 	{
 		for (Scope scope : Alert.Scope.values())
 		{
@@ -818,12 +810,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private Group setAddresses(String address) 
+	private Group convertToAddresses(String address) 
 	{
 		return Group.newBuilder().addValue(address).build();		
 	}
 
-	private Category setCategory(String text)
+	private Category convertToCategory(String text)
 	{
 		for (Category category : Info.Category.values())
 		{
@@ -835,7 +827,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private ResponseType setResponseType(String text)
+	private ResponseType convertToResponseType(String text)
 	{
 		for (ResponseType responseType : Info.ResponseType.values())
 		{
@@ -847,7 +839,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 	
-	private Urgency setUrgency(String text)
+	private Urgency convertToUrgency(String text)
 	{
 		for (Urgency urgency : Info.Urgency.values())
 		{
@@ -859,7 +851,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private Severity setSeverity(String text) 
+	private Severity convertToSeverity(String text) 
 	{
 		for (Severity severity : Info.Severity.values())
 		{
@@ -871,7 +863,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private Certainty setCertainty(String text)
+	private Certainty convertToCertainty(String text)
 	{
 		for (Certainty certainty : Info.Certainty.values())
 		{
@@ -883,7 +875,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private ValuePair setEventCode(String text)
+	private ValuePair convertToEventCode(String text)
 	{
 		return Info.newBuilder().addEventCodeBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
 	}
@@ -929,9 +921,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 					.setIdentifier(capAlert.getIdentifier())
 					.setSender(capAlert.getSender())
 					.setSent(this.dateToString(capAlert.getSent()))
-					.setStatus(this.setStatus(capAlert.getStatus().toString()))
-					.setMsgType(this.setMsgType(capAlert.getMsgType().toString()))
-					.setScope(this.setScope(capAlert.getScope().toString()))
+					.setStatus(this.convertToStatus(capAlert.getStatus().toString()))
+					.setMsgType(this.convertToMsgType(capAlert.getMsgType().toString()))
+					.setScope(this.convertToScope(capAlert.getScope().toString()))
 					//					.addCode(capAlert.getCode())
 					.buildPartial();
 
@@ -939,12 +931,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				Info mInfo = Info.newBuilder()
 						.setLanguage(capInfo.getLanguage().toString())
-						.addCategory(this.setCategory(capInfo.getCategory().toString()))
+						.addCategory(this.convertToCategory(capInfo.getCategory().toString()))
 						.setEvent(capInfo.getEvent().toString())
-						.setUrgency(this.setUrgency(capInfo.getUrgency().toString()))
-						.setSeverity(this.setSeverity(capInfo.getSeverity().toString()))
-						.setCertainty(this.setCertainty(capInfo.getCertainty().toString()))
-						.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(getValueInJasonObject(capInfo.getEventCode())).build())
+						.setUrgency(this.convertToUrgency(capInfo.getUrgency().toString()))
+						.setSeverity(this.convertToSeverity(capInfo.getSeverity().toString()))
+						.setCertainty(this.convertToCertainty(capInfo.getCertainty().toString()))
+						.addEventCode(this.convertToEventCode(capInfo.getEventCode()))
 						//						.setEffective(this.dateToString(capInfo.getEffective()))
 						.setSenderName(capInfo.getSenderName())
 						.setHeadline(capInfo.getHeadline())
@@ -1109,270 +1101,271 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		}		
 //	}
 	
-	public String getAlertElement(String key)
-	{
-		if(alertElementNameToValueMap.containsKey(key))
-		{
-			return alertElementNameToValueMap.get(key).toString();			
-		}	
-		else
-		{
-			System.out.println("Empty alertElement about : " + key);
-			return null;
-		}
-	}
+//	public String getAlertElement(String key)
+//	{
+//		if(alertElementNameToValueMap.containsKey(key))
+//		{
+//			return alertElementNameToValueMap.get(key).toString();			
+//		}	
+//		else
+//		{
+//			System.out.println("Empty alertElement about : " + key);
+//			return null;
+//		}
+//	}
+//
+//	public String getInfoElement(int index, String key)
+//	{
+//		infoElementNameToValueMap = infos.get(index);
+//		
+//		if(infoElementNameToValueMap.containsKey(key))
+//		{
+//			return infoElementNameToValueMap.get(key).toString();			
+//		}	
+//		else
+//		{
+//			System.out.println("Empty infoElement about : " + key);
+//			return null;
+//		}
+//	}	
+//	public String getResourceElement(int infoIndex, int resourceIndex, String key)
+//	{
+//		resourceElementNameToValueMap = resources.get(resourceIndex);
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	public String getAreaElement(int infoIndex, int areaIndex, String key)
+//	{
+//		if(areaElementNameToValueMap.containsKey(key))
+//		{
+//			return areaElementNameToValueMap.get(key).toString();			
+//		}	
+//		else
+//		{
+//			System.out.println("Empty infoElement about : " + key);
+//			return null;
+//		}
+//	}
+//
+//	public void setAlertElement(String key, String value)
+//	{
+//		if(!alertElementNameToValueMap.containsKey(key))
+//		{
+//			alertElementNameToValueMap.put(key, value);			
+//		}
+//		else
+//		{
+//			switch (key)
+//			{
+//			case NOTE:
+//				break;
+//			default:
+//				alertElementNameToValueMap.replace(key, value);
+//				System.out.println("setAlertElement (key, value) : (" + key + ", " + value + ")");
+//				System.out.println("value = " + alertElementNameToValueMap.get(key));
+//				break;
+//			}
+//		}
+//	}
+//
+//	public void setInfoElement(int index, String key, String value)
+//	{		
+//		switch (key)
+//		{
+//			case "":
+//			{
+//				break;
+//			}
+//			default:
+//			{
+//				if(infos.size() == 0 || !infoElementNameToValueMap.containsKey(key))
+//				{			
+//					infoElementNameToValueMap.put(key, value);
+//				}
+//				else
+//				{
+//					infoElementNameToValueMap.replace(key, value);
+//				}
+//				break;
+//			}
+//		}
+//	}
+//	
+//	public void setResourceElement(int infoIndex, int resourceIndex, String key, String value)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
+//	
+//	public void setAreaElement(int infoIndex, int areaIndex, String key, String value)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
 
-	public String getInfoElement(int index, String key)
-	{
-		infoElementNameToValueMap = infos.get(index);
-		
-		if(infoElementNameToValueMap.containsKey(key))
-		{
-			return infoElementNameToValueMap.get(key).toString();			
-		}	
-		else
-		{
-			System.out.println("Empty infoElement about : " + key);
-			return null;
-		}
-	}	
-	public String getResourceElement(int infoIndex, int resourceIndex, String key)
-	{
-		resourceElementNameToValueMap = resources.get(resourceIndex);
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public String getAreaElement(int infoIndex, int areaIndex, String key)
-	{
-		if(areaElementNameToValueMap.containsKey(key))
-		{
-			return areaElementNameToValueMap.get(key).toString();			
-		}	
-		else
-		{
-			System.out.println("Empty infoElement about : " + key);
-			return null;
-		}
-	}
-
-	public void setAlertElement(String key, String value)
-	{
-		if(!alertElementNameToValueMap.containsKey(key))
-		{
-			alertElementNameToValueMap.put(key, value);			
-		}
-		else
-		{
-			switch (key)
-			{
-			case NOTE:
-				break;
-			default:
-				alertElementNameToValueMap.replace(key, value);
-				System.out.println("setAlertElement (key, value) : (" + key + ", " + value + ")");
-				System.out.println("value = " + alertElementNameToValueMap.get(key));
-				break;
-			}
-		}
-	}
-
-	public void setInfoElement(int index, String key, String value)
-	{		
-		switch (key)
-		{
-			case "":
-			{
-				break;
-			}
-			default:
-			{
-				if(infos.size() == 0 || !infoElementNameToValueMap.containsKey(key))
-				{			
-					infoElementNameToValueMap.put(key, value);
-				}
-				else
-				{
-					infoElementNameToValueMap.replace(key, value);
-				}
-				break;
-			}
-		}
-	}
-	
-	public void setResourceElement(int infoIndex, int resourceIndex, String key, String value)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void setAreaElement(int infoIndex, int areaIndex, String key, String value)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	
-	public void build()
-	{		
-		//Alert build
-		//필수 Alert 요소들
-		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
-			.setIdentifier(alertElementNameToValueMap.get(IDENTIFIER).toString())
-			.setSender(alertElementNameToValueMap.get(SENDER).toString())
-			.setSent(alertElementNameToValueMap.get(SENT).toString())
-			.setStatus(this.setStatus(alertElementNameToValueMap.get(STATUS).toString()))
-			.setMsgType(this.setMsgType(alertElementNameToValueMap.get(MSG_TYPE).toString()))
-			.setScope(this.setScope(alertElementNameToValueMap.get(SCOPE).toString()))
-			.addCode(KieasConfiguration.KIEAS_Constant.CODE)
-			.buildPartial();
-		
-		//옵션 Alert 요소들
-		if(alertElementNameToValueMap.get(ADDRESSES) != null)
-		{
-			alert = Alert.newBuilder(alert)
-				.setAddresses(this.setAddresses(alertElementNameToValueMap.get(NOTE).toString()))
-				.buildPartial();
-		}	
-		if(alertElementNameToValueMap.get(RESTRICTION) != null)
-		{
-			alert = Alert.newBuilder(alert)
-				.setRestriction(alertElementNameToValueMap.get(RESTRICTION).toString())
-				.buildPartial();
-		}
-		if(alertElementNameToValueMap.get(NOTE) != null)
-		{
-			alert = Alert.newBuilder(alert)
-				.setNote(alertElementNameToValueMap.get(NOTE).toString())
-				.buildPartial();
-		}
-		
-		//Info build
-		for(int infoIndex = 0; infoIndex < infos.size(); infoIndex++)
-		{
-			infoElementNameToValueMap = infos.get(infoIndex);
-			
-			//필수 Info 요소들
-			Info info = Info.newBuilder()
-				.setLanguage(infoElementNameToValueMap.get(LANGUAGE).toString())
-				.setCategory(0, this.setCategory(infoElementNameToValueMap.get(CATEGORY).toString()))
-				.setEvent(infoElementNameToValueMap.get(EVENT).toString())
-				.setUrgency(this.setUrgency(infoElementNameToValueMap.get(URGENCY).toString()))
-				.setSeverity(this.setSeverity(infoElementNameToValueMap.get(SEVERITY).toString()))
-				.setCertainty(this.setCertainty(infoElementNameToValueMap.get(CERTAINTY).toString()))
-				.buildPartial();
-			
-			//옵션 Info 요소들
-			if(infoElementNameToValueMap.get(AUDIENCE).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setAudience(infoElementNameToValueMap.get(AUDIENCE).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(RESPONSE_TYPE).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setResponseType(0, this.setResponseType(infoElementNameToValueMap.get(RESPONSE_TYPE).toString()))
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(EVENT_CODE).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setEventCode(0, this.setEventCode(infoElementNameToValueMap.get(EVENT_CODE).toString()))
-					.buildPartial();
-			}			
-//			if(infos.get(infoIndex).get(EFFECTIVE).toString().length() != 0)
+//	public void build()
+//	{		
+//		//Alert build
+//		//필수 Alert 요소들
+//		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+//			.setIdentifier(alertElementNameToValueMap.get(IDENTIFIER).toString())
+//			.setSender(alertElementNameToValueMap.get(SENDER).toString())
+//			.setSent(alertElementNameToValueMap.get(SENT).toString())
+//			.setStatus(this.setStatus(alertElementNameToValueMap.get(STATUS).toString()))
+//			.setMsgType(this.setMsgType(alertElementNameToValueMap.get(MSG_TYPE).toString()))
+//			.setScope(this.setScope(alertElementNameToValueMap.get(SCOPE).toString()))
+//			.addCode(KieasConfiguration.KIEAS_Constant.CODE)
+//			.buildPartial();
+//		
+//		//옵션 Alert 요소들
+//		if(alertElementNameToValueMap.get(ADDRESSES) != null)
+//		{
+//			alert = Alert.newBuilder(alert)
+//				.setAddresses(this.setAddresses(alertElementNameToValueMap.get(NOTE).toString()))
+//				.buildPartial();
+//		}	
+//		if(alertElementNameToValueMap.get(RESTRICTION) != null)
+//		{
+//			alert = Alert.newBuilder(alert)
+//				.setRestriction(alertElementNameToValueMap.get(RESTRICTION).toString())
+//				.buildPartial();
+//		}
+//		if(alertElementNameToValueMap.get(NOTE) != null)
+//		{
+//			alert = Alert.newBuilder(alert)
+//				.setNote(alertElementNameToValueMap.get(NOTE).toString())
+//				.buildPartial();
+//		}
+//		
+//		//Info build
+//		for(int infoIndex = 0; infoIndex < infos.size(); infoIndex++)
+//		{
+//			infoElementNameToValueMap = infos.get(infoIndex);
+//			
+//			//필수 Info 요소들
+//			Info info = Info.newBuilder()
+//				.setLanguage(infoElementNameToValueMap.get(LANGUAGE).toString())
+//				.setCategory(0, this.setCategory(infoElementNameToValueMap.get(CATEGORY).toString()))
+//				.setEvent(infoElementNameToValueMap.get(EVENT).toString())
+//				.setUrgency(this.setUrgency(infoElementNameToValueMap.get(URGENCY).toString()))
+//				.setSeverity(this.setSeverity(infoElementNameToValueMap.get(SEVERITY).toString()))
+//				.setCertainty(this.setCertainty(infoElementNameToValueMap.get(CERTAINTY).toString()))
+//				.buildPartial();
+//			
+//			//옵션 Info 요소들
+//			if(infoElementNameToValueMap.get(AUDIENCE).toString().length() != 0)
 //			{
 //				info = Info.newBuilder(info)
-//					.setEffective(infoElementNameToValueMap.get(EFFECTIVE).toString())
+//					.setAudience(infoElementNameToValueMap.get(AUDIENCE).toString())
 //					.buildPartial();
 //			}			
-//			if(infos.get(infoIndex).get(EXPIRES).toString().length() != 0)
+//			if(infoElementNameToValueMap.get(RESPONSE_TYPE).toString().length() != 0)
 //			{
 //				info = Info.newBuilder(info)
-//					.setExpires(infoElementNameToValueMap.get(EXPIRES).toString())
+//					.setResponseType(0, this.setResponseType(infoElementNameToValueMap.get(RESPONSE_TYPE).toString()))
 //					.buildPartial();
 //			}			
-			if(infoElementNameToValueMap.get(SENDER_NAME).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setSenderName(infoElementNameToValueMap.get(SENDER_NAME).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(HEADLINE).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setHeadline(infoElementNameToValueMap.get(HEADLINE).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(DESCRIPTION).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setDescription(infoElementNameToValueMap.get(DESCRIPTION).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(INSRUCTION).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setInstruction(infoElementNameToValueMap.get(INSRUCTION).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(WEB).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setWeb(infoElementNameToValueMap.get(WEB).toString())
-					.buildPartial();
-			}			
-			if(infoElementNameToValueMap.get(CONTACT).toString().length() != 0)
-			{
-				info = Info.newBuilder(info)
-					.setContact(infoElementNameToValueMap.get(CONTACT).toString())
-					.buildPartial();
-			}
-			
-			//Resource build
-			for(int resourceIndex = 0; resourceIndex < resources.size(); resourceIndex++)
-			{
-				resourceElementNameToValueMap = (Map<String, String>) ((List<?>) infoElementNameToValueMap.get(RESOURCE)).get(resourceIndex);
-				
-				//필수 Resource 요소들
-				Resource resource = Resource.newBuilder()
-					.setResourceDesc(resourceElementNameToValueMap.get(RESOURCE_DESC).toString())
-					.setMimeType(resourceElementNameToValueMap.get(MIME_TYPE).toString())
-					.buildPartial();
-				
-				//옵션 Resource 요소들
-				
-				info = Info.newBuilder(info)
-						.addResource(resource)
-						.buildPartial();
-			}
-			//Area build
-			for(int areaIndex = 0; areaIndex < resources.size(); areaIndex++)
-			{
-				areaElementNameToValueMap = ((List<Map<String, String>>) infoElementNameToValueMap.get(AREA)).get(areaIndex);
-				
-				//필수 Area 요소들
-				Area area = Area.newBuilder()
-					.setAreaDesc(areaElementNameToValueMap.get(AREA_DESC).toString())
-					.buildPartial();
-				
-				//옵션 Area 요소들
-				
-				info = Info.newBuilder(info)
-						.addArea(area)
-						.buildPartial();
-			}
-						
-			alert = Alert.newBuilder(alert)
-					.addInfo(info)
-					.build();
-		}
-		
-		this.mAlert = alert;
-		System.out.println("Build Comp. mAlert ID : " + mAlert.getIdentifier());
-	}	
+//			if(infoElementNameToValueMap.get(EVENT_CODE).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setEventCode(0, this.setEventCode(infoElementNameToValueMap.get(EVENT_CODE).toString()))
+//					.buildPartial();
+//			}			
+////			if(infos.get(infoIndex).get(EFFECTIVE).toString().length() != 0)
+////			{
+////				info = Info.newBuilder(info)
+////					.setEffective(infoElementNameToValueMap.get(EFFECTIVE).toString())
+////					.buildPartial();
+////			}			
+////			if(infos.get(infoIndex).get(EXPIRES).toString().length() != 0)
+////			{
+////				info = Info.newBuilder(info)
+////					.setExpires(infoElementNameToValueMap.get(EXPIRES).toString())
+////					.buildPartial();
+////			}			
+//			if(infoElementNameToValueMap.get(SENDER_NAME).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setSenderName(infoElementNameToValueMap.get(SENDER_NAME).toString())
+//					.buildPartial();
+//			}			
+//			if(infoElementNameToValueMap.get(HEADLINE).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setHeadline(infoElementNameToValueMap.get(HEADLINE).toString())
+//					.buildPartial();
+//			}			
+//			if(infoElementNameToValueMap.get(DESCRIPTION).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setDescription(infoElementNameToValueMap.get(DESCRIPTION).toString())
+//					.buildPartial();
+//			}			
+//			if(infoElementNameToValueMap.get(INSRUCTION).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setInstruction(infoElementNameToValueMap.get(INSRUCTION).toString())
+//					.buildPartial();
+//			}			
+//			if(infoElementNameToValueMap.get(WEB).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setWeb(infoElementNameToValueMap.get(WEB).toString())
+//					.buildPartial();
+//			}			
+//			if(infoElementNameToValueMap.get(CONTACT).toString().length() != 0)
+//			{
+//				info = Info.newBuilder(info)
+//					.setContact(infoElementNameToValueMap.get(CONTACT).toString())
+//					.buildPartial();
+//			}
+//			
+//			//Resource build
+//			for(int resourceIndex = 0; resourceIndex < resources.size(); resourceIndex++)
+//			{
+//				resourceElementNameToValueMap = (Map<String, String>) ((List<?>) infoElementNameToValueMap.get(RESOURCE)).get(resourceIndex);
+//				
+//				//필수 Resource 요소들
+//				Resource resource = Resource.newBuilder()
+//					.setResourceDesc(resourceElementNameToValueMap.get(RESOURCE_DESC).toString())
+//					.setMimeType(resourceElementNameToValueMap.get(MIME_TYPE).toString())
+//					.buildPartial();
+//				
+//				//옵션 Resource 요소들
+//				
+//				info = Info.newBuilder(info)
+//						.addResource(resource)
+//						.buildPartial();
+//			}
+//			//Area build
+//			for(int areaIndex = 0; areaIndex < resources.size(); areaIndex++)
+//			{
+//				areaElementNameToValueMap = ((List<Map<String, String>>) infoElementNameToValueMap.get(AREA)).get(areaIndex);
+//				
+//				//필수 Area 요소들
+//				Area area = Area.newBuilder()
+//					.setAreaDesc(areaElementNameToValueMap.get(AREA_DESC).toString())
+//					.buildPartial();
+//				
+//				//옵션 Area 요소들
+//				
+//				info = Info.newBuilder(info)
+//						.addArea(area)
+//						.buildPartial();
+//			}
+//						
+//			alert = Alert.newBuilder(alert)
+//					.addInfo(info)
+//					.build();
+//		}
+//		
+//		this.mAlert = alert;
+//		System.out.println("Build Comp. mAlert ID : " + mAlert.getIdentifier());
+//	}	
 
+	@Override
 	public String getMessage()
 	{
 		try
@@ -1388,20 +1381,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return "";
 	}
 
+	@Override
 	public void setMessage(String message)
 	{
 		try
-		{
-			clearMessage();
-			
+		{			
 			mAlert = capXmlParser.parseFrom(message);
-			alertElementNameToValueMap.put(IDENTIFIER, mAlert.getIdentifier());
-			alertElementNameToValueMap.put(SENDER, mAlert.getSender());
-			alertElementNameToValueMap.put(SENT, mAlert.getSent());
-			alertElementNameToValueMap.put(STATUS, mAlert.getStatus());
-			alertElementNameToValueMap.put(MSG_TYPE, mAlert.getMsgType());
-			alertElementNameToValueMap.put(SCOPE, mAlert.getScope());
-			alertElementNameToValueMap.put(CODE, KieasConfiguration.KIEAS_Constant.CODE);
 		}
 		catch (NotCapException | SAXParseException | CapException e)
 		{
@@ -1409,127 +1394,135 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 	}
 
-	private void clearMessage()
+	@Override
+	public String getIdentifier()
+	{		
+		return mAlert.getIdentifier();
+	}
+
+	@Override
+	public String getSender()
 	{
-		alertElementNameToValueMap.clear();		
+		return mAlert.getSender();
 	}
 
 	@Override
-	public String getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getSent()
+	{
+		return mAlert.getSent();
 	}
 
 	@Override
-	public String getSender() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getStatus() 
+	{
+		return mAlert.getStatus().toString();
 	}
 
 	@Override
-	public String getSent() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getMsgType()
+	{
+		return mAlert.getMsgType().toString();
 	}
 
 	@Override
-	public String getStatus() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getScope()
+	{
+		return mAlert.getScope().toString();
 	}
 
 	@Override
-	public String getMsgType() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getRestriction()
+	{
+		return mAlert.getRestriction();
 	}
 
 	@Override
-	public String getScope() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getAddresses()
+	{
+		return mAlert.getAddresses().getValue(0).toString();
 	}
 
 	@Override
-	public String getRestriction() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCode()
+	{
+		return mAlert.getCode(0);
 	}
 
 	@Override
-	public String getAddresses() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getNote()
+	{
+		return mAlert.getNote();
 	}
 
 	@Override
-	public String getCode() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setIdentifier(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).buildPartial();	
 	}
 
 	@Override
-	public String getNote() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setSender(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setSender(text).buildPartial();	
 	}
 
 	@Override
-	public void setIdentifier(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setSent(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setSent(text).buildPartial();		
+	}
+	
+	@Override
+	public void setSent(GregorianCalendar cal)
+	{
+		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
 	}
 
 	@Override
-	public void setSender(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setStatus(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setStatus(this.convertToStatus(text)).buildPartial();	
 	}
 
 	@Override
-	public void setSent(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setMsgType(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setMsgType(this.convertToMsgType(text)).buildPartial();	
 	}
 
 	@Override
-	public void setStatus(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setScope(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setScope(this.convertToScope(text)).buildPartial();	
 	}
 
 	@Override
-	public void setMsgType(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setRestriction(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setRestriction(text).buildPartial();	
 	}
 
 	@Override
-	public void setScope(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setAddresses(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setAddresses(this.convertToAddresses(text)).buildPartial();	
 	}
 
 	@Override
-	public void setRestriction(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setCode(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setCode(0, text).buildPartial();	
 	}
 
 	@Override
-	public void setAddresses(String text) {
-		// TODO Auto-generated method stub
-		
+	public void setNote(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setNote(text).buildPartial();	
 	}
 
-	@Override
-	public void setCode(String text) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
-	public void setNote(String text) {
+	public void build() {
 		// TODO Auto-generated method stub
 		
 	}
