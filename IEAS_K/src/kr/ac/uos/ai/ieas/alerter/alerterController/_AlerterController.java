@@ -22,7 +22,7 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 public class _AlerterController
 { 
 	private static _AlerterController alerterController;
-	private KieasMessageBuilder kieasMessage;
+	private KieasMessageBuilder kieasMessageBuilder;
 	private AlerterTransmitter transmitter;
 	private _AlerterTopView alerterTopView;
 	private _AlerterModelManager alerterModelManager;
@@ -52,7 +52,7 @@ public class _AlerterController
 		this.alerterModelManager = new _AlerterModelManager(this);
 		this.alerterTopView = _AlerterTopView.getInstance(this, alerterActionListener);
 		this.transmitter = new AlerterTransmitter(this);
-		this.kieasMessage = new KieasMessageBuilder();
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		init();
 	}
@@ -95,17 +95,17 @@ public class _AlerterController
 	
 	public void registerToGateway()
 	{
-		kieasMessage.setAlertElement(KieasMessageBuilder.IDENTIFIER, alerterModelManager.generateIdentifier());
-		kieasMessage.setAlertElement(KieasMessageBuilder.SENDER, alerterId);
-		kieasMessage.setAlertElement(KieasMessageBuilder.SENT, kieasMessage.getDate());
-		kieasMessage.setAlertElement(KieasMessageBuilder.STATUS, KieasMessageBuilder.SYSTEM);
-		kieasMessage.setAlertElement(KieasMessageBuilder.MSG_TYPE, "ALERT");
-		kieasMessage.setAlertElement(KieasMessageBuilder.SCOPE, KieasMessageBuilder.RESTRICTED);
-		kieasMessage.setAlertElement(KieasMessageBuilder.RESTRICTION, "Alerter");
-		kieasMessage.build();
-		System.out.println(kieasMessage.getMessage());
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.IDENTIFIER, alerterModelManager.generateIdentifier());
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENDER, alerterId);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SENT, kieasMessageBuilder.getDate());
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.STATUS, KieasMessageBuilder.SYSTEM);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.MSG_TYPE, "ALERT");
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.SCOPE, KieasMessageBuilder.RESTRICTED);
+		kieasMessageBuilder.setAlertElement(KieasMessageBuilder.RESTRICTION, "Alerter");
+		kieasMessageBuilder.build();
+		System.out.println(kieasMessageBuilder.getMessage());
 		
-		transmitter.sendMessage(kieasMessage.getMessage());	
+		transmitter.sendMessage(kieasMessageBuilder.getMessage());	
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(")
@@ -136,10 +136,10 @@ public class _AlerterController
 		try 
 		{
 			System.out.println("alerter acceptMessage");
-			kieasMessage.setMessage(message);
+			kieasMessageBuilder.setMessage(message);
 
-			String sender = kieasMessage.getAlertElement(KieasMessageBuilder.SENDER);
-			String identifier = kieasMessage.getAlertElement(KieasMessageBuilder.IDENTIFIER);
+			String sender = kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER);
+			String identifier = kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER);
 
 			System.out.println("(Alerter)" + " Received Message From (" + "Gateway" + ") : ");
 			System.out.println();

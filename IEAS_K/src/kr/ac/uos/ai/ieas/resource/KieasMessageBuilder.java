@@ -40,6 +40,7 @@ import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
 import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
 import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KIEAS_Constant;
 
 /**
  * CAP 형식의 메시지를 생성하고 다루는 클래스.
@@ -50,22 +51,6 @@ import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 
 public class KieasMessageBuilder implements IKieasMessageBuilder
 {
-	private CapXmlBuilder 	capXmlBuilder;
-	private CapXmlParser 	capXmlParser;
-	private CapValidator 	capValidator;
-
-	private Alert 			mAlert;
-	private Info 			mInfo;
-	private Area 			mArea;
-	
-
-	private Map<String, Object> alertElements;
-	private List<Map<String, Object>> infos;
-	private Map<String, Object> infoElements;
-	
-	private Map<String, List<Item>> capEnumMap;
-	private String xmlMessage;
-
 	public static final String IDENTIFIER = "Identifier";
 	public static final String SENDER = "Sender";
 	public static final String SENT = "Sent";
@@ -74,9 +59,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String SCOPE = "Scope";
 	public static final String ADDRESSES = "Addresses";
 	public static final String RESTRICTION = "Restriction";
+	public static final String RESTRICTED = "Restricted";
+	
 	public static final String CODE = "Code";
 	public static final String NOTE = "Note";
 
+	public static final String INFO = "Info";
 	public static final String LANGUAGE = "Language";
 	public static final String CATEGORY = "Category";
 	public static final String RESPONSE_TYPE = "ResponseType";
@@ -95,15 +83,30 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String WEB = "Web";
 	public static final String CONTACT = "Contact";
 
+	public static final String RESOURCE = "Resource";
 	public static final String RESOURCE_DESC = "ResourceDesc";
 	public static final String MIME_TYPE = "MimeType";
 	public static final String URI = "Uri";
 
+	public static final String AREA = "Area";
 	public static final String AREA_DESC = "AreaDesc";
 	public static final String GEO_CODE = "GeoCode";
-
+	
 	public static final String SYSTEM = "System";
-	public static final String RESTRICTED = "Restricted";
+	
+	
+	
+	
+	private CapXmlBuilder 	capXmlBuilder;
+	private CapXmlParser 	capXmlParser;
+	private CapValidator 	capValidator;
+
+	private Alert 			mAlert;	
+	
+	private Map<String, List<Item>> CapElementToCapEnumMap;
+
+	
+	private String xmlMessage;
 	
 
 	public KieasMessageBuilder()
@@ -117,9 +120,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	private void init()
 	{
-		this.alertElements = new HashMap<String, Object>();
-		this.infos = new ArrayList<Map<String, Object>>();
-		this.infoElements = new HashMap<String, Object>();
+		
 	}
 
 	/**
@@ -174,10 +175,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 */
 	public Map<String, List<Item>> getCapEnumMap()
 	{
-		this.capEnumMap = new HashMap<>();
+		this.CapElementToCapEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();
 		buildInfoCapEnumMap();
-		return capEnumMap;
+		return CapElementToCapEnumMap;
 	}
 
 	private void buildAlertCapEnumMap()
@@ -208,7 +209,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));	
 		}
-		capEnumMap.put(STATUS, capEnum1);
+		CapElementToCapEnumMap.put(STATUS, capEnum1);
 
 		List<Item> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
@@ -236,7 +237,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));	
 		}
-		capEnumMap.put(MSG_TYPE, capEnum2);
+		CapElementToCapEnumMap.put(MSG_TYPE, capEnum2);
 
 		List<Item> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
@@ -256,7 +257,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(SCOPE, capEnum3);	
+		CapElementToCapEnumMap.put(SCOPE, capEnum3);	
 	}
 
 	private void buildInfoCapEnumMap()
@@ -316,7 +317,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(CATEGORY, capEnum1);
+		CapElementToCapEnumMap.put(CATEGORY, capEnum1);
 
 		List<Item> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
@@ -348,7 +349,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(CERTAINTY, capEnum2);
+		CapElementToCapEnumMap.put(CERTAINTY, capEnum2);
 
 		List<Item> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
@@ -357,7 +358,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			modifiedValue = value.toString();
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(RESPONSE_TYPE, capEnum3);
+		CapElementToCapEnumMap.put(RESPONSE_TYPE, capEnum3);
 
 		List<Item> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
@@ -385,7 +386,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(SEVERITY, capEnum4);
+		CapElementToCapEnumMap.put(SEVERITY, capEnum4);
 
 		List<Item> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
@@ -413,7 +414,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(URGENCY, capEnum5);
+		CapElementToCapEnumMap.put(URGENCY, capEnum5);
 
 		List<Item> capEnum6 = new ArrayList<>();
 		for (DisasterEventType value : DisasterEventType.values())
@@ -422,7 +423,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
 			capEnum6.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(EVENT_CODE, capEnum6);
+		CapElementToCapEnumMap.put(EVENT_CODE, capEnum6);
 
 		List<Item> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
@@ -438,7 +439,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
-		capEnumMap.put(LANGUAGE, capEnum7);
+		CapElementToCapEnumMap.put(LANGUAGE, capEnum7);
 
 		List<Item> capEnum8 = new ArrayList<>();
 		Item item1 = new Item("1100000000", "서울특별시");
@@ -473,7 +474,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
 		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
 		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
-		capEnumMap.put(GEO_CODE, capEnum8);
+		CapElementToCapEnumMap.put(GEO_CODE, capEnum8);
 	}
 
 	public String buildDefaultMessage()
@@ -551,7 +552,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return CapUtil.formatCapDate(cal);
 	}
 
-	public String transformToYmdhms(String date)
+	public String convertToYmdhms(String date)
 	{
 		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone("Asia/Seoul"));
 		cal.setTime(CapUtil.toJavaDate(date));
@@ -566,195 +567,195 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 		return sb.toString();
 	}
-
+//
 	public int getInfoCount()
 	{
 		return mAlert.getInfoCount();
 	}
-
+//
 	public int getResourceCount(int index)
 	{
 		return mAlert.getInfo(index).getResourceCount();
 	}
-
+//
 	public int getAreaCount(int index)
 	{
 		return mAlert.getInfo(index).getAreaCount();
 	}
-
-
-	public String getLanguage(int index)
-	{
-		return mAlert.getInfo(index).getLanguage().toString();
-	}
-
-	public String getCategory(int index)
-	{
-		return mAlert.getInfo(index).getCategory(0).toString();
-	}
-
-	public String getEvent(int index)
-	{
-		try
-		{
-			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
-			{
-				return mAlert.getInfo(index).getEvent();				
-			}
-			else
-			{
-				return "";
-			}
-		}
-		catch (NotCapException e)
-		{
-			e.printStackTrace();
-			return "";
-		}
-	}
-
-	public String getUrgency(int index)
-	{
-		return mAlert.getInfo(index).getUrgency().toString();
-	}
-
-	public String getSeverity(int index)
-	{
-		return mAlert.getInfo(index).getSeverity().toString();
-	}
-
-	public String getCertainty(int index)
-	{
-		return mAlert.getInfo(index).getCertainty().toString();
-	}
-
-	public String getEventCode(int index) 
-	{
-		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
-	}
-
-	public String getEffective(int index)
-	{
-		return mAlert.getInfo(index).getEffective().toString();
-	}
-
-	public String getSenderName(int index)
-	{
-		return mAlert.getInfo(index).getSenderName().toString();
-	}
-
-	public String getHeadline(int index)
-	{
-		return mAlert.getInfo(index).getHeadline().toString();
-	}
-
-	public String getDescrpition(int index)
-	{
-		return mAlert.getInfo(index).getDescription().toString();
-	}
-
-	public String getWeb(int index)
-	{
-		return mAlert.getInfo(index).getWeb().toString();
-	}
-
-	public String getContact(int index)
-	{
-		return mAlert.getInfo(index).getContact().toString();
-	}
-
-	public String getResourceDesc(int infoIndex, int index)
-	{
-		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
-	}
-
-	public String getMimeType(int infoIndex, int index)
-	{
-		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
-	}
-
-	public String getUri(int infoIndex, int index)
-	{
-		return mAlert.getInfo(infoIndex).getResource(index).getUri();
-	}
-
-	public String getAreaDesc(int infoIndex, int index)
-	{
-		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
-	}
-
-	public String getGeoCode(int infoIndex, int index)
-	{
-		if(mArea != null)
-		{
-			return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();			
-		}
-		else
-		{
-			return "";
-		}
-	}
+//
+//
+//	public String getLanguage(int index)
+//	{
+//		return mAlert.getInfo(index).getLanguage().toString();
+//	}
+//
+//	public String getCategory(int index)
+//	{
+//		return mAlert.getInfo(index).getCategory(0).toString();
+//	}
+//
+//	public String getEvent(int index)
+//	{
+//		try
+//		{
+//			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
+//			{
+//				return mAlert.getInfo(index).getEvent();				
+//			}
+//			else
+//			{
+//				return "";
+//			}
+//		}
+//		catch (NotCapException e)
+//		{
+//			e.printStackTrace();
+//			return "";
+//		}
+//	}
+//
+//	public String getUrgency(int index)
+//	{
+//		return mAlert.getInfo(index).getUrgency().toString();
+//	}
+//
+//	public String getSeverity(int index)
+//	{
+//		return mAlert.getInfo(index).getSeverity().toString();
+//	}
+//
+//	public String getCertainty(int index)
+//	{
+//		return mAlert.getInfo(index).getCertainty().toString();
+//	}
+//
+//	public String getEventCode(int index) 
+//	{
+//		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
+//	}
+//
+//	public String getEffective(int index)
+//	{
+//		return mAlert.getInfo(index).getEffective().toString();
+//	}
+//
+//	public String getSenderName(int index)
+//	{
+//		return mAlert.getInfo(index).getSenderName().toString();
+//	}
+//
+//	public String getHeadline(int index)
+//	{
+//		return mAlert.getInfo(index).getHeadline().toString();
+//	}
+//
+//	public String getDescrpition(int index)
+//	{
+//		return mAlert.getInfo(index).getDescription().toString();
+//	}
+//
+//	public String getWeb(int index)
+//	{
+//		return mAlert.getInfo(index).getWeb().toString();
+//	}
+//
+//	public String getContact(int index)
+//	{
+//		return mAlert.getInfo(index).getContact().toString();
+//	}
+//
+//	public String getResourceDesc(int infoIndex, int index)
+//	{
+//		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
+//	}
+//
+//	public String getMimeType(int infoIndex, int index)
+//	{
+//		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
+//	}
+//
+//	public String getUri(int infoIndex, int index)
+//	{
+//		return mAlert.getInfo(infoIndex).getResource(index).getUri();
+//	}
+//
+//	public String getAreaDesc(int infoIndex, int index)
+//	{
+//		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
+//	}
+//
+//	public String getGeoCode(int infoIndex, int index)
+//	{
+//		if(mArea != null)
+//		{
+//			return mAlert.getInfo(infoIndex).getArea(index).getGeocode(0).getValue();			
+//		}
+//		else
+//		{
+//			return "";
+//		}
+//	}
 
 	//CAP 요소 Setter
-	public void setAlert(HashMap<String, String> alertElementList)
-	{
-		mAlert = Alert.newBuilder()
-				.setIdentifier(alertElementList.get(IDENTIFIER))
-				.setSender(alertElementList.get(SENDER))
-				.setSent(CapUtil.formatCapDate(getDateCalendar()))
-				.setStatus(this.setStatus(alertElementList.get(STATUS)))
-				.setMsgType(this.setMsgType(alertElementList.get(MSG_TYPE)))
-				.setScope(this.setScope(alertElementList.get(SCOPE)))
-				.setRestriction(alertElementList.get(RESTRICTION))
-				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
-				.buildPartial();
-	}
+//	public void setAlert(HashMap<String, String> alertElementList)
+//	{
+//		mAlert = Alert.newBuilder()
+//				.setIdentifier(alertElementList.get(IDENTIFIER))
+//				.setSender(alertElementList.get(SENDER))
+//				.setSent(CapUtil.formatCapDate(getDateCalendar()))
+//				.setStatus(this.setStatus(alertElementList.get(STATUS)))
+//				.setMsgType(this.setMsgType(alertElementList.get(MSG_TYPE)))
+//				.setScope(this.setScope(alertElementList.get(SCOPE)))
+//				.setRestriction(alertElementList.get(RESTRICTION))
+//				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
+//				.buildPartial();
+//	}
 
-	public void setInfo(List<Map<String, String>> infoElementList)
-	{
-		mAlert = Alert.newBuilder(mAlert).clearInfo().buildPartial();
+//	public void setInfo(List<Map<String, String>> infoElementList)
+//	{
+//		mAlert = Alert.newBuilder(mAlert).clearInfo().buildPartial();
+//
+//		for(int i = 0; i < infoElementList.size(); i++)
+//		{
+//			Info info = Info.newBuilder()
+//					.setLanguage(infoElementList.get(i).get(LANGUAGE))
+//					.setCategory(0, this.setCategory(infoElementList.get(i).get(CATEGORY)))
+//					.setEvent(infoElementList.get(i).get(EVENT))
+//					.setUrgency(this.setUrgency(infoElementList.get(i).get(URGENCY)))
+//					.setSeverity(this.setSeverity(infoElementList.get(i).get(SEVERITY)))
+//					.setCertainty(this.setCertainty(infoElementList.get(i).get(CERTAINTY)))
+//					.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName(infoElementList.get(i).get(EVENT)).setValue(infoElementList.get(i).get(EVENT)) )
+//					.setSenderName(infoElementList.get(i).get(SENDER_NAME))
+//					.setHeadline(infoElementList.get(i).get(HEADLINE))
+//					.setDescription(infoElementList.get(i).get(DESCRIPTION))
+//					.setContact(infoElementList.get(i).get(CONTACT))
+//					.buildPartial();
+//			mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
+//		}
+//	}
 
-		for(int i = 0; i < infoElementList.size(); i++)
-		{
-			Info info = Info.newBuilder()
-					.setLanguage(infoElementList.get(i).get(LANGUAGE))
-					.setCategory(0, this.setCategory(infoElementList.get(i).get(CATEGORY)))
-					.setEvent(infoElementList.get(i).get(EVENT))
-					.setUrgency(this.setUrgency(infoElementList.get(i).get(URGENCY)))
-					.setSeverity(this.setSeverity(infoElementList.get(i).get(SEVERITY)))
-					.setCertainty(this.setCertainty(infoElementList.get(i).get(CERTAINTY)))
-					.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName(infoElementList.get(i).get(EVENT)).setValue(infoElementList.get(i).get(EVENT)) )
-					.setSenderName(infoElementList.get(i).get(SENDER_NAME))
-					.setHeadline(infoElementList.get(i).get(HEADLINE))
-					.setDescription(infoElementList.get(i).get(DESCRIPTION))
-					.setContact(infoElementList.get(i).get(CONTACT))
-					.buildPartial();
-			mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
-		}
-	}
+//	public void setArea(Map<String, String> areaElementList)
+//	{
+//		for(int i = 0; i < areaElementList.size(); i++)
+//		{
+//			Area area = Area.newBuilder()
+//					.setAreaDesc("")
+//					.addGeocode(Area.newBuilder().addGeocodeBuilder().setValueName(areaElementList.get(GEO_CODE)).setValue(areaElementList.get(GEO_CODE)))
+//					.buildPartial();
+//			mInfo = Info.newBuilder(mInfo).addArea(area).build();
+//			mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();			
+//		}
+//	}	
 
-	public void setArea(Map<String, String> areaElementList)
-	{
-		for(int i = 0; i < areaElementList.size(); i++)
-		{
-			Area area = Area.newBuilder()
-					.setAreaDesc("")
-					.addGeocode(Area.newBuilder().addGeocodeBuilder().setValueName(areaElementList.get(GEO_CODE)).setValue(areaElementList.get(GEO_CODE)))
-					.buildPartial();
-			mInfo = Info.newBuilder(mInfo).addArea(area).build();
-			mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();			
-		}
-	}	
-
-	private void setSent(String text)
-	{
-		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
-	}
-
-	private void setSent(GregorianCalendar cal)
-	{
-		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
-	}	
+//	private void setSent(String text)
+//	{
+//		mAlert = Alert.newBuilder(mAlert).setSent(text).build();
+//	}
+//
+//	private void setSent(GregorianCalendar cal)
+//	{
+//		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
+//	}	
 
 	private Status setStatus(String text)
 	{
@@ -797,11 +798,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return null;
 	}
 
-	private void setSource(String source) 
-	{
-		mAlert = Alert.newBuilder(mAlert).setSource(source).build();
-	}
-
 	private Scope setScope(String text)
 	{
 		for (Scope scope : Alert.Scope.values())
@@ -827,34 +823,16 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return Group.newBuilder().addValue(address).build();		
 	}
 
-	private void setLanguage(String language)
-	{
-		mInfo = Info.newBuilder(mInfo).setLanguage(language).build();
-	}
-
 	private Category setCategory(String text)
 	{
 		for (Category category : Info.Category.values())
 		{
 			if(text.toUpperCase().equals(category.toString()))
 			{
-				if(mInfo != null)
-				{
-					mInfo = Info.newBuilder(mInfo).setCategory(0, category).build();				
-					return category;			
-				}
-				else
-				{	
-					return category;
-				}
+				return category;				
 			}
 		}
 		return null;
-	}
-
-	private void setEvent(String event) 
-	{
-		mInfo = Info.newBuilder(mInfo).setEvent(event).build();
 	}
 
 	private ResponseType setResponseType(String text)
@@ -863,14 +841,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(responseType.toString()))
 			{
-//				if(mInfo != null)
-//				{
-//					mInfo = Info.newBuilder(mInfo).setResponseType(0, responseType).build();				
-//					return responseType;		
-//				}
-//				else
-					return responseType;
-				
+				return responseType;				
 			}
 		}
 		return null;
@@ -882,15 +853,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(urgency.toString()))
 			{
-				if(mInfo != null)
-				{
-					mInfo = Info.newBuilder(mInfo).setUrgency(urgency).build();				
-					return urgency;		
-				}
-				else
-				{	
-					return urgency;
-				}
+				return urgency;						
 			}
 		}
 		return null;
@@ -902,15 +865,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(severity.toString()))
 			{
-				if(mInfo != null)
-				{
-					mInfo = Info.newBuilder(mInfo).setSeverity(severity).build();				
-					return severity;	
-				}
-				else
-				{	
-					return severity;
-				}
+				return severity;				
 			}
 		}
 		return null;
@@ -922,15 +877,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			if(text.toUpperCase().equals(certainty.toString()))
 			{
-				if(mInfo != null)
-				{
-					mInfo = Info.newBuilder(mInfo).setCertainty(certainty).build();				
-					return certainty;	
-				}
-				else
-				{	
-					return certainty;
-				}
+				return certainty;				
 			}
 		}
 		return null;
@@ -938,46 +885,20 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	private ValuePair setEventCode(String text)
 	{
-		return Info.newBuilder().addEventCodeBuilder().setValueName("TTAS.KO-07.0046/R5 재난 종류 코드").setValue(text).build();
+		return Info.newBuilder().addEventCodeBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
 	}
 
-	private void setEffective(String text)
-	{
-		mInfo = Info.newBuilder(mInfo).setEffective(text).build();
-	}
+//	private void setEffective(String text)
+//	{
+//		mInfo = Info.newBuilder(mInfo).setEffective(text).build();
+//	}
+//	
+//	private void setEffective(GregorianCalendar cal)
+//	{
+//		mInfo = Info.newBuilder(mInfo).setEffective(CapUtil.formatCapDate(cal)).build();
+//	}
+
 	
-	private void setEffective(GregorianCalendar cal)
-	{
-		mInfo = Info.newBuilder(mInfo).setEffective(CapUtil.formatCapDate(cal)).build();
-	}
-
-	private void setSenderName(String senderName)
-	{
-		mInfo = Info.newBuilder(mInfo).setSenderName(senderName).build();
-	}
-
-	private void setHeadline(String headline)
-	{
-		mInfo = Info.newBuilder(mInfo).setHeadline(headline).build();
-	}
-
-	private void setDescription(String description) 
-	{
-		mInfo = Info.newBuilder(mInfo).setDescription(description).build();
-	}
-
-	private void setWeb(String web)
-	{
-		mInfo = Info.newBuilder(mInfo).setWeb(web).build();
-	}
-
-	private void setContact(String contact)
-	{
-		mInfo = Info.newBuilder(mInfo).setContact(contact).build();
-	}
-
-
-
 	private String getValueInJasonObject(String jsonInput)
 	{		
 		try 
@@ -998,7 +919,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * @param alertList Database에서 사용하는 CAP 객체들의 리스트.
 	 * @return Google CAP Library에서 사용하는 CAP 객체들의 리스트.
 	 */	
-	public List<String> dbToCap(List<CAPAlert> alertList)
+	public List<String> convertDbToCap(List<CAPAlert> alertList)
 	{		
 		List<String> capList = new ArrayList<String>();
 
@@ -1068,7 +989,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return capList;
 	}
 
-	public CAPAlert capToDb(String capMessage)
+	public CAPAlert convertCapToDb(String capMessage)
 	{	
 		CAPAlert capAlert = new CAPAlert();
 		CAPInfo capInfo = new CAPInfo();
@@ -1190,9 +1111,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	public String getAlertElement(String key)
 	{
-		if(alertElements.containsKey(key))
+		if(alertElementNameToValueMap.containsKey(key))
 		{
-			return alertElements.get(key).toString();			
+			return alertElementNameToValueMap.get(key).toString();			
 		}	
 		else
 		{
@@ -1203,187 +1124,253 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public String getInfoElement(int index, String key)
 	{
+		infoElementNameToValueMap = infos.get(index);
+		
+		if(infoElementNameToValueMap.containsKey(key))
+		{
+			return infoElementNameToValueMap.get(key).toString();			
+		}	
+		else
+		{
+			System.out.println("Empty infoElement about : " + key);
+			return null;
+		}
+	}	
+	public String getResourceElement(int infoIndex, int resourceIndex, String key)
+	{
+		resourceElementNameToValueMap = resources.get(resourceIndex);
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public String getAreaElement(int index, String key)
+	public String getAreaElement(int infoIndex, int areaIndex, String key)
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public String getResourceElement(int index, String key)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		if(areaElementNameToValueMap.containsKey(key))
+		{
+			return areaElementNameToValueMap.get(key).toString();			
+		}	
+		else
+		{
+			System.out.println("Empty infoElement about : " + key);
+			return null;
+		}
 	}
 
 	public void setAlertElement(String key, String value)
 	{
-		if(alertElements.containsKey(key))
+		if(!alertElementNameToValueMap.containsKey(key))
+		{
+			alertElementNameToValueMap.put(key, value);			
+		}
+		else
 		{
 			switch (key)
 			{
 			case NOTE:
 				break;
 			default:
-				alertElements.replace(key, value);
+				alertElementNameToValueMap.replace(key, value);
 				System.out.println("setAlertElement (key, value) : (" + key + ", " + value + ")");
-				System.out.println("value = " + alertElements.get(key));
+				System.out.println("value = " + alertElementNameToValueMap.get(key));
 				break;
 			}
-		}
-		else
-		{
-			alertElements.put(key, value);
 		}
 	}
 
 	public void setInfoElement(int index, String key, String value)
-	{
-		if(infos.get(index).get(key) != null)
+	{		
+		switch (key)
 		{
-			switch (key)
+			case "":
 			{
-			case EFFECTIVE:
 				break;
+			}
 			default:
-				infos.get(index).replace(key, value);
+			{
+				if(infos.size() == 0 || !infoElementNameToValueMap.containsKey(key))
+				{			
+					infoElementNameToValueMap.put(key, value);
+				}
+				else
+				{
+					infoElementNameToValueMap.replace(key, value);
+				}
 				break;
 			}
 		}
-		else
-		{
-			infos.get(index).put(key, value);
-		}
 	}
-
-	public void setAreaElement(int index, String key, String value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setResourceElement(int index, String key, String value) {
+	
+	public void setResourceElement(int infoIndex, int resourceIndex, String key, String value)
+	{
 		// TODO Auto-generated method stub
 		
 	}
 	
+	public void setAreaElement(int infoIndex, int areaIndex, String key, String value)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 	public void build()
 	{		
+		//Alert build
 		//필수 Alert 요소들
-		mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
-			.setIdentifier(alertElements.get(IDENTIFIER).toString())
-			.setSender(alertElements.get(SENDER).toString())
-			.setSent(alertElements.get(SENT).toString())
-			.setStatus(this.setStatus(alertElements.get(STATUS).toString()))
-			.setMsgType(this.setMsgType(alertElements.get(MSG_TYPE).toString()))
-			.setScope(this.setScope(alertElements.get(SCOPE).toString()))
+		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+			.setIdentifier(alertElementNameToValueMap.get(IDENTIFIER).toString())
+			.setSender(alertElementNameToValueMap.get(SENDER).toString())
+			.setSent(alertElementNameToValueMap.get(SENT).toString())
+			.setStatus(this.setStatus(alertElementNameToValueMap.get(STATUS).toString()))
+			.setMsgType(this.setMsgType(alertElementNameToValueMap.get(MSG_TYPE).toString()))
+			.setScope(this.setScope(alertElementNameToValueMap.get(SCOPE).toString()))
 			.addCode(KieasConfiguration.KIEAS_Constant.CODE)
 			.buildPartial();
 		
 		//옵션 Alert 요소들
-		if(alertElements.get(ADDRESSES) != null)
+		if(alertElementNameToValueMap.get(ADDRESSES) != null)
 		{
-			mAlert = Alert.newBuilder(mAlert)
-				.setAddresses(this.setAddresses(alertElements.get(NOTE).toString()))
+			alert = Alert.newBuilder(alert)
+				.setAddresses(this.setAddresses(alertElementNameToValueMap.get(NOTE).toString()))
 				.buildPartial();
 		}	
-		if(alertElements.get(RESTRICTION) != null)
+		if(alertElementNameToValueMap.get(RESTRICTION) != null)
 		{
-			mAlert = Alert.newBuilder(mAlert)
-				.setRestriction(alertElements.get(RESTRICTION).toString())
+			alert = Alert.newBuilder(alert)
+				.setRestriction(alertElementNameToValueMap.get(RESTRICTION).toString())
 				.buildPartial();
 		}
-		if(alertElements.get(NOTE) != null)
+		if(alertElementNameToValueMap.get(NOTE) != null)
 		{
-			mAlert = Alert.newBuilder(mAlert)
-				.setNote(alertElements.get(NOTE).toString())
+			alert = Alert.newBuilder(alert)
+				.setNote(alertElementNameToValueMap.get(NOTE).toString())
 				.buildPartial();
 		}
 		
+		//Info build
 		for(int infoIndex = 0; infoIndex < infos.size(); infoIndex++)
 		{
+			infoElementNameToValueMap = infos.get(infoIndex);
+			
 			//필수 Info 요소들
 			Info info = Info.newBuilder()
-				.setLanguage(infos.get(infoIndex).get(LANGUAGE).toString())
-				.setCategory(0, this.setCategory(infos.get(infoIndex).get(CATEGORY).toString()))
-				.setEvent(infos.get(infoIndex).get(EVENT).toString())
-				.setUrgency(this.setUrgency(infos.get(infoIndex).get(URGENCY).toString()))
-				.setSeverity(this.setSeverity(infos.get(infoIndex).get(SEVERITY).toString()))
-				.setCertainty(this.setCertainty(infos.get(infoIndex).get(CERTAINTY).toString()))
+				.setLanguage(infoElementNameToValueMap.get(LANGUAGE).toString())
+				.setCategory(0, this.setCategory(infoElementNameToValueMap.get(CATEGORY).toString()))
+				.setEvent(infoElementNameToValueMap.get(EVENT).toString())
+				.setUrgency(this.setUrgency(infoElementNameToValueMap.get(URGENCY).toString()))
+				.setSeverity(this.setSeverity(infoElementNameToValueMap.get(SEVERITY).toString()))
+				.setCertainty(this.setCertainty(infoElementNameToValueMap.get(CERTAINTY).toString()))
 				.buildPartial();
 			
 			//옵션 Info 요소들
-			if(infos.get(infoIndex).get(AUDIENCE).toString().length() != 0)
+			if(infoElementNameToValueMap.get(AUDIENCE).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setAudience(infos.get(infoIndex).get(AUDIENCE).toString())
+					.setAudience(infoElementNameToValueMap.get(AUDIENCE).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(RESPONSE_TYPE).toString().length() != 0)
+			if(infoElementNameToValueMap.get(RESPONSE_TYPE).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setResponseType(0, this.setResponseType(infos.get(infoIndex).get(RESPONSE_TYPE).toString()))
+					.setResponseType(0, this.setResponseType(infoElementNameToValueMap.get(RESPONSE_TYPE).toString()))
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(EVENT_CODE).toString().length() != 0)
+			if(infoElementNameToValueMap.get(EVENT_CODE).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setEventCode(0, this.setEventCode(infos.get(infoIndex).get(EVENT_CODE).toString()))
+					.setEventCode(0, this.setEventCode(infoElementNameToValueMap.get(EVENT_CODE).toString()))
 					.buildPartial();
 			}			
-//			if(infos.get(i).get(EFFECTIVE).toString().length() != 0)
+//			if(infos.get(infoIndex).get(EFFECTIVE).toString().length() != 0)
 //			{
 //				info = Info.newBuilder(info)
-//					.setEffective(infos.get(i).get(EFFECTIVE).toString())
+//					.setEffective(infoElementNameToValueMap.get(EFFECTIVE).toString())
 //					.buildPartial();
 //			}			
-//			if(infos.get(i).get(EXPIRES).toString().length() != 0)
+//			if(infos.get(infoIndex).get(EXPIRES).toString().length() != 0)
 //			{
 //				info = Info.newBuilder(info)
-//					.setExpires(infos.get(i).get(EXPIRES).toString())
+//					.setExpires(infoElementNameToValueMap.get(EXPIRES).toString())
 //					.buildPartial();
 //			}			
-			if(infos.get(infoIndex).get(SENDER_NAME).toString().length() != 0)
+			if(infoElementNameToValueMap.get(SENDER_NAME).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setSenderName(infos.get(infoIndex).get(SENDER_NAME).toString())
+					.setSenderName(infoElementNameToValueMap.get(SENDER_NAME).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(HEADLINE).toString().length() != 0)
+			if(infoElementNameToValueMap.get(HEADLINE).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setHeadline(infos.get(infoIndex).get(HEADLINE).toString())
+					.setHeadline(infoElementNameToValueMap.get(HEADLINE).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(DESCRIPTION).toString().length() != 0)
+			if(infoElementNameToValueMap.get(DESCRIPTION).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setDescription(infos.get(infoIndex).get(DESCRIPTION).toString())
+					.setDescription(infoElementNameToValueMap.get(DESCRIPTION).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(INSRUCTION).toString().length() != 0)
+			if(infoElementNameToValueMap.get(INSRUCTION).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setInstruction(infos.get(infoIndex).get(INSRUCTION).toString())
+					.setInstruction(infoElementNameToValueMap.get(INSRUCTION).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(WEB).toString().length() != 0)
+			if(infoElementNameToValueMap.get(WEB).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setWeb(infos.get(infoIndex).get(WEB).toString())
+					.setWeb(infoElementNameToValueMap.get(WEB).toString())
 					.buildPartial();
 			}			
-			if(infos.get(infoIndex).get(CONTACT).toString().length() != 0)
+			if(infoElementNameToValueMap.get(CONTACT).toString().length() != 0)
 			{
 				info = Info.newBuilder(info)
-					.setContact(infos.get(infoIndex).get(CONTACT).toString())
+					.setContact(infoElementNameToValueMap.get(CONTACT).toString())
 					.buildPartial();
 			}
 			
-			mAlert = Alert.newBuilder(mAlert)
-					.addInfo(info)
+			//Resource build
+			for(int resourceIndex = 0; resourceIndex < resources.size(); resourceIndex++)
+			{
+				resourceElementNameToValueMap = (Map<String, String>) ((List<?>) infoElementNameToValueMap.get(RESOURCE)).get(resourceIndex);
+				
+				//필수 Resource 요소들
+				Resource resource = Resource.newBuilder()
+					.setResourceDesc(resourceElementNameToValueMap.get(RESOURCE_DESC).toString())
+					.setMimeType(resourceElementNameToValueMap.get(MIME_TYPE).toString())
 					.buildPartial();
+				
+				//옵션 Resource 요소들
+				
+				info = Info.newBuilder(info)
+						.addResource(resource)
+						.buildPartial();
+			}
+			//Area build
+			for(int areaIndex = 0; areaIndex < resources.size(); areaIndex++)
+			{
+				areaElementNameToValueMap = ((List<Map<String, String>>) infoElementNameToValueMap.get(AREA)).get(areaIndex);
+				
+				//필수 Area 요소들
+				Area area = Area.newBuilder()
+					.setAreaDesc(areaElementNameToValueMap.get(AREA_DESC).toString())
+					.buildPartial();
+				
+				//옵션 Area 요소들
+				
+				info = Info.newBuilder(info)
+						.addArea(area)
+						.buildPartial();
+			}
+						
+			alert = Alert.newBuilder(alert)
+					.addInfo(info)
+					.build();
 		}
+		
+		this.mAlert = alert;
+		System.out.println("Build Comp. mAlert ID : " + mAlert.getIdentifier());
 	}	
 
 	public String getMessage()
@@ -1405,19 +1392,146 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	{
 		try
 		{
+			clearMessage();
+			
 			mAlert = capXmlParser.parseFrom(message);
-			alertElements.put(IDENTIFIER, mAlert.getIdentifier());
-			alertElements.put(SENDER, mAlert.getSender());
-			alertElements.put(SENT, mAlert.getSent());
-			alertElements.put(STATUS, mAlert.getStatus());
-			alertElements.put(MSG_TYPE, mAlert.getMsgType());
-			alertElements.put(SCOPE, mAlert.getScope());
-			alertElements.put(CODE, KieasConfiguration.KIEAS_Constant.CODE);
+			alertElementNameToValueMap.put(IDENTIFIER, mAlert.getIdentifier());
+			alertElementNameToValueMap.put(SENDER, mAlert.getSender());
+			alertElementNameToValueMap.put(SENT, mAlert.getSent());
+			alertElementNameToValueMap.put(STATUS, mAlert.getStatus());
+			alertElementNameToValueMap.put(MSG_TYPE, mAlert.getMsgType());
+			alertElementNameToValueMap.put(SCOPE, mAlert.getScope());
+			alertElementNameToValueMap.put(CODE, KieasConfiguration.KIEAS_Constant.CODE);
 		}
 		catch (NotCapException | SAXParseException | CapException e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	private void clearMessage()
+	{
+		alertElementNameToValueMap.clear();		
+	}
+
+	@Override
+	public String getIdentifier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getSender() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getSent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getMsgType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getScope() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getRestriction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getAddresses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNote() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setIdentifier(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSender(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSent(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setStatus(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMsgType(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setScope(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRestriction(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAddresses(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCode(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNote(String text) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

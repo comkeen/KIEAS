@@ -35,6 +35,7 @@ public class KieasConfiguration
 	public static class KIEAS_Constant
 	{
 		public static final String CODE = "대한민국정부1.0";
+		public static final String EVENT_CODE_VALUE_NAME = "TTAS.KO-07.0046/R5 재난 종류 코드";
 	}
 	
 	public static class KieasList

@@ -95,7 +95,7 @@ public class GatewayModelManager
 		alertElementMap.replace(STATUS, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.STATUS));
 		alertElementMap.replace(SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
 		alertElementMap.replace(RESTRICTION, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION));
-		alertElementMap.replace(EVENT, kieasMessageBuilder.getEvent(0));
+		alertElementMap.replace(EVENT, kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT));
 		alertElementMap.replace(NOTE, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.NOTE));
 		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
 		{

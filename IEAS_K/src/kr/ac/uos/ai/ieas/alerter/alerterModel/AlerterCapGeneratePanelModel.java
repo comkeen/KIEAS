@@ -47,7 +47,7 @@ public class AlerterCapGeneratePanelModel
 
 	private Vector<Map<String, String>> mInfoValues;
 	private Map<String, String> mInfoIndexValues;
-	private int mInfoIndex;
+	private int infoIndex;
 	private String mLanguage;
 	private String mCategory;
 	private String mEvent;
@@ -178,9 +178,9 @@ public class AlerterCapGeneratePanelModel
 		{
 			this.mInfoValues = new Vector<>();
 		}
-		this.mInfoIndex = 0;
+		this.infoIndex = 0;
 		
-		mInfoValues.addElement(addInfoIndexValues(mInfoIndex));
+		mInfoValues.addElement(addInfoIndexValues(infoIndex));
 		
 		return mInfoValues;
 	}
@@ -212,8 +212,8 @@ public class AlerterCapGeneratePanelModel
 	
 	public void addInfoIndex()
 	{
-		mInfoIndex++;
-		addInfoIndexValues(mInfoIndex);
+		infoIndex++;
+		addInfoIndexValues(infoIndex);
 	}
 	
 	private Vector<Map<String, String>> initResourcePanelComponents()
@@ -344,49 +344,49 @@ public class AlerterCapGeneratePanelModel
 		setModelProperty("TextArea", kieasMessageBuilder.getMessage());
 	}
 
-	private void setInfoPanel(KieasMessageBuilder ieasMessage)
+	private void setInfoPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
 		initInfoPanelComponents();
-		mInfoIndex = ieasMessage.getInfoCount();	
-		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(mInfoIndex));
-		for(int i = 0; i < mInfoIndex; i++)
+		infoIndex = kieasMessageBuilder.getInfoCount();
+		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(infoIndex));
+		for(int i = 0; i < infoIndex; i++)
 		{
-			setModelProperty(KieasMessageBuilder.LANGUAGE + i, ieasMessage.getLanguage(i));
-			setModelProperty(KieasMessageBuilder.CATEGORY + i, ieasMessage.getCategory(i));
-			setModelProperty(KieasMessageBuilder.EVENT + i, ieasMessage.getEvent(i));
-			setModelProperty(KieasMessageBuilder.URGENCY + i, ieasMessage.getUrgency(i));
-			setModelProperty(KieasMessageBuilder.SEVERITY + i, ieasMessage.getSeverity(i));
-			setModelProperty(KieasMessageBuilder.CERTAINTY + i, ieasMessage.getCertainty(i));
-			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, ieasMessage.getEventCode(i));
-			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, ieasMessage.getEffective(i));
-			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, ieasMessage.getSenderName(i));
-			setModelProperty(KieasMessageBuilder.HEADLINE + i, ieasMessage.getHeadline(i));
-			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, ieasMessage.getDescrpition(i));
-			setModelProperty(KieasMessageBuilder.WEB + i, ieasMessage.getWeb(i));
-			setModelProperty(KieasMessageBuilder.CONTACT + i, ieasMessage.getContact(i));
+			setModelProperty(KieasMessageBuilder.LANGUAGE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.LANGUAGE));
+			setModelProperty(KieasMessageBuilder.CATEGORY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CATEGORY));
+			setModelProperty(KieasMessageBuilder.EVENT + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EVENT));
+			setModelProperty(KieasMessageBuilder.URGENCY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.URGENCY));
+			setModelProperty(KieasMessageBuilder.SEVERITY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.SEVERITY));
+			setModelProperty(KieasMessageBuilder.CERTAINTY + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CERTAINTY));
+			setModelProperty(KieasMessageBuilder.EVENT_CODE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EVENT_CODE));
+			setModelProperty(KieasMessageBuilder.EFFECTIVE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.EFFECTIVE));
+			setModelProperty(KieasMessageBuilder.SENDER_NAME + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.SENDER_NAME));
+			setModelProperty(KieasMessageBuilder.HEADLINE + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.HEADLINE));
+			setModelProperty(KieasMessageBuilder.DESCRIPTION + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.DESCRIPTION));
+			setModelProperty(KieasMessageBuilder.WEB + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.WEB));
+			setModelProperty(KieasMessageBuilder.CONTACT + i, kieasMessageBuilder.getInfoElement(infoIndex, KieasMessageBuilder.CONTACT));
 		}
 	}
 
-	private void setResourcePanel(KieasMessageBuilder ieasMessage)
+	private void setResourcePanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		mResourceCounter = ieasMessage.getResourceCount(0);
-		System.out.println("resourceCount : " + mResourceCounter);
+		mResourceCounter = kieasMessageBuilder.getResourceCount(0);
+//		System.out.println("resourceCount : " + mResourceCounter);
 		for(int i = 0; i < mResourceCounter; i++)
 		{
-			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, ieasMessage.getResourceDesc(0, i));
-			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, ieasMessage.getMimeType(0, i));
-			setModelProperty(KieasMessageBuilder.URI + i, ieasMessage.getUri(0, i));
+			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.RESOURCE_DESC));
+			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.MIME_TYPE));
+			setModelProperty(KieasMessageBuilder.URI + i, kieasMessageBuilder.getResourceElement(0, 0, KieasMessageBuilder.URI));
 		}
 	}
 	
-	private void setAreaPanel(KieasMessageBuilder ieasMessage)
+	private void setAreaPanel(KieasMessageBuilder kieasMessageBuilder)
 	{
-		mAreaCounter = ieasMessage.getAreaCount(0);
-		System.out.println("areaCount : " + mAreaCounter);
+		mAreaCounter = kieasMessageBuilder.getAreaCount(0);
+//		System.out.println("areaCount : " + mAreaCounter);
 		for(int i = 0; i < mAreaCounter; i++)
 		{
-			setModelProperty(KieasMessageBuilder.AREA_DESC + i, ieasMessage.getAreaDesc(0, i));
-			setModelProperty(KieasMessageBuilder.GEO_CODE + i, ieasMessage.getGeoCode(0, i));
+			setModelProperty(KieasMessageBuilder.AREA_DESC + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.AREA_DESC));
+			setModelProperty(KieasMessageBuilder.GEO_CODE + i, kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.GEO_CODE));
 		}
 	}
 	

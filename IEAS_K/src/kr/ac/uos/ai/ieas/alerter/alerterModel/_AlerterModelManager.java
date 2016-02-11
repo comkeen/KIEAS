@@ -81,7 +81,7 @@ public class _AlerterModelManager
 	public List<String> getQueryResult(String target, String query)
 	{	
 		System.out.println("getQuery target, query : " + target + " " + query);
-		List<String> result = kieasMessageBuilder.dbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
+		List<String> result = kieasMessageBuilder.convertDbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
 		for (String string : result)
 		{
 			System.out.println("query result = " + string);
@@ -139,10 +139,20 @@ public class _AlerterModelManager
 		System.out.println("generate id = " + identifier);
 		return identifier;
 	}
-
-	public String getEvent() { return kieasMessageBuilder.getEvent(0); }
-	public String getRestriction() { return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION); }
-	public String getGeoCode() { return kieasMessageBuilder.getGeoCode(0, 0); }
+	public String getRestriction()
+	{
+		return kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION);
+	}
+	
+	public String getEvent()
+	{
+		return kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT);
+	}
+	
+	public String getGeoCode()
+	{
+		return kieasMessageBuilder.getAreaElement(0, 0, KieasMessageBuilder.GEO_CODE);
+	}
 
 	public void addAlertTableRow()
 	{
@@ -159,7 +169,7 @@ public class _AlerterModelManager
 		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENDER));
 		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.IDENTIFIER));
 		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getAlertElement(KieasMessageBuilder.SENT));
-		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
+		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getInfoElement(0, KieasMessageBuilder.EVENT));
 		
 		if(kieasMessageBuilder.getAlertElement(KieasMessageBuilder.RESTRICTION) != null)
 		{
@@ -172,7 +182,7 @@ public class _AlerterModelManager
 	
 	public void insertDataBase(String message)
 	{
-		databaseHandler.insertCap(kieasMessageBuilder.capToDb(message));
+		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
 	}
 	
 	public void putAlertMessageMap(String key, String message)
