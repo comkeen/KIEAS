@@ -79,7 +79,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String SENDER_NAME = "SenderName";
 	public static final String HEADLINE = "Headline";
 	public static final String DESCRIPTION = "Description";
-	public static final String INSRUCTION = "Instruction";
+	public static final String INSTRUCTION = "Instruction";
 	public static final String WEB = "Web";
 	public static final String CONTACT = "Contact";
 
@@ -97,13 +97,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String ALERT = "Alert";
 	
 	
-	
-	
 	private CapXmlBuilder 	capXmlBuilder;
 	private CapXmlParser 	capXmlParser;
 	private CapValidator 	capValidator;
 
 	private Alert 			mAlert;	
+	private List<Info>		mInfos;
 	
 	private Map<String, List<Item>> CapElementToCapEnumMap;
 
@@ -122,7 +121,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	private void init()
 	{
-//		this.mAlert = Alert.newBuilder().build();
+		this.mAlert = buildDefaultAlert();
 	}
 
 	/**
@@ -481,31 +480,38 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public String buildDefaultMessage()
 	{		
-		this.mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+		this.mAlert = buildDefaultAlert();
+		mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();		
+		System.out.println("build default cap");
+		
+		return capXmlBuilder.toXml(mAlert);
+	}
+	
+	private Alert buildDefaultAlert()
+	{
+		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
 				.setIdentifier("Identifier")
 				.setSender("Sender")
 				.setSent(CapUtil.formatCapDate(getDateCalendar()))
 				.setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.RESTRICTED)
-				.setRestriction("Restriction")
 				.buildPartial();
+		
+		return alert;
+	}
 
+	private Info buildDefaultInfo()
+	{
 		Info info = Info.newBuilder()
 				.setLanguage("ko-KR")
-				.addCategory(Info.Category.SAFETY)
 				.setEvent("event")
 				.setUrgency(Info.Urgency.UNKNOWN_URGENCY)
 				.setSeverity(Info.Severity.UNKNOWN_SEVERITY)
 				.setCertainty(Info.Certainty.UNKNOWN_CERTAINTY)
 				.buildPartial();
-
-		//		this.resource = Resource.newBuilder().buildPartial();		
-		//		this.area = Area.newBuilder().buildPartial();
-
-		mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
-		System.out.println("build default cap");
-		return capXmlBuilder.toXml(mAlert);
+		
+		return info;
 	}
 
 	public boolean validation(String message)
@@ -585,17 +591,28 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return mAlert.getInfo(index).getAreaCount();
 	}
 
-
+	
+	@Override
 	public String getLanguage(int index)
 	{
 		return mAlert.getInfo(index).getLanguage().toString();
 	}
-
+	
+	@Override
 	public String getCategory(int index)
 	{
 		return mAlert.getInfo(index).getCategory(0).toString();
 	}
+	//public String getCategory(int infoIndex, int categoryIndex){}
 
+	@Override
+	public String getResponseType(int index)
+	{
+		return mAlert.getInfo(index).getResponseType(0).toString();
+	}
+	//public String getResponseType(int infoIndex, int responseTypeIndex){}
+
+	@Override
 	public String getEvent(int index)
 	{
 		try
@@ -615,88 +632,118 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			return "";
 		}
 	}
-
+	
+	@Override
 	public String getUrgency(int index)
 	{
 		return mAlert.getInfo(index).getUrgency().toString();
 	}
-
+	
+	@Override
 	public String getSeverity(int index)
 	{
 		return mAlert.getInfo(index).getSeverity().toString();
 	}
-
+	
+	@Override
 	public String getCertainty(int index)
 	{
 		return mAlert.getInfo(index).getCertainty().toString();
 	}
+	
+	@Override
+	public String getAudience(int index)
+	{
+		return mAlert.getInfo(index).getAudience();
+	}
 
+	@Override
 	public String getEventCode(int index) 
 	{
 		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
 	}
-
+	
+	@Override
 	public String getEffective(int index)
 	{
 		return mAlert.getInfo(index).getEffective().toString();
 	}
+	
+	@Override
+	public String getExpires(int index)
+	{
+		return mAlert.getInfo(index).getExpires();
+	}
 
+	@Override
 	public String getSenderName(int index)
 	{
 		return mAlert.getInfo(index).getSenderName().toString();
 	}
-
+	
+	@Override
 	public String getHeadline(int index)
 	{
 		return mAlert.getInfo(index).getHeadline().toString();
 	}
-
-	public String getDescrpition(int index)
+	
+	@Override
+	public String getDescription(int index)
 	{
 		return mAlert.getInfo(index).getDescription().toString();
 	}
-
+	
+	@Override
+	public String getInstruction(int index)
+	{
+		return mAlert.getInfo(index).getInstruction();
+	}
+	
+	@Override
 	public String getWeb(int index)
 	{
 		return mAlert.getInfo(index).getWeb().toString();
 	}
-
+	@Override
 	public String getContact(int index)
 	{
 		return mAlert.getInfo(index).getContact().toString();
 	}
-
-	public String getResourceDesc(int infoIndex, int index)
+	@Override
+	public String getResourceDesc(int index)
 	{
-		return mAlert.getInfo(infoIndex).getResource(index).getResourceDesc();
+		return mAlert.getInfo(0).getResource(index).getResourceDesc();
 	}
-
-	public String getMimeType(int infoIndex, int index)
+	@Override
+	public String getMimeType(int index)
 	{
-		return mAlert.getInfo(infoIndex).getResource(index).getMimeType();
+		return mAlert.getInfo(0).getResource(index).getMimeType();
 	}
-
-	public String getUri(int infoIndex, int index)
+	@Override
+	public String getUri(int index)
 	{
-		return mAlert.getInfo(infoIndex).getResource(index).getUri();
+		return mAlert.getInfo(0).getResource(index).getUri();
 	}
-
-	public String getAreaDesc(int infoIndex, int index)
+	@Override
+	public String getAreaDesc(int index)
 	{
-		return mAlert.getInfo(infoIndex).getArea(index).getAreaDesc();
+		return mAlert.getInfo(0).getArea(index).getAreaDesc();
 	}
-
-	public String getGeoCode(int infoIndex, int index)
+	@Override
+	public String getGeoCode(int index)
 	{		
-		if(mAlert.getInfo(infoIndex).getArea(0).getGeocode(0) != null)
+		if(mAlert.getInfo(0).getArea(0).getGeocode(0) != null)
 		{
-			return mAlert.getInfo(infoIndex).getArea(0).getGeocode(0).getValue();
+			return mAlert.getInfo(0).getArea(0).getGeocode(0).getValue();
 		}
 		else
 		{
 			return "";
 		}
 	}
+	
+
+
 
 	//CAP 요소 Setter
 //	public void setAlert(HashMap<String, String> alertElementList)
@@ -892,8 +939,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	
 	private String getValueInJasonObject(String jsonInput)
-	{		
-		try 
+	{
+		try
 		{
 			JSONObject jsonObj = new JSONObject(jsonInput);
 			return jsonObj.getString("value");
@@ -1457,7 +1504,15 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public void setIdentifier(String text)
 	{
-		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).buildPartial();	
+		if(mAlert == null)
+		{
+			System.out.println("mAlert null");
+			buildDefaultAlert();
+		}
+		else
+		{
+			mAlert = Alert.newBuilder(mAlert).setIdentifier(text).buildPartial();			
+		}	
 	}
 
 	@Override
@@ -1520,9 +1575,147 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		mAlert = Alert.newBuilder(mAlert).setNote(text).buildPartial();	
 	}
 
+	@Override
+	public String build() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
-	public void build() {
+	public void setLanguage(int infoIndex, String text)
+	{
+		if(mAlert.getInfo(infoIndex) != null)
+		{
+			Info.newBuilder(mAlert.getInfo(infoIndex)).setLanguage(text).buildPartial();			
+		}
+		else
+		{
+			
+		}
+	}
+
+	@Override
+	public void setCategory(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setCategory(0, this.convertToCategory(text));	
+	}
+
+	@Override
+	public void setResponseType(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setResponseType(0, this.convertToResponseType(text));
+	}
+
+	@Override
+	public void setEvent(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text);
+	}
+
+	@Override
+	public void setUrgency(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setUrgency(this.convertToUrgency(text));
+	}
+
+	@Override
+	public void setSeverity(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setSeverity(this.convertToSeverity(text));
+	}
+
+	@Override
+	public void setCertainty(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setCertainty(this.convertToCertainty(text));
+	}
+
+	@Override
+	public void setAudience(int infoIndex, String text)
+	{
+		Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text);
+	}
+
+	@Override
+	public void setEventCode(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setEffective(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setExpires(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSenderName(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHeadline(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDescription(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setInstruction(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setWeb(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setContact(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setResourceDesc(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMimeType(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUri(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAreaDesc(int infoIndex, String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setGeoCode(int infoIndex, String text) {
 		// TODO Auto-generated method stub
 		
 	}

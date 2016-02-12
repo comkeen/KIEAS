@@ -68,7 +68,7 @@ public class _AlerterModelManager
 	}
 	
 	private void initAlertElementMap()
-	{		
+	{
 		alertElementMap.put(KieasMessageBuilder.SENDER, KieasMessageBuilder.SENDER);
 		alertElementMap.put(KieasMessageBuilder.IDENTIFIER, KieasMessageBuilder.IDENTIFIER);
 		alertElementMap.put(KieasMessageBuilder.SENT, KieasMessageBuilder.SENT);
@@ -154,7 +154,7 @@ public class _AlerterModelManager
 	
 	public String getGeoCode()
 	{
-		return kieasMessageBuilder.getGeoCode(0, 0);
+		return kieasMessageBuilder.getGeoCode(0);
 	}
 
 	public void addAlertTableRow()
