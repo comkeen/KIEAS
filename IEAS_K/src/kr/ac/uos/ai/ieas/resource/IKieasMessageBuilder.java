@@ -82,9 +82,12 @@ public interface IKieasMessageBuilder
 	public void setGeoCode(int infoIndex, String text);
 	
 	public String build();
+	public String buildDefaultMessage();
 	public String getMessage();
 	public void setMessage(String message);
 	public boolean validation(String message);
+	
+	public String convertToYmdhms(String date);
 	
 	public List<String> convertDbToCap(List<CAPAlert> alertList);
 	public CAPAlert convertCapToDb(String capMessage);
