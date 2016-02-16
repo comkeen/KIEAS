@@ -19,7 +19,7 @@ public class TestCase
 		kieasMessageBuilder2.setMessage(str);
 		String str2 = kieasMessageBuilder2.getMessage();
 		System.out.println("str2 = " + str2);
-		assertEquals(true, str == str2);
+		assertEquals(true, str.equals(str2));
 		
 //		fail("Not yet implemented");
 	}

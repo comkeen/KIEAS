@@ -512,9 +512,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private Info buildDefaultInfo()
 	{
 		Info info = Info.newBuilder()
-				.addCategory(convertToCategory(""))
+				.addCategory(Info.Category.MET)
 				.setLanguage("ko-KR")
-				.setEvent("Event")
+				.setEvent("Event") 
 				.setUrgency(Info.Urgency.UNKNOWN_URGENCY)
 				.setSeverity(Info.Severity.UNKNOWN_SEVERITY)
 				.setCertainty(Info.Certainty.UNKNOWN_CERTAINTY)
@@ -523,7 +523,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return info;
 	}
 
-	public boolean validation(String message)
+	public boolean validateMessage(String message)
 	{
 		try
 		{			
@@ -547,12 +547,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //			mAlert = Alert.newBuilder(mAlert).build();
 //		}
 //	}	
-	public String getDate()
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
-		cal.setTime(new Date());
-		return CapUtil.formatCapDate(cal);
-	}
+
 
 	private GregorianCalendar getDateCalendar()
 	{
@@ -569,22 +564,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return CapUtil.formatCapDate(cal);
 	}
 
-	@Override
-	public String convertToYmdhms(String date)
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
-		cal.setTime(CapUtil.toJavaDate(date));
 
-		StringBuffer sb = new StringBuffer();
-		sb.append(cal.get(Calendar.YEAR)).append("년")
-		.append(cal.get(Calendar.MONTH)+1).append("월")
-		.append(cal.get(Calendar.DATE)).append("일").append(" ")
-		.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
-		.append(cal.get(Calendar.MINUTE)).append("분")
-		.append(cal.get(Calendar.SECOND)).append("초");
-
-		return sb.toString();
-	}
 
 	public int getInfoCount()
 	{
@@ -1606,5 +1586,33 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public void setGeoCode(int infoIndex, String text) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	
+	
+	
+	@Override
+	public String getDate()
+	{
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		cal.setTime(new Date());
+		return CapUtil.formatCapDate(cal);
+	}
+	
+	@Override
+	public String convertDateToYmdhms(String date)
+	{
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		cal.setTime(CapUtil.toJavaDate(date));
+
+		StringBuffer sb = new StringBuffer();
+		sb.append(cal.get(Calendar.YEAR)).append("년")
+		.append(cal.get(Calendar.MONTH)+1).append("월")
+		.append(cal.get(Calendar.DATE)).append("일").append(" ")
+		.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
+		.append(cal.get(Calendar.MINUTE)).append("분")
+		.append(cal.get(Calendar.SECOND)).append("초");
+
+		return sb.toString();
 	}
 }

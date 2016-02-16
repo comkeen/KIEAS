@@ -10,23 +10,24 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import org.springframework.ui.Model;
-
 import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.ITransmitter;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 
 public class _AlerterController
 { 
 	private static _AlerterController alerterController;
-	private KieasMessageBuilder kieasMessageBuilder;
-	private AlerterTransmitter transmitter;
 	private _AlerterTopView alerterTopView;
 	private _AlerterModelManager alerterModelManager;
 	private AleterViewActionListener alerterActionListener;
+
+	private IKieasMessageBuilder kieasMessageBuilder;
+	private ITransmitter transmitter;
 	
 	private String alerterId;
 	
@@ -51,6 +52,7 @@ public class _AlerterController
 		this.alerterActionListener = new AleterViewActionListener(this);
 		this.alerterModelManager = new _AlerterModelManager(this);
 		this.alerterTopView = _AlerterTopView.getInstance(this, alerterActionListener);
+		
 		this.transmitter = new AlerterTransmitter(this);
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
@@ -68,7 +70,7 @@ public class _AlerterController
 	{
 		this.alerterId = "기상청";
 		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/기상청";
-		transmitter.setId(alerterId);
+		transmitter.setReceiver(alerterId);
 		alerterTopView.setId(alerterId);
 	}
 	
@@ -105,20 +107,17 @@ public class _AlerterController
 		kieasMessageBuilder.build();
 		System.out.println(kieasMessageBuilder.getMessage());
 		
-		transmitter.sendMessage(kieasMessageBuilder.getMessage());	
+		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
 		
 		StringBuffer log = new StringBuffer();
-		log.append("(")
-			.append(alerterId)
-			.append(")")
-			.append(" Register to Gateway :");
+		log.append("(").append(alerterId).append(")").append(" Register to Gateway :");
 		System.out.println(log.toString());
 	}
 
 	public void sendMessage()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getMessage());
+		transmitter.sendMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -126,7 +125,7 @@ public class _AlerterController
 	public void sendAlert()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getAlert());
+		transmitter.sendMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}

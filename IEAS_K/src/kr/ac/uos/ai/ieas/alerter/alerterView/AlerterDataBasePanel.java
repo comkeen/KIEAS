@@ -183,7 +183,7 @@ public class AlerterDataBasePanel
 		kieasMessageBuilder.setMessage(message);
 		alertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
 		alertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.convertToYmdhms(kieasMessageBuilder.getSent()));
+		alertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.convertDateToYmdhms(kieasMessageBuilder.getSent()));
 		alertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
 
 		return alertElementMap;
