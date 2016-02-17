@@ -22,5 +22,8 @@ public class TestCase
 		assertEquals(true, str.equals(str2));
 		
 //		fail("Not yet implemented");
+		
+		kieasMessageBuilder1.setLanguage(0, "us-EN");
+		System.out.println(kieasMessageBuilder1.getLanguage(0));
 	}
 }

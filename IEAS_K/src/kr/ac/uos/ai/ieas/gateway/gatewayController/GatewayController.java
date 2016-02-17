@@ -1,5 +1,10 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayController;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import javax.swing.JOptionPane;
 
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertSystemInfoTableModel;
@@ -8,35 +13,27 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayModelManager;
 import kr.ac.uos.ai.ieas.gateway.gatewayView.GatewayView;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.ITransmitter;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasName;
 
 
 public class GatewayController
 {
+	private static final long DELAY = 1000;
+	
+
 	private static GatewayController gatewayController;
 
+	private IKieasMessageBuilder kieasMessageBuilder;	
+	private ITransmitter transmitter;
+
 	private GatewayActionListener gatewayActionListener;
-	private GatewayTransmitter gatewayTransmitter;
 	private GatewayView gatewayView;
 	private GatewayModelManager gatewayModelManager;
-	private KieasMessageBuilder kieasMessageBuilder;
 
-	private String gatewayID;
-	private String ackMessage;
+	private String gatewayId;
 
-	private String sender;
-	private String identifier;
-	private String status;
-	private String alertSystemType;
-	private String event;
-	private String geoCode;
-	private String note;
-
-
-
-
-	private static final long DELAY = 1000;
 
 	public static GatewayController getInstance()
 	{
@@ -49,45 +46,53 @@ public class GatewayController
 
 	private GatewayController()
 	{
-		this.gatewayID = KieasName.GATEWAY_NAME;
-		this.gatewayActionListener = new GatewayActionListener(this);
-		this.gatewayModelManager = GatewayModelManager.getInstance();
-		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-		this.gatewayTransmitter = new GatewayTransmitter(this);		
-		gatewayView.appendLog("(" + gatewayID + ")" + " Open");
+		this.transmitter = new GatewayTransmitter(this);		
+		
+		this.gatewayActionListener = new GatewayActionListener(this);
+		this.gatewayModelManager = new GatewayModelManager(this);
+		this.gatewayView = GatewayView.getInstance(this, gatewayActionListener);
 
-		this.sender = "";
-		this.identifier = "";
-		this.event = "";
-		this.alertSystemType = "";
+		init();
+	}
+	
+	private void init()
+	{
+		this.setID();
+		
+		openGateway();
 	}
 
 	public void openGateway()
 	{
-		gatewayTransmitter.startConnection();
+		transmitter.openConnection();
 		
-		String log = "(" + gatewayID + ")" + " Open";
+		String log = "(" + gatewayId + ")" + " Open";
 		System.out.println(log);
 		gatewayView.appendLog(log);
 	}
 
 	public void closeGateway()
 	{
-		gatewayTransmitter.stopConnection();
+		transmitter.stopConnection();
 		
-		String log = "(" + gatewayID + ")" + " Close";
+		String log = "(" + gatewayId + ")" + " Close";
 		System.out.println(log);
 		gatewayView.appendLog(log);
 	}
 
 	public void acceptAleterMessage(String message)
 	{
-		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
-		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
-		status = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.STATUS);
+		kieasMessageBuilder.setMessage(message);
+		String sender = kieasMessageBuilder.getSender();
+		String identifier = kieasMessageBuilder.getIdentifier();
+		String status = kieasMessageBuilder.getStatus();
+		
+//		String sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
+//		String identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
+//		String status = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.STATUS);
 
-		String log = "(" + gatewayID + ")" + " Received Message From Alerter (" + sender + ") : ";
+		String log = "(" + gatewayId + ")" + " Received Message From Alerter (" + sender + ") : ";
 		System.out.println(log);
 		gatewayView.appendLog(log + identifier);
 	
@@ -99,7 +104,7 @@ public class GatewayController
 				gatewayModelManager.addAlertTableRow(message);
 				gatewayModelManager.addAlerterInfoTableRow(message);
 
-				this.ackMessage = gatewayModelManager.creatAckMessage(message, gatewayID);
+				String ackMessage = gatewayModelManager.creatAckMessage(message, gatewayId);
 				sendAcknowledge(ackMessage, sender);
 
 				broadcastMessage(message);
@@ -113,7 +118,7 @@ public class GatewayController
 		case "SYSTEM":
 			try 
 			{
-				log = "(" + gatewayID + ")" + " Received Register request From Alerter : " + identifier;
+				log = "(" + gatewayId + ")" + " Received Register request From Alerter : " + identifier;
 				System.out.println(log);
 				gatewayView.appendLog(log);
 				
@@ -135,16 +140,17 @@ public class GatewayController
 
 	public void acceptAletSystemMessage(String message)
 	{
-		sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);	
-		identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
-		status = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.STATUS);
-
+		kieasMessageBuilder.setMessage(message);
+		String sender = kieasMessageBuilder.getSender();
+		String identifier = kieasMessageBuilder.getIdentifier();
+		String status = kieasMessageBuilder.getStatus();
+		
 		switch (status)
 		{	
 		case "ACTUAL":
 			try 
 			{
-				String log = "(" + gatewayID + ")" + " Received Message From AlertSystem : " + identifier;
+				String log = "(" + gatewayId + ")" + " Received Message From AlertSystem : " + identifier;
 				System.out.println(log);
 				gatewayView.appendLog(log);
 
@@ -162,7 +168,7 @@ public class GatewayController
 		case "SYSTEM":
 			try 
 			{
-				String log = "(" + gatewayID + ")" + " Received Register request From AlertSystem : " + identifier;
+				String log = "(" + gatewayId + ")" + " Received Register request From AlertSystem : " + identifier;
 				System.out.println(log);
 				gatewayView.appendLog(log);
 				
@@ -193,26 +199,37 @@ public class GatewayController
 		{
 			e.printStackTrace();
 		}
-		
-		gatewayTransmitter.sendQueueMessage(message, destination);
+		transmitter.sendQueueMessage(createAckMessage(message), destination);
 
-		String log = "(" + gatewayID + ")" + " Send Acknowledge to ("+ destination +") : ";
+		String log = "(" + gatewayId + ")" + " Send Acknowledge to ("+ destination +") : ";
 		System.out.println(log);
 		gatewayView.appendLog(log);
+	}
+	
+	private String createAckMessage(String message)
+	{		
+		kieasMessageBuilder.setMessage(message);
+		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(gatewayId));
+		kieasMessageBuilder.setSender(gatewayId);
+		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
+		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ACK);
+		System.out.println("GW : create Ack Message");
+		
+		return kieasMessageBuilder.getMessage();
 	}
 
 	private void broadcastMessage(String message)
 	{
-		alertSystemType = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.RESTRICTION);
-		event = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.EVENT);
+		String alertSystemType = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.RESTRICTION);
+		String event = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.EVENT);
 		
 		for (String item : KieasList.ALERT_SYSTEM_TYPE_LIST)
 		{
 			if (item.equals(alertSystemType))
 			{
-				gatewayTransmitter.sendTopicMessage(message, alertSystemType);	
+				transmitter.sendTopicMessage(message, alertSystemType);	
 
-				String log = "(" + gatewayID + ")" + " Broadcast Message To ("+ alertSystemType +") : ";
+				String log = "(" + gatewayId + ")" + " Broadcast Message To ("+ alertSystemType +") : ";
 				System.out.println(log);
 				gatewayView.appendLog(log + event);
 			}
@@ -221,15 +238,15 @@ public class GatewayController
 
 	private void routeMessage(String message)
 	{
-		geoCode = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.GEO_CODE);
+		String geoCode = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.GEO_CODE);
 		
 		for (String item : KieasList.GEO_CODE_LIST)
 		{
 			if (item.equals(geoCode))
 			{
-				gatewayTransmitter.sendQueueMessage(message, geoCode);	
+				transmitter.sendQueueMessage(message, geoCode);	
 
-				String log = "(" + gatewayID + ")" + " Route Message To ("+ geoCode +") : ";
+				String log = "(" + gatewayId + ")" + " Route Message To ("+ geoCode +") : ";
 				System.out.println(log);
 				gatewayView.appendLog(log);
 			}
@@ -248,7 +265,7 @@ public class GatewayController
 
 	public String getName()
 	{
-		return gatewayID;
+		return gatewayId;
 	}
 
 	public String getAlertMessage(String identifier)
@@ -282,12 +299,50 @@ public class GatewayController
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 	    {	
-			gatewayTransmitter.closeConnection();
+			transmitter.closeConnection();
 	        System.exit(0);
 	    }
 		else
 		{
 			System.out.println("cancel exit program");
 		}
+	}
+	
+	public void setID()
+	{
+		this.gatewayId = "통합게이트웨이";
+		this.gatewayId = getLocalServerIp() + "/gatewayId";
+		
+		transmitter.setQueueReceiver(gatewayId);
+		gatewayView.setId(gatewayId);
+	}
+	
+	private String getLocalServerIp()
+	{
+		try
+		{
+		    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();)
+		    {
+		        NetworkInterface intf = en.nextElement();
+		        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
+		        {
+		            InetAddress inetAddress = enumIpAddr.nextElement();
+		            if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress())
+		            {
+		            	return inetAddress.getHostAddress().toString();
+		            }
+		        }
+		    }
+		}
+		catch (SocketException e)
+		{		
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String getId()
+	{
+		return this.gatewayId;
 	}
 }

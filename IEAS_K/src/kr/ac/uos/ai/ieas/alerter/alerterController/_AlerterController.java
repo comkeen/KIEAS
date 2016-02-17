@@ -61,7 +61,7 @@ public class _AlerterController
 	
 	private void init()
 	{
-		setID();
+		this.setID();
 		alerterTopView.setId(alerterId);
 		transmitter.openConnection();
 	}
@@ -69,8 +69,8 @@ public class _AlerterController
 	public void setID()
 	{
 		this.alerterId = "기상청";
-		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/기상청";
-		transmitter.setReceiver(alerterId);
+		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/alerterId";
+		transmitter.setQueueReceiver(alerterId);
 		alerterTopView.setId(alerterId);
 	}
 	
@@ -91,13 +91,16 @@ public class _AlerterController
 		        }
 		    }
 		}
-		catch (SocketException ex) {}
+		catch (SocketException e)
+		{		
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
 	public void registerToGateway()
 	{
-		kieasMessageBuilder.setIdentifier(alerterModelManager.generateIdentifier());
+		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(alerterId));
 		kieasMessageBuilder.setSender(alerterId);
 		kieasMessageBuilder.setSent(kieasMessageBuilder.getDate());
 		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
@@ -107,7 +110,7 @@ public class _AlerterController
 		kieasMessageBuilder.build();
 		System.out.println(kieasMessageBuilder.getMessage());
 		
-		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
+		transmitter.sendQueueMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(").append(alerterId).append(")").append(" Register to Gateway :");
@@ -117,7 +120,7 @@ public class _AlerterController
 	public void sendMessage()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		transmitter.sendQueueMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -125,7 +128,7 @@ public class _AlerterController
 	public void sendAlert()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		transmitter.sendQueueMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -137,8 +140,8 @@ public class _AlerterController
 			System.out.println("alerter acceptMessage");
 			kieasMessageBuilder.setMessage(message);
 
-			String sender = kieasMessageBuilder.getSender();
-			String identifier = kieasMessageBuilder.getIdentifier();
+//			String sender = kieasMessageBuilder.getSender();
+//			String identifier = kieasMessageBuilder.getIdentifier();
 
 			System.out.println("(Alerter)" + " Received Message From (" + "Gateway" + ") : ");
 			System.out.println();

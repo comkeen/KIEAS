@@ -168,7 +168,7 @@ public class _AlerterTopView
 
 	public void setId(String name) 
 	{
-		this.mainFrame.setTitle(name + "발령대");
+		mainFrame.setTitle(name + "발령대");
 	}
 
 	public Component getFrame() 

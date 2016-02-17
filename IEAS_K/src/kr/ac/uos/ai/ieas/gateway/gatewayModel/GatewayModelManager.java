@@ -1,20 +1,23 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayModel;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayController;
+import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class GatewayModelManager
 {	
-	private static GatewayModelManager gatewayModelManager;
-	private KieasMessageBuilder kieasMessageBuilder;
+	private IKieasMessageBuilder kieasMessageBuilder;
 
+	private GatewayController controller;
 	private GatewayAlerterInfoTableModel alerterInfoTableModel;
 	private GatewayAlertSystemInfoTableModel alertSystemInfoTableModel;
 	private GatewayAlertTableModel alertTableModel;
 
-	private HashMap<String, String> alertMessageMap;
-	private HashMap<String, String> alertElementMap;
+	private Map<String, String> alertMessageMap;
+	private Map<String, String> alertElementMap;
 
 
 	public static final String NO = "No.";
@@ -32,15 +35,9 @@ public class GatewayModelManager
 	public static final String COMP = "COMP";
 
 
-	public static GatewayModelManager getInstance()
+	public GatewayModelManager(GatewayController controller)
 	{
-		if (gatewayModelManager == null) 
-			gatewayModelManager = new GatewayModelManager();
-		return gatewayModelManager;
-	}
-
-	private GatewayModelManager()
-	{
+		this.controller = controller;
 		this.alertTableModel = new GatewayAlertTableModel();
 		this.alerterInfoTableModel = new GatewayAlerterInfoTableModel();
 		this.alertSystemInfoTableModel = new GatewayAlertSystemInfoTableModel();
@@ -86,7 +83,7 @@ public class GatewayModelManager
 		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
 
-	public HashMap<String, String> getAlertElementMap(String message)
+	public Map<String, String> getAlertElementMap(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
 
@@ -115,7 +112,7 @@ public class GatewayModelManager
 		return alertMessageMap.get(identifier);
 	}
 
-	public HashMap<String, String> getAlertMessageMap()
+	public Map<String, String> getAlertMessageMap()
 	{
 		return alertMessageMap;
 	}

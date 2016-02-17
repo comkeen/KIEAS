@@ -86,10 +86,10 @@ public interface IKieasMessageBuilder
 	public String getMessage();
 	public void setMessage(String message);
 	public boolean validateMessage(String message);
+	public String generateKieasMessageIdentifier(String id);
 	
 	public String getDate();
 	public String convertDateToYmdhms(String date);
-	
 	
 	public List<String> convertDbToCap(List<CAPAlert> alertList);
 	public CAPAlert convertCapToDb(String capMessage);

@@ -128,5 +128,10 @@ public class GatewayView
 	public Component getFrame()
 	{
 		return frame;
+	}
+
+	public void setId(String gatewayId)
+	{
+		frame.setTitle(gatewayId);
 	}	
 }

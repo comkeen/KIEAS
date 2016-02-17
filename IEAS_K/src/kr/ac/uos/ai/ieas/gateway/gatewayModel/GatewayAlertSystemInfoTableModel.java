@@ -1,7 +1,7 @@
 package kr.ac.uos.ai.ieas.gateway.gatewayModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -33,7 +33,7 @@ public class GatewayAlertSystemInfoTableModel {
 		this.tableModel = new DefaultTableModel(columnNames.toArray(), 0);
 	}
 
-	public void addTableRowData(HashMap<String, String> alertElementMap)
+	public void addTableRowData(Map<String, String> alertElementMap)
 	{
 		for(int i=0; i<tableModel.getRowCount(); i++)
 		{

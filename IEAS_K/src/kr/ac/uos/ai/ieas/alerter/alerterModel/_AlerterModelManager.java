@@ -25,8 +25,6 @@ public class _AlerterModelManager
 	private Map<String, String> alertElementMap;
 	
 	private String message;
-	private String identifier;
-		
 	
 	
 	public static _AlerterModelManager getInstance(_AlerterController alerterController)
@@ -116,12 +114,9 @@ public class _AlerterModelManager
 	
 
 	public void generateCap(String alertSystemType)
-	{
-		this.identifier = generateIdentifier();
-		
-		String cap = kieasMessageBuilder.buildDefaultMessage();
-		kieasMessageBuilder.setMessage(cap);
-		kieasMessageBuilder.setIdentifier(identifier);
+	{		
+		kieasMessageBuilder.buildDefaultMessage();
+		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(controller.getId()));
 		kieasMessageBuilder.setRestriction(alertSystemType);
 	
 		this.message = kieasMessageBuilder.getMessage();
@@ -133,15 +128,6 @@ public class _AlerterModelManager
 		return kieasMessageBuilder.getIdentifier();
 	}
 	
-	public String generateIdentifier()
-	{
-		String alerterId = controller.getId();
-		String idNum = Double.toString(Math.random());		
-		
-		String identifier = alerterId + idNum.substring(2, 12);
-		System.out.println("generate id = " + identifier);
-		return identifier;
-	}
 	public String getRestriction()
 	{
 		return kieasMessageBuilder.getRestriction();

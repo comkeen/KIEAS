@@ -104,7 +104,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private CapValidator 	capValidator;
 
 	private Alert 			mAlert;
-	private List<Info>		mInfos;
 	
 	private Map<String, List<Item>> CapElementToCapEnumMap;
 
@@ -483,8 +482,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public String buildDefaultMessage()
 	{		
 		this.mAlert = buildDefaultAlert();
-		this.mInfos = new ArrayList<Info>();
-		mInfos.add(buildDefaultInfo());
 		
 		for (int infoIndex = 0; infoIndex < DEFAULT_INFO_SIZE; infoIndex++)
 		{
@@ -535,19 +532,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			return false;
 		}
 	}
-
-//	public void build()
-//	{	
-//		if(mInfo != null)
-//		{
-//			mAlert = Alert.newBuilder(mAlert).clearInfo().addInfo(mInfo).build();			
-//		}
-//		else
-//		{
-//			mAlert = Alert.newBuilder(mAlert).build();
-//		}
-//	}	
-
 
 	private GregorianCalendar getDateCalendar()
 	{
@@ -665,6 +649,14 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		}
 //	}	
 
+	private void incrementInfoByInfoIndex(int infoIndex)
+	{
+		for (int i = infoIndex - mAlert.getInfoCount(); i < mAlert.getInfoCount(); i++)
+		{
+			mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();				
+		}
+	}
+	
 	private Status convertToStatus(String text)
 	{
 		text = text.toUpperCase();
@@ -1444,117 +1436,206 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public void setLanguage(int infoIndex, String text)
 	{
-		if(mAlert.getInfo(infoIndex) != null)
+		if(infoIndex >= mAlert.getInfoCount())
 		{
-			Info.newBuilder(mAlert.getInfo(infoIndex)).setLanguage(text).buildPartial();			
+			incrementInfoByInfoIndex(infoIndex);
 		}
-		else
-		{
-			
-		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setLanguage(text).buildPartial();		
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
+
 
 	@Override
 	public void setCategory(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setCategory(0, this.convertToCategory(text));	
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setCategory(0, this.convertToCategory(text)).buildPartial();		
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setResponseType(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setResponseType(0, this.convertToResponseType(text));
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResponseType(0, this.convertToResponseType(text)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setEvent(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setUrgency(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setUrgency(this.convertToUrgency(text));
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setUrgency(this.convertToUrgency(text)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setSeverity(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setSeverity(this.convertToSeverity(text));
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setSeverity(this.convertToSeverity(text)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setCertainty(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setCertainty(this.convertToCertainty(text));
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setCertainty(this.convertToCertainty(text)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setAudience(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setEventCode(int infoIndex, String text)
-	{
-		if(!mAlert.getInfo(infoIndex).getEventCodeList().isEmpty())
-		{		
-			Info.newBuilder(mAlert.getInfo(infoIndex)).setEventCode(0, convertToEventCode(text));
+	{		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
 		}
-		else
-		{	
-			Info.newBuilder(mAlert.getInfo(infoIndex)).addEventCode(convertToEventCode(text));	
-		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).clearEventCode().addEventCode(convertToEventCode(text)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setEffective(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setEffective(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEffective(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setExpires(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setExpires(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setExpires(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setSenderName(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setSenderName(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setSenderName(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setHeadline(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setHeadline(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setHeadline(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setDescription(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setDescription(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setDescription(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setInstruction(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setInstruction(text);		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setInstruction(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setWeb(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setWeb(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setWeb(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
 	public void setContact(int infoIndex, String text)
 	{
-		Info.newBuilder(mAlert.getInfo(infoIndex)).setContact(text);
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setContact(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
@@ -1607,12 +1688,21 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 		StringBuffer sb = new StringBuffer();
 		sb.append(cal.get(Calendar.YEAR)).append("년")
-		.append(cal.get(Calendar.MONTH)+1).append("월")
-		.append(cal.get(Calendar.DATE)).append("일").append(" ")
-		.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
-		.append(cal.get(Calendar.MINUTE)).append("분")
-		.append(cal.get(Calendar.SECOND)).append("초");
+			.append(cal.get(Calendar.MONTH)+1).append("월")
+			.append(cal.get(Calendar.DATE)).append("일").append(" ")
+			.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
+			.append(cal.get(Calendar.MINUTE)).append("분")
+			.append(cal.get(Calendar.SECOND)).append("초");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String generateKieasMessageIdentifier(String id)
+	{
+		String idNum = Double.toString(Math.random());		
+		
+		String identifier = id + "@" + idNum.substring(2, 12);
+		return identifier;
 	}
 }

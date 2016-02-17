@@ -23,12 +23,12 @@ public class AlerterTransmitter implements ITransmitter
 
 	private Connection connection;
 	private Session session;
+	
 	private MessageProducer producer;
 	private MessageConsumer consumer;
 
-	private String id;
-
 	private String mqServerIp;
+	private String id;
 
 
 	public AlerterTransmitter(_AlerterController controller)
@@ -43,26 +43,31 @@ public class AlerterTransmitter implements ITransmitter
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
 		this.id = KieasAddress.GATEWAY_TO_ALERTER_QUEUE_DESTINATION;	//default
 		
-		createConnection(mqServerIp);
-	}
+		openConnection();
+	}	
 	
-	private void createConnection(String mqServerIp)
+	@Override
+	public void openConnection()
 	{
 		try
 		{
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(mqServerIp);
 			this.connection = factory.createConnection();
-			this.connection.start();
-			this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			connection.start();
+			
+			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		}
 		catch (Exception ex)
 		{
-			ex.printStackTrace();
+//			ex.printStackTrace();
+			System.out.println("Could not found MQ Server : " + mqServerIp);
+			return;
 		}
-		createConsumer(id);
+		this.setQueueReceiver(id);
 	}
 	
-	private void destroyConnection()
+	@Override
+	public void closeConnection()
 	{
 		try 
 		{
@@ -79,13 +84,60 @@ public class AlerterTransmitter implements ITransmitter
 		}
 	}
 	
-	private void createProducer(String message, String destination)
+	@Override
+	public void stopConnection()
 	{
 		try
-		{			
-			Destination queueDestination = this.session.createQueue(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-			System.out.println("alerter to gw dest : " + queueDestination);
-			this.producer = this.session.createProducer(queueDestination);
+		{
+			this.connection.stop();
+			System.out.println("Gateway Connection Stop");
+		}
+		catch (JMSException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void sendQueueMessage(String message, String queueDestination) 
+	{
+		if(connection == null || session == null)
+		{
+			System.out.println("Could not found JMS Connection");
+			return;
+		}
+		
+		try
+		{
+			Destination destination = this.session.createQueue(queueDestination);
+			System.out.println("alerter to gw dest : " + destination);
+			this.producer = this.session.createProducer(destination);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			TextMessage textMessage = this.session.createTextMessage(message);
+
+			producer.send(textMessage);
+			producer.close();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendTopicMessage(String message, String topicDestination)
+	{
+		if(connection == null || session == null)
+		{
+			System.out.println("Could not found JMS Connection");
+			return;
+		}
+		
+		try
+		{
+			Destination destination = this.session.createQueue(topicDestination);
+			System.out.println("alerter to gw dest : " + destination);
+			this.producer = this.session.createProducer(destination);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
@@ -98,11 +150,20 @@ public class AlerterTransmitter implements ITransmitter
 		}
 	}
 	
-	private void createConsumer(String queueName)
+	@Override
+	public void setQueueReceiver(String id)
 	{
+		this.id = id;
+		
+		if(connection == null || session == null)
+		{
+			System.out.println("Could not found JMS Connection");
+			return;
+		}
+		
 		try 
 		{
-			Destination destination = this.session.createQueue(queueName);
+			Destination destination = this.session.createQueue(id);
 			System.out.println("gw to alerter Dest : " + destination);
 			this.consumer = session.createConsumer(destination);
 			MessageListener listener = new MessageListener()
@@ -133,30 +194,46 @@ public class AlerterTransmitter implements ITransmitter
 		}
 	}
 	
-	
 	@Override
-	public void openConnection()
-	{
-		createConnection(mqServerIp);
-	}
-	
-	@Override
-	public void closeConnection()
-	{
-		destroyConnection();
-	}
-	
-	@Override
-	public void sendMessage(String message, String destination) 
-	{
-		createProducer(message, destination);
-	}
-	
-	@Override
-	public void setReceiver(String id)
-	{
-		this.id = id;
-		createConsumer(id);
+	public void setTopicReceiver(String topicDestination)
+	{		
+		if(connection == null || session == null)
+		{
+			System.out.println("Could not found JMS Connection");
+			return;
+		}
+		
+		try 
+		{
+			Destination destination = this.session.createTopic(topicDestination);
+			System.out.println("gw to alerter Dest : " + destination);
+			this.consumer = session.createConsumer(destination);
+			MessageListener listener = new MessageListener()
+			{
+				public void onMessage(Message message)
+				{
+					if (message instanceof TextMessage)
+					{
+						TextMessage textMessage = (TextMessage) message;
+
+						try
+						{
+							System.out.println("(" + id + ") receive topic message");
+							controller.acceptMessage(textMessage.getText());	//Message Receive			
+						}
+						catch (JMSException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+			consumer.setMessageListener(listener);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -164,7 +241,8 @@ public class AlerterTransmitter implements ITransmitter
 	{
 		this.mqServerIp = ip;
 		
-		destroyConnection();
-		createConnection(ip);
+		closeConnection();
+		openConnection();
 	}
+
 }
