@@ -18,43 +18,36 @@ import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 
 public class _AlerterTopView
 {
-	private static _AlerterTopView alerterTopView;
-	private JFrame mainFrame;
-	private JTabbedPane mainTabbedPane;
-
 	private _AlerterController controller;
-	private AlerterLogPanel alerterLogPanel;
-	private AlerterCapGeneratePanel alerterCapGeneratePanel;
-	private AlerterDataBasePanel alerterDatabasePanel;
-//	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 	private AleterViewActionListener alerterActionListener;
 
-	
-	public static _AlerterTopView getInstance(_AlerterController controller, AleterViewActionListener alerterActionListener)
-	{
-		if (alerterTopView == null)
-		{
-			alerterTopView = new _AlerterTopView(controller, alerterActionListener);
-		}
-		return alerterTopView;
-	}
+	private AlerterCapGeneratePanel alerterCapGeneratePanel;
+	private AlerterLogPanel alerterLogPanel;
+//	private AlerterDataBasePanel alerterDatabasePanel;
+//	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
+
+	private JFrame mainFrame;
+	private JTabbedPane mainTabbedPane;
 
 	/**
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	private _AlerterTopView(_AlerterController controller, AleterViewActionListener alerterActionListener)
+	public _AlerterTopView(_AlerterController controller, AleterViewActionListener alerterActionListener)
 	{
 		initLookAndFeel();
 		this.controller = controller;
 		this.alerterActionListener = alerterActionListener;
-//		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
 		this.alerterCapGeneratePanel = new AlerterCapGeneratePanel(alerterActionListener);
 		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
-		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
+//		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
+//		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
 
 		initFrame();
 	}
+
+
+
 
 	private void initFrame()
 	{
@@ -68,15 +61,16 @@ public class _AlerterTopView
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
-//		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
 		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
-		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());	
 		mainTabbedPane.addTab("SimpleCap", alerterLogPanel.getPanel());			
+//		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());	
+//		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
 
 		mainFrame.setVisible(true);
 	}
 
-	private void initLookAndFeel() {
+	private void initLookAndFeel()
+	{
 		try 
 		{
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -87,26 +81,6 @@ public class _AlerterTopView
 		}
 	}
 
-	public void applyAlertElement()
-	{
-		//alerterCapGeneratePanel.applyAlertElement();
-	}
-
-	public void selectTableEvent()
-	{
-		alerterDatabasePanel.selectTableEvent();
-	}
-
-	public void getQueryResult(List<String> results)
-	{
-		System.out.println("topView getQueryResult");
-		alerterDatabasePanel.getQueryResult(results);
-	}
-
-	public String getQuery()
-	{
-		return alerterDatabasePanel.getQuery();
-	}
 
 	public void addInfoIndexPanel()
 	{
@@ -148,7 +122,7 @@ public class _AlerterTopView
 		switch (view)
 		{
 		case "AlerterDataBasePanel":
-			alerterDatabasePanel.getQueryResult(value);
+//			alerterDatabasePanel.getQueryResult(value);
 			break;
 		default:
 			System.out.println("there is no such a view " + view);
@@ -210,4 +184,26 @@ public class _AlerterTopView
 	{
 		return alerterCapGeneratePanel.getTextArea();
 	}
+	
+
+//	public void applyAlertElement()
+//	{
+//		alerterCapGeneratePanel.applyAlertElement();
+//	}
+
+//	public void selectTableEvent()
+//	{
+//		alerterDatabasePanel.selectTableEvent();
+//	}
+
+//	public void getQueryResult(List<String> results)
+//	{
+//		System.out.println("topView getQueryResult");
+//		alerterDatabasePanel.getQueryResult(results);
+//	}
+
+//	public String getQuery()
+//	{
+//		return alerterDatabasePanel.getQuery();
+//	}
 }

@@ -3,15 +3,15 @@ package kr.ac.uos.ai.ieas.gateway.gatewayModel;
 import java.util.HashMap;
 import java.util.Map;
 
-import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayController;
+import kr.ac.uos.ai.ieas.gateway.gatewayController._GatewayController;
 import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class GatewayModelManager
+public class _GatewayModelManager
 {	
 	private IKieasMessageBuilder kieasMessageBuilder;
 
-	private GatewayController controller;
+	private _GatewayController controller;
 	private GatewayAlerterInfoTableModel alerterInfoTableModel;
 	private GatewayAlertSystemInfoTableModel alertSystemInfoTableModel;
 	private GatewayAlertTableModel alertTableModel;
@@ -35,7 +35,7 @@ public class GatewayModelManager
 	public static final String COMP = "COMP";
 
 
-	public GatewayModelManager(GatewayController controller)
+	public _GatewayModelManager(_GatewayController controller)
 	{
 		this.controller = controller;
 		this.alertTableModel = new GatewayAlertTableModel();

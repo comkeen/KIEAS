@@ -11,7 +11,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayActionListener;
-import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayController;
+import kr.ac.uos.ai.ieas.gateway.gatewayController._GatewayController;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertSystemInfoTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlerterInfoTableModel;
@@ -21,7 +21,7 @@ public class GatewayView
 {
 	private static GatewayView gatewayView;
 
-	private GatewayController gatewayController;
+	private _GatewayController gatewayController;
 	private GatewayActionListener gatewayActionListener;
 	private GatewayLogPane gatewayLogPane;
 	private GatewayDataPane gatewayDataPane;
@@ -32,7 +32,7 @@ public class GatewayView
 	private GatewayInfoPane gatewayInfoPane;
 	
 	
-	public static GatewayView getInstance(GatewayController gatewayController, GatewayActionListener gatewayActionListener)
+	public static GatewayView getInstance(_GatewayController gatewayController, GatewayActionListener gatewayActionListener)
 	{
 		if (gatewayView == null) 
 		{
@@ -41,7 +41,7 @@ public class GatewayView
 		return gatewayView;
 	}
 
-	private GatewayView(GatewayController gatewayController, GatewayActionListener gatewayActionListener)
+	private GatewayView(_GatewayController gatewayController, GatewayActionListener gatewayActionListener)
 	{
 		initLookAndFeel();
 		this.gatewayActionListener = gatewayActionListener;

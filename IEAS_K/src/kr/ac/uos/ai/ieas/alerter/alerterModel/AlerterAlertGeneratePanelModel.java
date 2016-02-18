@@ -68,8 +68,6 @@ public class AlerterAlertGeneratePanelModel
 	
 	private boolean hasEnglish;
 	private boolean hasRestriction;
-	
-	private static final String RESTRITION = "Restriction";
 
 	
 	public AlerterAlertGeneratePanelModel(_AlerterModelManager _AlerterModelManager)

@@ -32,13 +32,8 @@ import com.google.publicalerts.cap.NotCapException;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
-import kr.ac.uos.ai.ieas.db.dbHandler.DataFormatUtils;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPArea;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPInfo;
-import kr.ac.uos.ai.ieas.db.dbModel.CAPResource;
-import kr.ac.uos.ai.ieas.db.dbModel.DisasterEventType;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KIEAS_Constant;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 
 /**
  * CAP 형식의 메시지를 생성하고 다루는 클래스.
@@ -46,22 +41,29 @@ import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KIEAS_Constant;
  * @author byun-ai
  *
  */
-
 public class KieasMessageBuilder implements IKieasMessageBuilder
 {
 	public static final String IDENTIFIER = "Identifier";
 	public static final String SENDER = "Sender";
 	public static final String SENT = "Sent";
 	public static final String STATUS = "Status";
-	public static final String MSG_TYPE = "MsgType";
+		public static final String ACTUAL = "Actual";
+		public static final String EXERCISE = "Exercise";
 		public static final String SYSTEM = "System";
-		public static final String ACK = "Ack";
+		public static final String TEST = "Test";
+		public static final String DRAFT = "Draft";
+	public static final String MSG_TYPE = "MsgType";
 		public static final String ALERT = "Alert";
+		public static final String UPDATE = "Update";
+		public static final String CANCEL = "Cancel";
+		public static final String ACK = "Ack";
+		public static final String ERROR = "Error";
 	public static final String SCOPE = "Scope";
+		public static final String PUBLIC = "Public";
 		public static final String RESTRICTED = "Restricted";
+		public static final String PRIVATE = "private";
 	public static final String RESTRICTION = "Restriction";
-	public static final String ADDRESSES = "Addresses";
-	
+	public static final String ADDRESSES = "Addresses";	
 	public static final String CODE = "Code";
 	public static final String NOTE = "Note";
 
@@ -93,22 +95,19 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String AREA_DESC = "AreaDesc";
 	public static final String GEO_CODE = "GeoCode";
 	
-	//
 	
-	
-	private static final int DEFAULT_INFO_SIZE = 1;
+	private static final int DEFAULT_INFO_SIZE = 0;
 	
 	
 	private CapXmlBuilder 	capXmlBuilder;
 	private CapXmlParser 	capXmlParser;
 	private CapValidator 	capValidator;
-
-	private Alert 			mAlert;
 	
 	private Map<String, List<Item>> CapElementToCapEnumMap;
 
-	
+	private Alert  mAlert;
 	private String xmlMessage;
+	
 	
 
 	public KieasMessageBuilder()
@@ -419,7 +418,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		CapElementToCapEnumMap.put(URGENCY, capEnum5);
 
 		List<Item> capEnum6 = new ArrayList<>();
-		for (DisasterEventType value : DisasterEventType.values())
+		for (KieasList.DisasterEventType value : KieasList.DisasterEventType.values())
 		{
 			String modifiedValue = "";
 			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
@@ -519,7 +518,80 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		
 		return info;
 	}
+	
+	private Resource buildDefaultResource()
+	{
+		Resource resource = Resource.newBuilder()
+				.setResourceDesc("")
+				.setMimeType("")
+				.buildPartial();
+		
+		return resource;
+	}
+	
+	private Area buildDefaultArea()
+	{
+		Area area = Area.newBuilder()
+				.setAreaDesc("")
+				.buildPartial();
+		
+		return area;
+	}
 
+	private void incrementInfoByInfoIndex(int infoIndex)
+	{
+		for (int i = infoIndex - mAlert.getInfoCount(); i < mAlert.getInfoCount(); i++)
+		{
+			mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();				
+		}
+	}
+	
+	private void incrementParameterByParameterIndex(int infoIndex, int paramterIndex)
+	{
+		Info info = mAlert.getInfo(infoIndex);
+		
+		for (int i = paramterIndex - info.getParameterCount(); i < info.getParameterCount(); i++)
+		{			
+			info = Info.newBuilder(info).addParameter(ValuePair.newBuilder().setValueName("").setValue("")).buildPartial();
+		}
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
+	
+	private void incrementResourceByResourceIndex(int infoIndex, int resourceIndex)
+	{
+		Info info = mAlert.getInfo(infoIndex);
+		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		for (int i = resourceIndex - info.getResourceCount(); i < info.getResourceCount(); i++)
+		{			
+			info = Info.newBuilder(info).addResource(buildDefaultResource()).buildPartial();
+		}
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
+	
+	private void incrementAreaByAreaIndex(int infoIndex, int areaIndex)
+	{
+		Info info = mAlert.getInfo(infoIndex);
+		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		for (int i = areaIndex - info.getAreaCount(); i < info.getAreaCount(); i++)
+		{			
+			info = Info.newBuilder(info).addArea(buildDefaultArea()).buildPartial();
+		}
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
+	
+	
+	
+	
 	public boolean validateMessage(String message)
 	{
 		try
@@ -547,7 +619,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		cal.setTime(date);
 		return CapUtil.formatCapDate(cal);
 	}
-
 
 
 	public int getInfoCount()
@@ -649,14 +720,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		}
 //	}	
 
-	private void incrementInfoByInfoIndex(int infoIndex)
-	{
-		for (int i = infoIndex - mAlert.getInfoCount(); i < mAlert.getInfoCount(); i++)
-		{
-			mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();				
-		}
-	}
-	
 	private Status convertToStatus(String text)
 	{
 		text = text.toUpperCase();
@@ -785,7 +848,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	private ValuePair convertToEventCode(String text)
 	{
-		return Info.newBuilder().addEventCodeBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
+		return ValuePair.newBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
+	}
+	
+	private ValuePair convertToGeoCode(String text)
+	{
+		return ValuePair.newBuilder().setValueName(KIEAS_Constant.GEO_CODE_VALUE_NAME).setValue(text).build();
 	}
 
 //	private void setEffective(String text)
@@ -813,172 +881,172 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		}
 //	}
 
-	/**
-	 * Database에서 사용하는 CAP 객체를 Google CAP Library에서 사용하는 CAP 객체로 변환.
-	 * 
-	 * @param alertList Database에서 사용하는 CAP 객체들의 리스트.
-	 * @return Google CAP Library에서 사용하는 CAP 객체들의 리스트.
-	 */	
-	public List<String> convertDbToCap(List<CAPAlert> alertList)
-	{		
-		List<String> capList = new ArrayList<String>();
-
-		for (CAPAlert capAlert : alertList)
-		{
-			Alert mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
-					.setIdentifier(capAlert.getIdentifier())
-					.setSender(capAlert.getSender())
-					.setSent(this.dateToString(capAlert.getSent()))
-					.setStatus(this.convertToStatus(capAlert.getStatus().toString()))
-					.setMsgType(this.convertToMsgType(capAlert.getMsgType().toString()))
-					.setScope(this.convertToScope(capAlert.getScope().toString()))
-					//					.addCode(capAlert.getCode())
-					.buildPartial();
-
-			for (CAPInfo capInfo : capAlert.getInfoList())
-			{
-				Info mInfo = Info.newBuilder()
-						.setLanguage(capInfo.getLanguage().toString())
-						.addCategory(this.convertToCategory(capInfo.getCategory().toString()))
-						.setEvent(capInfo.getEvent().toString())
-						.setUrgency(this.convertToUrgency(capInfo.getUrgency().toString()))
-						.setSeverity(this.convertToSeverity(capInfo.getSeverity().toString()))
-						.setCertainty(this.convertToCertainty(capInfo.getCertainty().toString()))
-						.addEventCode(this.convertToEventCode(capInfo.getEventCode()))
-						//						.setEffective(this.dateToString(capInfo.getEffective()))
-						.setSenderName(capInfo.getSenderName())
-						.setHeadline(capInfo.getHeadline())
-						.setDescription(capInfo.getDescription())
-						//						.setWeb(capInfo.getWeb())
-						//						.setContact(capInfo.getContact())
-						.buildPartial();
-
-
-				for (CAPResource capResource : capInfo.getResList())
-				{
-					Resource resource = Resource.newBuilder()
-							.setResourceDesc(capResource.getResourceDesc())
-							.setMimeType(capResource.getMimeType())
-							.setSize((long)capResource.getSize())
-							.setUri(capResource.getUri())
-							//							.setDerefUri(capResource.getDeferURI())
-							//							.setDigest(capResource.getDigest().toString())
-							.buildPartial();
-
-					mInfo = Info.newBuilder(mInfo)
-							.addResource(resource)
-							.buildPartial();
-				}
-				for (CAPArea capArea : capInfo.getAreaList())
-				{
-					Area area = Area.newBuilder()
-							.setAreaDesc(capArea.getAreaDesc())
-							//							.addGeocode(ValuePair.newBuilder().setValueName("G1").setValue(capArea.getGeocode()).build())
-							.buildPartial();
-
-					mInfo = Info.newBuilder(mInfo)
-							.addArea(area)
-							.buildPartial();
-				}
-				mAlert = Alert.newBuilder(mAlert)
-						.addInfo(mInfo)
-						.build();
-			}			
-			capList.add(capXmlBuilder.toXml(mAlert));
-		}
-		return capList;
-	}
-
-	public CAPAlert convertCapToDb(String capMessage)
-	{	
-		CAPAlert capAlert = new CAPAlert();
-		CAPInfo capInfo = new CAPInfo();
-		try
-		{
-			mAlert = capXmlParser.parseFrom(capMessage);
-
-			capAlert.setIdentifier(mAlert.getIdentifier());
-			capAlert.setSender(mAlert.getSender());
-			capAlert.setSent(getDateCalendar().getTime());
-			for (CAPAlert.Status status : CAPAlert.Status.values())
-			{
-				if(status.toString().toUpperCase().equals(mAlert.getStatus().toString()))
-				{
-					capAlert.setStatus(status);
-				}
-			}
-			for (CAPAlert.MsgType msgType : CAPAlert.MsgType.values())
-			{
-				if(msgType.toString().toUpperCase().equals(mAlert.getMsgType().toString()))
-				{
-					capAlert.setMsgType(msgType);
-				}
-			}
-			for (CAPAlert.Scope scope : CAPAlert.Scope.values())
-			{
-				if(scope.toString().toUpperCase().equals(mAlert.getScope().toString()))
-				{
-					capAlert.setScope(scope);
-				}
-			}
-			capAlert.setCode(mAlert.getCode(0));
-
-			for (CAPInfo.Language language : CAPInfo.Language.values())
-			{
-				if(language.toString().toUpperCase().equals(mAlert.getInfo(0).getLanguage()))
-				{
-					capInfo.setLanguage(language);
-				}
-			}
-			for (CAPInfo.Category category : CAPInfo.Category.values())
-			{
-				if(category.toString().toUpperCase().equals(mAlert.getInfo(0).getCategory(0).toString()))
-				{
-					capInfo.setCategory(category);
-				}
-			}
-			capInfo.setEvent(mAlert.getInfo(0).getEvent());
-			for (CAPInfo.Urgency urgency : CAPInfo.Urgency.values())
-			{
-				if(urgency.toString().toUpperCase().equals(mAlert.getInfo(0).getUrgency().toString()))
-				{
-					capInfo.setUrgency(urgency);
-				}
-			}
-			for (CAPInfo.Severity severity : CAPInfo.Severity.values())
-			{
-				if(severity.toString().toUpperCase().equals(mAlert.getInfo(0).getSeverity().toString()))
-				{
-					capInfo.setSeverity(severity);
-				}
-			}
-			for (CAPInfo.Certainty certainty : CAPInfo.Certainty.values())
-			{
-				if(certainty.toString().toUpperCase().equals(mAlert.getInfo(0).getCertainty().toString()))
-				{
-					capInfo.setCertainty(certainty);
-				}
-			}
-			capInfo.setEventCode(mAlert.getInfo(0).getEventCode(0).getValue());
-			capInfo.setEffective(DataFormatUtils.convertStringToDate(mAlert.getInfo(0).getEffective()));
-			capInfo.setSenderName(mAlert.getInfo(0).getSenderName());
-			capInfo.setHeadline(mAlert.getInfo(0).getHeadline());
-			capInfo.setDescription(mAlert.getInfo(0).getDescription());
-			capInfo.setWeb(mAlert.getInfo(0).getWeb());
-			capInfo.setContact(mAlert.getInfo(0).getContact());
-
-			List<CAPInfo> infoList = new ArrayList<CAPInfo>();
-			infoList.add(capInfo);
-
-			capAlert.setInfoList(infoList);
-		}
-		catch (NotCapException | SAXParseException | CapException e) 
-		{
-			e.printStackTrace();
-		}
-
-		return capAlert;
-	}
+//	/**
+//	 * Database에서 사용하는 CAP 객체를 Google CAP Library에서 사용하는 CAP 객체로 변환.
+//	 * 
+//	 * @param alertList Database에서 사용하는 CAP 객체들의 리스트.
+//	 * @return Google CAP Library에서 사용하는 CAP 객체들의 리스트.
+//	 */	
+//	public List<String> convertDbToCap(List<CAPAlert> alertList)
+//	{		
+//		List<String> capList = new ArrayList<String>();
+//
+//		for (CAPAlert capAlert : alertList)
+//		{
+//			Alert mAlert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+//					.setIdentifier(capAlert.getIdentifier())
+//					.setSender(capAlert.getSender())
+//					.setSent(this.dateToString(capAlert.getSent()))
+//					.setStatus(this.convertToStatus(capAlert.getStatus().toString()))
+//					.setMsgType(this.convertToMsgType(capAlert.getMsgType().toString()))
+//					.setScope(this.convertToScope(capAlert.getScope().toString()))
+//					//					.addCode(capAlert.getCode())
+//					.buildPartial();
+//
+//			for (CAPInfo capInfo : capAlert.getInfoList())
+//			{
+//				Info mInfo = Info.newBuilder()
+//						.setLanguage(capInfo.getLanguage().toString())
+//						.addCategory(this.convertToCategory(capInfo.getCategory().toString()))
+//						.setEvent(capInfo.getEvent().toString())
+//						.setUrgency(this.convertToUrgency(capInfo.getUrgency().toString()))
+//						.setSeverity(this.convertToSeverity(capInfo.getSeverity().toString()))
+//						.setCertainty(this.convertToCertainty(capInfo.getCertainty().toString()))
+//						.addEventCode(this.convertToEventCode(capInfo.getEventCode()))
+//						//						.setEffective(this.dateToString(capInfo.getEffective()))
+//						.setSenderName(capInfo.getSenderName())
+//						.setHeadline(capInfo.getHeadline())
+//						.setDescription(capInfo.getDescription())
+//						//						.setWeb(capInfo.getWeb())
+//						//						.setContact(capInfo.getContact())
+//						.buildPartial();
+//
+//
+//				for (CAPResource capResource : capInfo.getResList())
+//				{
+//					Resource resource = Resource.newBuilder()
+//							.setResourceDesc(capResource.getResourceDesc())
+//							.setMimeType(capResource.getMimeType())
+//							.setSize((long)capResource.getSize())
+//							.setUri(capResource.getUri())
+//							//							.setDerefUri(capResource.getDeferURI())
+//							//							.setDigest(capResource.getDigest().toString())
+//							.buildPartial();
+//
+//					mInfo = Info.newBuilder(mInfo)
+//							.addResource(resource)
+//							.buildPartial();
+//				}
+//				for (CAPArea capArea : capInfo.getAreaList())
+//				{
+//					Area area = Area.newBuilder()
+//							.setAreaDesc(capArea.getAreaDesc())
+//							//							.addGeocode(ValuePair.newBuilder().setValueName("G1").setValue(capArea.getGeocode()).build())
+//							.buildPartial();
+//
+//					mInfo = Info.newBuilder(mInfo)
+//							.addArea(area)
+//							.buildPartial();
+//				}
+//				mAlert = Alert.newBuilder(mAlert)
+//						.addInfo(mInfo)
+//						.build();
+//			}			
+//			capList.add(capXmlBuilder.toXml(mAlert));
+//		}
+//		return capList;
+//	}
+//
+//	public CAPAlert convertCapToDb(String capMessage)
+//	{	
+//		CAPAlert capAlert = new CAPAlert();
+//		CAPInfo capInfo = new CAPInfo();
+//		try
+//		{
+//			mAlert = capXmlParser.parseFrom(capMessage);
+//
+//			capAlert.setIdentifier(mAlert.getIdentifier());
+//			capAlert.setSender(mAlert.getSender());
+//			capAlert.setSent(getDateCalendar().getTime());
+//			for (CAPAlert.Status status : CAPAlert.Status.values())
+//			{
+//				if(status.toString().toUpperCase().equals(mAlert.getStatus().toString()))
+//				{
+//					capAlert.setStatus(status);
+//				}
+//			}
+//			for (CAPAlert.MsgType msgType : CAPAlert.MsgType.values())
+//			{
+//				if(msgType.toString().toUpperCase().equals(mAlert.getMsgType().toString()))
+//				{
+//					capAlert.setMsgType(msgType);
+//				}
+//			}
+//			for (CAPAlert.Scope scope : CAPAlert.Scope.values())
+//			{
+//				if(scope.toString().toUpperCase().equals(mAlert.getScope().toString()))
+//				{
+//					capAlert.setScope(scope);
+//				}
+//			}
+//			capAlert.setCode(mAlert.getCode(0));
+//
+//			for (CAPInfo.Language language : CAPInfo.Language.values())
+//			{
+//				if(language.toString().toUpperCase().equals(mAlert.getInfo(0).getLanguage()))
+//				{
+//					capInfo.setLanguage(language);
+//				}
+//			}
+//			for (CAPInfo.Category category : CAPInfo.Category.values())
+//			{
+//				if(category.toString().toUpperCase().equals(mAlert.getInfo(0).getCategory(0).toString()))
+//				{
+//					capInfo.setCategory(category);
+//				}
+//			}
+//			capInfo.setEvent(mAlert.getInfo(0).getEvent());
+//			for (CAPInfo.Urgency urgency : CAPInfo.Urgency.values())
+//			{
+//				if(urgency.toString().toUpperCase().equals(mAlert.getInfo(0).getUrgency().toString()))
+//				{
+//					capInfo.setUrgency(urgency);
+//				}
+//			}
+//			for (CAPInfo.Severity severity : CAPInfo.Severity.values())
+//			{
+//				if(severity.toString().toUpperCase().equals(mAlert.getInfo(0).getSeverity().toString()))
+//				{
+//					capInfo.setSeverity(severity);
+//				}
+//			}
+//			for (CAPInfo.Certainty certainty : CAPInfo.Certainty.values())
+//			{
+//				if(certainty.toString().toUpperCase().equals(mAlert.getInfo(0).getCertainty().toString()))
+//				{
+//					capInfo.setCertainty(certainty);
+//				}
+//			}
+//			capInfo.setEventCode(mAlert.getInfo(0).getEventCode(0).getValue());
+//			capInfo.setEffective(DataFormatUtils.convertStringToDate(mAlert.getInfo(0).getEffective()));
+//			capInfo.setSenderName(mAlert.getInfo(0).getSenderName());
+//			capInfo.setHeadline(mAlert.getInfo(0).getHeadline());
+//			capInfo.setDescription(mAlert.getInfo(0).getDescription());
+//			capInfo.setWeb(mAlert.getInfo(0).getWeb());
+//			capInfo.setContact(mAlert.getInfo(0).getContact());
+//
+//			List<CAPInfo> infoList = new ArrayList<CAPInfo>();
+//			infoList.add(capInfo);
+//
+//			capAlert.setInfoList(infoList);
+//		}
+//		catch (NotCapException | SAXParseException | CapException e) 
+//		{
+//			e.printStackTrace();
+//		}
+//
+//		return capAlert;
+//	}
 	
 	@Override
 	public String build()
@@ -1553,6 +1621,18 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEffective(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
+	
+	@Override
+	public void setOnset(int infoIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setOnset(text).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
 
 	@Override
 	public void setExpires(int infoIndex, String text)
@@ -1636,40 +1716,246 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setContact(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
-	}
+	}	
 
 	@Override
-	public void setResourceDesc(int infoIndex, String text)
+	public void setParameter(int infoIndex, int parameterIndex, String valueName, String value)
 	{
-		// TODO Auto-generated method stub
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
 		
+		if(parameterIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getParameterCount())
+		{
+			incrementParameterByParameterIndex(infoIndex, parameterIndex);
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setParameter(parameterIndex, ValuePair.newBuilder().setValueName(valueName).setValue(value)).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
 
 	@Override
-	public void setMimeType(int infoIndex, String text) {
-		// TODO Auto-generated method stub
+	public void setResourceDesc(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
 		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setResourceDesc(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
-	public void setUri(int infoIndex, String text) {
-		// TODO Auto-generated method stub
+	public void setMimeType(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
 		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setMimeType(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
-	public void setAreaDesc(int infoIndex, String text) {
-		// TODO Auto-generated method stub
+	public void setSize(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
 		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setSize(Long.parseLong(text)).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
-	public void setGeoCode(int infoIndex, String text) {
-		// TODO Auto-generated method stub
+	public void setUri(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
 		
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setUri(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-	
-	
+
+	@Override
+	public void setDerefUri(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setDerefUri(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setDigest(int infoIndex, int resourceIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		if(resourceIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getResourceCount())
+		{
+			incrementResourceByResourceIndex(infoIndex, resourceIndex);
+		}
+		Resource resource = Resource.newBuilder(mAlert.getInfo(infoIndex).getResource(resourceIndex)).setDigest(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setAreaDesc(int infoIndex, int areaIndex, String text)
+	{
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		
+		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setPolygon(int infoIndex, int areaIndex, String text)
+	{
+		//TODO
+		
+//		if(infoIndex >= mAlert.getInfoCount())
+//		{
+//			incrementInfoByInfoIndex(infoIndex);
+//		}
+//		
+//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+//		{
+//			incrementAreaByAreaIndex(infoIndex, areaIndex);
+//		}
+//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).addPolygon(text).buildPartial();
+//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setCircle(int infoIndex, int areaIndex, String text)
+	{
+		//TODO
+		
+//		if(infoIndex >= mAlert.getInfoCount())
+//		{
+//			incrementInfoByInfoIndex(infoIndex);
+//		}
+//		
+//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+//		{
+//			incrementAreaByAreaIndex(infoIndex, areaIndex);
+//		}
+//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
+//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setGeoCode(int infoIndex, int areaIndex, String text)
+	{		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}		
+		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+		
+		Area area = null;		
+		
+		if(mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocodeCount() == 0)
+		{
+			area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).addGeocode(convertToGeoCode(text)).buildPartial();
+		}
+		else
+		{
+			area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setGeocode(0, convertToGeoCode(text)).buildPartial();
+		}
+		
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setAltitude(int infoIndex, int areaIndex, String text)
+	{
+		//TODO
+		
+//		if(infoIndex >= mAlert.getInfoCount())
+//		{
+//			incrementInfoByInfoIndex(infoIndex);
+//		}
+//		
+//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+//		{
+//			incrementAreaByAreaIndex(infoIndex, areaIndex);
+//		}
+//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
+//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
+
+	@Override
+	public void setCeiling(int infoIndex, int areaIndex, String text)
+	{
+		//TODO
+		
+//		if(infoIndex >= mAlert.getInfoCount())
+//		{
+//			incrementInfoByInfoIndex(infoIndex);
+//		}
+//		
+//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+//		{
+//			incrementAreaByAreaIndex(infoIndex, areaIndex);
+//		}
+//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
+//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
+	}
 	
 	
 	@Override
@@ -1705,4 +1991,5 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		String identifier = id + "@" + idNum.substring(2, 12);
 		return identifier;
 	}
+
 }

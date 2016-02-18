@@ -51,7 +51,7 @@ public class _AlerterController
 		
 		this.alerterActionListener = new AleterViewActionListener(this);
 		this.alerterModelManager = new _AlerterModelManager(this);
-		this.alerterTopView = _AlerterTopView.getInstance(this, alerterActionListener);
+		this.alerterTopView = new _AlerterTopView(this, alerterActionListener);
 		
 		this.transmitter = new AlerterTransmitter(this);
 		this.kieasMessageBuilder = new KieasMessageBuilder();
@@ -70,7 +70,7 @@ public class _AlerterController
 	{
 		this.alerterId = "기상청";
 		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/alerterId";
-		transmitter.setQueueReceiver(alerterId);
+		transmitter.addReceiver(alerterId);
 		alerterTopView.setId(alerterId);
 	}
 	
@@ -110,7 +110,7 @@ public class _AlerterController
 		kieasMessageBuilder.build();
 		System.out.println(kieasMessageBuilder.getMessage());
 		
-		transmitter.sendQueueMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
+		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(").append(alerterId).append(")").append(" Register to Gateway :");
@@ -120,7 +120,7 @@ public class _AlerterController
 	public void sendMessage()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendQueueMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		transmitter.sendMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -128,7 +128,7 @@ public class _AlerterController
 	public void sendAlert()
 	{
 		alerterModelManager.addAlertTableRow();
-		transmitter.sendQueueMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		transmitter.sendMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
 	}
@@ -153,9 +153,8 @@ public class _AlerterController
 //			}
 //			else 
 //			{
-////				alerterTopView.receiveAlertSystemAck(identifier);
+//				alerterTopView.receiveAlertSystemAck(identifier);
 //			}
-
 		} 
 		catch (Exception e)
 		{
@@ -204,24 +203,6 @@ public class _AlerterController
 		alerterModelManager.applyAlertElement(alerterTopView.getAlertElement());
 	}
 
-	public void selectTableEvent()
-	{
-		alerterTopView.selectTableEvent();
-	}
-	
-	/**
-	 * View 콤포넌트인 DatabasePanel Class의 "Query"버튼에 의해 호출된다.
-	 * QueryTextField에 기재된 이벤트코드에 의해 데이터베이스에서 해당하는 결과값들을 가져온다.
-	 */
-	public void getQueryResult()
-	{
-		alerterModelManager.getQueryResult(KieasMessageBuilder.EVENT_CODE, alerterTopView.getQuery());		
-	}
-
-	public void loadDraft() 
-	{
-		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", "Draft"));
-	}
 
 	/**
 	 * View 클래스인 CapGeneratePanel의 InfoPanel에 포함된 "Add Info"버튼에 의해 호출된다.
@@ -266,12 +247,6 @@ public class _AlerterController
 		alerterTopView.updateView(view, target, value);
 	}
 
-	public void insertDatabase()
-	{
-		alerterModelManager.insertDataBase(alerterTopView.getTextArea());
-		System.out.println("insert to database : <<todo>>");
-	}
-
 	public void generateCap()
 	{		
 		alerterModelManager.generateCap(alerterTopView.getAlertSystemType());
@@ -296,4 +271,25 @@ public class _AlerterController
 	{
 		return alerterId;
 	}
+
+//	public void insertDatabase()
+//	{
+//		alerterModelManager.insertDataBase(alerterTopView.getTextArea());
+//		System.out.println("insert to database : <<todo>>");
+//	}
+	
+//	public void selectTableEvent()
+//	{
+//		alerterTopView.selectTableEvent();
+//	}
+	
+//	public void getQueryResult()
+//	{
+//		alerterModelManager.getQueryResult(KieasMessageBuilder.EVENT_CODE, alerterTopView.getQuery());		
+//	}
+
+//	public void loadDraft() 
+//	{
+//		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", "Draft"));
+//	}
 }

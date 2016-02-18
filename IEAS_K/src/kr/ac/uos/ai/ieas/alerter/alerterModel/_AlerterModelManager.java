@@ -5,19 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.db.dbHandler._DatabaseHandler;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 public class _AlerterModelManager
 {
 	private static _AlerterModelManager alerterModelManager;
 	private _AlerterController controller;
-	private _DatabaseHandler databaseHandler;	
 	private KieasMessageBuilder kieasMessageBuilder;
+//	private _DatabaseHandler databaseHandler;	
 	
-//	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
-	private AlerterDataBasePanelModel alerterDataBasePanelModel;
+//	private AlerterDataBasePanelModel alerterDataBasePanelModel;
+//	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	
 
 	private AlertLogTableModel alertLogTableModel;
@@ -45,12 +44,12 @@ public class _AlerterModelManager
 	public _AlerterModelManager(_AlerterController controller)
 	{
 		this.controller = controller;
-		this.databaseHandler = new _DatabaseHandler();
 		this.kieasMessageBuilder = new KieasMessageBuilder();
+//		this.databaseHandler = new _DatabaseHandler();
 
-//		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
 		this.alerterCapGeneratePanelModel = new AlerterCapGeneratePanelModel(this);
-		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
+//		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
+//		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
 		
 		init();
 	}
@@ -76,27 +75,7 @@ public class _AlerterModelManager
 //		alertElementMap.put(ACK, ack);
 	}
 	
-	public List<String> getQueryResult(String target, String query)
-	{	
-		System.out.println("getQuery target, query : " + target + " " + query);
-		List<String> result = kieasMessageBuilder.convertDbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
-		for (String string : result)
-		{
-			System.out.println("query result = " + string);
-		}
-		switch (target)
-		{
-		case KieasMessageBuilder.EVENT_CODE:
-			alerterDataBasePanelModel.setQueryResult(result);
-			break;
-		case KieasMessageBuilder.STATUS:
-			
-			break;	
-		default:
-			break;
-		}
-		return result;	
-	}	
+
 
 	public String getMessage() { return message; }
 	public void loadCap(String path) { alerterCapGeneratePanelModel.loadCap(path); }	
@@ -169,11 +148,6 @@ public class _AlerterModelManager
 		return alertElementMap;
 	}
 	
-	public void insertDataBase(String message)
-	{
-		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
-	}
-	
 	public void putAlertMessageMap(String key, String message)
 	{
 		alertMessageMap.put(key, message);
@@ -213,4 +187,31 @@ public class _AlerterModelManager
 	{
 		alerterCapGeneratePanelModel.setModelProperty("TextArea", message);
 	}
+	
+//	public List<String> getQueryResult(String target, String query)
+//	{	
+//		System.out.println("getQuery target, query : " + target + " " + query);
+//		List<String> result = kieasMessageBuilder.convertDbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
+//		for (String string : result)
+//		{
+//			System.out.println("query result = " + string);
+//		}
+//		switch (target)
+//		{
+//		case KieasMessageBuilder.EVENT_CODE:
+//			alerterDataBasePanelModel.setQueryResult(result);
+//			break;
+//		case KieasMessageBuilder.STATUS:
+//			
+//			break;	
+//		default:
+//			break;
+//		}
+//		return result;	
+//	}	
+	
+//	public void insertDataBase(String message)
+//	{
+//		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
+//	}
 }

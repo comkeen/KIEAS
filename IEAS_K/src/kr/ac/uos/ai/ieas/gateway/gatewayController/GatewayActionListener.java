@@ -11,10 +11,10 @@ import javax.swing.event.ListSelectionListener;
 
 public class GatewayActionListener implements ActionListener, ListSelectionListener, WindowListener
 {	
-	private GatewayController controller;
+	private _GatewayController controller;
 
 	
-	public GatewayActionListener(GatewayController gatewayController) {
+	public GatewayActionListener(_GatewayController gatewayController) {
 		this.controller = gatewayController;
 	}
 

@@ -1,13 +1,13 @@
 package kr.ac.uos.ai.ieas.main;
 
-import kr.ac.uos.ai.ieas.gateway.gatewayController.GatewayController;
+import kr.ac.uos.ai.ieas.gateway.gatewayController._GatewayController;
 
 
 public class GatewayMain
 {
 	public GatewayMain()
 	{
-		GatewayController.getInstance();
+		_GatewayController.getInstance();
 	}
 	
 	public static void main(String[] args)

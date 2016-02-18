@@ -53,14 +53,8 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Save Cap":
 			controller.saveCap();
 			return;
-		case "Insert DB":
-			controller.insertDatabase();
-			return;
 		case "Apply":
 			controller.applyAlertElement();
-			return;
-		case "Query":
-			controller.getQueryResult();
 			return;
 		case "Add Info":
 			controller.addInfoIndexPanel();
@@ -71,15 +65,21 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Add Area":
 			controller.addAreaIndexPanel();
 			return;
-		case "Load Draft":
-			controller.loadDraft();
-			return;
 		case "Register":
 			controller.registerToGateway();
 			return;
 		case "Set Id":
 			controller.setID();
 			return;
+//		case "Insert DB":
+//			controller.insertDatabase();
+//			return;
+//		case "Query":
+//			controller.getQueryResult();
+//			return;
+//		case "Load Draft":
+//			controller.loadDraft();
+//			return;
 		default:
 			System.out.println("There is no such a actionCommand : " + actionCommand);
 			return;
@@ -89,7 +89,7 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
-		controller.selectTableEvent();
+//		controller.selectTableEvent();
 	}
 
 

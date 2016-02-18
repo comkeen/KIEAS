@@ -37,14 +37,14 @@ public class GatewayAlerterInfoTableModel {
 	{
 		for(int i = 0; i < tableModel.getRowCount(); i++)
 		{
-			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(GatewayModelManager.SENDER))){
+			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(_GatewayModelManager.SENDER))){
 				return;
 			}
 		}
 		
 		alerterCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alerterCount));
-		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
+		rowData.set(1, alertElementMap.get(_GatewayModelManager.SENDER));
 
 		tableModel.addRow(rowData.toArray());
 	}

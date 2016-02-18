@@ -23,27 +23,19 @@ import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 public class GatewayTransmitter implements ITransmitter
 {
 	private static final String QUEUE_HEADER = "queue://";
-	
-	
-	private GatewayController controller;
+		
+	private _GatewayController controller;
 
 	private Connection connection;
 	private Session session;
 	
 	private MessageProducer queueProducer;	
-	private MessageProducer topicProducer;
-	
 	private Map<String, MessageConsumer> messageConsumerMap;
-//	private MessageConsumer alerterConsumer;
-//	private MessageConsumer alertsystemConsumer;
 	
 	private String mqServerIp;
 
 	
-	
-
-
-	public GatewayTransmitter(GatewayController controller)
+	public GatewayTransmitter(_GatewayController controller)
 	{
 		this.controller = controller;
 
@@ -75,8 +67,8 @@ public class GatewayTransmitter implements ITransmitter
 			System.out.println("Could not found MQ Server : " + mqServerIp);
 			return;
 		}
-		this.setQueueReceiver(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-		this.setQueueReceiver(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+		this.addReceiver(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		this.addReceiver(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 	}
 	
 	@Override
@@ -98,7 +90,7 @@ public class GatewayTransmitter implements ITransmitter
 	}
 		
 	@Override
-	public void setQueueReceiver(String queueDestination)
+	public void addReceiver(String destination)
 	{		
 		if(connection == null || session == null)
 		{
@@ -108,10 +100,10 @@ public class GatewayTransmitter implements ITransmitter
 		
 		try
 		{
-			Destination destination = session.createQueue(queueDestination);
-			MessageConsumer consumer = session.createConsumer(destination);
+			Destination queueDestination = session.createQueue(destination);
+			MessageConsumer consumer = session.createConsumer(queueDestination);
 			
-			messageConsumerMap.put(queueDestination, consumer);
+			messageConsumerMap.put(destination, consumer);
 			
 			MessageListener listener = new MessageListener()
 			{
@@ -154,50 +146,21 @@ public class GatewayTransmitter implements ITransmitter
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void setTopicReceiver(String topicDestination)
-	{		
-		if(connection == null || session == null)
+	public void removeReceiver(String target)
+	{
+		try
 		{
-			System.out.println("Could not found JMS Connection");
-			return;
-		}
-		
-		try 
-		{
-			Destination destination = this.session.createTopic(topicDestination);
-			System.out.println("gw to alerter Dest : " + destination);
-			MessageConsumer consumer = session.createConsumer(destination);
-			MessageListener listener = new MessageListener()
-			{
-				public void onMessage(Message message)
-				{
-					if (message instanceof TextMessage)
-					{
-						try
-						{
-							TextMessage textMessage = (TextMessage) message;
-							String text = textMessage.getText();
-						
-							System.out.println("GateWay receive topic message : " + text);
-//							controller.acceptMessage(textMessage.getText());	//Message Receive			
-						}
-						catch (JMSException e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-			consumer.setMessageListener(listener);
-		}
-		catch (Exception e)
+			messageConsumerMap.get(target).close();
+			messageConsumerMap.remove(target);
+		} 
+		catch (JMSException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+		
 	@Override
 	public void setMqServer(String ip)
 	{
@@ -208,21 +171,7 @@ public class GatewayTransmitter implements ITransmitter
 	}
 	
 	@Override
-	public void stopConnection()
-	{
-		try
-		{
-			this.connection.stop();
-			System.out.println("Gateway Connection Stop");
-		}
-		catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void sendQueueMessage(String message, String queueDestination) 
+	public void sendMessage(String message, String destination) 
 	{
 		if(connection == null || session == null)
 		{
@@ -232,8 +181,8 @@ public class GatewayTransmitter implements ITransmitter
 		
 		try
 		{
-			Destination destination = this.session.createQueue(queueDestination);
-			this.queueProducer = this.session.createProducer(destination);
+			Destination queueDestination = this.session.createQueue(destination);
+			this.queueProducer = this.session.createProducer(queueDestination);
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			TextMessage textMessage = this.session.createTextMessage(message);
 
@@ -259,31 +208,7 @@ public class GatewayTransmitter implements ITransmitter
 //		{
 //			e.printStackTrace();
 //		}
-//	}
-	
-	@Override
-	public void sendTopicMessage(String message, String topicDestination)
-	{
-		if(connection == null || session == null)
-		{
-			System.out.println("Could not found JMS Connection");
-			return;
-		}
-		
-		try
-		{
-			Destination destination = this.session.createTopic(topicDestination);
-			this.topicProducer = this.session.createProducer(destination);
-			this.topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
-
-			this.topicProducer.send(textMessage);			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	}	
 }
 
 

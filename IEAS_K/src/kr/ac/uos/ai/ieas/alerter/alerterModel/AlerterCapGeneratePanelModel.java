@@ -310,7 +310,6 @@ public class AlerterCapGeneratePanelModel
 						}
 					}
 				}
-				
 			}
 		}
 		catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) 
@@ -484,7 +483,7 @@ public class AlerterCapGeneratePanelModel
 		{
 			System.out.println("there is no element");
 			return;
-		}		
+		}
 	}
 
 	public String getMessage()

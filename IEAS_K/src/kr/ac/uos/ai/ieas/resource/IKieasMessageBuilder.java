@@ -1,9 +1,6 @@
 package kr.ac.uos.ai.ieas.resource;
 
 import java.util.GregorianCalendar;
-import java.util.List;
-
-import kr.ac.uos.ai.ieas.db.dbModel.CAPAlert;
 
 
 public interface IKieasMessageBuilder
@@ -66,6 +63,7 @@ public interface IKieasMessageBuilder
 	public void setAudience(int infoIndex, String text);
 	public void setEventCode(int infoIndex, String text);
 	public void setEffective(int infoIndex, String text);
+	public void setOnset(int infoIndex, String text);
 	public void setExpires(int infoIndex, String text);
 	public void setSenderName(int infoIndex, String text);
 	public void setHeadline(int infoIndex, String text);
@@ -73,13 +71,21 @@ public interface IKieasMessageBuilder
 	public void setInstruction(int infoIndex, String text);
 	public void setWeb(int infoIndex, String text);
 	public void setContact(int infoIndex, String text);
+	public void setParameter(int infoIndex, int parameterIndex, String valueName, String value);
 	
-	public void setResourceDesc(int infoIndex, String text);
-	public void setMimeType(int infoIndex, String text);
-	public void setUri(int infoIndex, String text);	
+	public void setResourceDesc(int infoIndex, int resourceIndex, String text);
+	public void setMimeType(int infoIndex, int resourceIndex, String text);
+	public void setSize(int infoIndex, int resourceIndex, String text);	
+	public void setUri(int infoIndex, int resourceIndex, String text);	
+	public void setDerefUri(int infoIndex, int resourceIndex, String text);
+	public void setDigest(int infoIndex, int resourceIndex, String text);		
 
-	public void setAreaDesc(int infoIndex, String text);
-	public void setGeoCode(int infoIndex, String text);
+	public void setAreaDesc(int infoIndex, int areaIndex, String text);
+	public void setPolygon(int infoIndex, int areaIndex, String text);
+	public void setCircle(int infoIndex, int areaIndex, String text);
+	public void setGeoCode(int infoIndex, int areaIndex, String text);
+	public void setAltitude(int infoIndex, int areaIndex, String text);
+	public void setCeiling(int infoIndex, int areaIndex, String text);
 	
 	public String build();
 	public String buildDefaultMessage();
@@ -91,6 +97,6 @@ public interface IKieasMessageBuilder
 	public String getDate();
 	public String convertDateToYmdhms(String date);
 	
-	public List<String> convertDbToCap(List<CAPAlert> alertList);
-	public CAPAlert convertCapToDb(String capMessage);
+//	public List<String> convertDbToCap(List<CAPAlert> alertList);
+//	public CAPAlert convertCapToDb(String capMessage);
 }

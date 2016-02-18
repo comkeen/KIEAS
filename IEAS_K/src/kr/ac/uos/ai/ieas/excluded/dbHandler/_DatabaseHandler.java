@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.db.dbHandler;
+package kr.ac.uos.ai.ieas.dbHandler;
 
 import java.util.ArrayList;
 import java.util.List;

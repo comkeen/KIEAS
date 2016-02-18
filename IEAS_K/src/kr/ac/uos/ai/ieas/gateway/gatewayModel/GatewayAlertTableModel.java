@@ -25,14 +25,14 @@ public class GatewayAlertTableModel
 	{
 		this.columnNames = new ArrayList<String>();
 
-		columnNames.add(GatewayModelManager.NO);
-		columnNames.add(GatewayModelManager.SENDER);
-		columnNames.add(GatewayModelManager.IDENTIFIER);
-		columnNames.add(GatewayModelManager.SENT);
-		columnNames.add(GatewayModelManager.EVENT);
-		columnNames.add(GatewayModelManager.RESTRICTION);
+		columnNames.add(_GatewayModelManager.NO);
+		columnNames.add(_GatewayModelManager.SENDER);
+		columnNames.add(_GatewayModelManager.IDENTIFIER);
+		columnNames.add(_GatewayModelManager.SENT);
+		columnNames.add(_GatewayModelManager.EVENT);
+		columnNames.add(_GatewayModelManager.RESTRICTION);
 //		columnNames.add(GatewayModelManager.GEO_CODE);
-		columnNames.add(GatewayModelManager.ACK);
+		columnNames.add(_GatewayModelManager.ACK);
 
 		this.rowData = columnNames;
 
@@ -48,13 +48,13 @@ public class GatewayAlertTableModel
 	{
 		alertCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alertCount));
-		rowData.set(1, alertElementMap.get(GatewayModelManager.SENDER));
-		rowData.set(2, alertElementMap.get(GatewayModelManager.IDENTIFIER));
-		rowData.set(3, alertElementMap.get(GatewayModelManager.SENT));
-		rowData.set(4, alertElementMap.get(GatewayModelManager.EVENT));
-		rowData.set(5, alertElementMap.get(GatewayModelManager.RESTRICTION));
+		rowData.set(1, alertElementMap.get(_GatewayModelManager.SENDER));
+		rowData.set(2, alertElementMap.get(_GatewayModelManager.IDENTIFIER));
+		rowData.set(3, alertElementMap.get(_GatewayModelManager.SENT));
+		rowData.set(4, alertElementMap.get(_GatewayModelManager.EVENT));
+		rowData.set(5, alertElementMap.get(_GatewayModelManager.RESTRICTION));
 //		rowData.set(6, alertElementMap.get(GatewayModelManager.GEO_CODE));
-		rowData.set(6, GatewayModelManager.NACK);
+		rowData.set(6, _GatewayModelManager.NACK);
 
 		tableModel.addRow(rowData.toArray());
 	}
@@ -63,11 +63,11 @@ public class GatewayAlertTableModel
 	{
 		for (int i = 0; i < tableModel.getRowCount(); i++)
 		{
-			if(tableModel.getValueAt(i, 6).toString().equals(GatewayModelManager.NACK))
+			if(tableModel.getValueAt(i, 6).toString().equals(_GatewayModelManager.NACK))
 			{
 				if(tableModel.getValueAt(i, 2).toString().equals(identifier))
 				{
-					getTableModel().setValueAt(GatewayModelManager.COMP, i, 6);
+					getTableModel().setValueAt(_GatewayModelManager.COMP, i, 6);
 					return;
 				}
 			}
