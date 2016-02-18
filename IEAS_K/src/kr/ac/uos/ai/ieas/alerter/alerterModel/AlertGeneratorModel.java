@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import kr.ac.uos.ai.ieas.alerter.alerterView.AlerterCapGeneratePanel;
+import kr.ac.uos.ai.ieas.alerter.alerterView.AlertGeneratorPanel;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
 
-public class AlerterCapGeneratePanelModel
+public class AlertGeneratorModel
 {	
 	private _AlerterModelManager alerterModelManager;
 	private KieasMessageBuilder kieasMessageBuilder;
@@ -79,7 +79,7 @@ public class AlerterCapGeneratePanelModel
 	 * CAP 메시지를 다루기 위해 사용되는 KieasMessageBuilder 객체 생성.
 	 * @param _AlerterModelManager Model들을 관리하는 ModelManager. 
 	 */
-	public AlerterCapGeneratePanelModel(_AlerterModelManager _AlerterModelManager)
+	public AlertGeneratorModel(_AlerterModelManager _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
@@ -95,7 +95,7 @@ public class AlerterCapGeneratePanelModel
 	private void init()
 	{
 		this.mViewName = this.getClass().getSimpleName().toString().replace("Model", "");
-		
+		System.out.println(this.getClass().getSimpleName() + " : " + mViewName);
 		this.mTextArea = "";		
 		this.mLoadTextField = "cap/HRA.xml";
 		this.mSaveTextField = "cap/out.xml";
@@ -137,7 +137,7 @@ public class AlerterCapGeneratePanelModel
 	private void initComponents()
 	{
 		this.mViewComponentProperties = new Vector<>();
-		mViewComponentProperties.addElement(AlerterCapGeneratePanel.TEXT_AREA);
+		mViewComponentProperties.addElement(AlertGeneratorPanel.TEXT_AREA);
 		mViewComponentProperties.addElement(initSaveLoadPanelComponents());
 		mViewComponentProperties.addElement(initAlertPanelComponents());
 		mViewComponentProperties.addElement(initInfoPanelComponents());
@@ -148,8 +148,8 @@ public class AlerterCapGeneratePanelModel
 	private Map<String, String> initSaveLoadPanelComponents()
 	{
 		this.mComponents = new HashMap<>();
-		mComponents.put(AlerterCapGeneratePanel.LOAD_TEXT_FIELD, mLoadTextField);
-		mComponents.put(AlerterCapGeneratePanel.SAVE_TEXT_FIELD, mSaveTextField);
+		mComponents.put(AlertGeneratorPanel.LOAD_TEXT_FIELD, mLoadTextField);
+		mComponents.put(AlertGeneratorPanel.SAVE_TEXT_FIELD, mSaveTextField);
 		
 		return mComponents;
 	}
@@ -347,7 +347,7 @@ public class AlerterCapGeneratePanelModel
 	{
 		initInfoPanelComponents();
 		infoIndex = kieasMessageBuilder.getInfoCount();
-		alerterModelManager.updateView(mViewName, AlerterCapGeneratePanel.INFO_INDEX, Integer.toString(infoIndex));
+		alerterModelManager.updateView(mViewName, AlertGeneratorPanel.INFO_INDEX, Integer.toString(infoIndex));
 		for(int i = 0; i < infoIndex; i++)
 		{
 //			System.out.println("setInfoPanel infoIndex = " + i);

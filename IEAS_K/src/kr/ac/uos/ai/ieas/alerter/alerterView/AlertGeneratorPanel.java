@@ -24,7 +24,7 @@ import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
 
 
-public class AlerterCapGeneratePanel
+public class AlertGeneratorPanel
 {
 	private AleterViewActionListener alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
@@ -62,29 +62,28 @@ public class AlerterCapGeneratePanel
 	private ArrayList<HashMap<String, Component>> resourceComponents;
 	private int resourceCounter;
 	private JButton insertDatabaseButton;
-	private JTextField mInsertDatabaseTextField;
 	private JButton sendButton;
 	private JButton registerButton;
 	private JButton setIdButton;
 	
 	public static final String TEXT_AREA = "TextArea";
-	public static final String TEXT_FIELD = "TextField";
-	public static final String COMBO_BOX = "ComboBox";
+	private static final String TEXT_FIELD = "TextField";
+	private static final String COMBO_BOX = "ComboBox";
 
 	public static final String LOAD_TEXT_FIELD = "LoadTextField";
 	public static final String SAVE_TEXT_FIELD = "SaveTextField";
-	private static final String INSERT_DATABASE_TEXT_FIELD = "InsertDatabaseTextField";
 	public static final String LOAD_CAP_BUTTON = "Load Cap";
 	public static final String SAVE_CAP_BUTTON = "Save Cap";
-	public static final String REGISTER_BUTTON = "Register";
+	private static final String REGISTER_BUTTON = "Register";
 	private static final String SET_ID = "Set Id";
 	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
 
 	public static final String INFO_INDEX = "InfoIndex";
+	
 	private static final int BASE_LINE = 100;
 
 
-	public AlerterCapGeneratePanel(AleterViewActionListener alerterActionListener)
+	public AlertGeneratorPanel(AleterViewActionListener alerterActionListener)
 	{
 		this.alerterActionListener = alerterActionListener;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
@@ -162,7 +161,7 @@ public class AlerterCapGeneratePanel
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		buttonPane.add(alertApplyButton);
 		this.sendButton = createButton("Send");
-		sendButton.setActionCommand("SendAlert");
+		sendButton.setActionCommand("Send");
 		buttonPane.add(sendButton);
 		this.registerButton = createButton(REGISTER_BUTTON);
 		registerButton.setActionCommand(REGISTER_BUTTON);
@@ -356,9 +355,7 @@ public class AlerterCapGeneratePanel
 				alertComponents.put(labelName, comboBox);
 				box.add(comboBox);
 				return box;	
-			}
-			
-					
+			}					
 		case TEXT_FIELD:
 			JTextField textField = new JTextField();
 			alertComponents.put(labelName, textField);
@@ -462,27 +459,6 @@ public class AlerterCapGeneratePanel
 		
 		return alertElementMap;
 	}
-	
-//	private int checkIndex(String target)
-//	{
-//		StringBuffer stringBuffer = new StringBuffer();
-//		for(int i = 0; i < target.length(); i++)
-//		{
-//			char currentChar = target.charAt(i);
-//			if(Character.isDigit(currentChar))
-//			{
-//				stringBuffer.append(currentChar);			
-//			}
-//		}
-//		if(stringBuffer.length() == 0)
-//		{
-//			return -1;
-//		}
-//		else
-//		{
-//			return Integer.parseInt(stringBuffer.toString());			
-//		}
-//	}
 	
 	public void updateView(String target, String value)
 	{		

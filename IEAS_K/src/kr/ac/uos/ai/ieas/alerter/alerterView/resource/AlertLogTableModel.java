@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.alerter.alerterModel;
+package kr.ac.uos.ai.ieas.alerter.alerterView.resource;
 
 import java.util.ArrayList;
 import java.util.List;

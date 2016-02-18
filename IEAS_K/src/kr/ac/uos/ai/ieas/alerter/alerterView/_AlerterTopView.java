@@ -13,7 +13,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
 
 
 public class _AlerterTopView
@@ -21,7 +21,7 @@ public class _AlerterTopView
 	private _AlerterController controller;
 	private AleterViewActionListener alerterActionListener;
 
-	private AlerterCapGeneratePanel alerterCapGeneratePanel;
+	private AlertGeneratorPanel alerterCapGeneratePanel;
 	private AlerterLogPanel alerterLogPanel;
 //	private AlerterDataBasePanel alerterDatabasePanel;
 //	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
@@ -38,7 +38,7 @@ public class _AlerterTopView
 		initLookAndFeel();
 		this.controller = controller;
 		this.alerterActionListener = alerterActionListener;
-		this.alerterCapGeneratePanel = new AlerterCapGeneratePanel(alerterActionListener);
+		this.alerterCapGeneratePanel = new AlertGeneratorPanel(alerterActionListener);
 		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
 //		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
 //		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
@@ -108,7 +108,7 @@ public class _AlerterTopView
 	{
 		switch (view)
 		{
-		case "AlerterCapGeneratePanel":
+		case "AlertGenerator":
 			alerterCapGeneratePanel.updateView(target, value);
 			break;
 		default:

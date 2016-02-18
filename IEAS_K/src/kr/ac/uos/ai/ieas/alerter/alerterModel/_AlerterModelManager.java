@@ -1,20 +1,31 @@
 package kr.ac.uos.ai.ieas.alerter.alerterModel;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import kr.ac.uos.ai.ieas.alerter.alerterController.AlerterTransmitter;
 import kr.ac.uos.ai.ieas.alerter.alerterController._AlerterController;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
+import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.ITransmitter;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 public class _AlerterModelManager
 {
-	private static _AlerterModelManager alerterModelManager;
 	private _AlerterController controller;
-	private KieasMessageBuilder kieasMessageBuilder;
+	
+	private IKieasMessageBuilder kieasMessageBuilder;
+	private ITransmitter transmitter;
 //	private _DatabaseHandler databaseHandler;	
 	
-	private AlerterCapGeneratePanelModel alerterCapGeneratePanelModel;
+	private AlertGeneratorModel alerterCapGeneratePanelModel;
 //	private AlerterDataBasePanelModel alerterDataBasePanelModel;
 //	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	
@@ -24,17 +35,9 @@ public class _AlerterModelManager
 	private Map<String, String> alertElementMap;
 	
 	private String message;
-	
-	
-	public static _AlerterModelManager getInstance(_AlerterController alerterController)
-	{
-		if (alerterModelManager == null)
-		{
-			alerterModelManager = new _AlerterModelManager(alerterController);
-		}
-		return alerterModelManager;
-	}
-	
+
+	private String alerterId;
+		
 	/**
 	 * AlerterModel들을 관리한다.
 	 * CAP 메시지 처리를 위한 KieasMessageBuilder 초기화.
@@ -47,7 +50,9 @@ public class _AlerterModelManager
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 //		this.databaseHandler = new _DatabaseHandler();
 
-		this.alerterCapGeneratePanelModel = new AlerterCapGeneratePanelModel(this);
+		this.alerterCapGeneratePanelModel = new AlertGeneratorModel(this);
+		this.transmitter = new AlerterTransmitter(this);
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 //		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
 //		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
 		
@@ -59,9 +64,100 @@ public class _AlerterModelManager
 		this.alertLogTableModel = new AlertLogTableModel();
 		this.alertElementMap = new HashMap<String, String>();
 		this.alertMessageMap = new HashMap<String, String>();
-		
-		this.message = kieasMessageBuilder.buildDefaultMessage();
+		this.alerterId = "기상청";
+		transmitter.openConnection();
+		transmitter.addReceiver(alerterId);
 		initAlertElementMap();
+	}
+	
+	public void setID()
+	{
+		this.alerterId = "기상청";
+		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/alerterId";
+
+		controller.setId(alerterId);
+	}
+	
+
+	public void registerToGateway()
+	{
+		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(alerterId));
+		kieasMessageBuilder.setSender(alerterId);
+		kieasMessageBuilder.setSent(kieasMessageBuilder.getDate());
+		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
+		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ALERT);
+		kieasMessageBuilder.setRestriction(KieasMessageBuilder.RESTRICTED);
+		kieasMessageBuilder.setRestriction("Alerter");
+		kieasMessageBuilder.build();
+		System.out.println(kieasMessageBuilder.getMessage());
+		
+		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
+		
+		StringBuffer log = new StringBuffer();
+		log.append("(").append(alerterId).append(")").append(" Register to Gateway :");
+		System.out.println(log.toString());
+	}
+
+	public void sendMessage()
+	{
+//		alerterModelManager.addAlertTableRow();
+		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		System.out.println("Alerter Send Message to " + "(gateway) : ");
+		System.out.println();
+	}
+	
+	public void acceptMessage(String message)
+	{
+		try 
+		{
+			System.out.println("alerter acceptMessage");
+			kieasMessageBuilder.setMessage(message);
+
+//			String sender = kieasMessageBuilder.getSender();
+//			String identifier = kieasMessageBuilder.getIdentifier();
+
+			System.out.println("(Alerter)" + " Received Message From (" + "Gateway" + ") : ");
+			System.out.println();
+
+			alerterCapGeneratePanelModel.setModelProperty("TextArea", message);
+//			if(sender.equals(KieasConfiguration.KieasName.GATEWAY_NAME))
+//			{
+//				alerterModelManager.receiveGatewayAck(identifier);
+//			}
+//			else 
+//			{
+//				alerterTopView.receiveAlertSystemAck(identifier);
+//			}
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	
+	private String getLocalServerIp()
+	{
+		try
+		{
+		    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();)
+		    {
+		        NetworkInterface intf = en.nextElement();
+		        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
+		        {
+		            InetAddress inetAddress = enumIpAddr.nextElement();
+		            if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress())
+		            {
+		            	return inetAddress.getHostAddress().toString();
+		            }
+		        }
+		    }
+		}
+		catch (SocketException e)
+		{		
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private void initAlertElementMap()
@@ -95,7 +191,7 @@ public class _AlerterModelManager
 	public void generateCap(String alertSystemType)
 	{		
 		kieasMessageBuilder.buildDefaultMessage();
-		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(controller.getId()));
+		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(alerterId));
 		kieasMessageBuilder.setRestriction(alertSystemType);
 	
 		this.message = kieasMessageBuilder.getMessage();
@@ -186,6 +282,11 @@ public class _AlerterModelManager
 	public void setTextArea(String message)
 	{
 		alerterCapGeneratePanelModel.setModelProperty("TextArea", message);
+	}
+
+	public void closeConnection()
+	{
+		transmitter.closeConnection();
 	}
 	
 //	public List<String> getQueryResult(String target, String query)

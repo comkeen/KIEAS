@@ -12,8 +12,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertTableModel;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder.Item;
@@ -182,21 +181,18 @@ public class AlerterLogPanel
 		return alertSystemTypeComboBox;
 	}
 
-
-	public JTextArea getTextArea() {
+	public JTextArea getTextArea()
+	{
 		return textArea;
 	}
-
 
 	public String getGeoCode()
 	{
 		return geoCodeCombobox.getSelectedItem().toString();
 	}
 
-
 	public String getAlertSystemType()
 	{
 		return alertSystemTypeComboBox.getSelectedItem().toString();
 	}
-
 }

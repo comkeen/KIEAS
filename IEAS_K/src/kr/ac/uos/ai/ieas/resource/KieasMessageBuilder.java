@@ -69,8 +69,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public static final String INFO = "Info";
 	public static final String LANGUAGE = "Language";
+		//TODO
 	public static final String CATEGORY = "Category";
+		//TODO
 	public static final String RESPONSE_TYPE = "ResponseType";
+		//TODO
 	public static final String EVENT = "Event";
 	public static final String URGENCY = "Urgency";
 	public static final String SEVERITY = "Severity";
@@ -103,7 +106,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private CapXmlParser 	capXmlParser;
 	private CapValidator 	capValidator;
 	
-	private Map<String, List<Item>> CapElementToCapEnumMap;
+	private Map<String, List<Item>> CapElementToEnumMap;
 
 	private Alert  mAlert;
 	private String xmlMessage;
@@ -157,16 +160,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			return value;
 		}
 	}
-	
-//	private class ElementNotFoundException extends RuntimeException
-//	{
-//		public ElementNotFoundException()
-//		{
-//			super("Element not found.");
-//		}
-//		
-//		
-//	}
 
 	/**
 	 * CAP 요소에서 사용하는 Enum들을 가져옴.
@@ -176,308 +169,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 */
 	public Map<String, List<Item>> getCapEnumMap()
 	{
-		this.CapElementToCapEnumMap = new HashMap<>();
+		this.CapElementToEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();
 		buildInfoCapEnumMap();
-		return CapElementToCapEnumMap;
+		return CapElementToEnumMap;
 	}
 
-	private void buildAlertCapEnumMap()
-	{
-		ArrayList<Item> capEnum1 = new ArrayList<>();
-		for (Status value : Alert.Status.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Alert.Status.ACTUAL.toString()))
-			{
-				modifiedValue = value.toString() + " (실제)";
-			}
-			else if(value.toString().equals(Alert.Status.EXERCISE.toString()))
-			{
-				modifiedValue = value.toString() + " (훈련)";
-			}
-			else if(value.toString().equals(Alert.Status.SYSTEM.toString()))
-			{
-				modifiedValue = value.toString() + " (시스템)";
-			}
-			else if(value.toString().equals(Alert.Status.TEST.toString()))
-			{
-				modifiedValue = value.toString() + " (테스트)";
-			}
-			else if(value.toString().equals(Alert.Status.DRAFT.toString()))
-			{
-				modifiedValue = value.toString() + " (초안)";
-			}
-			capEnum1.add(new Item(value.toString(), modifiedValue));	
-		}
-		CapElementToCapEnumMap.put(STATUS, capEnum1);
-
-		List<Item> capEnum2 = new ArrayList<>();
-		for (MsgType value : Alert.MsgType.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Alert.MsgType.ALERT.toString()))
-			{
-				modifiedValue = value.toString() + " (경보)";
-			}
-			else if(value.toString().equals(Alert.MsgType.UPDATE.toString()))
-			{
-				modifiedValue = value.toString() + " (갱신)";
-			}
-			else if(value.toString().equals(Alert.MsgType.CANCEL.toString()))
-			{
-				modifiedValue = value.toString() + " (취소)";
-			}
-			else if(value.toString().equals(Alert.MsgType.ACK.toString()))
-			{
-				modifiedValue = value.toString() + " (응답)";
-			}
-			else if(value.toString().equals(Alert.MsgType.ERROR.toString()))
-			{
-				modifiedValue = value.toString() + " (오류)";
-			}
-			capEnum2.add(new Item(value.toString(), modifiedValue));	
-		}
-		CapElementToCapEnumMap.put(MSG_TYPE, capEnum2);
-
-		List<Item> capEnum3 = new ArrayList<>();
-		for (Scope value : Alert.Scope.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Alert.Scope.PUBLIC.toString()))
-			{
-				modifiedValue = value.toString() + " (공용)";
-			}
-			else if(value.toString().equals(Alert.Scope.RESTRICTED.toString()))
-			{
-				modifiedValue = value.toString() + " (제한)";
-			}
-			else if(value.toString().equals(Alert.Scope.PRIVATE.toString()))
-			{
-				modifiedValue = value.toString() + " (개별)";
-			}
-			capEnum3.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(SCOPE, capEnum3);	
-	}
-
-	private void buildInfoCapEnumMap()
-	{
-		//Category
-		List<Item> capEnum1 = new ArrayList<>();
-		for (Category value : Info.Category.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Info.Category.GEO.toString()))
-			{
-				modifiedValue = value.toString() + " (지리)";
-			}
-			else if(value.toString().equals(Info.Category.MET.toString()))
-			{
-				modifiedValue = value.toString() + " (기상)";
-			}
-			else if(value.toString().equals(Info.Category.SAFETY.toString()))
-			{
-				modifiedValue = value.toString() + " (안전)";
-			}
-			else if(value.toString().equals(Info.Category.SECURITY.toString()))
-			{
-				modifiedValue = value.toString() + " (안보)";
-			}
-			else if(value.toString().equals(Info.Category.RESCUE.toString()))
-			{
-				modifiedValue = value.toString() + " (구조)";
-			}
-			else if(value.toString().equals(Info.Category.FIRE.toString()))
-			{
-				modifiedValue = value.toString() + " (화재)";
-			}
-			else if(value.toString().equals(Info.Category.HEALTH.toString()))
-			{
-				modifiedValue = value.toString() + " (건강)";
-			}
-			else if(value.toString().equals(Info.Category.ENV.toString()))
-			{
-				modifiedValue = value.toString() + " (환경)";
-			}
-			else if(value.toString().equals(Info.Category.TRANSPORT.toString()))
-			{
-				modifiedValue = value.toString() + " (교통)";
-			}
-			else if(value.toString().equals(Info.Category.INFRA.toString()))
-			{
-				modifiedValue = value.toString() + " (기반시설)";
-			}
-			else if(value.toString().equals(Info.Category.CBRNE.toString()))
-			{
-				modifiedValue = value.toString() + " (화생방)";
-			}
-			else if(value.toString().equals(Info.Category.OTHER.toString()))
-			{
-				modifiedValue = value.toString() + " (기타)";
-			}
-			capEnum1.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(CATEGORY, capEnum1);
-
-		List<Item> capEnum2 = new ArrayList<>();
-		for (Certainty value : Info.Certainty.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Info.Certainty.OBSERVED.toString()))
-			{
-				modifiedValue = value.toString() + " (이미 발생하였거나 진행 중)";
-			}
-			else if(value.toString().equals(Info.Certainty.VERY_LIKELY.toString()))
-			{
-				continue;
-			}
-			else if(value.toString().equals(Info.Certainty.LIKELY.toString()))
-			{
-				modifiedValue = value.toString() + " (50%를 초과하는 가능성)";
-			}
-			else if(value.toString().equals(Info.Certainty.POSSIBLE.toString()))
-			{
-				modifiedValue = value.toString() + " (50% 이하의 가능성)";
-			}
-			else if(value.toString().equals(Info.Certainty.UNLIKELY.toString()))
-			{
-				modifiedValue = value.toString() + " (희박한 가능성)";
-			}
-			else if(value.toString().equals(Info.Certainty.UNKNOWN_CERTAINTY.toString()))
-			{
-				modifiedValue = value.toString() + " (미상)";
-			}
-			capEnum2.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(CERTAINTY, capEnum2);
-
-		List<Item> capEnum3 = new ArrayList<>();
-		for (ResponseType value : Info.ResponseType.values())
-		{			
-			String modifiedValue = "";
-			modifiedValue = value.toString();
-			capEnum3.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(RESPONSE_TYPE, capEnum3);
-
-		List<Item> capEnum4 = new ArrayList<>();
-		for (Severity value : Info.Severity.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Info.Severity.EXTREME.toString()))
-			{
-				modifiedValue = value.toString() + " (이례적인 피해)";
-			}
-			else if(value.toString().equals(Info.Severity.SEVERE.toString()))
-			{
-				modifiedValue = value.toString() + " (심각한 피해)";
-			}
-			else if(value.toString().equals(Info.Severity.MODERATE.toString()))
-			{
-				modifiedValue = value.toString() + " (피해 가능성 존재)";
-			}
-			else if(value.toString().equals(Info.Severity.MINOR.toString()))
-			{
-				modifiedValue = value.toString() + " (피해 가능성 낮음)";
-			}
-			else if(value.toString().equals(Info.Severity.UNKNOWN_SEVERITY.toString()))
-			{
-				modifiedValue = value.toString() + " (미상)";
-			}
-			capEnum4.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(SEVERITY, capEnum4);
-
-		List<Item> capEnum5 = new ArrayList<>();
-		for (Urgency value : Info.Urgency.values())
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(Info.Urgency.IMMEDIATE.toString()))
-			{
-				modifiedValue = value.toString() + " (즉각적인 대응이 필요함)";
-			}
-			else if(value.toString().equals(Info.Urgency.EXPECTED.toString()))
-			{
-				modifiedValue = value.toString() + " (한 시간 이내의 빠른 대응이 필요함)";
-			}
-			else if(value.toString().equals(Info.Urgency.FUTURE.toString()))
-			{
-				modifiedValue = value.toString() + " (근시일 내의 대응이 필요함)";
-			}
-			else if(value.toString().equals(Info.Urgency.PAST.toString()))
-			{
-				modifiedValue = value.toString() + " (대응이 필요 없음)";
-			}
-			else if(value.toString().equals(Info.Urgency.UNKNOWN_URGENCY.toString()))
-			{
-				modifiedValue = value.toString() + " (미상)";
-			}
-			capEnum5.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(URGENCY, capEnum5);
-
-		List<Item> capEnum6 = new ArrayList<>();
-		for (KieasList.DisasterEventType value : KieasList.DisasterEventType.values())
-		{
-			String modifiedValue = "";
-			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
-			capEnum6.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(EVENT_CODE, capEnum6);
-
-		List<Item> capEnum7 = new ArrayList<>();
-		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
-		{
-			String modifiedValue = "";
-			if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[0]))
-			{
-				modifiedValue = value.toString() + " (한국어)";
-			}
-			else if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[1]))
-			{
-				modifiedValue = value.toString() + " (영어)";
-			}
-			capEnum7.add(new Item(value.toString(), modifiedValue));
-		}
-		CapElementToCapEnumMap.put(LANGUAGE, capEnum7);
-
-		List<Item> capEnum8 = new ArrayList<>();
-		Item item1 = new Item("1100000000", "서울특별시");
-		Item item2 = new Item("2600000000", "부산광역시");
-		Item item3 = new Item("2700000000", "대구광역시");
-		Item item4 = new Item("2800000000", "인천광역시");
-		Item item5 = new Item("2900000000", "광주광역시");
-		Item item6 = new Item("3000000000", "대전광역시");
-		Item item7 = new Item("3100000000", "울산광역시");
-		Item item8 = new Item("4100000000", "경기도");
-		Item item9 = new Item("4200000000", "강원도");
-		Item item10 = new Item("4300000000", "충청북도");
-		Item item11 = new Item("4400000000", "충청남도");
-		Item item12 = new Item("4500000000", "전라북도");
-		Item item13 = new Item("4600000000", "전라남도");
-		Item item14 = new Item("4700000000", "경상북도");
-		Item item15 = new Item("4800000000", "경상남도");
-		Item item16 = new Item("5000000000", "제주특별자치도");		
-		capEnum8.add(new Item(item1.getKey(), item1.getKey() + " (" + item1.getValue() + ")" ));
-		capEnum8.add(new Item(item2.getKey(), item2.getKey() + " (" + item2.getValue() + ")" ));
-		capEnum8.add(new Item(item3.getKey(), item3.getKey() + " (" + item3.getValue() + ")" ));
-		capEnum8.add(new Item(item4.getKey(), item4.getKey() + " (" + item4.getValue() + ")" ));
-		capEnum8.add(new Item(item5.getKey(), item5.getKey() + " (" + item5.getValue() + ")" ));
-		capEnum8.add(new Item(item6.getKey(), item6.getKey() + " (" + item6.getValue() + ")" ));
-		capEnum8.add(new Item(item7.getKey(), item7.getKey() + " (" + item7.getValue() + ")" ));
-		capEnum8.add(new Item(item8.getKey(), item8.getKey() + " (" + item8.getValue() + ")" ));
-		capEnum8.add(new Item(item9.getKey(), item9.getKey() + " (" + item9.getValue() + ")" ));
-		capEnum8.add(new Item(item10.getKey(), item10.getKey() + " (" + item10.getValue() + ")" ));
-		capEnum8.add(new Item(item11.getKey(), item11.getKey() + " (" + item11.getValue() + ")" ));
-		capEnum8.add(new Item(item12.getKey(), item12.getKey() + " (" + item12.getValue() + ")" ));
-		capEnum8.add(new Item(item13.getKey(), item13.getKey() + " (" + item13.getValue() + ")" ));
-		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
-		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
-		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
-		CapElementToCapEnumMap.put(GEO_CODE, capEnum8);
-	}
-
+	
 	public String buildDefaultMessage()
 	{		
 		this.mAlert = buildDefaultAlert();
@@ -588,10 +286,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-	
-	
-	
-	
+		
+	@Override
 	public boolean validateMessage(String message)
 	{
 		try
@@ -613,27 +309,29 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return cal;
 	}
 
-	private String dateToString(Date date)
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
-		cal.setTime(date);
-		return CapUtil.formatCapDate(cal);
-	}
+//	private String dateToString(Date date)
+//	{
+//		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+//		cal.setTime(date);
+//		return CapUtil.formatCapDate(cal);
+//	}
 
-
+	@Override
 	public int getInfoCount()
 	{
 		return mAlert.getInfoCount();
 	}
 
-	public int getResourceCount(int index)
+	@Override
+	public int getResourceCount(int infoIndex)
 	{
-		return mAlert.getInfo(index).getResourceCount();
+		return mAlert.getInfo(infoIndex).getResourceCount();
 	}
 
-	public int getAreaCount(int index)
+	@Override
+	public int getAreaCount(int infoIndex)
 	{
-		return mAlert.getInfo(index).getAreaCount();
+		return mAlert.getInfo(infoIndex).getAreaCount();
 	}
 
 	@Override
@@ -1858,38 +1556,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public void setPolygon(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
-		
-//		if(infoIndex >= mAlert.getInfoCount())
-//		{
-//			incrementInfoByInfoIndex(infoIndex);
-//		}
-//		
-//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
-//		{
-//			incrementAreaByAreaIndex(infoIndex, areaIndex);
-//		}
-//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).addPolygon(text).buildPartial();
-//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
-//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
 	public void setCircle(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
-		
-//		if(infoIndex >= mAlert.getInfoCount())
-//		{
-//			incrementInfoByInfoIndex(infoIndex);
-//		}
-//		
-//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
-//		{
-//			incrementAreaByAreaIndex(infoIndex, areaIndex);
-//		}
-//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
-//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
-//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
@@ -1923,40 +1595,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public void setAltitude(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
-		
-//		if(infoIndex >= mAlert.getInfoCount())
-//		{
-//			incrementInfoByInfoIndex(infoIndex);
-//		}
-//		
-//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
-//		{
-//			incrementAreaByAreaIndex(infoIndex, areaIndex);
-//		}
-//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
-//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
-//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
 	@Override
 	public void setCeiling(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
-		
-//		if(infoIndex >= mAlert.getInfoCount())
-//		{
-//			incrementInfoByInfoIndex(infoIndex);
-//		}
-//		
-//		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
-//		{
-//			incrementAreaByAreaIndex(infoIndex, areaIndex);
-//		}
-//		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
-//		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
-//		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
-	}
-	
+	}	
 	
 	@Override
 	public String getDate()
@@ -1983,7 +1628,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return sb.toString();
 	}
 
-	@Override
 	public String generateKieasMessageIdentifier(String id)
 	{
 		String idNum = Double.toString(Math.random());		
@@ -1992,4 +1636,300 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return identifier;
 	}
 
+
+	private void buildAlertCapEnumMap()
+	{
+		ArrayList<Item> capEnum1 = new ArrayList<>();
+		for (Status value : Alert.Status.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.Status.ACTUAL.toString()))
+			{
+				modifiedValue = value.toString() + " (실제)";
+			}
+			else if(value.toString().equals(Alert.Status.EXERCISE.toString()))
+			{
+				modifiedValue = value.toString() + " (훈련)";
+			}
+			else if(value.toString().equals(Alert.Status.SYSTEM.toString()))
+			{
+				modifiedValue = value.toString() + " (시스템)";
+			}
+			else if(value.toString().equals(Alert.Status.TEST.toString()))
+			{
+				modifiedValue = value.toString() + " (테스트)";
+			}
+			else if(value.toString().equals(Alert.Status.DRAFT.toString()))
+			{
+				modifiedValue = value.toString() + " (초안)";
+			}
+			capEnum1.add(new Item(value.toString(), modifiedValue));	
+		}
+		CapElementToEnumMap.put(STATUS, capEnum1);
+
+		List<Item> capEnum2 = new ArrayList<>();
+		for (MsgType value : Alert.MsgType.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.MsgType.ALERT.toString()))
+			{
+				modifiedValue = value.toString() + " (경보)";
+			}
+			else if(value.toString().equals(Alert.MsgType.UPDATE.toString()))
+			{
+				modifiedValue = value.toString() + " (갱신)";
+			}
+			else if(value.toString().equals(Alert.MsgType.CANCEL.toString()))
+			{
+				modifiedValue = value.toString() + " (취소)";
+			}
+			else if(value.toString().equals(Alert.MsgType.ACK.toString()))
+			{
+				modifiedValue = value.toString() + " (응답)";
+			}
+			else if(value.toString().equals(Alert.MsgType.ERROR.toString()))
+			{
+				modifiedValue = value.toString() + " (오류)";
+			}
+			capEnum2.add(new Item(value.toString(), modifiedValue));	
+		}
+		CapElementToEnumMap.put(MSG_TYPE, capEnum2);
+
+		List<Item> capEnum3 = new ArrayList<>();
+		for (Scope value : Alert.Scope.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Alert.Scope.PUBLIC.toString()))
+			{
+				modifiedValue = value.toString() + " (공용)";
+			}
+			else if(value.toString().equals(Alert.Scope.RESTRICTED.toString()))
+			{
+				modifiedValue = value.toString() + " (제한)";
+			}
+			else if(value.toString().equals(Alert.Scope.PRIVATE.toString()))
+			{
+				modifiedValue = value.toString() + " (개별)";
+			}
+			capEnum3.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(SCOPE, capEnum3);	
+	}
+
+	private void buildInfoCapEnumMap()
+	{
+		//Category
+		List<Item> capEnum1 = new ArrayList<>();
+		for (Category value : Info.Category.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Category.GEO.toString()))
+			{
+				modifiedValue = value.toString() + " (지리)";
+			}
+			else if(value.toString().equals(Info.Category.MET.toString()))
+			{
+				modifiedValue = value.toString() + " (기상)";
+			}
+			else if(value.toString().equals(Info.Category.SAFETY.toString()))
+			{
+				modifiedValue = value.toString() + " (안전)";
+			}
+			else if(value.toString().equals(Info.Category.SECURITY.toString()))
+			{
+				modifiedValue = value.toString() + " (안보)";
+			}
+			else if(value.toString().equals(Info.Category.RESCUE.toString()))
+			{
+				modifiedValue = value.toString() + " (구조)";
+			}
+			else if(value.toString().equals(Info.Category.FIRE.toString()))
+			{
+				modifiedValue = value.toString() + " (화재)";
+			}
+			else if(value.toString().equals(Info.Category.HEALTH.toString()))
+			{
+				modifiedValue = value.toString() + " (건강)";
+			}
+			else if(value.toString().equals(Info.Category.ENV.toString()))
+			{
+				modifiedValue = value.toString() + " (환경)";
+			}
+			else if(value.toString().equals(Info.Category.TRANSPORT.toString()))
+			{
+				modifiedValue = value.toString() + " (교통)";
+			}
+			else if(value.toString().equals(Info.Category.INFRA.toString()))
+			{
+				modifiedValue = value.toString() + " (기반시설)";
+			}
+			else if(value.toString().equals(Info.Category.CBRNE.toString()))
+			{
+				modifiedValue = value.toString() + " (화생방)";
+			}
+			else if(value.toString().equals(Info.Category.OTHER.toString()))
+			{
+				modifiedValue = value.toString() + " (기타)";
+			}
+			capEnum1.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(CATEGORY, capEnum1);
+
+		List<Item> capEnum2 = new ArrayList<>();
+		for (Certainty value : Info.Certainty.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Certainty.OBSERVED.toString()))
+			{
+				modifiedValue = value.toString() + " (이미 발생하였거나 진행 중)";
+			}
+			else if(value.toString().equals(Info.Certainty.VERY_LIKELY.toString()))
+			{
+				continue;
+			}
+			else if(value.toString().equals(Info.Certainty.LIKELY.toString()))
+			{
+				modifiedValue = value.toString() + " (50%를 초과하는 가능성)";
+			}
+			else if(value.toString().equals(Info.Certainty.POSSIBLE.toString()))
+			{
+				modifiedValue = value.toString() + " (50% 이하의 가능성)";
+			}
+			else if(value.toString().equals(Info.Certainty.UNLIKELY.toString()))
+			{
+				modifiedValue = value.toString() + " (희박한 가능성)";
+			}
+			else if(value.toString().equals(Info.Certainty.UNKNOWN_CERTAINTY.toString()))
+			{
+				modifiedValue = value.toString() + " (미상)";
+			}
+			capEnum2.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(CERTAINTY, capEnum2);
+
+		List<Item> capEnum3 = new ArrayList<>();
+		for (ResponseType value : Info.ResponseType.values())
+		{			
+			String modifiedValue = "";
+			modifiedValue = value.toString();
+			capEnum3.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(RESPONSE_TYPE, capEnum3);
+
+		List<Item> capEnum4 = new ArrayList<>();
+		for (Severity value : Info.Severity.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Severity.EXTREME.toString()))
+			{
+				modifiedValue = value.toString() + " (이례적인 피해)";
+			}
+			else if(value.toString().equals(Info.Severity.SEVERE.toString()))
+			{
+				modifiedValue = value.toString() + " (심각한 피해)";
+			}
+			else if(value.toString().equals(Info.Severity.MODERATE.toString()))
+			{
+				modifiedValue = value.toString() + " (피해 가능성 존재)";
+			}
+			else if(value.toString().equals(Info.Severity.MINOR.toString()))
+			{
+				modifiedValue = value.toString() + " (피해 가능성 낮음)";
+			}
+			else if(value.toString().equals(Info.Severity.UNKNOWN_SEVERITY.toString()))
+			{
+				modifiedValue = value.toString() + " (미상)";
+			}
+			capEnum4.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(SEVERITY, capEnum4);
+
+		List<Item> capEnum5 = new ArrayList<>();
+		for (Urgency value : Info.Urgency.values())
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(Info.Urgency.IMMEDIATE.toString()))
+			{
+				modifiedValue = value.toString() + " (즉각적인 대응이 필요함)";
+			}
+			else if(value.toString().equals(Info.Urgency.EXPECTED.toString()))
+			{
+				modifiedValue = value.toString() + " (한 시간 이내의 빠른 대응이 필요함)";
+			}
+			else if(value.toString().equals(Info.Urgency.FUTURE.toString()))
+			{
+				modifiedValue = value.toString() + " (근시일 내의 대응이 필요함)";
+			}
+			else if(value.toString().equals(Info.Urgency.PAST.toString()))
+			{
+				modifiedValue = value.toString() + " (대응이 필요 없음)";
+			}
+			else if(value.toString().equals(Info.Urgency.UNKNOWN_URGENCY.toString()))
+			{
+				modifiedValue = value.toString() + " (미상)";
+			}
+			capEnum5.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(URGENCY, capEnum5);
+
+		List<Item> capEnum6 = new ArrayList<>();
+		for (KieasList.DisasterEventType value : KieasList.DisasterEventType.values())
+		{
+			String modifiedValue = "";
+			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
+			capEnum6.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(EVENT_CODE, capEnum6);
+
+		List<Item> capEnum7 = new ArrayList<>();
+		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
+		{
+			String modifiedValue = "";
+			if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[0]))
+			{
+				modifiedValue = value.toString() + " (한국어)";
+			}
+			else if(value.toString().equals(KieasConfiguration.KieasList.LANGUAGE_LIST[1]))
+			{
+				modifiedValue = value.toString() + " (영어)";
+			}
+			capEnum7.add(new Item(value.toString(), modifiedValue));
+		}
+		CapElementToEnumMap.put(LANGUAGE, capEnum7);
+
+		List<Item> capEnum8 = new ArrayList<>();
+		Item item1 = new Item("1100000000", "서울특별시");
+		Item item2 = new Item("2600000000", "부산광역시");
+		Item item3 = new Item("2700000000", "대구광역시");
+		Item item4 = new Item("2800000000", "인천광역시");
+		Item item5 = new Item("2900000000", "광주광역시");
+		Item item6 = new Item("3000000000", "대전광역시");
+		Item item7 = new Item("3100000000", "울산광역시");
+		Item item8 = new Item("4100000000", "경기도");
+		Item item9 = new Item("4200000000", "강원도");
+		Item item10 = new Item("4300000000", "충청북도");
+		Item item11 = new Item("4400000000", "충청남도");
+		Item item12 = new Item("4500000000", "전라북도");
+		Item item13 = new Item("4600000000", "전라남도");
+		Item item14 = new Item("4700000000", "경상북도");
+		Item item15 = new Item("4800000000", "경상남도");
+		Item item16 = new Item("5000000000", "제주특별자치도");		
+		capEnum8.add(new Item(item1.getKey(), item1.getKey() + " (" + item1.getValue() + ")" ));
+		capEnum8.add(new Item(item2.getKey(), item2.getKey() + " (" + item2.getValue() + ")" ));
+		capEnum8.add(new Item(item3.getKey(), item3.getKey() + " (" + item3.getValue() + ")" ));
+		capEnum8.add(new Item(item4.getKey(), item4.getKey() + " (" + item4.getValue() + ")" ));
+		capEnum8.add(new Item(item5.getKey(), item5.getKey() + " (" + item5.getValue() + ")" ));
+		capEnum8.add(new Item(item6.getKey(), item6.getKey() + " (" + item6.getValue() + ")" ));
+		capEnum8.add(new Item(item7.getKey(), item7.getKey() + " (" + item7.getValue() + ")" ));
+		capEnum8.add(new Item(item8.getKey(), item8.getKey() + " (" + item8.getValue() + ")" ));
+		capEnum8.add(new Item(item9.getKey(), item9.getKey() + " (" + item9.getValue() + ")" ));
+		capEnum8.add(new Item(item10.getKey(), item10.getKey() + " (" + item10.getValue() + ")" ));
+		capEnum8.add(new Item(item11.getKey(), item11.getKey() + " (" + item11.getValue() + ")" ));
+		capEnum8.add(new Item(item12.getKey(), item12.getKey() + " (" + item12.getValue() + ")" ));
+		capEnum8.add(new Item(item13.getKey(), item13.getKey() + " (" + item13.getValue() + ")" ));
+		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
+		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
+		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
+		CapElementToEnumMap.put(GEO_CODE, capEnum8);
+	}
 }

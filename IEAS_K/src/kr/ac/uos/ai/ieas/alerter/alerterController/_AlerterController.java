@@ -1,44 +1,31 @@
 
 package kr.ac.uos.ai.ieas.alerter.alerterController;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import kr.ac.uos.ai.ieas.alerter.alerterModel.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.alerter.alerterView._AlerterTopView;
-import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
-import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
-import kr.ac.uos.ai.ieas.resource.ITransmitter;
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
 
 
 public class _AlerterController
 { 
-	private static _AlerterController alerterController;
-	private _AlerterTopView alerterTopView;
-	private _AlerterModelManager alerterModelManager;
-	private AleterViewActionListener alerterActionListener;
-
-	private IKieasMessageBuilder kieasMessageBuilder;
-	private ITransmitter transmitter;
+	private static _AlerterController controller;
 	
-	private String alerterId;
+	private _AlerterTopView topView;
+	private _AlerterModelManager modelManager;
+	private AleterViewActionListener viewActionListener;
 	
 
 	public static _AlerterController getInstance()
 	{
-		if (alerterController == null)
+		if (controller == null)
 		{
-			alerterController = new _AlerterController(alerterController);
+			controller = new _AlerterController(controller);
 		}
-		return alerterController;
+		return controller;
 	}
 	
 	
@@ -47,133 +34,32 @@ public class _AlerterController
 	 * @param alerterController 
 	 */		
 	private _AlerterController(_AlerterController alerterController)
-	{
-		
-		this.alerterActionListener = new AleterViewActionListener(this);
-		this.alerterModelManager = new _AlerterModelManager(this);
-		this.alerterTopView = new _AlerterTopView(this, alerterActionListener);
-		
-		this.transmitter = new AlerterTransmitter(this);
-		this.kieasMessageBuilder = new KieasMessageBuilder();
+	{		
+		this.viewActionListener = new AleterViewActionListener(this);
+		this.modelManager = new _AlerterModelManager(this);
+		this.topView = new _AlerterTopView(this, viewActionListener);
 		
 		init();
 	}
 	
 	private void init()
 	{
-		this.setID();
-		alerterTopView.setId(alerterId);
-		transmitter.openConnection();
+//		this.setID();
+//		alerterTopView.setId(alerterId);
 	}
 	
-	public void setID()
-	{
-		this.alerterId = "기상청";
-		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/alerterId";
-		transmitter.addReceiver(alerterId);
-		alerterTopView.setId(alerterId);
-	}
-	
-	private String getLocalServerIp()
-	{
-		try
-		{
-		    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();)
-		    {
-		        NetworkInterface intf = en.nextElement();
-		        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
-		        {
-		            InetAddress inetAddress = enumIpAddr.nextElement();
-		            if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress())
-		            {
-		            	return inetAddress.getHostAddress().toString();
-		            }
-		        }
-		    }
-		}
-		catch (SocketException e)
-		{		
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public void registerToGateway()
-	{
-		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(alerterId));
-		kieasMessageBuilder.setSender(alerterId);
-		kieasMessageBuilder.setSent(kieasMessageBuilder.getDate());
-		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
-		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ALERT);
-		kieasMessageBuilder.setRestriction(KieasMessageBuilder.RESTRICTED);
-		kieasMessageBuilder.setRestriction("Alerter");
-		kieasMessageBuilder.build();
-		System.out.println(kieasMessageBuilder.getMessage());
-		
-		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
-		
-		StringBuffer log = new StringBuffer();
-		log.append("(").append(alerterId).append(")").append(" Register to Gateway :");
-		System.out.println(log.toString());
-	}
-
-	public void sendMessage()
-	{
-		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-		System.out.println("Alerter Send Message to " + "(gateway) : ");
-		System.out.println();
-	}
-
-	public void sendAlert()
-	{
-		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(alerterModelManager.getAlert(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-		System.out.println("Alerter Send Message to " + "(gateway) : ");
-		System.out.println();
-	}
-	
-	public void acceptMessage(String message)
-	{
-		try 
-		{
-			System.out.println("alerter acceptMessage");
-			kieasMessageBuilder.setMessage(message);
-
-//			String sender = kieasMessageBuilder.getSender();
-//			String identifier = kieasMessageBuilder.getIdentifier();
-
-			System.out.println("(Alerter)" + " Received Message From (" + "Gateway" + ") : ");
-			System.out.println();
-
-			alerterModelManager.setTextArea(message);
-//			if(sender.equals(KieasConfiguration.KieasName.GATEWAY_NAME))
-//			{
-//				alerterModelManager.receiveGatewayAck(identifier);
-//			}
-//			else 
-//			{
-//				alerterTopView.receiveAlertSystemAck(identifier);
-//			}
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	public void systemExit()
 	{
 		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
 		String title = "프로그램 종료";
 		
-		if (JOptionPane.showConfirmDialog(alerterTopView.getFrame(),
+		if (JOptionPane.showConfirmDialog(topView.getFrame(),
 			question,
 			title,
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 	    {
-			transmitter.closeConnection();
+			modelManager.closeConnection();
 	        System.exit(0);
 	    }
 		else
@@ -187,7 +73,7 @@ public class _AlerterController
 	 */
 	public void loadCap()
 	{
-		alerterModelManager.loadCap(alerterTopView.getLoadTextField());
+		modelManager.loadCap(topView.getLoadTextField());
 	}
 	
 	/**
@@ -195,12 +81,12 @@ public class _AlerterController
 	 */
 	public void saveCap()
 	{
-		alerterModelManager.saveCap(alerterTopView.getSaveTextField());
+		modelManager.saveCap(topView.getSaveTextField());
 	}
 
 	public void applyAlertElement()
 	{
-		alerterModelManager.applyAlertElement(alerterTopView.getAlertElement());
+		modelManager.applyAlertElement(topView.getAlertElement());
 	}
 
 
@@ -210,7 +96,7 @@ public class _AlerterController
 	 */
 	public void addInfoIndexPanel() 
 	{
-		alerterTopView.addInfoIndexPanel();
+		topView.addInfoIndexPanel();
 	}
 
 	/**
@@ -219,7 +105,7 @@ public class _AlerterController
 	 */
 	public void addResourceIndexPanel() 
 	{
-		alerterTopView.addResourceIndexPanel();
+		topView.addResourceIndexPanel();
 	}
 	
 	/**
@@ -228,7 +114,7 @@ public class _AlerterController
 	 */
 	public void addAreaIndexPanel()
 	{
-		alerterTopView.addAreaIndexPanel();
+		topView.addAreaIndexPanel();
 	}
 	
 	/**
@@ -239,57 +125,51 @@ public class _AlerterController
 	 */
 	public void updateView(String view, String target, String value)
 	{
-		alerterTopView.updateView(view, target, value);
+		topView.updateView(view, target, value);
 	}
 	
 	public void updateView(String view, String target, List<String> value)
 	{
-		alerterTopView.updateView(view, target, value);
+		topView.updateView(view, target, value);
 	}
 
 	public void generateCap()
 	{		
-		alerterModelManager.generateCap(alerterTopView.getAlertSystemType());
+		modelManager.generateCap(topView.getAlertSystemType());
 	}
 
 	public void setTextArea(String message)
 	{
-		alerterTopView.setTextArea(message);
+		topView.setTextArea(message);
 	}
 
 	public AlertLogTableModel getAlertTableModel()
 	{
-		return alerterModelManager.getAlertTableModel();
+		return modelManager.getAlertTableModel();
 	}
 
 	public String getAlertMessage(String identifier)
 	{
-		return alerterModelManager.getAlertMessage(identifier);
+		return modelManager.getAlertMessage(identifier);
 	}
 
-	public String getId()
+	public void setId(String id)
 	{
-		return alerterId;
+		topView.setId(id);
 	}
 
-//	public void insertDatabase()
-//	{
-//		alerterModelManager.insertDataBase(alerterTopView.getTextArea());
-//		System.out.println("insert to database : <<todo>>");
-//	}
-	
-//	public void selectTableEvent()
-//	{
-//		alerterTopView.selectTableEvent();
-//	}
-	
-//	public void getQueryResult()
-//	{
-//		alerterModelManager.getQueryResult(KieasMessageBuilder.EVENT_CODE, alerterTopView.getQuery());		
-//	}
+	public void sendMessage() 
+	{
+		modelManager.sendMessage();
+	}
 
-//	public void loadDraft() 
-//	{
-//		alerterTopView.getQueryResult(alerterModelManager.getQueryResult("status", "Draft"));
-//	}
+	public void setID()
+	{
+		modelManager.setID();
+	}
+
+	public void registerToGateway()
+	{
+		modelManager.registerToGateway();
+	}
 }

@@ -16,13 +16,14 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import kr.ac.uos.ai.ieas.alerter.alerterModel._AlerterModelManager;
 import kr.ac.uos.ai.ieas.resource.ITransmitter;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
 
 
 public class AlerterTransmitter implements ITransmitter
 {
-	private _AlerterController controller;
+	private _AlerterModelManager modelManager;
 
 	private Connection connection;
 	private Session session;
@@ -35,9 +36,9 @@ public class AlerterTransmitter implements ITransmitter
 	private String id;
 
 
-	public AlerterTransmitter(_AlerterController controller)
+	public AlerterTransmitter(_AlerterModelManager modelManager)
 	{
-		this.controller = controller;
+		this.modelManager = modelManager;
 		
 		init();
 	}
@@ -144,7 +145,7 @@ public class AlerterTransmitter implements ITransmitter
 						try
 						{
 							System.out.println("alerter receive message");
-							controller.acceptMessage(textMessage.getText());	//Message Receive			
+							modelManager.acceptMessage(textMessage.getText());	//Message Receive			
 						}
 						catch (JMSException e)
 						{

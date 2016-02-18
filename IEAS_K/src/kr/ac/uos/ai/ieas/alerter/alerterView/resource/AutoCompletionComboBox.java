@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.alerter.alerterView;
+package kr.ac.uos.ai.ieas.alerter.alerterView.resource;
 
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;

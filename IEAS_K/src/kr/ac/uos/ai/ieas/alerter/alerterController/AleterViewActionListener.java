@@ -22,10 +22,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	
 	/**
 	 * event.getActionCommand()로 버튼 액션을 식별하여 처리한다.
-	 * "LoadCapDraft" : "/cap/" 위치에 있는 지정된 이름의 Cap Draft를 로드한다.
-	 * "SaveCap" : AlerterCapGeneratePanel.TextArea의 내용을 "/cap/" 위치에 지정된 이름으로 저장한다.
+	 * "Load Cap" : "~/cap/" 위치에 있는 지정된 이름의 Cap Draft를 로드한다.
+	 * "Save Cap" : AlerterCapGeneratePanel.TextArea의 내용을 "/cap/" 위치에 지정된 이름으로 저장한다.
 	 * "Apply" : AlerterCapGeneratePanel의 AlertPanel과 InfoPanel의 내용을 CapFormat으로 변환하여 TextArea에 적용한다.
-	 * "Query" : 지정된 EventCode에 의하여 Database에 쿼리를 보낸다.
 	 * "Add Info" : AlerterCapGeneratePanel.InfoPanel에서 InfoIndexPanel을 추가한다.
 	 * 
 	 */
@@ -40,9 +39,6 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 			return;			
 		case "Send":
 			controller.sendMessage();
-			return;
-		case "SendAlert":
-			controller.sendAlert();
 			return;
 		case "TextAreaSend":
 			controller.sendMessage();

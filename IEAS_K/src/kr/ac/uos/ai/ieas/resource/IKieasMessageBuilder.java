@@ -97,6 +97,10 @@ public interface IKieasMessageBuilder
 	public String getDate();
 	public String convertDateToYmdhms(String date);
 	
+	public int getInfoCount();
+	public int getResourceCount(int infoIndex);
+	public int getAreaCount(int infoIndex);
+	
 //	public List<String> convertDbToCap(List<CAPAlert> alertList);
 //	public CAPAlert convertCapToDb(String capMessage);
 }
