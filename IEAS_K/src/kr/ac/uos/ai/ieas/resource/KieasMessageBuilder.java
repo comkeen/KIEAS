@@ -69,18 +69,39 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public static final String INFO = "Info";
 	public static final String LANGUAGE = "Language";
-		//TODO
+		public static final String KOREAN = "ko-KR";
+		public static final String ENGLISH = "en-US";
 	public static final String CATEGORY = "Category";
-		//TODO
-	public static final String RESPONSE_TYPE = "ResponseType";
-		//TODO
+		public static final String GEO = "Geo";
+		public static final String MET = "Met";
+		public static final String SAFETY = "Safety";
+		public static final String SECURITY = "Security";
+		public static final String RESCUE = "Rescue";
+		public static final String FIRE = "Fire";
+		public static final String HEALTH = "Health";
+		public static final String ENV = "Env";
+		public static final String TRANSPORT = "Transport";
+		public static final String INFRA = "Infra";
+		public static final String CBRNE = "CBRNE";
+		public static final String OTHER = "Other";
 	public static final String EVENT = "Event";
+	public static final String RESPONSE_TYPE = "ResponseType";
+		public static final String SHELTER = "Shelter";
+		public static final String EVACUATE = "Evacuate";
+		public static final String PREPARE = "Prepare";
+		public static final String EXECUTE = "Execute";
+		public static final String AVOID = "Aboid";
+		public static final String MONITOR = "Monitor";
+		public static final String ASSESS = "Assess";
+		public static final String ALLCLEAR = "AllClear";
+		public static final String NONE = "None";
 	public static final String URGENCY = "Urgency";
 	public static final String SEVERITY = "Severity";
 	public static final String CERTAINTY = "Certainty";
 	public static final String AUDIENCE = "Audience";
 	public static final String EVENT_CODE = "EventCode";
 	public static final String EFFECTIVE = "Effective";
+	public static final String ON_SET = "Onset";	
 	public static final String EXPIRES = "Expires";
 	public static final String SENDER_NAME = "SenderName";
 	public static final String HEADLINE = "Headline";
@@ -88,15 +109,23 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public static final String INSTRUCTION = "Instruction";
 	public static final String WEB = "Web";
 	public static final String CONTACT = "Contact";
+	public static final String PARAMETER = "Parameter";
 
 	public static final String RESOURCE = "Resource";
 	public static final String RESOURCE_DESC = "ResourceDesc";
 	public static final String MIME_TYPE = "MimeType";
+	public static final String SIZE = "Size";
 	public static final String URI = "Uri";
+	public static final String DEREF_URI = "DerefUri";
+	public static final String DIGEST = "Digest";
 
 	public static final String AREA = "Area";
 	public static final String AREA_DESC = "AreaDesc";
+	public static final String POLYGON = "Polygon";
+	public static final String CIRCLE = "Circle";
 	public static final String GEO_CODE = "GeoCode";
+	public static final String ALTITUDE = "Altitude";
+	public static final String CEILING = "Ceiling";
 	
 	
 	private static final int DEFAULT_INFO_SIZE = 0;
