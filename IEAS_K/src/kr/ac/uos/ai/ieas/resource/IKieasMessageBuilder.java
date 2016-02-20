@@ -1,7 +1,5 @@
 package kr.ac.uos.ai.ieas.resource;
 
-import java.util.GregorianCalendar;
-
 
 public interface IKieasMessageBuilder
 {	
@@ -34,17 +32,24 @@ public interface IKieasMessageBuilder
 	public String getWeb(int infoIndex);
 	public String getContact(int infoIndex);
 	
-	public String getResourceDesc(int infoIndex);
-	public String getMimeType(int infoIndex);
-	public String getUri(int infoIndex);	
-
-	public String getAreaDesc(int infoIndex);
-	public String getGeoCode(int infoIndex);
+	public String getResourceDesc(int infoIndex, int resourceIndex);
+	public String getMimeType(int infoIndex, int resourceIndex);
+	public String getSize(int infoIndex, int resourceIndex);	
+	public String getUri(int infoIndex, int resourceIndex);	
+	public String getDerefUri(int infoIndex, int resourceIndex);	
+	public String getDigest(int infoIndex, int resourceIndex);	
+	
+	public String getAreaDesc(int infoIndex, int areaIndex);
+	public String getPolygon(int infoIndex, int areaIndex);
+	public String getCircle(int infoIndex, int areaIndex);
+	public String getGeoCode(int infoIndex, int areaIndex);
+	public String getAltitude(int infoIndex, int areaIndex);
+	public String getCeiling(int infoIndex, int areaIndex);
 	
 	public void setIdentifier(String text);
 	public void setSender(String text);
 	public void setSent(String text);
-	public void setSent(GregorianCalendar cal);
+	public void setSent();
 	public void setStatus(String text);
 	public void setMsgType(String text);
 	public void setScope(String text);

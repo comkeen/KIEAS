@@ -283,9 +283,6 @@ public class AlertGeneratorModel
 			{
 				if (component instanceof HashMap<?, ?>)
 				{
-//					System.out.println("Vector target = " + target);
-//					System.out.println("Vector memberName = " + memberName);
-//					System.out.println("Vector value = " + value);
 					
 //					if(memberName.equals("mCategory"))
 //					{
@@ -373,9 +370,9 @@ public class AlertGeneratorModel
 //		System.out.println("resourceCount : " + mResourceCounter);
 		for(int i = 0; i < mResourceCounter; i++)
 		{
-			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, kieasMessageBuilder.getResourceDesc(0));
-			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, kieasMessageBuilder.getMimeType(0));
-			setModelProperty(KieasMessageBuilder.URI + i, kieasMessageBuilder.getUri(0));
+			setModelProperty(KieasMessageBuilder.RESOURCE_DESC + i, kieasMessageBuilder.getResourceDesc(0, 0));
+			setModelProperty(KieasMessageBuilder.MIME_TYPE + i, kieasMessageBuilder.getMimeType(0, 0));
+			setModelProperty(KieasMessageBuilder.URI + i, kieasMessageBuilder.getUri(0, 0));
 		}
 	}
 	

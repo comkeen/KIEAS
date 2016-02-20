@@ -21,15 +21,18 @@ public class AlertSystemTransmitter
 
 	private Connection connection;
 	private Session session;
+	
 	private MessageProducer producer;
 	private MessageConsumer geoCodeConsumer;
 	private MessageConsumer alertSystemTypeConsumer;
 
-	private String geoCode;
-	private String alertSystemType;
 	private String alertSystemId;
 
 	private MessageConsumer queueConsumer;
+
+	private String geoCode;
+
+	private String alertSystemType;
 
 
 	public AlertSystemTransmitter(AlertSystemController alertSystem)

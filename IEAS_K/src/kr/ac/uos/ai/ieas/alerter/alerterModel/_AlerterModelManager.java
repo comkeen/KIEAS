@@ -215,7 +215,7 @@ public class _AlerterModelManager
 	
 	public String getGeoCode()
 	{
-		return kieasMessageBuilder.getGeoCode(0);
+		return kieasMessageBuilder.getGeoCode(0, 0);
 	}
 
 	public void addAlertTableRow()

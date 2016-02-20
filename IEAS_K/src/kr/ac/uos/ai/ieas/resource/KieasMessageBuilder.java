@@ -96,8 +96,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		public static final String ALLCLEAR = "AllClear";
 		public static final String NONE = "None";
 	public static final String URGENCY = "Urgency";
+		public static final String UNKNOWN = "Unknown";	
+		//TODO
 	public static final String SEVERITY = "Severity";
+		//TODO
 	public static final String CERTAINTY = "Certainty";
+		//TODO
 	public static final String AUDIENCE = "Audience";
 	public static final String EVENT_CODE = "EventCode";
 	public static final String EFFECTIVE = "Effective";
@@ -158,9 +162,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	/**
 	 * View에 사용될 Enum을 Item으로 사용하여 Value를 디스플레이하고 Key에 의해 아이템 판별이 이루어진다.
-	 * 
-	 * @author byun-ai
-	 *
 	 */
 	public static class Item
 	{
@@ -190,21 +191,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 	}
 
-	/**
-	 * CAP 요소에서 사용하는 Enum들을 가져옴.
-	 * CAP 요소 이름 elementName을 Key로 사용하며 이것으로 Enum 리스트를 식별함.
-	 * 
-	 * @return HashMap<String elementName, ArrayList<Item> enum>
-	 */
-	public Map<String, List<Item>> getCapEnumMap()
-	{
-		this.CapElementToEnumMap = new HashMap<>();
-		buildAlertCapEnumMap();
-		buildInfoCapEnumMap();
-		return CapElementToEnumMap;
-	}
 
-	
+	/**
+	 * CAP 메시지에서 최소한의 요소만 작성되어있는 기본적인 메시지 생성
+	 * @return xml 형태
+	 */
 	public String buildDefaultMessage()
 	{		
 		this.mAlert = buildDefaultAlert();
@@ -236,7 +227,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	{
 		Info info = Info.newBuilder()
 				.addCategory(Info.Category.MET)
-				.setLanguage("ko-KR")
+				.setLanguage("Language")
 				.setEvent("Event") 
 				.setUrgency(Info.Urgency.UNKNOWN_URGENCY)
 				.setSeverity(Info.Severity.UNKNOWN_SEVERITY)
@@ -249,8 +240,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private Resource buildDefaultResource()
 	{
 		Resource resource = Resource.newBuilder()
-				.setResourceDesc("")
-				.setMimeType("")
+				.setResourceDesc("Resource Description")
+				.setMimeType("Mime Type")
 				.buildPartial();
 		
 		return resource;
@@ -259,15 +250,17 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private Area buildDefaultArea()
 	{
 		Area area = Area.newBuilder()
-				.setAreaDesc("")
+				.setAreaDesc("Area Description")
 				.buildPartial();
 		
 		return area;
-	}
-
+	}	
+	
 	private void incrementInfoByInfoIndex(int infoIndex)
 	{
-		for (int i = infoIndex - mAlert.getInfoCount(); i < mAlert.getInfoCount(); i++)
+		int infoCount = mAlert.getInfoCount();
+
+		for (int i = infoIndex - infoCount; i >= 0; i--)
 		{
 			mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();				
 		}
@@ -276,8 +269,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private void incrementParameterByParameterIndex(int infoIndex, int paramterIndex)
 	{
 		Info info = mAlert.getInfo(infoIndex);
+		int parameterCount = info.getParameterCount();
 		
-		for (int i = paramterIndex - info.getParameterCount(); i < info.getParameterCount(); i++)
+		for (int i = paramterIndex - parameterCount; i >= 0; i--)
 		{			
 			info = Info.newBuilder(info).addParameter(ValuePair.newBuilder().setValueName("").setValue("")).buildPartial();
 		}
@@ -287,13 +281,14 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private void incrementResourceByResourceIndex(int infoIndex, int resourceIndex)
 	{
 		Info info = mAlert.getInfo(infoIndex);
+		int resourceCount = info.getResourceCount();
 		
 		if(infoIndex >= mAlert.getInfoCount())
 		{
 			incrementInfoByInfoIndex(infoIndex);
 		}
 		
-		for (int i = resourceIndex - info.getResourceCount(); i < info.getResourceCount(); i++)
+		for (int i = resourceIndex - resourceCount; i >= 0; i--)
 		{			
 			info = Info.newBuilder(info).addResource(buildDefaultResource()).buildPartial();
 		}
@@ -303,31 +298,169 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private void incrementAreaByAreaIndex(int infoIndex, int areaIndex)
 	{
 		Info info = mAlert.getInfo(infoIndex);
+		int areaCount = info.getAreaCount();
 		
 		if(infoIndex >= mAlert.getInfoCount())
 		{
 			incrementInfoByInfoIndex(infoIndex);
 		}
 		
-		for (int i = areaIndex - info.getAreaCount(); i < info.getAreaCount(); i++)
+		for (int i = areaIndex - areaCount; i >= 0; i--)
 		{			
 			info = Info.newBuilder(info).addArea(buildDefaultArea()).buildPartial();
 		}
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
+	
+	/**
+	 * 작성된 CAP 메시지 빌드
+	 */
+	@Override
+	public String build()
+	{		
+		//Alert build
+		Alert alert = Alert.newBuilder(mAlert).setXmlns(CapValidator.CAP_LATEST_XMLNS)
+			.clearInfo()
+			.buildPartial();
 		
+		//Info build
+		for(int infoIndex = 0; infoIndex < mAlert.getInfoCount(); infoIndex++)
+		{
+			Info info = Info.newBuilder(mAlert.getInfo(infoIndex))
+					.clearResource()
+					.clearArea()
+					.buildPartial();
+			
+			//Resource build
+			for(int resourceIndex = 0; resourceIndex < info.getResourceCount(); resourceIndex++)
+			{
+				Resource resource = info.getResource(resourceIndex);
+				
+				info = Info.newBuilder(info)
+						.addResource(resource)
+						.buildPartial();
+			}
+			//Area build
+			for(int areaIndex = 0; areaIndex < info.getAreaCount(); areaIndex++)
+			{
+				Area area = info.getArea(areaIndex);
+				
+				info = Info.newBuilder(info)
+						.addArea(area)
+						.buildPartial();
+			}
+						
+			alert = Alert.newBuilder(alert)
+					.addInfo(info)
+					.build();
+		}
+				
+		this.mAlert = alert;
+		this.xmlMessage = capXmlBuilder.toXml(alert);
+		
+		return xmlMessage;
+	}	
+
+	/**
+	 * CAP 메시지의 xml 리턴
+	 * @return xml 형태
+	 */
+	@Override
+	public String getMessage()
+	{
+		try
+		{
+			this.xmlMessage = capXmlBuilder.toXml(mAlert);
+			return xmlMessage;
+		}
+		catch (NotCapException e)
+		{
+			e.printStackTrace();
+		}
+		System.out.println("There is no CAP message");
+		return "";
+	}
+
+	/**
+	 * xml 형태의 CAP 메시지를 KieasMessageBuilder로 적용하여 수정 가능한 객체로 적용.
+	 */
+	@Override
+	public void setMessage(String message)
+	{
+		try
+		{			
+			mAlert = capXmlParser.parseFrom(message);
+		}
+		catch (NotCapException | SAXParseException | CapException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * xml CAP 메시지의 유효성 검사.
+	 * @return boolean
+	 */
 	@Override
 	public boolean validateMessage(String message)
 	{
 		try
 		{			
 			capValidator.validateAlert(capXmlParser.parseFrom(message));
+			System.out.println("Cap Message Validation Complete.");
 			return true;
 		}
 		catch (CapException | NotCapException | SAXParseException e)
 		{
+			System.out.println("Cap Message Validation Fail.");
 			return false;
 		}
+	}
+	
+	/**
+	 * 통합경보시스템에서 사용하는 CAP 메시지 Identifier 생성.
+	 * @param 통합경보시스템 콤포넌트의 ID
+	 */
+	@Override
+	public String generateKieasMessageIdentifier(String id)
+	{
+		String idNum = Double.toString(Math.random());		
+		
+		String identifier = id + "@" + idNum.substring(2, 12);
+		return identifier;
+	}
+	
+	/**
+	 * 현재 시간을 CAP 메시지에서 사용하는 시간표현방식대로 표현하여 리턴.
+	 * @return 현재 시간
+	 */
+	@Override
+	public String getDate()
+	{
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		cal.setTime(new Date());
+		return CapUtil.formatCapDate(cal);
+	}
+	
+	/**
+	 * 시간을 년월일시분초 형식으로 변환.
+	 * @return 년월일시분초
+	 */
+	@Override
+	public String convertDateToYmdhms(String date)
+	{
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		cal.setTime(CapUtil.toJavaDate(date));
+
+		StringBuffer sb = new StringBuffer();
+		sb.append(cal.get(Calendar.YEAR)).append("년")
+			.append(cal.get(Calendar.MONTH)+1).append("월")
+			.append(cal.get(Calendar.DATE)).append("일").append(" ")
+			.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
+			.append(cal.get(Calendar.MINUTE)).append("분")
+			.append(cal.get(Calendar.SECOND)).append("초");
+
+		return sb.toString();
 	}
 
 	private GregorianCalendar getDateCalendar()
@@ -345,107 +478,35 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		return CapUtil.formatCapDate(cal);
 //	}
 
+	/**
+	 * CAP 메시지의 Info 요소 갯수 리턴.
+	 * @return Info 갯수
+	 */
 	@Override
 	public int getInfoCount()
 	{
 		return mAlert.getInfoCount();
 	}
-
+	
+	/**
+	 * CAP 메시지의 Resource 요소 갯수 리턴.
+	 * @return Resource 갯수
+	 */
 	@Override
 	public int getResourceCount(int infoIndex)
 	{
 		return mAlert.getInfo(infoIndex).getResourceCount();
 	}
 
+	/**
+	 * CAP 메시지의 Area 요소 갯수 리턴.
+	 * @return Area 갯수
+	 */
 	@Override
 	public int getAreaCount(int infoIndex)
 	{
 		return mAlert.getInfo(infoIndex).getAreaCount();
 	}
-
-	@Override
-	public String getResourceDesc(int index)
-	{
-		return mAlert.getInfo(0).getResource(index).getResourceDesc();
-	}
-	@Override
-	public String getMimeType(int index)
-	{
-		return mAlert.getInfo(0).getResource(index).getMimeType();
-	}
-	@Override
-	public String getUri(int index)
-	{
-		return mAlert.getInfo(0).getResource(index).getUri();
-	}
-	@Override
-	public String getAreaDesc(int index)
-	{
-		return mAlert.getInfo(0).getArea(index).getAreaDesc();
-	}
-	@Override
-	public String getGeoCode(int index)
-	{		
-		if(mAlert.getInfo(0).getArea(0).getGeocode(0) != null)
-		{
-			return mAlert.getInfo(0).getArea(0).getGeocode(0).getValue();
-		}
-		else
-		{
-			return "";
-		}
-	}
-
-	//CAP 요소 Setter
-//	public void setAlert(HashMap<String, String> alertElementList)
-//	{
-//		mAlert = Alert.newBuilder()
-//				.setIdentifier(alertElementList.get(IDENTIFIER))
-//				.setSender(alertElementList.get(SENDER))
-//				.setSent(CapUtil.formatCapDate(getDateCalendar()))
-//				.setStatus(this.setStatus(alertElementList.get(STATUS)))
-//				.setMsgType(this.setMsgType(alertElementList.get(MSG_TYPE)))
-//				.setScope(this.setScope(alertElementList.get(SCOPE)))
-//				.setRestriction(alertElementList.get(RESTRICTION))
-//				.addCode(KieasConfiguration.KIEAS_Constant.CODE)
-//				.buildPartial();
-//	}
-
-//	public void setInfo(List<Map<String, String>> infoElementList)
-//	{
-//		mAlert = Alert.newBuilder(mAlert).clearInfo().buildPartial();
-//
-//		for(int i = 0; i < infoElementList.size(); i++)
-//		{
-//			Info info = Info.newBuilder()
-//					.setLanguage(infoElementList.get(i).get(LANGUAGE))
-//					.setCategory(0, this.setCategory(infoElementList.get(i).get(CATEGORY)))
-//					.setEvent(infoElementList.get(i).get(EVENT))
-//					.setUrgency(this.setUrgency(infoElementList.get(i).get(URGENCY)))
-//					.setSeverity(this.setSeverity(infoElementList.get(i).get(SEVERITY)))
-//					.setCertainty(this.setCertainty(infoElementList.get(i).get(CERTAINTY)))
-//					.addEventCode(Info.newBuilder().addEventCodeBuilder().setValueName(infoElementList.get(i).get(EVENT)).setValue(infoElementList.get(i).get(EVENT)) )
-//					.setSenderName(infoElementList.get(i).get(SENDER_NAME))
-//					.setHeadline(infoElementList.get(i).get(HEADLINE))
-//					.setDescription(infoElementList.get(i).get(DESCRIPTION))
-//					.setContact(infoElementList.get(i).get(CONTACT))
-//					.buildPartial();
-//			mAlert = Alert.newBuilder(mAlert).addInfo(info).build();
-//		}
-//	}
-
-//	public void setArea(Map<String, String> areaElementList)
-//	{
-//		for(int i = 0; i < areaElementList.size(); i++)
-//		{
-//			Area area = Area.newBuilder()
-//					.setAreaDesc("")
-//					.addGeocode(Area.newBuilder().addGeocodeBuilder().setValueName(areaElementList.get(GEO_CODE)).setValue(areaElementList.get(GEO_CODE)))
-//					.buildPartial();
-//			mInfo = Info.newBuilder(mInfo).addArea(area).build();
-//			mAlert = Alert.newBuilder(mAlert).addInfo(mInfo).build();			
-//		}
-//	}	
 
 	private Status convertToStatus(String text)
 	{
@@ -545,6 +606,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				return urgency;						
 			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Urgency.UNKNOWN_URGENCY;
+			}
 		}
 		return null;
 	}
@@ -557,6 +622,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				return severity;				
 			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Severity.UNKNOWN_SEVERITY;
+			}
 		}
 		return null;
 	}
@@ -568,6 +637,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			if(text.toUpperCase().equals(certainty.toString()))
 			{
 				return certainty;				
+			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Certainty.UNKNOWN_CERTAINTY;
 			}
 		}
 		return null;
@@ -583,17 +656,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return ValuePair.newBuilder().setValueName(KIEAS_Constant.GEO_CODE_VALUE_NAME).setValue(text).build();
 	}
 
-//	private void setEffective(String text)
-//	{
-//		mInfo = Info.newBuilder(mInfo).setEffective(text).build();
-//	}
-//	
-//	private void setEffective(GregorianCalendar cal)
-//	{
-//		mInfo = Info.newBuilder(mInfo).setEffective(CapUtil.formatCapDate(cal)).build();
-//	}
-
-	
 //	private String getValueInJasonObject(String jsonInput)
 //	{
 //		try
@@ -775,287 +837,120 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		return capAlert;
 //	}
 	
-	@Override
-	public String build()
-	{		
-		//Alert build
-		//필수 Alert 요소들
-		Alert alert = Alert.newBuilder(mAlert).setXmlns(CapValidator.CAP_LATEST_XMLNS)
-//			.setIdentifier(mAlert.getIdentifier())
-//			.setSender(mAlert.getSender())
-//			.setSent(mAlert.getSent())
-//			.setStatus(mAlert.getStatus())
-//			.setMsgType(mAlert.getMsgType())
-//			.setScope(mAlert.getScope())
-//			.clearCode()
-//			.addCode(KieasConfiguration.KIEAS_Constant.CODE)
-			.clearInfo()
-			.buildPartial();
-		
-		//옵션 Alert 요소들
-//		if(mAlert.getAddresses().getValue(0) != null)
-//		{
-//			alert = Alert.newBuilder(alert)
-//				.setAddresses(Group.newBuilder())
-//				.buildPartial();
-//		}	
-		if(mAlert.getRestriction() != null)
-		{
-			alert = Alert.newBuilder(alert)
-				.setRestriction(mAlert.getRestriction())
-				.buildPartial();
-		}
-		if(mAlert.getNote() != null)
-		{
-			alert = Alert.newBuilder(alert)
-				.setNote(mAlert.getNote())
-				.buildPartial();
-		}
-		
-		//Info build
-		for(int infoIndex = 0; infoIndex < mAlert.getInfoCount(); infoIndex++)
-		{
-			Info info = mAlert.getInfo(infoIndex);
-			//필수 Info 요소들
-			info = Info.newBuilder(info)
-				.setLanguage(info.getLanguage())
-				.clearCategory()
-				.addCategory(info.getCategory(0))
-				.setEvent(info.getEvent())
-				.setUrgency(info.getUrgency())
-				.setSeverity(info.getSeverity())
-				.setCertainty(info.getCertainty())
-				.buildPartial();
-			
-			//옵션 Info 요소들
-			if(info.getAudience() != null)
-			{
-				info = Info.newBuilder(info)
-					.setAudience(info.getAudience())
-					.buildPartial();
-			}			
-			if(info.getResponseType(0) != null)
-			{
-				info = Info.newBuilder(info)
-					.clearResponseType()
-					.addResponseType(info.getResponseType(0))
-					.buildPartial();
-			}			
-			if(info.getEventCode(0) != null)
-			{
-				info = Info.newBuilder(info)
-					.clearEventCode()
-					.addEventCode(info.getEventCode(0))
-					.buildPartial();
-			}			
-//			if(infos.get(infoIndex).get(EFFECTIVE).toString().length() != 0)
-//			{
-//				info = Info.newBuilder(info)
-//					.setEffective(infoElementNameToValueMap.get(EFFECTIVE).toString())
-//					.buildPartial();
-//			}			
-//			if(infos.get(infoIndex).get(EXPIRES).toString().length() != 0)
-//			{
-//				info = Info.newBuilder(info)
-//					.setExpires(infoElementNameToValueMap.get(EXPIRES).toString())
-//					.buildPartial();
-//			}			
-			if(info.getSenderName() != null)
-			{
-				info = Info.newBuilder(info)
-					.setSenderName(info.getSenderName())
-					.buildPartial();
-			}			
-			if(info.getHeadline() != null)
-			{
-				info = Info.newBuilder(info)
-					.setHeadline(info.getHeadline())
-					.buildPartial();
-			}			
-			if(info.getDescription() != null)
-			{
-				info = Info.newBuilder(info)
-					.setDescription(info.getDescription())
-					.buildPartial();
-			}			
-			if(info.getInstruction() != null)
-			{
-				info = Info.newBuilder(info)
-					.setInstruction(info.getInstruction())
-					.buildPartial();
-			}			
-			if(info.getWeb() != null)
-			{
-				info = Info.newBuilder(info)
-					.setWeb(info.getWeb())
-					.buildPartial();
-			}			
-			if(info.getContact() != null)
-			{
-				info = Info.newBuilder(info)
-					.setContact(info.getContact())
-					.buildPartial();
-			}
-			
-//			//Resource build
-//			for(int resourceIndex = 0; resourceIndex < resources.size(); resourceIndex++)
-//			{
-//				resourceElementNameToValueMap = (Map<String, String>) ((List<?>) infoElementNameToValueMap.get(RESOURCE)).get(resourceIndex);
-//				
-//				//필수 Resource 요소들
-//				Resource resource = Resource.newBuilder()
-//					.setResourceDesc(resourceElementNameToValueMap.get(RESOURCE_DESC).toString())
-//					.setMimeType(resourceElementNameToValueMap.get(MIME_TYPE).toString())
-//					.buildPartial();
-//				
-//				//옵션 Resource 요소들
-//				
-//				info = Info.newBuilder(info)
-//						.addResource(resource)
-//						.buildPartial();
-//			}
-//			//Area build
-//			for(int areaIndex = 0; areaIndex < resources.size(); areaIndex++)
-//			{
-//				areaElementNameToValueMap = ((List<Map<String, String>>) infoElementNameToValueMap.get(AREA)).get(areaIndex);
-//				
-//				//필수 Area 요소들
-//				Area area = Area.newBuilder()
-//					.setAreaDesc(areaElementNameToValueMap.get(AREA_DESC).toString())
-//					.buildPartial();
-//				
-//				//옵션 Area 요소들
-//				
-//				info = Info.newBuilder(info)
-//						.addArea(area)
-//						.buildPartial();
-//			}
-						
-			alert = Alert.newBuilder(alert)
-					.addInfo(info)
-					.build();
-		}
-		
-		
-		
-		this.mAlert = alert;
-		this.xmlMessage = capXmlBuilder.toXml(alert);
-		System.out.println("Build Comp. mAlert ID : " + mAlert.getIdentifier());
-		
-		return xmlMessage;
-	}	
-
-	@Override
-	public String getMessage()
-	{
-		try
-		{
-			this.xmlMessage = capXmlBuilder.toXml(mAlert);
-			return xmlMessage;
-		}
-		catch (NotCapException e)
-		{
-			e.printStackTrace();
-		}
-		System.out.println("There is no CAP message");
-		return "";
-	}
-
-	@Override
-	public void setMessage(String message)
-	{
-		try
-		{			
-			mAlert = capXmlParser.parseFrom(message);
-		}
-		catch (NotCapException | SAXParseException | CapException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * @return Alert 요소의 Identifier 값 리턴.
+	 */
 	@Override
 	public String getIdentifier()
 	{		
 		return mAlert.getIdentifier();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Sender 값 리턴.
+	 */
 	@Override
 	public String getSender()
 	{
 		return mAlert.getSender();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Sent 값 리턴.
+	 */
 	@Override
 	public String getSent()
 	{
 		return mAlert.getSent();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Status 값 리턴.
+	 */
 	@Override
 	public String getStatus() 
 	{
 		return mAlert.getStatus().toString();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 MsgType 값 리턴.
+	 */
 	@Override
 	public String getMsgType()
 	{
 		return mAlert.getMsgType().toString();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Scope 값 리턴.
+	 */
 	@Override
 	public String getScope()
 	{
 		return mAlert.getScope().toString();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Restriction 값 리턴.
+	 */
 	@Override
 	public String getRestriction()
 	{
 		return mAlert.getRestriction();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Addresses 값 리턴.
+	 */
 	@Override
 	public String getAddresses()
 	{
 		return mAlert.getAddresses().getValue(0).toString();
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Code 값 리턴.
+	 */
 	@Override
 	public String getCode()
 	{
 		return mAlert.getCode(0);
-	}
-
+	}	
+	/**
+	 * @return Alert 요소의 Note 값 리턴.
+	 */
 	@Override
 	public String getNote()
 	{
 		return mAlert.getNote();
 	}
-	
-
-	
+		
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Language 값 리턴.
+	 */	
 	@Override
 	public String getLanguage(int index)
 	{
 		return mAlert.getInfo(index).getLanguage().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Category 값 리턴.
+	 */	
 	@Override
 	public String getCategory(int index)
 	{
 		return mAlert.getInfo(index).getCategory(0).toString();
 	}
 	//public String getCategory(int infoIndex, int categoryIndex){}
-
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 ResponseType 값 리턴.
+	 */	
 	@Override
 	public String getResponseType(int index)
 	{
 		return mAlert.getInfo(index).getResponseType(0).toString();
 	}
 	//public String getResponseType(int infoIndex, int responseTypeIndex){}
-
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Event 값 리턴.
+	 */	
 	@Override
 	public String getEvent(int index)
 	{
@@ -1076,158 +971,337 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			return "";
 		}
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Urgency 값 리턴.
+	 */	
 	@Override
 	public String getUrgency(int index)
 	{
 		return mAlert.getInfo(index).getUrgency().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Severity 값 리턴.
+	 */	
 	@Override
 	public String getSeverity(int index)
 	{
 		return mAlert.getInfo(index).getSeverity().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Certainty 값 리턴.
+	 */	
 	@Override
 	public String getCertainty(int index)
 	{
 		return mAlert.getInfo(index).getCertainty().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Audience 값 리턴.
+	 */	
 	@Override
 	public String getAudience(int index)
 	{
 		return mAlert.getInfo(index).getAudience();
 	}
-
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 EventCode 값 리턴.
+	 */	
 	@Override
 	public String getEventCode(int index) 
 	{
 		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Effective 값 리턴.
+	 */	
 	@Override
 	public String getEffective(int index)
 	{
 		return mAlert.getInfo(index).getEffective().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Expires 값 리턴.
+	 */	
 	@Override
 	public String getExpires(int index)
 	{
 		return mAlert.getInfo(index).getExpires();
-	}
-
+	}	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 SenderName 값 리턴.
+	 */	
 	@Override
 	public String getSenderName(int index)
 	{
 		return mAlert.getInfo(index).getSenderName().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Headline 값 리턴.
+	 */	
 	@Override
 	public String getHeadline(int index)
 	{
 		return mAlert.getInfo(index).getHeadline().toString();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Description 값 리턴.
+	 */	
 	@Override
 	public String getDescription(int index)
 	{
 		return mAlert.getInfo(index).getDescription().toString();
-	}
-	
+	}	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Instruction 값 리턴.
+	 */	
 	@Override
 	public String getInstruction(int index)
 	{
 		return mAlert.getInfo(index).getInstruction();
 	}
-	
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Web 값 리턴.
+	 */	
 	@Override
 	public String getWeb(int index)
 	{
 		return mAlert.getInfo(index).getWeb().toString();
 	}
+	/**
+	 * @param 목표가되는 Info 요소의 index
+	 * @return Info 요소의 Contact 값 리턴.
+	 */	
 	@Override
 	public String getContact(int index)
 	{
 		return mAlert.getInfo(index).getContact().toString();
 	}
-
+	
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 ResourceDesc 값 리턴.
+	 */	
 	@Override
-	public void setIdentifier(String text)
+	public String getResourceDesc(int infoIndex, int resourceIndex)
 	{
-		if(mAlert == null)
+		return mAlert.getInfo(infoIndex).getResource(resourceIndex).getResourceDesc();
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 MimeType 값 리턴.
+	 */
+	@Override
+	public String getMimeType(int infoIndex, int resourceIndex)
+	{
+		return mAlert.getInfo(infoIndex).getResource(resourceIndex).getMimeType();
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 Size 값 리턴.
+	 */
+	@Override
+	public String getSize(int infoIndex, int resourceIndex)
+	{
+		return Long.toString(mAlert.getInfo(infoIndex).getResource(resourceIndex).getSize());
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 Uri 값 리턴.
+	 */
+	@Override
+	public String getUri(int infoIndex, int resourceIndex)
+	{
+		return mAlert.getInfo(infoIndex).getResource(resourceIndex).getUri();
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 DerefUri 값 리턴.
+	 */
+	@Override
+	public String getDerefUri(int infoIndex, int resourceIndex)
+	{
+		return mAlert.getInfo(infoIndex).getResource(resourceIndex).getDerefUri();
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @return Resource 요소의 Digest 값 리턴.
+	 */
+	@Override
+	public String getDigest(int infoIndex, int resourceIndex)
+	{
+		return mAlert.getInfo(infoIndex).getResource(resourceIndex).getDigest();
+	}
+	
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 AreaDesc 값 리턴.
+	 */
+	@Override
+	public String getAreaDesc(int infoIndex, int areaIndex)
+	{
+		return mAlert.getInfo(infoIndex).getArea(areaIndex).getAreaDesc();
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 Polygon 값 리턴.
+	 */
+	@Override
+	public String getPolygon(int infoIndex, int areaIndex)
+	{
+		//TODO
+		return null;
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 Circle 값 리턴.
+	 */
+	@Override
+	public String getCircle(int infoIndex, int areaIndex) 
+	{
+		//TODO
+		return null;
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 GeoCode 값 리턴.
+	 */
+	@Override
+	public String getGeoCode(int infoIndex, int areaIndex)
+	{		
+		if(mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocode(0) != null)
 		{
-			System.out.println("mAlert null");
-			buildDefaultAlert();
+			return mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocode(0).getValue();
 		}
 		else
 		{
-			mAlert = Alert.newBuilder(mAlert).setIdentifier(text).buildPartial();			
-		}	
+			return "";
+		}
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 Altitude 값 리턴.
+	 */
+	@Override
+	public String getAltitude(int infoIndex, int areaIndex)
+	{
+		//TODO
+		return null;
+	}
+	/**
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @return Area 요소의 Ceiling 값 리턴.
+	 */
+	@Override
+	public String getCeiling(int infoIndex, int areaIndex)
+	{
+		//TODO
+		return null;
 	}
 
+	/**
+	 * @param Identifier 값
+	 */
+	@Override
+	public void setIdentifier(String text)
+	{
+		mAlert = Alert.newBuilder(mAlert).setIdentifier(text).buildPartial();			
+	}
+	/**
+	 * @param Sender 값
+	 */
 	@Override
 	public void setSender(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSender(text).buildPartial();	
 	}
-
+	/**
+	 * @param Sent 값
+	 */
 	@Override
 	public void setSent(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setSent(text).buildPartial();		
 	}
-	
+	/**
+	 * Alert 요소의 Sent 값에 현재 시간을 작성.
+	 */
 	@Override
-	public void setSent(GregorianCalendar cal)
+	public void setSent()
 	{
-		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(cal)).build();
+		mAlert = Alert.newBuilder(mAlert).setSent(CapUtil.formatCapDate(getDateCalendar())).build();
 	}
-
+	/**
+	 * @param Status 값
+	 */
 	@Override
 	public void setStatus(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setStatus(this.convertToStatus(text)).buildPartial();	
 	}
-
+	/**
+	 * @param MsgType 값
+	 */
 	@Override
 	public void setMsgType(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setMsgType(this.convertToMsgType(text)).buildPartial();	
 	}
-
+	/**
+	 * @param Scope 값
+	 */
 	@Override
 	public void setScope(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setScope(this.convertToScope(text)).buildPartial();	
 	}
-
+	/**
+	 * @param Restriciton 값
+	 */
 	@Override
 	public void setRestriction(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setRestriction(text).buildPartial();	
 	}
-
+	/**
+	 * @param Addresses 값
+	 */
 	@Override
 	public void setAddresses(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setAddresses(this.convertToAddresses(text)).buildPartial();	
 	}
-
+	/**
+	 * @param Code 값
+	 */
 	@Override
 	public void setCode(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setCode(0, text).buildPartial();	
 	}
-
+	/**
+	 * @param Note 값
+	 */
 	@Override
 	public void setNote(String text)
 	{
 		mAlert = Alert.newBuilder(mAlert).setNote(text).buildPartial();	
 	}
-
+	
+	/**
+	 * @param 목표 Info 요소 index, Language 값
+	 */
 	@Override
 	public void setLanguage(int infoIndex, String text)
 	{
@@ -1239,8 +1313,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setLanguage(text).buildPartial();		
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
-
+	/**
+	 * @param 목표 Info 요소 index, Category 값
+	 */
 	@Override
 	public void setCategory(int infoIndex, String text)
 	{
@@ -1252,7 +1327,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setCategory(0, this.convertToCategory(text)).buildPartial();		
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, ResponseType 값
+	 */
 	@Override
 	public void setResponseType(int infoIndex, String text)
 	{
@@ -1264,7 +1341,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResponseType(0, this.convertToResponseType(text)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Event 값
+	 */
 	@Override
 	public void setEvent(int infoIndex, String text)
 	{
@@ -1276,7 +1355,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Urgency 값
+	 */
 	@Override
 	public void setUrgency(int infoIndex, String text)
 	{
@@ -1288,7 +1369,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setUrgency(this.convertToUrgency(text)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Severity 값
+	 */
 	@Override
 	public void setSeverity(int infoIndex, String text)
 	{
@@ -1300,7 +1383,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setSeverity(this.convertToSeverity(text)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Certatinty 값
+	 */
 	@Override
 	public void setCertainty(int infoIndex, String text)
 	{
@@ -1312,7 +1397,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setCertainty(this.convertToCertainty(text)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Audience 값
+	 */
 	@Override
 	public void setAudience(int infoIndex, String text)
 	{
@@ -1324,7 +1411,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEvent(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, EventCode 값
+	 */
 	@Override
 	public void setEventCode(int infoIndex, String text)
 	{		
@@ -1336,7 +1425,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).clearEventCode().addEventCode(convertToEventCode(text)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Effective 값
+	 */
 	@Override
 	public void setEffective(int infoIndex, String text)
 	{
@@ -1348,7 +1439,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setEffective(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-	
+	/**
+	 * @param 목표 Info 요소 index, Onset 값
+	 */
 	@Override
 	public void setOnset(int infoIndex, String text)
 	{
@@ -1360,7 +1453,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setOnset(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Expires 값
+	 */
 	@Override
 	public void setExpires(int infoIndex, String text)
 	{
@@ -1372,7 +1467,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setExpires(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, SenderName 값
+	 */
 	@Override
 	public void setSenderName(int infoIndex, String text)
 	{
@@ -1384,7 +1481,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setSenderName(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Headline 값
+	 */
 	@Override
 	public void setHeadline(int infoIndex, String text)
 	{
@@ -1396,7 +1495,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setHeadline(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Description 값
+	 */
 	@Override
 	public void setDescription(int infoIndex, String text)
 	{
@@ -1408,7 +1509,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setDescription(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Instruction 값
+	 */
 	@Override
 	public void setInstruction(int infoIndex, String text)
 	{
@@ -1420,7 +1523,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setInstruction(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Web 값
+	 */
 	@Override
 	public void setWeb(int infoIndex, String text)
 	{
@@ -1432,7 +1537,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setWeb(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, Contact 값
+	 */
 	@Override
 	public void setContact(int infoIndex, String text)
 	{
@@ -1444,7 +1551,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setContact(text).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}	
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Parameter 요소 index, Parameter의 ValueName 값, Parameter의 Value 값
+	 */
 	@Override
 	public void setParameter(int infoIndex, int parameterIndex, String valueName, String value)
 	{
@@ -1461,7 +1570,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setParameter(parameterIndex, ValuePair.newBuilder().setValueName(valueName).setValue(value)).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
-
+	
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, ResourceDesc 값
+	 */
 	@Override
 	public void setResourceDesc(int infoIndex, int resourceIndex, String text)
 	{
@@ -1478,7 +1590,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, MimeType 값
+	 */
 	@Override
 	public void setMimeType(int infoIndex, int resourceIndex, String text)
 	{
@@ -1495,7 +1609,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Size 값
+	 */
 	@Override
 	public void setSize(int infoIndex, int resourceIndex, String text)
 	{
@@ -1512,7 +1628,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Uri 값
+	 */
 	@Override
 	public void setUri(int infoIndex, int resourceIndex, String text)
 	{
@@ -1529,7 +1647,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, DerefUri 값
+	 */
 	@Override
 	public void setDerefUri(int infoIndex, int resourceIndex, String text)
 	{
@@ -1546,7 +1666,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setResource(resourceIndex, resource).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Digest 값
+	 */
 	@Override
 	public void setDigest(int infoIndex, int resourceIndex, String text)
 	{
@@ -1564,6 +1686,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, AreaDesc 값
+	 */
 	@Override
 	public void setAreaDesc(int infoIndex, int areaIndex, String text)
 	{
@@ -1580,19 +1705,25 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Polygon 값
+	 */
 	@Override
 	public void setPolygon(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Circle 값
+	 */
 	@Override
 	public void setCircle(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, GeoCode 값
+	 */
 	@Override
 	public void setGeoCode(int infoIndex, int areaIndex, String text)
 	{		
@@ -1619,53 +1750,39 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Altitude 값
+	 */
 	@Override
 	public void setAltitude(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
 	}
-
+	/**
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Ceiling 값
+	 */
 	@Override
 	public void setCeiling(int infoIndex, int areaIndex, String text)
 	{
 		//TODO
 	}	
 	
-	@Override
-	public String getDate()
+	
+	
+	/**
+	 * CAP 요소에서 사용하는 Enum들을 가져옴.
+	 * CAP 요소 이름 elementName을 Key로 사용하며 이것으로 Enum 리스트를 식별함.
+	 * 
+	 * @return HashMap<String elementName, ArrayList<Item> enum>
+	 */
+	public Map<String, List<Item>> getCapEnumMap()
 	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
-		cal.setTime(new Date());
-		return CapUtil.formatCapDate(cal);
+		this.CapElementToEnumMap = new HashMap<>();
+		buildAlertCapEnumMap();
+		buildInfoCapEnumMap();
+		return CapElementToEnumMap;
 	}
 	
-	@Override
-	public String convertDateToYmdhms(String date)
-	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
-		cal.setTime(CapUtil.toJavaDate(date));
-
-		StringBuffer sb = new StringBuffer();
-		sb.append(cal.get(Calendar.YEAR)).append("년")
-			.append(cal.get(Calendar.MONTH)+1).append("월")
-			.append(cal.get(Calendar.DATE)).append("일").append(" ")
-			.append(cal.get(Calendar.HOUR_OF_DAY)).append("시")
-			.append(cal.get(Calendar.MINUTE)).append("분")
-			.append(cal.get(Calendar.SECOND)).append("초");
-
-		return sb.toString();
-	}
-
-	public String generateKieasMessageIdentifier(String id)
-	{
-		String idNum = Double.toString(Math.random());		
-		
-		String identifier = id + "@" + idNum.substring(2, 12);
-		return identifier;
-	}
-
-
 	private void buildAlertCapEnumMap()
 	{
 		ArrayList<Item> capEnum1 = new ArrayList<>();
