@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.TestCase;
+package kr.ac.uos.ai.ieas.test;
 
 import static org.junit.Assert.assertEquals;
 import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
