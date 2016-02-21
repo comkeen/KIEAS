@@ -1,5 +1,7 @@
 package kr.ac.uos.ai.ieas.resource;
 
+import com.google.publicalerts.cap.Point;
+
 
 public interface IKieasMessageBuilder
 {	
@@ -40,8 +42,8 @@ public interface IKieasMessageBuilder
 	public String getDigest(int infoIndex, int resourceIndex);	
 	
 	public String getAreaDesc(int infoIndex, int areaIndex);
-	public String getPolygon(int infoIndex, int areaIndex);
-	public String getCircle(int infoIndex, int areaIndex);
+	public String getPolygon(int infoIndex, int areaIndex, int polygonIndex);
+	public String getCircle(int infoIndex, int areaIndex, int circleIndex);
 	public String getGeoCode(int infoIndex, int areaIndex);
 	public String getAltitude(int infoIndex, int areaIndex);
 	public String getCeiling(int infoIndex, int areaIndex);
@@ -86,11 +88,11 @@ public interface IKieasMessageBuilder
 	public void setDigest(int infoIndex, int resourceIndex, String text);		
 
 	public void setAreaDesc(int infoIndex, int areaIndex, String text);
-	public void setPolygon(int infoIndex, int areaIndex, String text);
-	public void setCircle(int infoIndex, int areaIndex, String text);
+	public void setPolygon(int infoIndex, int areaIndex, int polygonIndex, Point[] points);
+	public void setCircle(int infoIndex, int areaIndex, int circleIndex, long latitud, long longitude, long radius);
 	public void setGeoCode(int infoIndex, int areaIndex, String text);
-	public void setAltitude(int infoIndex, int areaIndex, String text);
-	public void setCeiling(int infoIndex, int areaIndex, String text);
+	public void setAltitude(int infoIndex, int areaIndex, long text);
+	public void setCeiling(int infoIndex, int areaIndex, long text);
 	
 	public String build();
 	public String buildDefaultMessage();

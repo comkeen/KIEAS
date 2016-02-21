@@ -21,6 +21,7 @@ import com.google.publicalerts.cap.CapUtil;
 import com.google.publicalerts.cap.CapValidator;
 import com.google.publicalerts.cap.CapXmlBuilder;
 import com.google.publicalerts.cap.CapXmlParser;
+import com.google.publicalerts.cap.Circle;
 import com.google.publicalerts.cap.Group;
 import com.google.publicalerts.cap.Info;
 import com.google.publicalerts.cap.Info.Category;
@@ -29,6 +30,8 @@ import com.google.publicalerts.cap.Info.ResponseType;
 import com.google.publicalerts.cap.Info.Severity;
 import com.google.publicalerts.cap.Info.Urgency;
 import com.google.publicalerts.cap.NotCapException;
+import com.google.publicalerts.cap.Point;
+import com.google.publicalerts.cap.Polygon;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
@@ -256,6 +259,25 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return area;
 	}	
 	
+	private Polygon buildDefaultPolygon()
+	{
+		Polygon polygon = Polygon.newBuilder()
+				.addPoint(Point.newBuilder().setLatitude(0).setLongitude(0).build())
+				.buildPartial();
+		
+		return polygon;
+	}
+	
+	private Circle buildDefaultCircle()
+	{
+		Circle circle = Circle.newBuilder()
+				.setPoint(Point.newBuilder().setLatitude(0).setLongitude(0).build())
+				.setRadius(0)				
+				.buildPartial();
+		
+		return circle;
+	}
+	
 	private void incrementInfoByInfoIndex(int infoIndex)
 	{
 		int infoCount = mAlert.getInfoCount();
@@ -311,6 +333,203 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
 	}
+	
+	private void incrementPolygonByPolygonIndex(int infoIndex, int areaIndex, int polygonIndex)
+	{
+		int areaCount = mAlert.getInfo(infoIndex).getAreaCount();
+		int polygonCount = mAlert.getInfo(infoIndex).getArea(areaIndex).getPolygonCount();
+		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		if(areaIndex >= areaCount)
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+
+		Area area = mAlert.getInfo(infoIndex).getArea(areaIndex);
+		for (int i = polygonIndex - polygonCount; i >= 0; i--)
+		{			
+			area = Area.newBuilder(area).addPolygon(buildDefaultPolygon()).buildPartial();
+		}
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
+	
+	private void incrementCircleByCircleIndex(int infoIndex, int areaIndex, int circleIndex)
+	{
+		int areaCount = mAlert.getInfo(infoIndex).getAreaCount();
+		int circleCount = mAlert.getInfo(infoIndex).getArea(areaIndex).getCircleCount();
+		
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}
+		if(areaIndex >= areaCount)
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+
+		Area area = mAlert.getInfo(infoIndex).getArea(areaIndex);
+		for (int i = circleIndex - circleCount; i >= 0; i--)
+		{			
+			area = Area.newBuilder(area).addCircle(buildDefaultCircle()).buildPartial();
+		}
+
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();	
+	}
+	
+
+	private Status convertToStatus(String text)
+	{
+		text = text.toUpperCase();
+		for (Status status : Alert.Status.values())
+		{
+			if(text.equals(status.toString()))
+			{
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setStatus(status).build();
+					return status;					
+				}
+				else
+				{
+					return status;
+				}
+			}
+		}
+		return null;
+	}
+	
+	private MsgType convertToMsgType(String text)
+	{
+		for (MsgType msgType : Alert.MsgType.values())
+		{
+			if(text.toUpperCase().equals(msgType.toString()))
+			{
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setMsgType(msgType).build();
+					return msgType;			
+				}
+				else
+				{	
+					return msgType;
+				}
+			}
+		}
+		return null;
+	}
+
+	private Scope convertToScope(String text)
+	{
+		for (Scope scope : Alert.Scope.values())
+		{
+			if(text.toUpperCase().equals(scope.toString()))
+			{
+				if(mAlert != null)
+				{
+					mAlert = Alert.newBuilder(mAlert).setScope(scope).build();		
+					return scope;				
+				}
+				else
+				{	
+					return scope;
+				}
+			}
+		}
+		return null;
+	}
+
+	private Group convertToAddresses(String address) 
+	{
+		return Group.newBuilder().addValue(address).build();		
+	}
+
+	private Category convertToCategory(String text)
+	{
+		for (Category category : Info.Category.values())
+		{
+			if(text.toUpperCase().equals(category.toString()))
+			{
+				return category;				
+			}
+		}
+		return null;
+	}
+
+	private ResponseType convertToResponseType(String text)
+	{
+		for (ResponseType responseType : Info.ResponseType.values())
+		{
+			if(text.toUpperCase().equals(responseType.toString()))
+			{
+				return responseType;				
+			}
+		}
+		return null;
+	}
+	
+	private Urgency convertToUrgency(String text)
+	{
+		for (Urgency urgency : Info.Urgency.values())
+		{
+			if(text.toUpperCase().equals(urgency.toString()))
+			{
+				return urgency;						
+			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Urgency.UNKNOWN_URGENCY;
+			}
+		}
+		return null;
+	}
+
+	private Severity convertToSeverity(String text) 
+	{
+		for (Severity severity : Info.Severity.values())
+		{
+			if(text.toUpperCase().equals(severity.toString()))
+			{
+				return severity;				
+			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Severity.UNKNOWN_SEVERITY;
+			}
+		}
+		return null;
+	}
+
+	private Certainty convertToCertainty(String text)
+	{
+		for (Certainty certainty : Info.Certainty.values())
+		{
+			if(text.toUpperCase().equals(certainty.toString()))
+			{
+				return certainty;				
+			}
+			else if(text.equals(UNKNOWN))
+			{
+				return Info.Certainty.UNKNOWN_CERTAINTY;
+			}
+		}
+		return null;
+	}
+
+	private ValuePair convertToEventCode(String text)
+	{
+		return ValuePair.newBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
+	}
+	
+	private ValuePair convertToGeoCode(String text)
+	{
+		return ValuePair.newBuilder().setValueName(KIEAS_Constant.GEO_CODE_VALUE_NAME).setValue(text).build();
+	}
+
 	
 	/**
 	 * 작성된 CAP 메시지 빌드
@@ -506,154 +725,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public int getAreaCount(int infoIndex)
 	{
 		return mAlert.getInfo(infoIndex).getAreaCount();
-	}
-
-	private Status convertToStatus(String text)
-	{
-		text = text.toUpperCase();
-		for (Status status : Alert.Status.values())
-		{
-			if(text.equals(status.toString()))
-			{
-				if(mAlert != null)
-				{
-					mAlert = Alert.newBuilder(mAlert).setStatus(status).build();
-					return status;					
-				}
-				else
-				{
-					return status;
-				}
-			}
-		}
-		return null;
-	}
-	
-	private MsgType convertToMsgType(String text)
-	{
-		for (MsgType msgType : Alert.MsgType.values())
-		{
-			if(text.toUpperCase().equals(msgType.toString()))
-			{
-				if(mAlert != null)
-				{
-					mAlert = Alert.newBuilder(mAlert).setMsgType(msgType).build();
-					return msgType;			
-				}
-				else
-				{	
-					return msgType;
-				}
-			}
-		}
-		return null;
-	}
-
-	private Scope convertToScope(String text)
-	{
-		for (Scope scope : Alert.Scope.values())
-		{
-			if(text.toUpperCase().equals(scope.toString()))
-			{
-				if(mAlert != null)
-				{
-					mAlert = Alert.newBuilder(mAlert).setScope(scope).build();		
-					return scope;				
-				}
-				else
-				{	
-					return scope;
-				}
-			}
-		}
-		return null;
-	}
-
-	private Group convertToAddresses(String address) 
-	{
-		return Group.newBuilder().addValue(address).build();		
-	}
-
-	private Category convertToCategory(String text)
-	{
-		for (Category category : Info.Category.values())
-		{
-			if(text.toUpperCase().equals(category.toString()))
-			{
-				return category;				
-			}
-		}
-		return null;
-	}
-
-	private ResponseType convertToResponseType(String text)
-	{
-		for (ResponseType responseType : Info.ResponseType.values())
-		{
-			if(text.toUpperCase().equals(responseType.toString()))
-			{
-				return responseType;				
-			}
-		}
-		return null;
-	}
-	
-	private Urgency convertToUrgency(String text)
-	{
-		for (Urgency urgency : Info.Urgency.values())
-		{
-			if(text.toUpperCase().equals(urgency.toString()))
-			{
-				return urgency;						
-			}
-			else if(text.equals(UNKNOWN))
-			{
-				return Info.Urgency.UNKNOWN_URGENCY;
-			}
-		}
-		return null;
-	}
-
-	private Severity convertToSeverity(String text) 
-	{
-		for (Severity severity : Info.Severity.values())
-		{
-			if(text.toUpperCase().equals(severity.toString()))
-			{
-				return severity;				
-			}
-			else if(text.equals(UNKNOWN))
-			{
-				return Info.Severity.UNKNOWN_SEVERITY;
-			}
-		}
-		return null;
-	}
-
-	private Certainty convertToCertainty(String text)
-	{
-		for (Certainty certainty : Info.Certainty.values())
-		{
-			if(text.toUpperCase().equals(certainty.toString()))
-			{
-				return certainty;				
-			}
-			else if(text.equals(UNKNOWN))
-			{
-				return Info.Certainty.UNKNOWN_CERTAINTY;
-			}
-		}
-		return null;
-	}
-
-	private ValuePair convertToEventCode(String text)
-	{
-		return ValuePair.newBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
-	}
-	
-	private ValuePair convertToGeoCode(String text)
-	{
-		return ValuePair.newBuilder().setValueName(KIEAS_Constant.GEO_CODE_VALUE_NAME).setValue(text).build();
 	}
 
 //	private String getValueInJasonObject(String jsonInput)
@@ -1154,24 +1225,22 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return mAlert.getInfo(infoIndex).getArea(areaIndex).getAreaDesc();
 	}
 	/**
-	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index, 목표가 되는 Polygon 요소의 index
 	 * @return Area 요소의 Polygon 값 리턴.
 	 */
 	@Override
-	public String getPolygon(int infoIndex, int areaIndex)
+	public String getPolygon(int infoIndex, int areaIndex, int polygonIndex)
 	{
-		//TODO
-		return null;
+		return mAlert.getInfo(infoIndex).getArea(areaIndex).getPolygon(polygonIndex).toString();
 	}
 	/**
-	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index, 목표가 되는 Circle 요소의 index
 	 * @return Area 요소의 Circle 값 리턴.
 	 */
 	@Override
-	public String getCircle(int infoIndex, int areaIndex) 
+	public String getCircle(int infoIndex, int areaIndex, int circleIndex) 
 	{
-		//TODO
-		return null;
+		return mAlert.getInfo(infoIndex).getArea(areaIndex).getCircle(circleIndex).toString();
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index, 목표가되는 Area 요소의 index
@@ -1695,31 +1764,88 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		if(infoIndex >= mAlert.getInfoCount())
 		{
 			incrementInfoByInfoIndex(infoIndex);
-		}
-		
-		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+		}		
+		if(areaIndex >= mAlert.getInfo(infoIndex).getAreaCount())
 		{
 			incrementAreaByAreaIndex(infoIndex, areaIndex);
 		}
-		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAreaDesc(text).buildPartial();
-		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		
+		Info info = mAlert.getInfo(infoIndex);
+		Area area = info.getArea(areaIndex);
+		
+		area = Area.newBuilder(area).setAreaDesc(text).buildPartial();
+		info = Info.newBuilder(info).setArea(areaIndex, area).buildPartial();
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 	/**
 	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Polygon 값
 	 */
 	@Override
-	public void setPolygon(int infoIndex, int areaIndex, String text)
+	public void setPolygon(int infoIndex, int areaIndex, int polygonIndex, Point[] points)
 	{
-		//TODO
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}		
+		if(areaIndex >= mAlert.getInfo(infoIndex).getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}		
+		if(polygonIndex >= mAlert.getInfo(infoIndex).getArea(areaIndex).getPolygonCount())
+		{
+			incrementPolygonByPolygonIndex(infoIndex, areaIndex, polygonIndex);
+		}
+		
+		Polygon polygon = Polygon.newBuilder().build();
+		for(int i = 0; i < points.length; i++)
+		{			
+			polygon = Polygon.newBuilder(polygon)
+					.addPoint(Point.newBuilder()
+							.setLatitude(points[i].getLatitude())
+							.setLongitude(points[i].getLongitude())
+							.build())
+					.buildPartial();
+		}
+
+		Info info = mAlert.getInfo(infoIndex);
+		Area area = info.getArea(infoIndex);
+		
+		area = Area.newBuilder(area).setPolygon(polygonIndex, polygon).buildPartial();
+		info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 	/**
 	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Circle 값
 	 */
 	@Override
-	public void setCircle(int infoIndex, int areaIndex, String text)
+	public void setCircle(int infoIndex, int areaIndex, int circleIndex, long latitude, long longitude, long radius)
 	{
-		//TODO
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}	
+		
+		Info info = mAlert.getInfo(infoIndex);
+		if(areaIndex >= info.getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+		
+		Area area = info.getArea(areaIndex);
+		if(circleIndex >= area.getCircleCount())
+		{
+			incrementCircleByCircleIndex(infoIndex, areaIndex, circleIndex);
+		}
+		
+		area = Area.newBuilder(area)
+				.setCircle(circleIndex, Circle.newBuilder()
+						.setPoint(Point.newBuilder()
+								.setLatitude(latitude)
+								.setLongitude(longitude))
+						.setRadius(radius))
+				.buildPartial();
+		info = Info.newBuilder(info).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 	/**
 	 * @param 목표 Info 요소 index, 목표 Area 요소 index, GeoCode 값
@@ -1754,19 +1880,40 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Altitude 값
 	 */
 	@Override
-	public void setAltitude(int infoIndex, int areaIndex, String text)
+	public void setAltitude(int infoIndex, int areaIndex, long text)
 	{
-		//TODO
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}		
+		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+		
+		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setAltitude(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 	/**
 	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Ceiling 값
 	 */
 	@Override
-	public void setCeiling(int infoIndex, int areaIndex, String text)
+	public void setCeiling(int infoIndex, int areaIndex, long text)
 	{
-		//TODO
+		if(infoIndex >= mAlert.getInfoCount())
+		{
+			incrementInfoByInfoIndex(infoIndex);
+		}		
+		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
+		{
+			incrementAreaByAreaIndex(infoIndex, areaIndex);
+		}
+		
+		Area area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).setCeiling(text).buildPartial();
+		Info info = Info.newBuilder(mAlert.getInfo(infoIndex)).setArea(areaIndex, area).buildPartial();
+		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}	
-	
 	
 	
 	/**

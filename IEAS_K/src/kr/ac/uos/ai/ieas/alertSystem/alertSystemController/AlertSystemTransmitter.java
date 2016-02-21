@@ -11,9 +11,9 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasAddress;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class AlertSystemTransmitter
 {
