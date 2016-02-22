@@ -18,7 +18,6 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 	{
 		this.controller = alerterController;
 	}
-
 	
 	/**
 	 * event.getActionCommand()로 버튼 액션을 식별하여 처리한다.
@@ -33,14 +32,8 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		String actionCommand = event.getActionCommand();
 		System.out.println("action triggered : " + actionCommand);
 		switch (actionCommand)
-		{
-		case "GenerateCap":
-			controller.generateCap();
-			return;			
+		{		
 		case "Send":
-			controller.sendMessage();
-			return;
-		case "TextAreaSend":
 			controller.sendMessage();
 			return;
 		case "Load Cap":
@@ -67,15 +60,9 @@ public class AleterViewActionListener implements ActionListener, ListSelectionLi
 		case "Set Id":
 			controller.setID();
 			return;
-//		case "Insert DB":
-//			controller.insertDatabase();
-//			return;
-//		case "Query":
-//			controller.getQueryResult();
-//			return;
-//		case "Load Draft":
-//			controller.loadDraft();
-//			return;
+		case "Clear":
+			controller.setClear();
+			return;
 		default:
 			System.out.println("There is no such a actionCommand : " + actionCommand);
 			return;

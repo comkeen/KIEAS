@@ -61,8 +61,8 @@ public class _AlerterTopView
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
-		mainTabbedPane.addTab("CAP", alerterCapGeneratePanel.getPanel());
-		mainTabbedPane.addTab("SimpleCap", alerterLogPanel.getPanel());			
+		mainTabbedPane.addTab("CAP Generator Panel", alerterCapGeneratePanel.getPanel());
+		mainTabbedPane.addTab("Alert Log Panel", alerterLogPanel.getPanel());			
 //		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());	
 //		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
 
@@ -150,16 +150,6 @@ public class _AlerterTopView
 		return this.mainFrame;
 	}
 
-	public String getGeoCode()
-	{		
-		return alerterLogPanel.getGeoCode();
-	}
-
-	public String getAlertSystemType() 
-	{
-		return alerterLogPanel.getAlertSystemType();
-	}
-
 	public void setTextArea(String message)
 	{
 		alerterLogPanel.setTextArea(message);
@@ -185,7 +175,11 @@ public class _AlerterTopView
 		return alerterCapGeneratePanel.getTextArea();
 	}
 	
-
+	public void addAlertTableRow(String message)
+	{			
+		alerterLogPanel.addAlertTableRow(message);
+	}
+	
 //	public void applyAlertElement()
 //	{
 //		alerterCapGeneratePanel.applyAlertElement();

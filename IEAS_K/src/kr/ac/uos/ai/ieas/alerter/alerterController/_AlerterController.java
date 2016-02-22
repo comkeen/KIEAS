@@ -133,11 +133,6 @@ public class _AlerterController
 		topView.updateView(view, target, value);
 	}
 
-	public void generateCap()
-	{		
-		modelManager.generateCap(topView.getAlertSystemType());
-	}
-
 	public void setTextArea(String message)
 	{
 		topView.setTextArea(message);
@@ -171,5 +166,11 @@ public class _AlerterController
 	public void registerToGateway()
 	{
 		modelManager.registerToGateway();
+	}
+
+
+	public void setClear()
+	{
+		topView.setTextArea("");
 	}
 }

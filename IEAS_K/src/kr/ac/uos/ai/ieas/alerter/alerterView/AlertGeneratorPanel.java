@@ -30,7 +30,7 @@ public class AlertGeneratorPanel
 	private KieasMessageBuilder kieasMessageBuilder;
 
 	private JScrollPane capGenerateScrollPanel;
-	private JPanel capGeneratePanel;
+	private JPanel mainPanel;
 
 	private Vector<Object> mViewComponents;
 	private HashMap<String, Component> panelComponenets;
@@ -95,19 +95,19 @@ public class AlertGeneratorPanel
 	{		
 		this.mViewComponents = new Vector<>();		
 		this.panelComponenets = new HashMap<>();		
-		this.capGeneratePanel = new JPanel();
-		capGeneratePanel.setLayout(new BoxLayout(capGeneratePanel, BoxLayout.Y_AXIS));
+		this.mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		capGeneratePanel.add(initTextArea());
-		capGeneratePanel.add(initButtonPanel());
-		capGeneratePanel.add(initCapAlertPanel());
+		mainPanel.add(initTextArea());
+		mainPanel.add(initButtonPanel());
+		mainPanel.add(initCapAlertPanel());
 		
 		mViewComponents.addElement(panelComponenets);
 		mViewComponents.addElement(alertComponents);
 		mViewComponents.addElement(infoComponents);
 		mViewComponents.addElement(areaComponents);
 
-		this.capGenerateScrollPanel = new JScrollPane(capGeneratePanel);
+		this.capGenerateScrollPanel = new JScrollPane(mainPanel);
 	}
 
 	private Component initTextArea()

@@ -99,12 +99,23 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		public static final String ALLCLEAR = "AllClear";
 		public static final String NONE = "None";
 	public static final String URGENCY = "Urgency";
+		public static final String IMMEDIATE = "Immediate";
+		public static final String EXPECTED = "Expected";
+		public static final String FUTURE = "Future";
+		public static final String PAST = "Past";
 		public static final String UNKNOWN = "Unknown";	
-		//TODO
 	public static final String SEVERITY = "Severity";
-		//TODO
+		public static final String EXTREME = "Extreme";
+		public static final String SEVERE = "Severe";
+		public static final String MODERATE = "Moderate";
+		public static final String MINOR = "Minor";
+//		public static final String UNKNOWN = "Unknown";	
 	public static final String CERTAINTY = "Certainty";
-		//TODO
+		public static final String OBSERVED = "Observed";
+		public static final String LIKELY = "Likely";
+		public static final String POSSIBLE = "Possible";
+		public static final String UNLIKELY = "Unlikely";
+//		public static final String UNKNOWN = "Unknown";	
 	public static final String AUDIENCE = "Audience";
 	public static final String EVENT_CODE = "EventCode";
 	public static final String EFFECTIVE = "Effective";
@@ -1823,20 +1834,18 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		if(infoIndex >= mAlert.getInfoCount())
 		{
 			incrementInfoByInfoIndex(infoIndex);
-		}	
-		
-		Info info = mAlert.getInfo(infoIndex);
-		if(areaIndex >= info.getAreaCount())
+		}		
+		if(areaIndex >= mAlert.getInfo(infoIndex).getAreaCount())
 		{
 			incrementAreaByAreaIndex(infoIndex, areaIndex);
-		}
-		
-		Area area = info.getArea(areaIndex);
-		if(circleIndex >= area.getCircleCount())
+		}		
+		if(circleIndex >= mAlert.getInfo(infoIndex).getArea(areaIndex).getCircleCount())
 		{
 			incrementCircleByCircleIndex(infoIndex, areaIndex, circleIndex);
 		}
-		
+
+		Info info = mAlert.getInfo(infoIndex);
+		Area area = info.getArea(areaIndex);
 		area = Area.newBuilder(area)
 				.setCircle(circleIndex, Circle.newBuilder()
 						.setPoint(Point.newBuilder()
@@ -1856,14 +1865,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		if(infoIndex >= mAlert.getInfoCount())
 		{
 			incrementInfoByInfoIndex(infoIndex);
-		}		
+		}
 		if(areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount())
 		{
 			incrementAreaByAreaIndex(infoIndex, areaIndex);
 		}
 		
-		Area area = null;		
-		
+		Area area = null;
 		if(mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocodeCount() == 0)
 		{
 			area = Area.newBuilder(mAlert.getInfo(infoIndex).getArea(areaIndex)).addGeocode(convertToGeoCode(text)).buildPartial();

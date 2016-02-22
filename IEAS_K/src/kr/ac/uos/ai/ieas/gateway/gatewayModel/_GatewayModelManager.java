@@ -75,7 +75,7 @@ public class _GatewayModelManager
 		alertTableModel.receiveAck(identifier);
 	}
 
-	public void addAlertTableRow(String message)
+	public void addAlertLogTableRow(String message)
 	{				
 		alertTableModel.addTableRowData(getAlertElementMap(message));
 

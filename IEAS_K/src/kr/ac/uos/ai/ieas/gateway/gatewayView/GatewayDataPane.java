@@ -13,8 +13,8 @@ import kr.ac.uos.ai.ieas.gateway.gatewayModel.GatewayAlertTableModel;
 
 public class GatewayDataPane
 {	
-	private GatewayView gatewayView;
-	private GatewayActionListener gatewayActionListener;
+	private GatewayView topView;
+	private GatewayActionListener viewActionListener;
 	private GatewayAlertTableModel alertTableModel;
 
 	private GridBagConstraints gbc;
@@ -25,14 +25,14 @@ public class GatewayDataPane
 	private JTextArea dataTextArea;
 	private JScrollPane dataTextAreaPane;
 
-	private JScrollPane tableScrollPane;
-	private JTable alertTable;
+	private JScrollPane alertLogTableScrollPane;
+	private JTable alertLogTable;
 
 
 	public GatewayDataPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener)
 	{		
-		this.gatewayActionListener = gatewayActionListener;
-		this.gatewayView = gatewayView;
+		this.viewActionListener = gatewayActionListener;
+		this.topView = gatewayView;
 		this.gbc = new GridBagConstraints();
 
 		initDataPane();
@@ -95,28 +95,28 @@ public class GatewayDataPane
 	
 	private void initDataTable()
 	{
-		this.alertTableModel = gatewayView.getAlertTableModel();
-		this.alertTable = new JTable(alertTableModel.getTableModel());
-		this.tableScrollPane = new JScrollPane(alertTable);
+		this.alertTableModel = topView.getAlertTableModel();
+		this.alertLogTable = new JTable(alertTableModel.getTableModel());
+		this.alertLogTableScrollPane = new JScrollPane(alertLogTable);
 
-		alertTable.setEnabled(true);
-		alertTable.getSelectionModel().addListSelectionListener(gatewayActionListener);
-		dataPane.add(tableScrollPane, gbc);
+		alertLogTable.setEnabled(true);
+		alertLogTable.getSelectionModel().addListSelectionListener(viewActionListener);
+		dataPane.add(alertLogTableScrollPane, gbc);
 	}
 
 	public void setDataTextArea()
 	{
-		if(alertTable.getSelectedRow() > -1)
+		if(alertLogTable.getSelectedRow() > -1)
 		{
-			String identifier = alertTableModel.getTableModel().getValueAt(alertTable.getSelectedRow(), 2).toString();
-			String message = gatewayView.getAlertMessage(identifier);
+			String identifier = alertTableModel.getTableModel().getValueAt(alertLogTable.getSelectedRow(), 2).toString();
+			String message = topView.getAlertMessage(identifier);
 			dataTextArea.setText(message);
 		}
 	}
 	
 	public boolean isAlertTableSelected()
 	{
-		if(alertTable.getSelectedRow() > -1)
+		if(alertLogTable.getSelectedRow() > -1)
 		{
 			return true;
 		}

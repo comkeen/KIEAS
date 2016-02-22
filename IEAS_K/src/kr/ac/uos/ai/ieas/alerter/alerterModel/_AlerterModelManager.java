@@ -26,6 +26,7 @@ public class _AlerterModelManager
 //	private _DatabaseHandler databaseHandler;	
 	
 	private AlertGeneratorModel alerterCapGeneratePanelModel;
+	private AlertLogManager alertLogManager;
 //	private AlerterDataBasePanelModel alerterDataBasePanelModel;
 //	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	
@@ -48,32 +49,38 @@ public class _AlerterModelManager
 	{
 		this.controller = controller;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-//		this.databaseHandler = new _DatabaseHandler();
 
 		this.alerterCapGeneratePanelModel = new AlertGeneratorModel(this);
+		this.alertLogManager = new AlertLogManager();
 		this.transmitter = new AlerterTransmitter(this);
-		this.kieasMessageBuilder = new KieasMessageBuilder();
-//		this.alerterAlertGeneratePanelModel = new AlerterAlertGeneratePanelModel(this);
-//		this.alerterDataBasePanelModel = new AlerterDataBasePanelModel(this);
 		
 		init();
 	}
 	
 	private void init()
 	{
-		this.alertLogTableModel = new AlertLogTableModel();
 		this.alertElementMap = new HashMap<String, String>();
-		this.alertMessageMap = new HashMap<String, String>();
+		
+		this.alertLogTableModel = new AlertLogTableModel();
 		this.alerterId = "기상청";
-		transmitter.openConnection();
+		
 		transmitter.addReceiver(alerterId);
+		
 		initAlertElementMap();
 	}
 	
 	public void setID()
 	{
-		this.alerterId = "기상청";
-		this.alerterId = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/alerterId";
+		Integer randomIntegerer = new Integer(new Random().nextInt(9999));
+		String str = randomIntegerer.toString();
+		if(str.length() < 4)
+		{
+			for(int i = 0; i < 4 - str.length(); i++)
+			{
+				str = "0" + str;				
+			}
+		}
+		this.alerterId = getLocalServerIp() + ":" + Integer.parseInt(str) + "/alerterId";
 
 		controller.setId(alerterId);
 	}
@@ -104,6 +111,7 @@ public class _AlerterModelManager
 		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 		System.out.println();
+		alertLogManager.put(kieasMessageBuilder.getMessage());
 	}
 	
 	public void acceptMessage(String message)

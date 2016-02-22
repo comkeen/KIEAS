@@ -96,11 +96,11 @@ public class _GatewayController
 		gatewayView.appendLog(log + identifier);
 	
 		switch (status)
-		{	
+		{
 		case "ACTUAL":
 			try 
 			{
-				gatewayModelManager.addAlertTableRow(message);
+				gatewayModelManager.addAlertLogTableRow(message);
 				gatewayModelManager.addAlerterInfoTableRow(message);
 
 				String ackMessage = gatewayModelManager.creatAckMessage(message, gatewayId);

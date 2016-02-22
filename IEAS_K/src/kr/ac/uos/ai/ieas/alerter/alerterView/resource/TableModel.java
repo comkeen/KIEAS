@@ -1,6 +1,5 @@
 package kr.ac.uos.ai.ieas.alerter.alerterView.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,36 +7,30 @@ import javax.swing.table.DefaultTableModel;
 
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
-public class AlertTableModel
+public class TableModel extends DefaultTableModel
 {
 	private DefaultTableModel tableModel;
 
-	private List<String> columnNames;
+	private String[] columnNames;
 	private List<String> rowData;
 
 	private int alertCount;
 
-	public static final String NO = "No.";
-	public static final String ACK = "ACK";
-	public static final String NACK = "NACK";
-	public static final String COMP = "COMP";
-
-	public AlertTableModel() { initTable(); }
-	public DefaultTableModel getTableModel() { return tableModel; }
-
-	private void initTable()
+	public TableModel(String[] comlumnNames)
 	{
-		this.columnNames = new ArrayList<String>();
+		initTable(comlumnNames);
+	}
+	
+	public DefaultTableModel getTableModel()
+	{
+		return tableModel;
+	}
 
-		columnNames.add(NO);
-		columnNames.add(KieasMessageBuilder.SENDER);
-		columnNames.add(KieasMessageBuilder.IDENTIFIER);
-		columnNames.add(KieasMessageBuilder.SENT);
-		columnNames.add(KieasMessageBuilder.EVENT);
+	public void initTable(String[] comlumnNames)
+	{
+		this.columnNames = comlumnNames;
 
-		this.rowData = columnNames;
-
-		this.tableModel = new DefaultTableModel(columnNames.toArray(), 0);
+		this.tableModel = new DefaultTableModel(columnNames, 0);
 	}
 
 	public void addTableRowData(Map<String, String> alertElementMap)
