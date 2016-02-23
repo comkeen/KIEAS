@@ -1,6 +1,7 @@
 package kr.ac.uos.ai.ieas.test;
 
 import static org.junit.Assert.assertEquals;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.TableModel;
 import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 

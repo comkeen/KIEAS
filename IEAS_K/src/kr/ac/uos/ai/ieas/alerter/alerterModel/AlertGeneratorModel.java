@@ -172,11 +172,11 @@ public class AlertGeneratorModel
 	{
 		if(mInfoValues != null)
 		{
-			this.mInfoValues.clear();			
+			mInfoValues.clear();			
 		}
 		else
 		{
-			this.mInfoValues = new Vector<>();
+			mInfoValues = new Vector<>();
 		}
 		this.infoIndex = 0;
 		

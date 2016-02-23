@@ -16,6 +16,7 @@ import javax.swing.JTextArea;
 
 import kr.ac.uos.ai.ieas.alerter.alerterController.AleterViewActionListener;
 import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
+import kr.ac.uos.ai.ieas.alerter.alerterView.resource.TableModel;
 import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
 
@@ -96,6 +97,12 @@ public class AlerterLogPanel
 		mainPanel.add(initButtonPanel());
 		mainPanel.add(initTablePanel());
 		
+
+		String[] k = {"Identifier", "Sender", "Sent"};
+		TableModel tm = new TableModel(k);
+		tm.addTableRowData(kieasMessageBuilder.buildDefaultMessage());
+		mainPanel.add(new JTable(tm.getTableModel()));
+		
 		mViewComponents.addElement(mPanelComponents);
 	}
 
@@ -130,7 +137,7 @@ public class AlerterLogPanel
 		
 		alertLogTable.setEnabled(true);
 		alertLogTable.getSelectionModel().addListSelectionListener(viewActionListener);
-
+		
 		return alertLogTableScrollPanel;
 	}
 
