@@ -1,4 +1,4 @@
-package kr.or.kpew.kieas.issuer.controller;
+package kr.or.kpew.kieas.issuer.model;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +18,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import kr.or.kpew.kieas.common.ITransmitter;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
-import kr.or.kpew.kieas.issuer.model._AlerterModel;
 
 
-public class AlerterTransmitter implements ITransmitter
+public class Transmitter implements ITransmitter
 {
-	private _AlerterModel modelManager;
+	private _Model modelManager;
 
 	private Connection connection;
 	private Session session;
@@ -36,9 +35,9 @@ public class AlerterTransmitter implements ITransmitter
 	private String id;
 
 
-	public AlerterTransmitter(_AlerterModel modelManager)
+	public Transmitter(_Model model)
 	{
-		this.modelManager = modelManager;
+		this.modelManager = model;
 		
 		init();
 	}

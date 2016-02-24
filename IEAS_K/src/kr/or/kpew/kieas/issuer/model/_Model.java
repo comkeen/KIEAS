@@ -7,19 +7,19 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Random;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.ITransmitter;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
-import kr.or.kpew.kieas.issuer.controller.AlerterTransmitter;
-import kr.or.kpew.kieas.issuer.controller._AlerterController;
+import kr.or.kpew.kieas.issuer.controller._Controller;
 import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
 
-public class _AlerterModel
+public class _Model extends Observable
 {
-	private _AlerterController controller;
+	private _Controller controller;
 	
 	private IKieasMessageBuilder kieasMessageBuilder;
 	private ITransmitter transmitter;
@@ -30,7 +30,6 @@ public class _AlerterModel
 //	private AlerterDataBasePanelModel alerterDataBasePanelModel;
 //	private AlerterAlertGeneratePanelModel alerterAlertGeneratePanelModel;
 	
-
 	private AlertLogTableModel alertLogTableModel;
 	private Map<String, String> alertMessageMap;
 	private Map<String, String> alertElementMap;
@@ -45,14 +44,14 @@ public class _AlerterModel
 	 * Database 접근을 위한 DatabaseHandler 초기화.
 	 * @param alerterController Controller
 	 */
-	public _AlerterModel(_AlerterController controller)
+	public _Model(_Controller controller)
 	{
 		this.controller = controller;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 
 		this.alerterCapGeneratePanelModel = new AlertGenerator(this);
 		this.alertLogManager = new AlertLogManager();
-		this.transmitter = new AlerterTransmitter(this);
+		this.transmitter = new Transmitter(this);
 		
 		init();
 	}
@@ -325,4 +324,18 @@ public class _AlerterModel
 //	{
 //		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
 //	}
+	
+	
+	//model Push - send counter as part of the message
+	public void setValue(int value)
+	{
+		int counter = value;
+		System.out.println("Model init: counter = " + counter);
+		setChanged();
+		//model Push - send counter as part of the message
+		notifyObservers(counter);
+		//if using Model Pull, then can use notifyObservers()
+		//notifyObservers()
+
+	}
 }
