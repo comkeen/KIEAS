@@ -20,7 +20,7 @@ public class AlertSystemManager {
 	}
 	
 	public void run() {
-		
+		view.show();
 	}
 	
 	public static void main(String[] args) {

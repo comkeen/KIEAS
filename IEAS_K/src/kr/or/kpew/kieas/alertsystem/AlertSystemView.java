@@ -5,10 +5,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -46,14 +42,20 @@ public class AlertSystemView implements Observer {
 	private JComboBox<String> alertSystemTypeCombobox;
 
 	public AlertSystemView() {
-		// this.controller = alertSystemController;
-		this.kieasMessageBuilder = new KieasMessageBuilder();
-		// actionListener = controller.getActionListener();
+		kieasMessageBuilder = new KieasMessageBuilder();
+	}
+	
+	public void show() {
+		frame.setVisible(true);
 	}
 
 	public void init() {
-		this.initLookAndFeel();
-		this.initFrame();
+		initLookAndFeel();
+		initFrame();
+		gbc = new GridBagConstraints();
+		initAlertPane();
+		initButtonPane();
+		mainTabbedPane.addTab("경보메시지", alertPane);
 	}
 
 	public void setController(AlertSystemController controller) {
@@ -80,22 +82,16 @@ public class AlertSystemView implements Observer {
 		frame.setSize(1024, 512);
 		frame.setPreferredSize(new Dimension(512, 256));
 
-		this.gbc = new GridBagConstraints();
-
-		initAlertPane();
-		mainTabbedPane.addTab("경보메시지", alertPane);
-
-		frame.setVisible(true);
 	}
 
 	private void initAlertPane() {
-		this.alertPane = new JPanel();
+		alertPane = new JPanel();
 		alertPane.setLayout(new GridBagLayout());
 
-		this.alertArea = new JTextArea(5, 20);
-		this.alertAreaPane = new JScrollPane(alertArea);
+		alertArea = new JTextArea(5, 20);
+		alertAreaPane = new JScrollPane(alertArea);
 
-		alertArea.setText("\n");
+		alertArea.setText("");
 
 		gbc.fill = GridBagConstraints.BOTH;
 		setGbc(0, 0, 1, 1, 1, 8);
@@ -103,7 +99,7 @@ public class AlertSystemView implements Observer {
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setGbc(0, 1, 1, 1, 1, 2);
-		this.initButtonPane();
+
 	}
 
 	private void initButtonPane() {
@@ -111,12 +107,7 @@ public class AlertSystemView implements Observer {
 
 		initComboBox();
 		JButton clearButton = new JButton("Clear");
-		clearButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				alertArea.setText("");
-			}
-		});
+		clearButton.addActionListener(controller);
 		JButton registerButton = new JButton("Register");
 		registerButton.addActionListener(controller);
 		JButton setIdButton = new JButton("setId");
@@ -172,9 +163,11 @@ public class AlertSystemView implements Observer {
 		gbc.weighty = weighty;
 	}
 
+	/*
 	public void setAlertSystemId(String alertSystemId) {
 		frame.setTitle(alertSystemId);
 	}
+	*/
 
 	public void systemExit() {
 		String question = "표준경보시스템 프로그램을 종료하시겠습니까?";
@@ -189,6 +182,7 @@ public class AlertSystemView implements Observer {
 		}
 	}
 
+	/*
 	public String getSelectedGeoCode() {
 		return geoCodeCombobox.getSelectedItem().toString();
 	}
@@ -196,10 +190,21 @@ public class AlertSystemView implements Observer {
 	public String getSelectedAlertSystemType() {
 		return alertSystemTypeCombobox.getSelectedItem().toString();
 	}
+	*/
 
 	@Override
 	public void update(Observable o, Object arg) {
-		alertArea.setText((String)arg);
+		if(arg instanceof String) {		
+			alertArea.setText((String)arg);
+		}
+		else if(arg instanceof AlertSystemProfile) {
+			AlertSystemProfile profile = (AlertSystemProfile)arg;
+			frame.setTitle(profile.getAlertSystemId());
+		}
 		//System.out.println(o.toString());
+	}
+
+	public void clear() {
+		alertArea.setText("");
 	}
 }

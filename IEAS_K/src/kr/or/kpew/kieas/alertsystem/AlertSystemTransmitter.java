@@ -29,11 +29,9 @@ public class AlertSystemTransmitter
 
 	
 
-	public AlertSystemTransmitter(AlertSystemModel alertSystem)
+	public AlertSystemTransmitter(AlertSystemModel model)
 	{
-		this.model = alertSystem;
-		
-		//openConnection();
+		this.model = model;
 	}
 
 	public void openConnection()
@@ -51,17 +49,11 @@ public class AlertSystemTransmitter
 		}
 	}
 	
-
-<<<<<<< HEAD
-
-=======
 	public void setAlertSystemType(String alertSystemType)
 	{
-		this.alertSystemType = alertSystemType;
 		setAlertSystemTypeTopicListener(alertSystemType);
 	}
->>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
-	
+
 	public void closeConnection()
 	{
 		try

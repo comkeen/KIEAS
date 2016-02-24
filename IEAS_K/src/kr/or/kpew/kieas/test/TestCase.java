@@ -2,13 +2,9 @@ package kr.or.kpew.kieas.test;
 
 import static org.junit.Assert.assertEquals;
 
-<<<<<<< HEAD
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
-
-=======
->>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
 import org.junit.Test;
 
 import com.google.publicalerts.cap.Alert;
@@ -182,22 +178,6 @@ public class TestCase
 		System.out.println("-- Multi Element Build Test --");
 		System.out.println(kieasMessageBuilder.getMessage());
 	}
-<<<<<<< HEAD
 
-=======
-//	
-//	@Test
-//	public void TestProtocol () {
-//		TransmitProtocol protocol = new TransmitProtocol();
-//		
-//		protocol.setCommand(Command.Issue);
-//		protocol.setSender(Sender.Issuer);
-//		protocol.setData("abc".getBytes());
-//		byte[] buf = protocol.encode();
-//		
-//		TransmitProtocol received = TransmitProtocol.decode(buf);
-//		
-//		received.print();
-//	}
->>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
+
 }

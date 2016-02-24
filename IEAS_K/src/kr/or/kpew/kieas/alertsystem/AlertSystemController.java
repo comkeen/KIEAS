@@ -11,32 +11,28 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 {	
 	private AlertSystemModel model;
 	private AlertSystemView view;
-	
-	
-	public AlertSystemController()
-	{
-		
-	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		switch (e.getActionCommand().toString())
 		{
-		/*
 		case "Clear":
-			model.clear();
+			view.clear();
 			break;
-			*/
 		case "Register":
 			model.registerToGateway();			
 			break;
+			/*
 		case "setId":
 			model.setID();
 			break;
+			*/
 		default:
 			System.out.println("default");
-			break;
+			throw new UnsupportedOperationException();
+//			break;
 		}
 	}
 	
