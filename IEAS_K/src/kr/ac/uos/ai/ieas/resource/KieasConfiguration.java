@@ -32,12 +32,16 @@ public class KieasConfiguration
 		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
 	}
 	
-	public static class KIEAS_Constant
+	public static class KieasConstant
 	{
 		public static final String CODE = "대한민국정부1.0";
 		public static final String EVENT_CODE_VALUE_NAME = "TTAS.KO-07.0046/R5 재난 종류 코드";
 		public static final String DEFAULT_TIME_ZONE = "Asia/Seoul";
 		public static final String GEO_CODE_VALUE_NAME = "행정구역코드";
+
+		public static final String ACK = "Ack";
+		public static final String NACK = "Nack";
+		public static final String COMP = "Comp";
 	}
 	
 	public static class KieasList

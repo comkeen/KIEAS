@@ -19,6 +19,7 @@ import kr.ac.uos.ai.ieas.alerter.alerterView.resource.AlertLogTableModel;
 import kr.ac.uos.ai.ieas.alerter.alerterView.resource.TableModel;
 import kr.ac.uos.ai.ieas.resource.IKieasMessageBuilder;
 import kr.ac.uos.ai.ieas.resource.KieasMessageBuilder;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasConstant;
 
 
 public class AlerterLogPanel 
@@ -41,7 +42,7 @@ public class AlerterLogPanel
 
 	private JScrollPane alertLogTableScrollPanel;
 	private JTable alertLogTable;
-	private AlertLogTableModel alertLogTableModel;
+	private TableModel alertLogTableModel;
 	
 	private Vector<Object> mViewComponents;
 	private Map<String, Component> mPanelComponents;
@@ -97,12 +98,6 @@ public class AlerterLogPanel
 		mainPanel.add(initButtonPanel());
 		mainPanel.add(initTablePanel());
 		
-
-		String[] k = {"Identifier", "Sender", "Sent"};
-		TableModel tm = new TableModel(k);
-		tm.addTableRowData(kieasMessageBuilder.buildDefaultMessage());
-		mainPanel.add(new JTable(tm.getTableModel()));
-		
 		mViewComponents.addElement(mPanelComponents);
 	}
 
@@ -131,12 +126,21 @@ public class AlerterLogPanel
 	}
 	private Component initTablePanel()
 	{
-		this.alertLogTableModel = new AlertLogTableModel();
+		String[] columnNames =
+			{
+				KieasMessageBuilder.IDENTIFIER,
+				KieasMessageBuilder.SENDER,
+				KieasMessageBuilder.SENT,
+				KieasConstant.ACK
+			};
+		
+		this.alertLogTableModel = new TableModel(columnNames);
 		this.alertLogTable = new JTable(alertLogTableModel.getTableModel());
 		this.alertLogTableScrollPanel = new JScrollPane(alertLogTable);
-		
 		alertLogTable.setEnabled(true);
+		
 		alertLogTable.getSelectionModel().addListSelectionListener(viewActionListener);
+		
 		
 		return alertLogTableScrollPanel;
 	}
@@ -158,33 +162,33 @@ public class AlerterLogPanel
 
 	public void addAlertTableRow(String message)
 	{				
-		alertLogTableModel.addTableRowData(getAlertElementMap(message));
-
-		kieasMessageBuilder.setMessage(message);
-		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
+		alertLogTableModel.addTableRowData(message);
+		
+//		kieasMessageBuilder.setMessage(message);
+//		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
 	}
 
-	public void putAlertMessageMap(String key, String message)
-	{
-		mAlertMessageMap.put(key, message);
-	}
+//	public void putAlertMessageMap(String key, String message)
+//	{
+//		mAlertMessageMap.put(key, message);
+//	}
 	
-	public Map<String, String> getAlertElementMap(String message)
-	{
-		kieasMessageBuilder.setMessage(message);
-
-		mAlertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-		mAlertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		mAlertElementMap.replace(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
-		mAlertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
-		mAlertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
-		mAlertElementMap.replace(KieasMessageBuilder.NOTE, kieasMessageBuilder.getNote());
-		if(kieasMessageBuilder.getRestriction() != null)
-		{
-			mAlertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());			
-		}
+//	public Map<String, String> getAlertElementMap(String message)
+//	{
+//		kieasMessageBuilder.setMessage(message);
+//
+//		mAlertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+//		mAlertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+//		mAlertElementMap.replace(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
+//		mAlertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+//		mAlertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
+//		mAlertElementMap.replace(KieasMessageBuilder.NOTE, kieasMessageBuilder.getNote());
+//		if(kieasMessageBuilder.getRestriction() != null)
+//		{
+//			mAlertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());			
+//		}
 //		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
-
-		return mAlertElementMap;
-	}
+//
+//		return mAlertElementMap;
+//	}
 }

@@ -35,7 +35,7 @@ import com.google.publicalerts.cap.Polygon;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
-import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KIEAS_Constant;
+import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasConstant;
 import kr.ac.uos.ai.ieas.resource.KieasConfiguration.KieasList;
 
 /**
@@ -533,12 +533,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	private ValuePair convertToEventCode(String text)
 	{
-		return ValuePair.newBuilder().setValueName(KIEAS_Constant.EVENT_CODE_VALUE_NAME).setValue(text).build();
+		return ValuePair.newBuilder().setValueName(KieasConstant.EVENT_CODE_VALUE_NAME).setValue(text).build();
 	}
 	
 	private ValuePair convertToGeoCode(String text)
 	{
-		return ValuePair.newBuilder().setValueName(KIEAS_Constant.GEO_CODE_VALUE_NAME).setValue(text).build();
+		return ValuePair.newBuilder().setValueName(KieasConstant.GEO_CODE_VALUE_NAME).setValue(text).build();
 	}
 
 	
@@ -667,7 +667,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getDate()
 	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KieasConstant.DEFAULT_TIME_ZONE));
 		cal.setTime(new Date());
 		return CapUtil.formatCapDate(cal);
 	}
@@ -679,7 +679,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String convertDateToYmdhms(String date)
 	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KieasConstant.DEFAULT_TIME_ZONE));
 		cal.setTime(CapUtil.toJavaDate(date));
 
 		StringBuffer sb = new StringBuffer();
@@ -695,7 +695,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	private GregorianCalendar getDateCalendar()
 	{
-		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KIEAS_Constant.DEFAULT_TIME_ZONE));
+		GregorianCalendar cal = new GregorianCalendar(SimpleTimeZone.getTimeZone(KieasConstant.DEFAULT_TIME_ZONE));
 		cal.setGregorianChange(new Date());
 		cal.setTime(new Date());
 		return cal;

@@ -111,6 +111,9 @@ public class _AlerterTopView
 		case "AlertGenerator":
 			alerterCapGeneratePanel.updateView(target, value);
 			break;
+		case "AlertLogManager":
+			alerterLogPanel.addAlertTableRow(value);
+			break;
 		default:
 			System.out.println("there is no such a view " + view);
 			break;

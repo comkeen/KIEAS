@@ -2,8 +2,6 @@ package kr.ac.uos.ai.ieas.alerter.alerterView.resource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -15,12 +13,10 @@ public class TableModel
 	private DefaultTableModel tableModel;
 	private IKieasMessageBuilder kieasMessageBuilder;
 	
-	private String[] columnNames;
-	private String message;
-
-	private int alertCount;
+	private String[] indexedColumnNames;
 	
 	private static final String GET = "get";
+	private static final String NO = "No.";
 
 	
 	public TableModel(String[] comlumnNames)
@@ -30,41 +26,48 @@ public class TableModel
 		initTable(comlumnNames);
 	}
 
-	public void initTable(String[] comlumnNames)
-	{
-		this.columnNames = comlumnNames;
-		this.tableModel = new DefaultTableModel(columnNames, 0);
+	public void initTable(String[] columnNames)
+	{		
+		this.indexedColumnNames = new String[columnNames.length + 1];
 		
-		this.alertCount = 0;
+		indexedColumnNames[0] = NO;
+		for(int i = 0; i < columnNames.length; i++)
+		{
+			indexedColumnNames[i + 1] = columnNames[i];
+		}
+		
+		this.tableModel = new DefaultTableModel(indexedColumnNames, 0);
 	}
 
 	public void addTableRowData(String message)
 	{
 		kieasMessageBuilder.setMessage(message);
-		alertCount = tableModel.getRowCount() + 1;
-
-		Method method = null;
-		try
-		{
-			for(int i = 0; i < columnNames.length; i++)
-			{		
-				String methodName = GET + columnNames[i];
-				method = kieasMessageBuilder.getClass().getMethod(methodName.trim());
-				method.invoke(kieasMessageBuilder);
-			}
-		}
-		catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-		{
-			e.printStackTrace();
-		}
 		
-//		rowData.set(0, Integer.toString(alertCount));
-//		rowData.set(1, alertElementMap.get(KieasMessageBuilder.SENDER));
-//		rowData.set(2, alertElementMap.get(KieasMessageBuilder.IDENTIFIER));
-//		rowData.set(3, alertElementMap.get(KieasMessageBuilder.SENT));
-//		rowData.set(4, alertElementMap.get(KieasMessageBuilder.EVENT));
-
-//		tableModel.addRow(rowData.toArray());
+		String[] rowData = new String[indexedColumnNames.length];
+		
+		rowData[0] = Integer.toString(tableModel.getRowCount() + 1);
+		for(int i = 1; i < indexedColumnNames.length; i++)
+		{		
+			try
+			{
+				String methodName = GET + indexedColumnNames[i];
+				Method method = kieasMessageBuilder.getClass().getMethod(methodName.trim());
+				Object object = method.invoke(kieasMessageBuilder);
+				System.out.println("methodName : " + methodName);
+				System.out.println("invoke : " + object.toString());
+				
+				rowData[i] = object.toString();
+			}
+			catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
+			catch (NoSuchMethodException ex)
+			{
+				continue;
+			}			
+		}		
+		tableModel.addRow(rowData);
 	}
 		
 	public DefaultTableModel getTableModel()
