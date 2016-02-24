@@ -185,4 +185,20 @@ public class AlerterTransmitter implements ITransmitter
 		openConnection();
 	}
 
+	@Override
+	public void sendTopicMessage(String message, String topic)
+	{
+		try {
+			Destination destination = this.session.createTopic(topic);
+			MessageProducer topicProducer = this.session.createProducer(destination);
+			topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			TextMessage textMessage = this.session.createTextMessage(message);
+
+			topicProducer.send(textMessage);
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}	
 }

@@ -2,13 +2,6 @@ package kr.or.kpew.kieas.test;
 
 import static org.junit.Assert.assertEquals;
 
-import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.common.TransmitProtocol;
-import kr.or.kpew.kieas.common.TransmitProtocol.Command;
-import kr.or.kpew.kieas.common.TransmitProtocol.Sender;
-import kr.or.kpew.kieas.issuer.view.resource.TableModel;
-
 import org.junit.Test;
 
 import com.google.publicalerts.cap.Alert;
@@ -18,6 +11,9 @@ import com.google.publicalerts.cap.CapXmlBuilder;
 import com.google.publicalerts.cap.Info;
 import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Resource;
+
+import kr.or.kpew.kieas.common.IKieasMessageBuilder;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
 
 public class TestCase
 {
@@ -179,18 +175,18 @@ public class TestCase
 		System.out.println("-- Multi Element Build Test --");
 		System.out.println(kieasMessageBuilder.getMessage());
 	}
-	
-	@Test
-	public void TestProtocol () {
-		TransmitProtocol protocol = new TransmitProtocol();
-		
-		protocol.setCommand(Command.Issue);
-		protocol.setSender(Sender.Issuer);
-		protocol.setData("abc".getBytes());
-		byte[] buf = protocol.encode();
-		
-		TransmitProtocol received = TransmitProtocol.decode(buf);
-		
-		received.print();
-	}
+//	
+//	@Test
+//	public void TestProtocol () {
+//		TransmitProtocol protocol = new TransmitProtocol();
+//		
+//		protocol.setCommand(Command.Issue);
+//		protocol.setSender(Sender.Issuer);
+//		protocol.setData("abc".getBytes());
+//		byte[] buf = protocol.encode();
+//		
+//		TransmitProtocol received = TransmitProtocol.decode(buf);
+//		
+//		received.print();
+//	}
 }

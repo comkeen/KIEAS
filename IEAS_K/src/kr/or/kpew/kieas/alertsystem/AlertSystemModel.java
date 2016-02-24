@@ -48,7 +48,7 @@ public class AlertSystemModel
 				
 //		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
 		transmitter.setAlertSystemType(view.getSelectedAlertSystemType());
-		transmitter.openConnection();
+//		transmitter.openConnection();
 	}
 	
 	public void setID()
@@ -56,6 +56,7 @@ public class AlertSystemModel
 		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType() + "/" + geoCode;
 		this.alertSystemType = view.getSelectedAlertSystemType();
 		transmitter.setId(alertSystemID);
+		transmitter.setAlertSystemType(alertSystemType);
 		view.setAlertSystemId(alertSystemID);
 	}
 	

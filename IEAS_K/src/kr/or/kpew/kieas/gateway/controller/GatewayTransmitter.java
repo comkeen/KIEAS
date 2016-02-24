@@ -30,6 +30,7 @@ public class GatewayTransmitter implements ITransmitter
 	private Session session;
 	
 	private MessageProducer queueProducer;	
+	private MessageProducer topicProducer;	
 	private Map<String, MessageConsumer> messageConsumerMap;
 	
 	private String mqServerIp;
@@ -194,21 +195,24 @@ public class GatewayTransmitter implements ITransmitter
 		}
 	}
 
-//	public void broadcastMessage(String message, String topic)
-//	{
-//		try {
-//			Destination destination = this.session.createTopic(topic);
-//			this.topicProducer = this.session.createProducer(destination);
-//			this.topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-//			TextMessage textMessage = this.session.createTextMessage(message);
-//
-//			this.topicProducer.send(textMessage);
-//		} 
-//		catch (Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}	
+	@Override
+	public void sendTopicMessage(String message, String topic)
+	{
+		System.out.println("gateway topic send : " + topic);
+		try
+		{
+			Destination destination = this.session.createTopic(topic);
+			this.topicProducer = this.session.createProducer(destination);
+			topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			TextMessage textMessage = this.session.createTextMessage(message);
+
+			topicProducer.send(textMessage);
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}	
 }
 
 

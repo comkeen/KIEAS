@@ -82,10 +82,13 @@ public class _GatewayController
 
 	public void acceptAleterMessage(String message)
 	{
+		System.out.println("gateway accept message : \n" + message);
 		kieasMessageBuilder.setMessage(message);
 		String sender = kieasMessageBuilder.getSender();
 		String identifier = kieasMessageBuilder.getIdentifier();
 		String status = kieasMessageBuilder.getStatus();
+		System.out.println("status : " + status);
+		String restriction = kieasMessageBuilder.getRestriction();
 		
 //		String sender = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.SENDER);
 //		String identifier = gatewayModelManager.getAlertElementMap(message).get(GatewayModelManager.IDENTIFIER);
@@ -105,16 +108,20 @@ public class _GatewayController
 
 				String ackMessage = gatewayModelManager.creatAckMessage(message, gatewayId);
 				sendAcknowledge(ackMessage, sender);
-
-//				broadcastMessage(message);
-				routeMessage(message);
+				
+				log = "(" + gatewayId + ")" + " Send Message To AlertSystemType For (" + restriction + ") : ";
+				System.out.println(log);
+				gatewayView.appendLog(log);				
+				
+				transmitter.sendTopicMessage(message, restriction);
+//				routeMessage(message);
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
 			break;
-		case "SYSTEM":
+		case  "SYSTEM":
 			try 
 			{
 				log = "(" + gatewayId + ")" + " Received Register request From Alerter : " + identifier;

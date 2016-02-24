@@ -67,8 +67,8 @@ public class AlertSystemTransmitter
 	public void setAlertSystemType(String alertSystemType)
 	{
 		this.alertSystemType = alertSystemType;
+		setAlertSystemTypeTopicListener(alertSystemType);
 	}
-
 	
 	public void closeConnection()
 	{
