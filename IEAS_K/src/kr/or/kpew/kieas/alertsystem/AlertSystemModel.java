@@ -4,23 +4,26 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Observable;
 import java.util.Random;
 
+import kr.or.kpew.kieas.common.KieasConfiguration;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 
 
-public class AlertSystemModel
+public class AlertSystemModel extends Observable
 {
 	private AlertSystemTransmitter transmitter;
-	private AlertSystemView view;
-	private AlertSystemController actionListener;
+	private AlertSystemProfile profile;
+	//public AlertSystemView view;
+//	private AlertSystemController controller;
 	private KieasMessageBuilder kieasMessageBuilder;
 
-	private String alertSystemID;
-	private String alertSystemType;
-	private String geoCode;
-	private String ackMessage;
+//	private String alertSystemID;
+//	private String alertSystemType;
+//	private String geoCode;
+	//private String ackMessage;
 
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
@@ -31,32 +34,46 @@ public class AlertSystemModel
 	public AlertSystemModel()
 	{		
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-		this.actionListener = new AlertSystemController(this);
-		this.view = new AlertSystemView(this);
+
 		this.transmitter = new AlertSystemTransmitter(this);
+		this.profile = new AlertSystemProfile();
 		
-		init();
+		//init();
 	}
 	
-	private void init()
+	public void init()
 	{
-		this.geoCode = "1100000000";
+//		this.geoCode = "1100000000";
 //		this.geoCode = "5000000000";
 		
 //		this.alertSystemID = KieasName.STANDARD_ALERT_SYSTEM;
-		setID();
+//		profile.setAlertSystemType(view.getSelectedAlertSystemType());
+		profile.setAlertSystemType(KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST[0]);
+		profile.setGeoCode("1100000000");
+		profile.setAlertSystemId(getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + profile.getAlertSystemType() + "/" + profile.getGeoCode());
 				
 //		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
-		transmitter.setAlertSystemType(view.getSelectedAlertSystemType());
+		//transmitter.setAlertSystemType(view.getSelectedAlertSystemType());
 		transmitter.openConnection();
+		
+		selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, profile.getAlertSystemType());
+		selectTopic(AlertSystemModel.GEO_CODE, profile.getGeoCode());
+
+		setID();
+		
+		setChanged();
+		notifyObservers(profile);
 	}
 	
 	public void setID()
 	{
-		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType() + "/" + geoCode;
-		this.alertSystemType = view.getSelectedAlertSystemType();
-		transmitter.setId(alertSystemID);
-		view.setAlertSystemId(alertSystemID);
+		profile.setAlertSystemId(getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + profile.getAlertSystemType() + "/" + profile.getGeoCode());
+		transmitter.setId(profile.getAlertSystemId());
+		
+
+		//view.setAlertSystemId(alertSystemID);
+		
+		
 	}
 	
 	private String getLocalServerIp()
@@ -82,17 +99,20 @@ public class AlertSystemModel
 
 	public void acceptMessage(String message) 
 	{
-		System.out.println("received message " + message);
+		//System.out.println("received message " + message);
 		try
 		{
 			kieasMessageBuilder.setMessage(message);
 
 			String sender = kieasMessageBuilder.getSender();
 			
-			System.out.println("(" + alertSystemID + ")" + " Received Message From (" + sender + ") : ");
+			System.out.println("(" + profile.getAlertSystemId() + ")" + " Received Message From (" + sender + ") : ");
 			System.out.println();
 			
-			view.setTextArea(message);
+			
+			//view.setTextArea(message);
+			setChanged();
+			notifyObservers(message);
 //			sendAckMessage(message, KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
 		}
 		catch (Exception e) 
@@ -112,12 +132,12 @@ public class AlertSystemModel
 			e.printStackTrace();
 		}
 
-		ackMessage = createAckMessage(message);
+		String ackMessage = createAckMessage(message);
 		transmitter.sendMessage(ackMessage, destination);
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(")
-			.append(alertSystemID)
+			.append(profile.getAlertSystemId())
 			.append(")")
 			.append(" Send Message to Gateway :");
 		System.out.println(log.toString());
@@ -127,20 +147,16 @@ public class AlertSystemModel
 	{
 		kieasMessageBuilder.setMessage(message);
 
-		kieasMessageBuilder.setSender(alertSystemID);
+		kieasMessageBuilder.setSender(profile.getAlertSystemId());
 		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ACK);
 		kieasMessageBuilder.build();
 		
 		return kieasMessageBuilder.getMessage();
 	}
 
-	public String getID()
-	{		
-		return this.alertSystemID;
-	}
-
 	public void selectTopic(String target, String topic)
 	{
+		//System.out.println("select topic: " + target + ", " + topic);
 		switch (target)
 		{
 		case GEO_CODE:
@@ -158,20 +174,20 @@ public class AlertSystemModel
 		}
 	}
 
-	public String getLocation()	{ return geoCode; }
+	//public String getLocation()	{ return geoCode; }
 
 	public void closeConnection() {	transmitter.closeConnection(); }
 
-	public void clear() { view.setTextArea("");	}
+	//public void clear() { view.setTextArea("");	}
 
 	public void registerToGateway()
 	{
 		kieasMessageBuilder.buildDefaultMessage();
-		kieasMessageBuilder.setSender(alertSystemID);
+		kieasMessageBuilder.setSender(profile.getAlertSystemId());
 		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
 		kieasMessageBuilder.setScope(KieasMessageBuilder.RESTRICTED);
-		kieasMessageBuilder.setRestriction(alertSystemType);
-		kieasMessageBuilder.setNote(geoCode);
+		kieasMessageBuilder.setRestriction(profile.getAlertSystemType());
+		kieasMessageBuilder.setNote(profile.getGeoCode());
 		kieasMessageBuilder.build();
 		System.out.println(kieasMessageBuilder.getMessage());
 		
@@ -179,17 +195,20 @@ public class AlertSystemModel
 		
 		StringBuffer log = new StringBuffer();
 		log.append("(")
-			.append(alertSystemID)
+			.append(profile.getAlertSystemId())
 			.append(")")
 			.append(" Register to Gateway :");
 		System.out.println(log.toString());
 	}
 
-	public void exit() { view.systemExit();	}
-
-	public AlertSystemController getActionListener()
-	{ 
-		System.out.println("getAction");
-		return this.actionListener;
+	public void readyForExit() { 
+		closeConnection();
+//		view.systemExit();
 	}
+
+//	public AlertSystemController getActionListener()
+//	{ 
+//		System.out.println("getAction");
+//		return this.controller;
+//	}
 }

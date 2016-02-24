@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.common.TransmitProtocol;
-import kr.or.kpew.kieas.common.TransmitProtocol.Command;
-import kr.or.kpew.kieas.common.TransmitProtocol.Sender;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 import org.junit.Test;
@@ -179,18 +176,5 @@ public class TestCase
 		System.out.println("-- Multi Element Build Test --");
 		System.out.println(kieasMessageBuilder.getMessage());
 	}
-	
-	@Test
-	public void TestProtocol () {
-		TransmitProtocol protocol = new TransmitProtocol();
-		
-		protocol.setCommand(Command.Issue);
-		protocol.setSender(Sender.Issuer);
-		protocol.setData("abc".getBytes());
-		byte[] buf = protocol.encode();
-		
-		TransmitProtocol received = TransmitProtocol.decode(buf);
-		
-		received.print();
-	}
+
 }

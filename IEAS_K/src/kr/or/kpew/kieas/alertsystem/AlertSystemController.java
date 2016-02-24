@@ -2,17 +2,20 @@ package kr.or.kpew.kieas.alertsystem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class AlertSystemController implements ActionListener, WindowListener
+public class AlertSystemController implements ActionListener, WindowListener, ItemListener
 {	
-	private AlertSystemModel controller;
+	private AlertSystemModel model;
+	private AlertSystemView view;
 	
 	
-	public AlertSystemController(AlertSystemModel alertSystemController)
+	public AlertSystemController()
 	{
-		this.controller = alertSystemController;
+		
 	}
 	
 	@Override
@@ -20,20 +23,27 @@ public class AlertSystemController implements ActionListener, WindowListener
 	{
 		switch (e.getActionCommand().toString())
 		{
+		/*
 		case "Clear":
-			controller.clear();
+			model.clear();
 			break;
+			*/
 		case "Register":
-			controller.registerToGateway();			
+			model.registerToGateway();			
 			break;
 		case "setId":
-			controller.setID();
+			model.setID();
 			break;
 		default:
 			System.out.println("default");
 			break;
 		}
 	}
+	
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		model.selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, e.getItem().toString());
+	}	
 
 	@Override
 	public void windowActivated(WindowEvent e) {}
@@ -45,7 +55,8 @@ public class AlertSystemController implements ActionListener, WindowListener
 	public void windowClosing(WindowEvent e)
 	{
 		System.out.println("win close");
-		controller.exit();
+		model.readyForExit();
+		view.systemExit();
 	}
 
 	@Override
@@ -58,5 +69,15 @@ public class AlertSystemController implements ActionListener, WindowListener
 	public void windowIconified(WindowEvent e) {}
 
 	@Override
-	public void windowOpened(WindowEvent e) {}	
+	public void windowOpened(WindowEvent e) {}
+
+	public void setModel(AlertSystemModel model) {
+		this.model = model;
+	}
+
+	public void setView(AlertSystemView view) {
+		this.view = view;
+	}
+
+
 }

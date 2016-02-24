@@ -17,7 +17,7 @@ import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 
 public class AlertSystemTransmitter
 {
-	private AlertSystemModel alertSystem;
+	private AlertSystemModel model;
 
 	private Connection connection;
 	private Session session;
@@ -25,21 +25,15 @@ public class AlertSystemTransmitter
 	private MessageProducer producer;
 	private MessageConsumer geoCodeConsumer;
 	private MessageConsumer alertSystemTypeConsumer;
-
-	private String alertSystemId;
-
 	private MessageConsumer queueConsumer;
 
-	private String geoCode;
-
-	private String alertSystemType;
-
+	
 
 	public AlertSystemTransmitter(AlertSystemModel alertSystem)
 	{
-		this.alertSystem = alertSystem;
+		this.model = alertSystem;
 		
-		openConnection();
+		//openConnection();
 	}
 
 	public void openConnection()
@@ -55,19 +49,9 @@ public class AlertSystemTransmitter
 		{
 			ex.printStackTrace();
 		}
-//		setGeoCodeTopicListener(geoCode);
-//		setAlertSystemTypeTopicListener(alertSystemType);
 	}
 	
-	public void setGeoCode(String geoCode)
-	{
-		this.geoCode = geoCode;
-	}
 
-	public void setAlertSystemType(String alertSystemType)
-	{
-		this.alertSystemType = alertSystemType;
-	}
 
 	
 	public void closeConnection()
@@ -88,6 +72,7 @@ public class AlertSystemTransmitter
 	
 	public void sendMessage(String message, String destination)
 	{
+		//System.out.println("send message: " + message);
 		try
 		{
 			Destination queueDestination = session.createQueue(destination);
@@ -106,6 +91,7 @@ public class AlertSystemTransmitter
 
 	public void setQueueListener(String queue)
 	{
+		System.out.println("set queue listener: "+ queue);
 		try
 		{
 			System.out.println("queue destination : " + queue);
@@ -116,13 +102,14 @@ public class AlertSystemTransmitter
 			{
 				public void onMessage(Message message)
 				{
+
 					if (message instanceof TextMessage)
 					{
 						TextMessage textMessage = (TextMessage) message;
 
 						try 
 						{
-							alertSystem.acceptMessage(textMessage.getText());
+							model.acceptMessage(textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -141,6 +128,8 @@ public class AlertSystemTransmitter
 	
 	public void setGeoCodeTopicListener(String topic)
 	{
+		System.out.println("set geo listener: "+ topic);
+
 		try
 		{
 			Destination destination = session.createTopic(topic);
@@ -156,7 +145,7 @@ public class AlertSystemTransmitter
 
 						try 
 						{
-							alertSystem.acceptMessage(textMessage.getText());
+							model.acceptMessage(textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -175,6 +164,8 @@ public class AlertSystemTransmitter
 	
 	public void setAlertSystemTypeTopicListener(String topic)
 	{
+		System.out.println("set listener: "+ topic);
+
 		try
 		{
 			System.out.println("Creating session with topic : " + topic);
@@ -191,7 +182,7 @@ public class AlertSystemTransmitter
 
 						try 
 						{
-							alertSystem.acceptMessage(textMessage.getText());
+							model.acceptMessage(textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -240,8 +231,8 @@ public class AlertSystemTransmitter
 
 	public void setId(String id)
 	{
-		this.alertSystemId = id;
+		//this.alertSystemId = id;
 
-		setQueueListener(alertSystemId);
+		setQueueListener(id);
 	}
 }
