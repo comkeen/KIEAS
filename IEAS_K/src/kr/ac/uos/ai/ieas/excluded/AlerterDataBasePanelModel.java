@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.alerter.alerterModel;
+package kr.or.kpew.kieas.excluded;
 
 import java.util.HashMap;
 import java.util.List;

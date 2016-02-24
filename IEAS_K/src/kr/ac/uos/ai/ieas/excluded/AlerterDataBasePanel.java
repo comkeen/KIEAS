@@ -1,4 +1,4 @@
-package kr.ac.uos.ai.ieas.alerter.alerterView;
+package kr.or.kpew.kieas.excluded;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
