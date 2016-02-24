@@ -18,7 +18,7 @@ import kr.or.kpew.kieas.issuer.view.AlertGeneratorPanel;
 
 public class AlertGenerator
 {	
-	private _AlerterModel alerterModelManager;
+	private _Model alerterModelManager;
 	private KieasMessageBuilder kieasMessageBuilder;
 
 	private FileInputStream fileInputStream;
@@ -79,7 +79,7 @@ public class AlertGenerator
 	 * CAP 메시지를 다루기 위해 사용되는 KieasMessageBuilder 객체 생성.
 	 * @param _AlerterModelManager Model들을 관리하는 ModelManager. 
 	 */
-	public AlertGenerator(_AlerterModel _AlerterModelManager)
+	public AlertGenerator(_Model _AlerterModelManager)
 	{
 		this.alerterModelManager = _AlerterModelManager;
 		this.kieasMessageBuilder = new KieasMessageBuilder();

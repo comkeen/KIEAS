@@ -2,8 +2,11 @@ package kr.or.kpew.kieas.issuer.view;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -11,18 +14,16 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.or.kpew.kieas.issuer.controller.AleterViewActionListener;
-import kr.or.kpew.kieas.issuer.controller._AlerterController;
+import kr.or.kpew.kieas.issuer.controller._Controller;
 import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
 
 
-public class _AlerterTopView
+public class _View implements Observer
 {
-	private _AlerterController controller;
-	private AleterViewActionListener alerterActionListener;
+	private _Controller controller;
 
 	private AlertGeneratorPanel alerterCapGeneratePanel;
-	private AlerterLogPanel alerterLogPanel;
+	private AlertLogPanel alerterLogPanel;
 //	private AlerterDataBasePanel alerterDatabasePanel;
 //	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 
@@ -33,13 +34,12 @@ public class _AlerterTopView
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	public _AlerterTopView(_AlerterController controller, AleterViewActionListener alerterActionListener)
+	public _View(_Controller controller)
 	{
 		initLookAndFeel();
 		this.controller = controller;
-		this.alerterActionListener = alerterActionListener;
-		this.alerterCapGeneratePanel = new AlertGeneratorPanel(alerterActionListener);
-		this.alerterLogPanel = new AlerterLogPanel(this, alerterActionListener);
+		this.alerterCapGeneratePanel = new AlertGeneratorPanel(controller);
+		this.alerterLogPanel = new AlertLogPanel(this, controller);
 //		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
 //		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
 
@@ -55,7 +55,7 @@ public class _AlerterTopView
 		mainFrame.setSize(1024, 768);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		mainFrame.addWindowListener(alerterActionListener);
+		mainFrame.addWindowListener(controller);
 
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = mainFrame.getContentPane();
@@ -80,7 +80,6 @@ public class _AlerterTopView
 			e.printStackTrace();
 		}
 	}
-
 
 	public void addInfoIndexPanel()
 	{
@@ -203,4 +202,27 @@ public class _AlerterTopView
 //	{
 //		return alerterDatabasePanel.getQuery();
 //	}
+	
+	// Called from the Model
+	public void update(Observable obs, Object obj) {
+
+	//who called us and what did they send?
+	//System.out.println ("View      : Observable is " + obs.getClass() + ", object passed is " + obj.getClass());
+
+	//model Pull 
+	//ignore obj and ask model for value, 
+	//to do this, the view has to know about the model (which I decided I didn't want to do)
+	//uncomment next line to do Model Pull
+		//myTextField.setText("" + model.getValue());
+
+	//model Push 
+	//parse obj
+//	myTextField.setText("" + ((Integer)obj).intValue());	//obj is an Object, need to cast to an Integer
+
+	} //update()
+	
+	public void addController(ActionListener controller){
+		System.out.println("View      : adding controller");
+//		button.addActionListener(controller);	//need instance of controller before can add it as a listener 
+	} //addController()
 }

@@ -15,22 +15,20 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
-import kr.or.kpew.kieas.issuer.controller.AleterViewActionListener;
-import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.issuer.controller._Controller;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
-public class AlerterLogPanel 
+public class AlertLogPanel 
 {
 	private static final String TEXT_AREA = "TextArea";
 	private static final String CLEAR_BUTTON = "Clear";
 	
 	
-	private _AlerterTopView topView;
-	private AleterViewActionListener viewActionListener;
-	private IKieasMessageBuilder kieasMessageBuilder;
+	private _View topView;
+	private _Controller viewActionListener;
 
 	private JPanel mainPanel;
 	
@@ -50,11 +48,10 @@ public class AlerterLogPanel
 	private Map<String, String> mAlertMessageMap;
 	
 	
-	public AlerterLogPanel(_AlerterTopView topView, AleterViewActionListener alerterActionListener)
+	public AlertLogPanel(_View topView, _Controller controller)
 	{
 		this.topView = topView;
-		this.viewActionListener = alerterActionListener;
-		this.kieasMessageBuilder = new KieasMessageBuilder();
+		this.viewActionListener = controller;
 
 		initAlertElementMap();
 		initPanel();
@@ -79,11 +76,6 @@ public class AlerterLogPanel
 		return this.mainPanel;
 	}
 		
-	public void setActionListener(AleterViewActionListener alerterActionListener)
-	{
-		this.viewActionListener = alerterActionListener;
-	}
-
 	private void initPanel()
 	{		
 		this.mViewComponents = new Vector<>();

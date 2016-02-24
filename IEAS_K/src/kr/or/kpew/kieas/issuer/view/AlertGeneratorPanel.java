@@ -18,15 +18,15 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
-import kr.or.kpew.kieas.issuer.controller.AleterViewActionListener;
+import kr.or.kpew.kieas.issuer.controller._Controller;
 
 
 public class AlertGeneratorPanel
 {
-	private AleterViewActionListener alerterActionListener;
+	private _Controller alerterActionListener;
 	private KieasMessageBuilder kieasMessageBuilder;
 
 	private JScrollPane capGenerateScrollPanel;
@@ -83,9 +83,9 @@ public class AlertGeneratorPanel
 	private static final int BASE_LINE = 100;
 
 
-	public AlertGeneratorPanel(AleterViewActionListener alerterActionListener)
+	public AlertGeneratorPanel(_Controller controller)
 	{
-		this.alerterActionListener = alerterActionListener;
+		this.alerterActionListener = controller;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		initPanel();
