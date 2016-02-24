@@ -53,6 +53,7 @@ public class AlertSystemModel extends Observable
 		profile.setAlertSystemId(getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + profile.getAlertSystemType() + "/" + profile.getGeoCode());
 				
 //		alertSystemTransmitter.setGeoCode(alertSystemView.getSelectedGeoCode());
+<<<<<<< HEAD
 		//transmitter.setAlertSystemType(view.getSelectedAlertSystemType());
 		transmitter.openConnection();
 		
@@ -63,10 +64,15 @@ public class AlertSystemModel extends Observable
 		
 		setChanged();
 		notifyObservers(profile);
+=======
+		transmitter.setAlertSystemType(view.getSelectedAlertSystemType());
+//		transmitter.openConnection();
+>>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
 	}
 	
 	public void setID()
 	{
+<<<<<<< HEAD
 		profile.setAlertSystemId(getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + profile.getAlertSystemType() + "/" + profile.getGeoCode());
 		transmitter.setId(profile.getAlertSystemId());
 		
@@ -74,6 +80,13 @@ public class AlertSystemModel extends Observable
 		//view.setAlertSystemId(alertSystemID);
 		
 		
+=======
+		this.alertSystemID = getLocalServerIp() + ":" + new Random().nextInt(9999) + "/" + view.getSelectedAlertSystemType() + "/" + geoCode;
+		this.alertSystemType = view.getSelectedAlertSystemType();
+		transmitter.setId(alertSystemID);
+		transmitter.setAlertSystemType(alertSystemType);
+		view.setAlertSystemId(alertSystemID);
+>>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
 	}
 	
 	private String getLocalServerIp()

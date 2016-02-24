@@ -52,7 +52,15 @@ public class AlertSystemTransmitter
 	}
 	
 
+<<<<<<< HEAD
 
+=======
+	public void setAlertSystemType(String alertSystemType)
+	{
+		this.alertSystemType = alertSystemType;
+		setAlertSystemTypeTopicListener(alertSystemType);
+	}
+>>>>>>> 5b8b750e45383dc4a0462a12d6999202edf8f6a1
 	
 	public void closeConnection()
 	{

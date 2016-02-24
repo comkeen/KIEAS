@@ -107,12 +107,13 @@ public class _AlerterModel
 
 	public void sendMessage()
 	{
+		String message = alerterCapGeneratePanelModel.getMessage();
 //		alerterModelManager.addAlertTableRow();
-		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
+		transmitter.sendMessage(message, KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
-		System.out.println();
-		alertLogManager.put(alerterCapGeneratePanelModel.getMessage());
-		controller.updateView("AlertLogManager", "Table", kieasMessageBuilder.getMessage());
+//		System.out.println(message);
+		alertLogManager.put(message);
+		controller.updateView("AlertLogManager", "Table", message);
 	}
 	
 	public void acceptMessage(String message)
