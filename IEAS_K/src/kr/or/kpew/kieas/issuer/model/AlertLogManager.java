@@ -12,16 +12,15 @@ public class AlertLogManager
 		this.alertMessageMap = new HashMap<String, String>();		
 	}
 
-	public String put(String message)
+	public void put(String key, String message)
 	{
 		System.out.println("put Log to AlertLogTable : \n" + message);
-		String key = "key";
-		return key;
+		alertMessageMap.put(key, message);
 	}
 	
 	public String get(String key)
 	{
 		System.out.println("get Log from AlertLogTable : \n" + key);
-		return key;
+		return alertMessageMap.get(key);
 	}
 }

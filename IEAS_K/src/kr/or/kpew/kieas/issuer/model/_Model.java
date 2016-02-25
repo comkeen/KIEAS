@@ -44,9 +44,9 @@ public class _Model extends Observable
 	 * Database 접근을 위한 DatabaseHandler 초기화.
 	 * @param alerterController Controller
 	 */
-	public _Model(_Controller controller)
+	public _Model()
 	{
-		this.controller = controller;
+//		this.controller = controller;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 
 		this.alerterCapGeneratePanelModel = new AlertGenerator(this);
@@ -111,7 +111,7 @@ public class _Model extends Observable
 		transmitter.sendMessage(message, KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 		System.out.println("Alerter Send Message to " + "(gateway) : ");
 //		System.out.println(message);
-		alertLogManager.put(message);
+		alertLogManager.put(kieasMessageBuilder.setMessage(message).getIdentifier(), message);
 		controller.updateView("AlertLogManager", "Table", message);
 	}
 	
@@ -324,8 +324,7 @@ public class _Model extends Observable
 //	{
 //		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
 //	}
-	
-	
+		
 	//model Push - send counter as part of the message
 	public void setValue(int value)
 	{

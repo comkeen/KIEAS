@@ -616,7 +616,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * xml 형태의 CAP 메시지를 KieasMessageBuilder로 적용하여 수정 가능한 객체로 적용.
 	 */
 	@Override
-	public void setMessage(String message)
+	public KieasMessageBuilder setMessage(String message)
 	{
 		try
 		{			
@@ -626,6 +626,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		{
 			e.printStackTrace();
 		}
+		return this;
 	}
 
 	/**

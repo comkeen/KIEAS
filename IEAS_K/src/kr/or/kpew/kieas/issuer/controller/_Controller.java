@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import kr.or.kpew.kieas.alertsystem.AlertSystemModel;
+import kr.or.kpew.kieas.alertsystem.AlertSystemView;
 import kr.or.kpew.kieas.issuer.model._Model;
 import kr.or.kpew.kieas.issuer.view._View;
 import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
@@ -18,7 +20,7 @@ import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
 
 public class _Controller implements ActionListener, ListSelectionListener, WindowListener
 { 	
-	private _View topView;
+	private _View view;
 	private _Model model;
 	
 	
@@ -26,18 +28,28 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	{		
 		
 	}
-	
-	//Joe I should be able to add any model/view with the correct API
-	//but here I can only add Model/View
-	public void addModel(_Model m){
+
+	public void addModel(_Model m)
+	{
 		System.out.println("Controller : adding model");
 		this.model = m;
-	} //addModel()
+	}
 
-	public void addView(_View v){
+	public void addView(_View view)
+	{
 		System.out.println("Controller : adding view");
-		this.topView = v;
-	} //addView()
+		this.view = view;
+	}
+		
+	public void setModel(_Model model)
+	{
+		this.model = model;
+	}
+
+	public void setView(_View view)
+	{
+		this.view = view;
+	}
 	
 	/**
 	 * event.getActionCommand()로 버튼 액션을 식별하여 처리한다.
@@ -131,7 +143,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
 		String title = "프로그램 종료";
 		
-		if (JOptionPane.showConfirmDialog(topView.getFrame(),
+		if (JOptionPane.showConfirmDialog(view.getFrame(),
 			question,
 			title,
 			JOptionPane.YES_NO_OPTION,
@@ -151,7 +163,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void loadCap()
 	{
-		model.loadCap(topView.getLoadTextField());
+		model.loadCap(view.getLoadTextField());
 	}
 	
 	/**
@@ -159,12 +171,12 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void saveCap()
 	{
-		model.saveCap(topView.getSaveTextField());
+		model.saveCap(view.getSaveTextField());
 	}
 
 	public void applyAlertElement()
 	{
-		model.applyAlertElement(topView.getAlertElement());
+		model.applyAlertElement(view.getAlertElement());
 	}
 
 
@@ -174,7 +186,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void addInfoIndexPanel() 
 	{
-		topView.addInfoIndexPanel();
+		view.addInfoIndexPanel();
 	}
 
 	/**
@@ -183,7 +195,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void addResourceIndexPanel() 
 	{
-		topView.addResourceIndexPanel();
+		view.addResourceIndexPanel();
 	}
 	
 	/**
@@ -192,7 +204,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void addAreaIndexPanel()
 	{
-		topView.addAreaIndexPanel();
+		view.addAreaIndexPanel();
 	}
 	
 	/**
@@ -203,17 +215,19 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	 */
 	public void updateView(String view, String target, String value)
 	{
-		topView.updateView(view, target, value);
+		//TODO
+//		view.updateView(view, target, value);
 	}
 	
 	public void updateView(String view, String target, List<String> value)
 	{
-		topView.updateView(view, target, value);
+		//TODO
+//		view.updateView(view, target, value);
 	}
 
 	public void setTextArea(String message)
 	{
-		topView.setTextArea(message);
+		view.setTextArea(message);
 	}
 
 	public AlertLogTableModel getAlertTableModel()
@@ -228,7 +242,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 
 	public void setId(String id)
 	{
-		topView.setId(id);
+		view.setId(id);
 	}
 
 	private void sendMessage() 
@@ -246,9 +260,8 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 		model.registerToGateway();
 	}
 
-
 	private void setClear()
 	{
-		topView.setTextArea("");
+		view.setTextArea("");
 	}
 }

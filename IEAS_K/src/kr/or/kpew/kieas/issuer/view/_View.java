@@ -34,10 +34,10 @@ public class _View implements Observer
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	public _View(_Controller controller)
+	public _View()
 	{
 		initLookAndFeel();
-		this.controller = controller;
+//		this.controller = controller;
 		this.alerterCapGeneratePanel = new AlertGeneratorPanel(controller);
 		this.alerterLogPanel = new AlertLogPanel(this, controller);
 //		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
@@ -225,4 +225,12 @@ public class _View implements Observer
 		System.out.println("View      : adding controller");
 //		button.addActionListener(controller);	//need instance of controller before can add it as a listener 
 	} //addController()
+
+
+
+
+	public void setController(_Controller controller)
+	{
+		this.controller = controller;
+	}
 }

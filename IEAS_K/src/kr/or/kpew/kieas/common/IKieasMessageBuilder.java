@@ -97,7 +97,7 @@ public interface IKieasMessageBuilder
 	public String build();
 	public String buildDefaultMessage();
 	public String getMessage();
-	public void setMessage(String message);
+	public KieasMessageBuilder setMessage(String message);
 	public boolean validateMessage(String message);
 	public String generateKieasMessageIdentifier(String id);
 	
