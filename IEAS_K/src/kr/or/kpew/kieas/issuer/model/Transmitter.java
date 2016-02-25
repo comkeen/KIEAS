@@ -39,6 +39,8 @@ public class Transmitter implements ITransmitter
 	{
 		this.modelManager = model;
 		
+		System.out.println("Transmitter instantiated");
+		
 		init();
 	}
 	

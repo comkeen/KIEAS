@@ -28,7 +28,7 @@ public class AlertLogPanel
 	
 	
 	private _View topView;
-	private _Controller viewActionListener;
+	private _Controller controller;
 
 	private JPanel mainPanel;
 	
@@ -48,10 +48,10 @@ public class AlertLogPanel
 	private Map<String, String> mAlertMessageMap;
 	
 	
-	public AlertLogPanel(_View topView, _Controller controller)
+	public AlertLogPanel(_View topView)
 	{
 		this.topView = topView;
-		this.viewActionListener = controller;
+//		this.viewActionListener = controller;
 
 		initAlertElementMap();
 		initPanel();
@@ -111,7 +111,7 @@ public class AlertLogPanel
 
 		this.mClearButton = new JButton(CLEAR_BUTTON);
 		mClearButton.setActionCommand(CLEAR_BUTTON);
-		mClearButton.addActionListener(viewActionListener);
+		mClearButton.addActionListener(controller);
 		buttonPanel.add(mClearButton, BorderLayout.WEST);
 		
 		return buttonPanel;
@@ -131,7 +131,7 @@ public class AlertLogPanel
 		this.alertLogTableScrollPanel = new JScrollPane(alertLogTable);
 		alertLogTable.setEnabled(true);
 		
-		alertLogTable.getSelectionModel().addListSelectionListener(viewActionListener);
+		alertLogTable.getSelectionModel().addListSelectionListener(controller);
 		
 		
 		return alertLogTableScrollPanel;
@@ -147,8 +147,8 @@ public class AlertLogPanel
 		if(alertLogTable.getSelectedRow() > -1)
 		{
 			String identifier = alertLogTableModel.getTableModel().getValueAt(alertLogTable.getSelectedRow(), 2).toString();
-			String message = topView.getAlertMessage(identifier);
-			mTextArea.setText(message);
+//			String message = topView.getAlertMessage(identifier);
+//			mTextArea.setText(message);
 		}
 	}
 
@@ -183,4 +183,9 @@ public class AlertLogPanel
 //
 //		return mAlertElementMap;
 //	}
+	
+	public void setController(_Controller controller)
+	{
+		this.controller = controller;
+	}
 }

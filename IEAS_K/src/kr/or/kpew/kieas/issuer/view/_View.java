@@ -15,17 +15,14 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.or.kpew.kieas.issuer.controller._Controller;
-import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
 
 
 public class _View implements Observer
 {
 	private _Controller controller;
 
-	private AlertGeneratorPanel alerterCapGeneratePanel;
+	private AlertGeneratorPanel alertGeneratorPanel;
 	private AlertLogPanel alerterLogPanel;
-//	private AlerterDataBasePanel alerterDatabasePanel;
-//	private AlerterAlertGeneratePanel alerterAlertGeneratePanel;
 
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
@@ -37,19 +34,13 @@ public class _View implements Observer
 	public _View()
 	{
 		initLookAndFeel();
-//		this.controller = controller;
-		this.alerterCapGeneratePanel = new AlertGeneratorPanel(controller);
-		this.alerterLogPanel = new AlertLogPanel(this, controller);
-//		this.alerterDatabasePanel = new AlerterDataBasePanel(alerterActionListener);
-//		this.alerterAlertGeneratePanel = new AlerterAlertGeneratePanel(alerterActionListener);
+		this.alertGeneratorPanel = new AlertGeneratorPanel();
+		this.alerterLogPanel = new AlertLogPanel(this);
 
-		initFrame();
+		init();
 	}
 
-
-
-
-	private void initFrame()
+	private void init()
 	{
 		this.mainFrame = new JFrame();
 		mainFrame.setSize(1024, 768);
@@ -61,10 +52,8 @@ public class _View implements Observer
 		Container container = mainFrame.getContentPane();
 		container.add(mainTabbedPane);
 
-		mainTabbedPane.addTab("CAP Generator Panel", alerterCapGeneratePanel.getPanel());
-		mainTabbedPane.addTab("Alert Log Panel", alerterLogPanel.getPanel());			
-//		mainTabbedPane.addTab("Database", alerterDatabasePanel.getPanel());	
-//		mainTabbedPane.addTab("AlertGenerate", alerterAlertGeneratePanel.getPanel());
+		mainTabbedPane.addTab("CAP Generator Panel", alertGeneratorPanel.getPanel());
+//		mainTabbedPane.addTab("Alert Log Panel", alerterLogPanel.getPanel());			
 
 		mainFrame.setVisible(true);
 	}
@@ -83,17 +72,17 @@ public class _View implements Observer
 
 	public void addInfoIndexPanel()
 	{
-		alerterCapGeneratePanel.addInfoIndexPanel();
+		alertGeneratorPanel.addInfoIndexPanel();
 	}
 
 	public void addResourceIndexPanel()
 	{
-		alerterCapGeneratePanel.addResourceIndexPanel();
+		alertGeneratorPanel.addResourceIndexPanel();
 	}
 	
 	public void addAreaIndexPanel()
 	{
-		alerterCapGeneratePanel.addAreaIndexPanel();
+		alertGeneratorPanel.addAreaIndexPanel();
 	}	
 	
 	/**
@@ -108,7 +97,7 @@ public class _View implements Observer
 		switch (view)
 		{
 		case "AlertGenerator":
-			alerterCapGeneratePanel.updateView(target, value);
+			alertGeneratorPanel.updateView(target, value);
 			break;
 		case "AlertLogManager":
 			alerterLogPanel.addAlertTableRow(value);
@@ -134,12 +123,12 @@ public class _View implements Observer
 
 	public String getLoadTextField()
 	{
-		return alerterCapGeneratePanel.getLoadTextField();
+		return alertGeneratorPanel.getLoadTextField();
 	}
 
 	public String getSaveTextField()
 	{
-		return alerterCapGeneratePanel.getSaveTextField();
+		return alertGeneratorPanel.getSaveTextField();
 	}
 
 	public void setId(String name) 
@@ -154,83 +143,46 @@ public class _View implements Observer
 
 	public void setTextArea(String message)
 	{
-		alerterLogPanel.setTextArea(message);
-	}
-	
-	public AlertLogTableModel getAlertLogTableModel()
-	{
-		return controller.getAlertTableModel();
-	}
-
-	public String getAlertMessage(String identifier)
-	{
-		return controller.getAlertMessage(identifier);
-	}
-
-	public HashMap<String, String> getAlertElement()
-	{
-		return alerterCapGeneratePanel.getAlertElement();
+		alertGeneratorPanel.setTextArea(message);
 	}
 
 	public String getTextArea()
 	{
-		return alerterCapGeneratePanel.getTextArea();
+		return alertGeneratorPanel.getTextArea();
 	}
 	
 	public void addAlertTableRow(String message)
 	{			
 		alerterLogPanel.addAlertTableRow(message);
 	}
+
 	
-//	public void applyAlertElement()
-//	{
-//		alerterCapGeneratePanel.applyAlertElement();
-//	}
+	public void update(Observable obs, Object value)
+	{
+		String name = obs.getClass().getSimpleName();
+		System.out.println(name + " invoke update value : " + value.toString());
+		
+		alertGeneratorPanel.setTextArea(value.toString());
+		
+//		switch (name)
+//		{
+//		case "":			
+//			break;
+//		default:
+//			break;
+//		}
 
-//	public void selectTableEvent()
-//	{
-//		alerterDatabasePanel.selectTableEvent();
-//	}
-
-//	public void getQueryResult(List<String> results)
-//	{
-//		System.out.println("topView getQueryResult");
-//		alerterDatabasePanel.getQueryResult(results);
-//	}
-
-//	public String getQuery()
-//	{
-//		return alerterDatabasePanel.getQuery();
-//	}
+	}
 	
-	// Called from the Model
-	public void update(Observable obs, Object obj) {
-
-	//who called us and what did they send?
-	//System.out.println ("View      : Observable is " + obs.getClass() + ", object passed is " + obj.getClass());
-
-	//model Pull 
-	//ignore obj and ask model for value, 
-	//to do this, the view has to know about the model (which I decided I didn't want to do)
-	//uncomment next line to do Model Pull
-		//myTextField.setText("" + model.getValue());
-
-	//model Push 
-	//parse obj
-//	myTextField.setText("" + ((Integer)obj).intValue());	//obj is an Object, need to cast to an Integer
-
-	} //update()
-	
-	public void addController(ActionListener controller){
-		System.out.println("View      : adding controller");
-//		button.addActionListener(controller);	//need instance of controller before can add it as a listener 
-	} //addController()
-
-
-
+	public void addController(ActionListener controller)
+	{
+		System.out.println("View      : adding controller"); 
+	}
 
 	public void setController(_Controller controller)
 	{
 		this.controller = controller;
+		alertGeneratorPanel.setController(controller);
+		alerterLogPanel.setController(controller);
 	}
 }

@@ -5,22 +5,91 @@ import java.util.Map;
 
 public class AlertLogManager
 {
-	private Map<String, String> alertMessageMap;
-
+	public static final String NACK = "Nack";
+	public static final String ACK = "Ack";
+	public static final String COMP = "Comp";
+	
+	private Map<String, MessageAckPair> alertLogMap;
+	private Map<String, String> ackLogMap;
+	
+	
 	public AlertLogManager()
 	{
-		this.alertMessageMap = new HashMap<String, String>();		
+		this.alertLogMap = new HashMap<String, MessageAckPair>();
+		this.ackLogMap = new HashMap<String, String>();		
+
+		System.out.println("AlertLogManager instantiated");
 	}
 
-	public void put(String key, String message)
-	{
-		System.out.println("put Log to AlertLogTable : \n" + message);
-		alertMessageMap.put(key, message);
+	public void saveAlertLog(String identifier, String message)
+	{		
+		alertLogMap.put(identifier, new MessageAckPair(message, NACK));
 	}
 	
-	public String get(String key)
+	public void saveAckLog(String identifier, String message)
+	{		
+		ackLogMap.put(identifier, message);
+		String state = alertLogMap.get(identifier).getState();
+	
+		switch (state)
+		{
+		case NACK:
+			alertLogMap.get(identifier).setState(ACK);			
+			break;
+		case ACK:
+			alertLogMap.get(identifier).setState(COMP);			
+			break;
+
+		default:
+			alertLogMap.get(identifier).setState(NACK);		
+			break;
+		}
+	}
+	
+	public String loadAlertLog(String identifier)
 	{
-		System.out.println("get Log from AlertLogTable : \n" + key);
-		return alertMessageMap.get(key);
+		return alertLogMap.get(identifier).getMessage();
+	}
+	
+	public String loadAckLog(String identifier)
+	{
+		return ackLogMap.get(identifier);
+	}
+	
+	public void receiveAck(String identifier, String state)
+	{
+		alertLogMap.get(identifier).setState(state);
+	}
+	
+	public class MessageAckPair
+	{		
+		String message;
+		String state;
+		
+		public MessageAckPair(String message, String state)
+		{
+			this.message = message;
+			this.state = state;
+		}
+		
+		public String getMessage()
+		{
+			return this.message;
+		}
+		
+		public String getState()
+		{
+			return this.state;
+		}
+		
+		public void setMessage(String message)
+		{
+			this.message = message;
+		}
+		
+		public void setState(String state)
+		{
+			this.state = state;
+		}
 	}
 }

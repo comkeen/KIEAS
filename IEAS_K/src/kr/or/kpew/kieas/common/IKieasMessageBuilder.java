@@ -1,5 +1,10 @@
 package kr.or.kpew.kieas.common;
 
+import java.util.List;
+import java.util.Map;
+
+import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
+
 import com.google.publicalerts.cap.Point;
 
 
@@ -100,6 +105,7 @@ public interface IKieasMessageBuilder
 	public KieasMessageBuilder setMessage(String message);
 	public boolean validateMessage(String message);
 	public String generateKieasMessageIdentifier(String id);
+	public Map<String, List<Item>> getCapEnumMap();
 	
 	public String getDate();
 	public String convertDateToYmdhms(String date);

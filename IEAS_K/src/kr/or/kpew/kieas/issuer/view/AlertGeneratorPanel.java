@@ -18,6 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
@@ -25,11 +26,28 @@ import kr.or.kpew.kieas.issuer.controller._Controller;
 
 
 public class AlertGeneratorPanel
-{
-	private _Controller alerterActionListener;
-	private KieasMessageBuilder kieasMessageBuilder;
+{	
+	public static final String TEXT_AREA = "TextArea";
+	private static final String TEXT_FIELD = "TextField";
+	private static final String COMBO_BOX = "ComboBox";
 
-	private JScrollPane capGenerateScrollPanel;
+	public static final String LOAD_TEXT_FIELD = "LoadTextField";
+	public static final String SAVE_TEXT_FIELD = "SaveTextField";
+	public static final String LOAD_CAP_BUTTON = "Load Cap";
+	public static final String SAVE_CAP_BUTTON = "Save Cap";
+	private static final String REGISTER_BUTTON = "Register";
+	private static final String SET_ID = "Set Id";
+	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
+
+	public static final String INFO_INDEX = "InfoIndex";
+	
+	private static final int BASE_LINE = 100;
+	
+	
+	private _Controller controller;
+	private IKieasMessageBuilder kieasMessageBuilder;
+
+	private JScrollPane alertGenerateScrollPanel;
 	private JPanel mainPanel;
 
 	private Vector<Object> mViewComponents;
@@ -65,27 +83,12 @@ public class AlertGeneratorPanel
 	private JButton sendButton;
 	private JButton registerButton;
 	private JButton setIdButton;
-	
-	public static final String TEXT_AREA = "TextArea";
-	private static final String TEXT_FIELD = "TextField";
-	private static final String COMBO_BOX = "ComboBox";
-
-	public static final String LOAD_TEXT_FIELD = "LoadTextField";
-	public static final String SAVE_TEXT_FIELD = "SaveTextField";
-	public static final String LOAD_CAP_BUTTON = "Load Cap";
-	public static final String SAVE_CAP_BUTTON = "Save Cap";
-	private static final String REGISTER_BUTTON = "Register";
-	private static final String SET_ID = "Set Id";
-	private static final String INSERT_DATABASE_BUTTON = "Insert DB";
-
-	public static final String INFO_INDEX = "InfoIndex";
-	
-	private static final int BASE_LINE = 100;
 
 
-	public AlertGeneratorPanel(_Controller controller)
+
+	public AlertGeneratorPanel()
 	{
-		this.alerterActionListener = controller;
+//		this.alerterActionListener = controller;
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
 		initPanel();
@@ -107,7 +110,7 @@ public class AlertGeneratorPanel
 		mViewComponents.addElement(infoComponents);
 		mViewComponents.addElement(areaComponents);
 
-		this.capGenerateScrollPanel = new JScrollPane(mainPanel);
+		this.alertGenerateScrollPanel = new JScrollPane(mainPanel);
 	}
 
 	private Component initTextArea()
@@ -312,7 +315,7 @@ public class AlertGeneratorPanel
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
-		button.addActionListener(alerterActionListener);
+		button.addActionListener(controller);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return button;
 	}
@@ -431,7 +434,7 @@ public class AlertGeneratorPanel
 	private JButton createAndAddAddButton(String name, JPanel panel)
 	{
 		JButton button = new JButton(name);
-		button.addActionListener(alerterActionListener);
+		button.addActionListener(controller);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		panel.add(button);
@@ -442,7 +445,7 @@ public class AlertGeneratorPanel
 
 	public JScrollPane getPanel()
 	{
-		return this.capGenerateScrollPanel;
+		return this.alertGenerateScrollPanel;
 	}
 
 	public HashMap<String, String> getAlertElement()
@@ -608,6 +611,16 @@ public class AlertGeneratorPanel
 	public String getTextArea()
 	{
 		return ((JTextArea) panelComponenets.get(TEXT_AREA)).getText();
+	}
+
+	public void setController(_Controller controller)
+	{
+		this.controller = controller;
+	}
+
+	public void setTextArea(String message) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

@@ -5,9 +5,10 @@ import kr.or.kpew.kieas.issuer.view._View;
 
 public class IssuerManager
 {
-	_Controller controller;
-	_View view;
 	_Model model;
+	_View view;
+	_Controller controller;
+	
 	
 	public IssuerManager()
 	{
@@ -23,7 +24,7 @@ public class IssuerManager
 		model.addObserver(view);
 		
 		view.setController(controller);
-		controller.setModel(model);
-		controller.setView(view);
+		controller.addModel(model);
+		controller.addView(view);
 	}
 }
