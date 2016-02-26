@@ -175,37 +175,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		this.mAlert = buildDefaultAlert();
 	}
 
-	/**
-	 * View에 사용될 Enum을 Item으로 사용하여 Value를 디스플레이하고 Key에 의해 아이템 판별이 이루어진다.
-	 */
-	public static class Item
-	{
-		private String key;
-		private String value;
-
-
-		public Item(String key, String value)
-		{
-			this.key = key;
-			this.value = value;
-		}
-
-		public String getKey()
-		{
-			return key;
-		}
-
-		public String getValue()
-		{
-			return value;
-		}
-
-		public String toString()
-		{
-			return value;
-		}
-	}
-
 
 	/**
 	 * CAP 메시지에서 최소한의 요소만 작성되어있는 기본적인 메시지 생성

@@ -6,15 +6,15 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Random;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.ITransmitter;
+import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 
-public class _Model extends Observable
+public class Model extends Observable
 {
 	private IKieasMessageBuilder kieasMessageBuilder;
 	private ITransmitter transmitter;
@@ -33,7 +33,7 @@ public class _Model extends Observable
 	 * Database 접근을 위한 DatabaseHandler 초기화.
 	 * @param alerterController Controller
 	 */
-	public _Model()
+	public Model()
 	{
 		this.transmitter = new Transmitter(this);
 		this.alerterGenerator = new AlertGenerator();
@@ -52,12 +52,6 @@ public class _Model extends Observable
 		componentProfile.setId(id);
 		transmitter.addReceiver(id);
 	}
-
-//	public void addAlertGeneratorObserver(Observer alertGeneratorPanel)
-//	{
-//		System.out.println("addGeneratorObserver");
-//		alerterGenerator.addObserver(alertGeneratorPanel);
-//	}
 	
 	public String generateAndSetID()
 	{
@@ -101,7 +95,7 @@ public class _Model extends Observable
 
 	public void sendMessage()
 	{
-		String message = alerterGenerator.getMessage();
+		String message = alerterGenerator.getAlertMessage();
 		
 		transmitter.sendMessage(message, KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 
@@ -142,10 +136,12 @@ public class _Model extends Observable
 	{
 		this.alert = xmlReaderAndWriter.loadXml(path);
 //		alerterGenerator.setMessage(alert);
-		
+		String target = "";
+		String value = "";
 		System.out.println("load cap notify");
 		setChanged();
-		notifyObservers(alert);
+		//TODO
+		notifyObservers(new Item(target, value));
 	}	
 	
 	public void writeCap(String path, String message)
@@ -201,7 +197,7 @@ public class _Model extends Observable
 
 	public void applyMessage(String message)
 	{
-		alerterGenerator.setMessage(message);
+		alerterGenerator.setAlertMessage(message);
 	}	
 	
 	private String getLocalServerIp()

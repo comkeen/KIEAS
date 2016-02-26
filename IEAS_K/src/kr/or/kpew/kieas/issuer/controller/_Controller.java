@@ -12,40 +12,38 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import kr.or.kpew.kieas.issuer.model._Model;
+import kr.or.kpew.kieas.issuer.model.Model;
 import kr.or.kpew.kieas.issuer.view._View;
 
 
 public class _Controller implements ActionListener, ListSelectionListener, WindowListener
 { 	
 	private _View view;
-	private _Model model;
+	private Model model;
 	
 	private List<_View> views;
-	private List<_Model> models;
+	private List<Model> models;
 	
 	
 	public _Controller()
 	{		
-		this.models = new ArrayList<_Model>();
+		this.models = new ArrayList<Model>();
 		this.views = new ArrayList<_View>();
 	}
 
-	public void addModel(_Model model)
+	public void addModel(Model model)
 	{
-//		models.add(model);
-		this.model = model;
-		System.out.println("Controller : adding model");
+		models.add(model);
+//		this.model = model;
 	}
 
 	public void addView(_View view)
 	{
-//		views.add(view);
-		this.view = view;
-		System.out.println("Controller : adding view");
+		views.add(view);
+//		this.view = view;
 	}
 	
-	public void removeModel(_Model model)
+	public void removeModel(Model model)
 	{
 		models.remove(model);
 	}

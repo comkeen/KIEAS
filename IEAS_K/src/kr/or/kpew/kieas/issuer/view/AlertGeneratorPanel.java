@@ -22,9 +22,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
+import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
 import kr.or.kpew.kieas.issuer.controller._Controller;
 
 

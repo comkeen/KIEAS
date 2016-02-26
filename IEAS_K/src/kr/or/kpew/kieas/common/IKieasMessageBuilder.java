@@ -3,8 +3,6 @@ package kr.or.kpew.kieas.common;
 import java.util.List;
 import java.util.Map;
 
-import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
-
 import com.google.publicalerts.cap.Point;
 
 

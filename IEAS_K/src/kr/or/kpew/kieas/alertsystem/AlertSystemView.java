@@ -21,9 +21,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
+import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
 
 public class AlertSystemView implements Observer {
 	//public AlertSystemModel model;
