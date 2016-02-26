@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -25,7 +28,7 @@ import kr.or.kpew.kieas.common.KieasMessageBuilder.Item;
 import kr.or.kpew.kieas.issuer.controller._Controller;
 
 
-public class AlertGeneratorPanel
+public class AlertGeneratorPanel implements Observer
 {	
 	public static final String TEXT_AREA = "TextArea";
 	private static final String TEXT_FIELD = "TextField";
@@ -44,7 +47,6 @@ public class AlertGeneratorPanel
 	private static final int BASE_LINE = 100;
 	
 	
-	private _Controller controller;
 	private IKieasMessageBuilder kieasMessageBuilder;
 
 	private JScrollPane alertGenerateScrollPanel;
@@ -52,6 +54,7 @@ public class AlertGeneratorPanel
 
 	private Vector<Object> mViewComponents;
 	private HashMap<String, Component> panelComponenets;
+	private List<JButton> buttons;
 	private JScrollPane textAreaPane;
 	private JTextArea mTextArea;
 	
@@ -97,7 +100,8 @@ public class AlertGeneratorPanel
 	private void initPanel()
 	{		
 		this.mViewComponents = new Vector<>();		
-		this.panelComponenets = new HashMap<>();		
+		this.panelComponenets = new HashMap<>();
+		this.buttons = new ArrayList<>();
 		this.mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -315,7 +319,7 @@ public class AlertGeneratorPanel
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
-		button.addActionListener(controller);
+		buttons.add(button);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return button;
 	}
@@ -434,7 +438,7 @@ public class AlertGeneratorPanel
 	private JButton createAndAddAddButton(String name, JPanel panel)
 	{
 		JButton button = new JButton(name);
-		button.addActionListener(controller);
+		buttons.add(button);
 		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		panel.add(button);
@@ -615,12 +619,21 @@ public class AlertGeneratorPanel
 
 	public void setController(_Controller controller)
 	{
-		this.controller = controller;
+		for (JButton button : buttons)
+		{
+			button.addActionListener(controller);
+		}
 	}
 
-	public void setTextArea(String message) {
-		// TODO Auto-generated method stub
-		
+	public void setTextArea(String message)
+	{
+		mTextArea.setText(message);
+	}
+
+	@Override
+	public void update(Observable observable, Object value)
+	{
+		setTextArea(value.toString());
 	}
 }
 

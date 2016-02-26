@@ -8,12 +8,12 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kr.or.kpew.kieas.issuer.model._Model;
 import kr.or.kpew.kieas.issuer.view._View;
-import kr.or.kpew.kieas.issuer.view.resource.AlertLogTableModel;
 
 
 public class _Controller implements ActionListener, ListSelectionListener, WindowListener
@@ -33,14 +33,14 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 
 	public void addModel(_Model model)
 	{
-		models.add(model);
+//		models.add(model);
 		this.model = model;
 		System.out.println("Controller : adding model");
 	}
 
 	public void addView(_View view)
 	{
-		views.add(view);
+//		views.add(view);
 		this.view = view;
 		System.out.println("Controller : adding view");
 	}
@@ -122,11 +122,31 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	@Override
 	public void windowClosed(WindowEvent e) {}
 
-
+	
+	
+	/**
+	 * 프로그램 종료시 네트워크 접속 종료
+	 */
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		model.systemExit();
+		System.out.println("Program closing");
+		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
+		String title = "프로그램 종료";
+		
+		if (JOptionPane.showConfirmDialog(view.getFrame(),
+			question,
+			title,
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+	    {
+			model.closeConnection();
+	        System.exit(0);
+	    }
+		else
+		{
+			System.out.println("cancel exit program");
+		}
 	}
 
 

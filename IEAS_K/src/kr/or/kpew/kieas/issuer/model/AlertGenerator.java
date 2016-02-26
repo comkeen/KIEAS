@@ -1,12 +1,16 @@
 package kr.or.kpew.kieas.issuer.model;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 
 
-public class AlertGenerator
+public class AlertGenerator extends Observable
 {	
 	private KieasMessageBuilder kieasMessageBuilder;
 
+	private Observer view;
 	/**
 	 * CAP 메시지를 다루기 위해 사용되는 KieasMessageBuilder 객체 생성.
 	 * @param _AlerterModelManager Model들을 관리하는 ModelManager. 
@@ -22,7 +26,7 @@ public class AlertGenerator
 
 	private void init()
 	{
-	
+		
 	}
 	
 	public String getMessage()
@@ -33,6 +37,9 @@ public class AlertGenerator
 	public void setMessage(String message)
 	{
 		this.kieasMessageBuilder.setMessage(message);
+		setChanged();
+		notifyObservers();
+		System.out.println("AlertGenerator generate Message : \n" + message);
 	}
 
 //	public void setModelProperty(String target, String value)

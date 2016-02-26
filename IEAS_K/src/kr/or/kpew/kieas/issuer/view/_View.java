@@ -3,8 +3,6 @@ package kr.or.kpew.kieas.issuer.view;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -38,6 +36,7 @@ public class _View implements Observer
 		this.alerterLogPanel = new AlertLogPanel(this);
 
 		init();
+		System.out.println("View Instantiated");
 	}
 
 	private void init()
@@ -46,7 +45,6 @@ public class _View implements Observer
 		mainFrame.setSize(1024, 768);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		mainFrame.addWindowListener(controller);
 
 		this.mainTabbedPane = new JTabbedPane();
 		Container container = mainFrame.getContentPane();
@@ -85,42 +83,6 @@ public class _View implements Observer
 		alertGeneratorPanel.addAreaIndexPanel();
 	}	
 	
-	/**
-	 * Model의 데이터 값이 바뀌었을 경우 View 갱신을 위해 Model에 의해 호출된다.
-	 * 
-	 * @param view 갱신되어야 하는 View 클래스 이름
-	 * @param target 값이 표시되는 Component의 이름
-	 * @param value 표시되는 값
-	 */
-	public void updateView(String view, String target, String value)
-	{
-		switch (view)
-		{
-		case "AlertGenerator":
-			alertGeneratorPanel.updateView(target, value);
-			break;
-		case "AlertLogManager":
-			alerterLogPanel.addAlertTableRow(value);
-			break;
-		default:
-			System.out.println("there is no such a view " + view);
-			break;
-		}
-	}
-	
-	public void updateView(String view, String target, List<String> value)
-	{
-		switch (view)
-		{
-		case "AlerterDataBasePanel":
-//			alerterDatabasePanel.getQueryResult(value);
-			break;
-		default:
-			System.out.println("there is no such a view " + view);
-			break;
-		}
-	}
-
 	public String getLoadTextField()
 	{
 		return alertGeneratorPanel.getLoadTextField();
@@ -156,33 +118,42 @@ public class _View implements Observer
 		alerterLogPanel.addAlertTableRow(message);
 	}
 
-	
-	public void update(Observable obs, Object value)
+	@Override
+	public void update(Observable observable, Object value)
 	{
-		String name = obs.getClass().getSimpleName();
-		System.out.println(name + " invoke update value : " + value.toString());
-		
-		alertGeneratorPanel.setTextArea(value.toString());
+		System.out.println(observable.getClass().getSimpleName() + " invoke update");
+		String name = observable.getClass().getSimpleName();
+		alertGeneratorPanel.setTextArea(value.toString());	
 		
 //		switch (name)
 //		{
-//		case "":			
+//		case "_Model":
+//			System.out.println("update _Model");
+//			break;
+//		case "AlertGenerator":	
+//			System.out.println("update AlertGenerator");	
 //			break;
 //		default:
 //			break;
 //		}
-
 	}
 	
 	public void addController(ActionListener controller)
 	{
-		System.out.println("View      : adding controller"); 
+		System.out.println("View : adding controller"); 
 	}
 
 	public void setController(_Controller controller)
 	{
 		this.controller = controller;
+		
+		mainFrame.addWindowListener(controller);
 		alertGeneratorPanel.setController(controller);
 		alerterLogPanel.setController(controller);
+	}
+
+	public Observer getAlertGeneratorPanel()
+	{
+		return this.alertGeneratorPanel;
 	}
 }

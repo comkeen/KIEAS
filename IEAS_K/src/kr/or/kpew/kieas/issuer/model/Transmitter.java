@@ -83,7 +83,7 @@ public class Transmitter implements ITransmitter
 				session.close();
 				connection.close();			
 			}
-			System.out.println("Alerter Connection Close");
+			System.out.println("Issuer Connection Closed");
 		}
 		catch (JMSException e)
 		{

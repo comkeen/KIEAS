@@ -22,6 +22,7 @@ public class IssuerManager
 	private void init()
 	{
 		model.addObserver(view);
+//		model.addAlertGeneratorObserver(view.getAlertGeneratorPanel());
 		
 		view.setController(controller);
 		controller.addModel(model);

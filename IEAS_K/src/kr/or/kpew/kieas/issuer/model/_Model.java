@@ -6,10 +6,8 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Random;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.ITransmitter;
@@ -25,6 +23,8 @@ public class _Model extends Observable
 	private AlertGenerator alerterGenerator;
 	private AlertLogManager alertLogManager;
 	private ComponentProfile componentProfile;
+	
+	private String alert;
 	
 		
 	/**
@@ -50,8 +50,14 @@ public class _Model extends Observable
 	{	
 		String id = generateAndSetID();
 		componentProfile.setId(id);
-		transmitter.addReceiver(id);	
+		transmitter.addReceiver(id);
 	}
+
+//	public void addAlertGeneratorObserver(Observer alertGeneratorPanel)
+//	{
+//		System.out.println("addGeneratorObserver");
+//		alerterGenerator.addObserver(alertGeneratorPanel);
+//	}
 	
 	public String generateAndSetID()
 	{
@@ -134,10 +140,12 @@ public class _Model extends Observable
 	
 	public void loadCap(String path)
 	{
-		String message = xmlReaderAndWriter.loadXml(path);
-		alerterGenerator.setMessage(message);
+		this.alert = xmlReaderAndWriter.loadXml(path);
+//		alerterGenerator.setMessage(alert);
 		
-		notifyObservers(message);
+		System.out.println("load cap notify");
+		setChanged();
+		notifyObservers(alert);
 	}	
 	
 	public void writeCap(String path, String message)
@@ -189,29 +197,7 @@ public class _Model extends Observable
 //	{
 //		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
 //	}
-	
-	/**
-	 * 프로그램 종료시 네트워크 접속 종료
-	 */
-	public void systemExit()
-	{
-		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
-		String title = "프로그램 종료";
-		JFrame frame = new JFrame();
-		if (JOptionPane.showConfirmDialog(frame,
-			question,
-			title,
-			JOptionPane.YES_NO_OPTION,
-			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
-	    {
-			transmitter.closeConnection();
-	        System.exit(0);
-	    }
-		else
-		{
-			System.out.println("cancel exit program");
-		}
-	}
+
 
 	public void applyMessage(String message)
 	{
@@ -240,5 +226,10 @@ public class _Model extends Observable
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void closeConnection()
+	{
+		transmitter.closeConnection();
 	}
 }
