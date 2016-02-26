@@ -163,15 +163,15 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public KieasMessageBuilder()
 	{
-		this.capXmlBuilder = new CapXmlBuilder();
-		this.capXmlParser = new CapXmlParser(true);
-		this.capValidator = new CapValidator();
-		
 		init();
 	}
 	
 	private void init()
 	{
+		this.capXmlBuilder = new CapXmlBuilder();
+		this.capXmlParser = new CapXmlParser(true);
+		this.capValidator = new CapValidator();
+		
 		this.mAlert = buildDefaultAlert();
 	}
 
@@ -202,6 +202,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 				.setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT)
 				.setScope(Alert.Scope.RESTRICTED)
+				.addCode(KieasConstant.CODE)
 				.buildPartial();
 		
 		return alert;

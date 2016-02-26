@@ -13,6 +13,7 @@ import kr.or.kpew.kieas.common.ITransmitter;
 import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.issuer.view.View;
 
 public class Model extends Observable
 {
@@ -20,11 +21,10 @@ public class Model extends Observable
 	private ITransmitter transmitter;
 	
 	private XmlReaderAndWriter xmlReaderAndWriter;
-	private AlertGenerator alerterGenerator;
 	private AlertLogManager alertLogManager;
 	private ComponentProfile componentProfile;
 	
-	private String alert;
+	private String mAlertMessage;
 	
 		
 	/**
@@ -36,7 +36,6 @@ public class Model extends Observable
 	public Model()
 	{
 		this.transmitter = new Transmitter(this);
-		this.alerterGenerator = new AlertGenerator();
 		this.alertLogManager = new AlertLogManager();
 		this.xmlReaderAndWriter = new XmlReaderAndWriter();
 		this.componentProfile = new ComponentProfile();
@@ -95,7 +94,7 @@ public class Model extends Observable
 
 	public void sendMessage()
 	{
-		String message = alerterGenerator.getAlertMessage();
+		String message = mAlertMessage;
 		
 		transmitter.sendMessage(message, KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
 
@@ -134,13 +133,12 @@ public class Model extends Observable
 	
 	public void loadCap(String path)
 	{
-		this.alert = xmlReaderAndWriter.loadXml(path);
-//		alerterGenerator.setMessage(alert);
-		String target = "";
-		String value = "";
-		System.out.println("load cap notify");
+		this.setAlertMessage(xmlReaderAndWriter.loadXml(path));
+		
+		String target = View.TEXT_AREA;
+		String value = mAlertMessage;
+		
 		setChanged();
-		//TODO
 		notifyObservers(new Item(target, value));
 	}	
 	
@@ -194,10 +192,9 @@ public class Model extends Observable
 //		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
 //	}
 
-
-	public void applyMessage(String message)
+	public void setAlertMessage(String message)
 	{
-		alerterGenerator.setAlertMessage(message);
+		this.mAlertMessage = message;
 	}	
 	
 	private String getLocalServerIp()

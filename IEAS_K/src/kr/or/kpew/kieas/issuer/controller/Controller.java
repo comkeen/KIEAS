@@ -13,34 +13,34 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kr.or.kpew.kieas.issuer.model.Model;
-import kr.or.kpew.kieas.issuer.view._View;
+import kr.or.kpew.kieas.issuer.view.View;
 
 
-public class _Controller implements ActionListener, ListSelectionListener, WindowListener
-{ 	
-	private _View view;
-	private Model model;
-	
-	private List<_View> views;
+public class Controller implements ActionListener, ListSelectionListener, WindowListener
+{ 		
+	private List<View> views;
 	private List<Model> models;
 	
 	
-	public _Controller()
+	public Controller()
 	{		
+		init();
+	}
+	
+	private void init()
+	{
 		this.models = new ArrayList<Model>();
-		this.views = new ArrayList<_View>();
+		this.views = new ArrayList<View>();		
 	}
 
 	public void addModel(Model model)
 	{
 		models.add(model);
-//		this.model = model;
 	}
 
-	public void addView(_View view)
+	public void addView(View view)
 	{
 		views.add(view);
-//		this.view = view;
 	}
 	
 	public void removeModel(Model model)
@@ -48,7 +48,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 		models.remove(model);
 	}
 	
-	public void removeView(_View view)
+	public void removeView(View view)
 	{
 		models.remove(view);
 	}
@@ -65,6 +65,10 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 	{
 		String actionCommand = event.getActionCommand();
 		System.out.println("action triggered : " + actionCommand);
+		
+		Model model = models.get(0);
+		View view = views.get(0);
+		
 		switch (actionCommand)
 		{		
 		case "Send":
@@ -81,7 +85,7 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 			return;
 		case "Apply":
 			//TODO
-			model.applyMessage(view.getTextArea());
+			model.setAlertMessage(view.getTextArea());
 			return;
 		case "Register":
 			model.registerToGateway();
@@ -131,6 +135,9 @@ public class _Controller implements ActionListener, ListSelectionListener, Windo
 		System.out.println("Program closing");
 		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
 		String title = "프로그램 종료";
+				
+		Model model = models.get(0);
+		View view = views.get(0);
 		
 		if (JOptionPane.showConfirmDialog(view.getFrame(),
 			question,

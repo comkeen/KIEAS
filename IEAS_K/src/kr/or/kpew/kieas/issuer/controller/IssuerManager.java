@@ -1,20 +1,20 @@
 package kr.or.kpew.kieas.issuer.controller;
 
 import kr.or.kpew.kieas.issuer.model.Model;
-import kr.or.kpew.kieas.issuer.view._View;
+import kr.or.kpew.kieas.issuer.view.View;
 
 public class IssuerManager
 {
 	Model model;
-	_View view;
-	_Controller controller;
+	View view;
+	Controller controller;
 	
 	
 	public IssuerManager()
 	{
 		this.model = new Model();
-		this.view = new _View();
-		this.controller = new _Controller();
+		this.view = new View();
+		this.controller = new Controller();
 
 		init();
 	}
@@ -22,9 +22,8 @@ public class IssuerManager
 	private void init()
 	{
 		model.addObserver(view);
-//		model.addAlertGeneratorObserver(view.getAlertGeneratorPanel());
 		
-		view.setController(controller);
+		view.addController(controller);
 		controller.addModel(model);
 		controller.addView(view);
 	}

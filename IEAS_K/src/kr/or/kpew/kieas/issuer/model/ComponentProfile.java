@@ -11,6 +11,11 @@ public class ComponentProfile
 	
 	public ComponentProfile()
 	{
+		init();
+	}
+	
+	private void init()
+	{
 		this.id = DEFAULT_ID;
 		this.address = DEFAULT_ADDRESS;
 	}

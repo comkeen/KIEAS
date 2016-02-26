@@ -17,7 +17,7 @@ import javax.swing.JTextArea;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.issuer.controller._Controller;
+import kr.or.kpew.kieas.issuer.controller.Controller;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
@@ -27,8 +27,8 @@ public class AlertLogPanel
 	private static final String CLEAR_BUTTON = "Clear";
 	
 	
-	private _View topView;
-	private _Controller controller;
+	private View topView;
+	private Controller controller;
 
 	private JPanel mainPanel;
 	
@@ -48,7 +48,7 @@ public class AlertLogPanel
 	private Map<String, String> mAlertMessageMap;
 	
 	
-	public AlertLogPanel(_View topView)
+	public AlertLogPanel(View topView)
 	{
 		this.topView = topView;
 //		this.viewActionListener = controller;
@@ -184,8 +184,14 @@ public class AlertLogPanel
 //		return mAlertElementMap;
 //	}
 	
-	public void setController(_Controller controller)
+	public void addController(Controller controller)
 	{
 		this.controller = controller;
+	}
+
+	public void removeController(Controller controller)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

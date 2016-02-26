@@ -17,7 +17,7 @@ public class AlertLogManager
 	{
 		this.alertLogMap = new HashMap<String, MessageAckPair>();
 		this.ackLogMap = new HashMap<String, String>();		
-
+		
 		System.out.println("AlertLogManager instantiated");
 	}
 

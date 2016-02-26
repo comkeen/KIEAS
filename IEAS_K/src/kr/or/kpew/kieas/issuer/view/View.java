@@ -12,13 +12,16 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.or.kpew.kieas.issuer.controller._Controller;
+import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.issuer.controller.Controller;
 
 
-public class _View implements Observer
-{
-	private _Controller controller;
-
+public class View implements Observer
+{	
+	public static final String TEXT_AREA = "TextArea";
+	public static final String TEXT_FIELD = "TextField";
+	public static final String COMBO_BOX = "ComboBox";
+	
 	private AlertGeneratorPanel alertGeneratorPanel;
 	private AlertLogPanel alerterLogPanel;
 
@@ -29,7 +32,7 @@ public class _View implements Observer
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	public _View()
+	public View()
 	{
 		initLookAndFeel();
 		this.alertGeneratorPanel = new AlertGeneratorPanel();
@@ -121,39 +124,31 @@ public class _View implements Observer
 	@Override
 	public void update(Observable observable, Object value)
 	{
-		System.out.println(observable.getClass().getSimpleName() + " invoke update");
-		String name = observable.getClass().getSimpleName();
-		alertGeneratorPanel.setTextArea(value.toString());	
-		
-//		switch (name)
-//		{
-//		case "_Model":
-//			System.out.println("update _Model");
-//			break;
-//		case "AlertGenerator":	
-//			System.out.println("update AlertGenerator");	
-//			break;
-//		default:
-//			break;
-//		}
+		Item item = (Item) value;
+		System.out.println(observable.getClass().getSimpleName() + " invoke update : " + item.getKey());
+
+		switch (item.getKey())
+		{
+		case TEXT_AREA:
+			alertGeneratorPanel.setTextArea(item.getValue());				
+			break;
+
+		default:
+			break;
+		};
 	}
 	
-	public void addController(ActionListener controller)
+	public void addController(Controller controller)
 	{
-		System.out.println("View : adding controller"); 
-	}
-
-	public void setController(_Controller controller)
-	{
-		this.controller = controller;
-		
 		mainFrame.addWindowListener(controller);
-		alertGeneratorPanel.setController(controller);
-		alerterLogPanel.setController(controller);
+		alertGeneratorPanel.addController(controller);
+		alerterLogPanel.addController(controller); 
 	}
-
-	public Observer getAlertGeneratorPanel()
+	
+	public void removeController(Controller controller)
 	{
-		return this.alertGeneratorPanel;
+		mainFrame.removeWindowListener(controller);
+		alertGeneratorPanel.removeController(controller);
+		alerterLogPanel.removeController(controller);
 	}
 }
