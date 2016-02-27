@@ -1,6 +1,6 @@
 package kr.or.kpew.kieas.issuer.model;
 
-public class ComponentProfile
+public class IssuerProfile
 {
 	private final String DEFAULT_ID = "Issuer";
 	private final String DEFAULT_ADDRESS = "localhost";
@@ -9,7 +9,7 @@ public class ComponentProfile
 	private String address;
 	
 	
-	public ComponentProfile()
+	public IssuerProfile()
 	{
 		init();
 	}

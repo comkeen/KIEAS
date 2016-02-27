@@ -148,6 +148,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	
 	private static final int DEFAULT_INFO_SIZE = 0;
+	private static final String EMPTY = "";
 	
 	
 	private CapXmlBuilder 	capXmlBuilder;
@@ -979,7 +980,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getLanguage(int index)
 	{
-		return mAlert.getInfo(index).getLanguage().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasLanguage())
+		{
+			return mAlert.getInfo(index).getLanguage().toString();			
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -988,7 +993,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getCategory(int index)
 	{
-		return mAlert.getInfo(index).getCategory(0).toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getCategoryCount() != 0)
+		{
+			return mAlert.getInfo(index).getCategory(0).toString();		
+		}
+		return EMPTY;
 	}
 	//public String getCategory(int infoIndex, int categoryIndex){}
 	/**
@@ -998,7 +1007,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getResponseType(int index)
 	{
-		return mAlert.getInfo(index).getResponseType(0).toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getResponseTypeCount() != 0)
+		{
+			return mAlert.getInfo(index).getResponseType(0).toString();	
+		}
+		return EMPTY;
 	}
 	//public String getResponseType(int infoIndex, int responseTypeIndex){}
 	/**
@@ -1007,23 +1020,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 */	
 	@Override
 	public String getEvent(int index)
-	{
-		try
+	{	
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
 		{
-			if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
-			{
-				return mAlert.getInfo(index).getEvent();				
-			}
-			else
-			{
-				return "";
-			}
+			return mAlert.getInfo(index).getEvent();				
 		}
-		catch (NotCapException e)
-		{
-			e.printStackTrace();
-			return "";
-		}
+		return EMPTY;		
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1032,7 +1034,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getUrgency(int index)
 	{
-		return mAlert.getInfo(index).getUrgency().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasUrgency())
+		{
+			return mAlert.getInfo(index).getUrgency().toString();			
+		}
+		return EMPTY;	
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1041,7 +1047,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getSeverity(int index)
 	{
-		return mAlert.getInfo(index).getSeverity().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasSeverity())
+		{
+			return mAlert.getInfo(index).getSeverity().toString();			
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1050,7 +1060,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getCertainty(int index)
 	{
-		return mAlert.getInfo(index).getCertainty().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasCertainty())
+		{
+			return mAlert.getInfo(index).getCertainty().toString();			
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1059,7 +1073,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getAudience(int index)
 	{
-		return mAlert.getInfo(index).getAudience();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasAudience())
+		{
+			return mAlert.getInfo(index).getAudience();		
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1068,7 +1086,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getEventCode(int index) 
 	{
-		return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getEventCodeCount() != 0)
+		{
+			return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1077,7 +1099,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getEffective(int index)
 	{
-		return mAlert.getInfo(index).getEffective().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEffective())
+		{
+			return mAlert.getInfo(index).getEffective().toString();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1086,7 +1112,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getExpires(int index)
 	{
-		return mAlert.getInfo(index).getExpires();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasExpires())
+		{
+			return mAlert.getInfo(index).getExpires();
+		}
+		return EMPTY;
 	}	
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1095,7 +1125,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getSenderName(int index)
 	{
-		return mAlert.getInfo(index).getSenderName().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasSenderName())
+		{
+			return mAlert.getInfo(index).getSenderName().toString();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1104,7 +1138,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getHeadline(int index)
 	{
-		return mAlert.getInfo(index).getHeadline().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasHeadline())
+		{
+			return mAlert.getInfo(index).getHeadline().toString();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1113,7 +1151,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getDescription(int index)
 	{
-		return mAlert.getInfo(index).getDescription().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasDescription())
+		{
+			return mAlert.getInfo(index).getDescription().toString();
+		}
+		return EMPTY;
 	}	
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1122,7 +1164,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getInstruction(int index)
 	{
-		return mAlert.getInfo(index).getInstruction();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasInstruction())
+		{
+			return mAlert.getInfo(index).getInstruction();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1131,7 +1177,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getWeb(int index)
 	{
-		return mAlert.getInfo(index).getWeb().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasWeb())
+		{
+			return mAlert.getInfo(index).getWeb().toString();
+		}
+		return EMPTY;
 	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
@@ -1140,7 +1190,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getContact(int index)
 	{
-		return mAlert.getInfo(index).getContact().toString();
+		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasContact())
+		{
+			return mAlert.getInfo(index).getContact().toString();
+		}
+		return EMPTY;
 	}
 	
 	/**

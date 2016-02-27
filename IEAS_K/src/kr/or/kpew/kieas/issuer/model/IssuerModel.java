@@ -15,14 +15,14 @@ import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.issuer.view.View;
 
-public class Model extends Observable
+public class IssuerModel extends Observable
 {
 	private IKieasMessageBuilder kieasMessageBuilder;
 	private ITransmitter transmitter;
 	
 	private XmlReaderAndWriter xmlReaderAndWriter;
-	private AlertLogManager alertLogManager;
-	private ComponentProfile componentProfile;
+	private AlertLogger alertLogger;
+	private IssuerProfile componentProfile;
 	
 	private String mAlertMessage;
 	
@@ -33,12 +33,12 @@ public class Model extends Observable
 	 * Database 접근을 위한 DatabaseHandler 초기화.
 	 * @param alerterController Controller
 	 */
-	public Model()
+	public IssuerModel()
 	{
 		this.transmitter = new Transmitter(this);
-		this.alertLogManager = new AlertLogManager();
+		this.alertLogger = new AlertLogger();
 		this.xmlReaderAndWriter = new XmlReaderAndWriter();
-		this.componentProfile = new ComponentProfile();
+		this.componentProfile = new IssuerProfile();
 
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
@@ -100,7 +100,7 @@ public class Model extends Observable
 
 		kieasMessageBuilder.setMessage(message);
 		String identifier = kieasMessageBuilder.getIdentifier();
-		alertLogManager.saveAlertLog(identifier, message);
+		alertLogger.saveAlertLog(identifier, message);
 		
 		System.out.println("Send Message to " + "Gateway : ");		
 	}
@@ -111,7 +111,7 @@ public class Model extends Observable
 		{
 			System.out.println("Message Received");
 			kieasMessageBuilder.setMessage(message);
-			alertLogManager.saveAlertLog(kieasMessageBuilder.getIdentifier(), message);
+			alertLogger.saveAlertLog(kieasMessageBuilder.getIdentifier(), message);
 //			String sender = kieasMessageBuilder.getSender();
 //			String identifier = kieasMessageBuilder.getIdentifier();
 
@@ -149,7 +149,7 @@ public class Model extends Observable
 	
 	public void receiveGatewayAck(String identifier)
 	{
-		alertLogManager.receiveAck(identifier, AlertLogManager.ACK);
+		alertLogger.receiveAck(identifier, AlertLogger.ACK);
 	}
 	
 	

@@ -22,7 +22,7 @@ import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 
 public class Transmitter implements ITransmitter
 {
-	private Model modelManager;
+	private IssuerModel modelManager;
 
 	private Connection connection;
 	private Session session;
@@ -35,7 +35,7 @@ public class Transmitter implements ITransmitter
 	private String id;
 
 
-	public Transmitter(Model model)
+	public Transmitter(IssuerModel model)
 	{
 		this.modelManager = model;
 		

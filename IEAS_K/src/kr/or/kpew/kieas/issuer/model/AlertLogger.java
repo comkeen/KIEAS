@@ -3,7 +3,7 @@ package kr.or.kpew.kieas.issuer.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlertLogManager
+public class AlertLogger
 {
 	public static final String NACK = "Nack";
 	public static final String ACK = "Ack";
@@ -13,12 +13,12 @@ public class AlertLogManager
 	private Map<String, String> ackLogMap;
 	
 	
-	public AlertLogManager()
+	public AlertLogger()
 	{
 		this.alertLogMap = new HashMap<String, MessageAckPair>();
 		this.ackLogMap = new HashMap<String, String>();		
 		
-		System.out.println("AlertLogManager instantiated");
+		System.out.println("AlertLogger instantiated");
 	}
 
 	public void saveAlertLog(String identifier, String message)

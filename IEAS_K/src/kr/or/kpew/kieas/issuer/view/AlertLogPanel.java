@@ -17,7 +17,7 @@ import javax.swing.JTextArea;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.issuer.controller.Controller;
+import kr.or.kpew.kieas.issuer.controller.IssuerController;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
@@ -28,7 +28,7 @@ public class AlertLogPanel
 	
 	
 	private View topView;
-	private Controller controller;
+	private IssuerController controller;
 
 	private JPanel mainPanel;
 	
@@ -184,12 +184,12 @@ public class AlertLogPanel
 //		return mAlertElementMap;
 //	}
 	
-	public void addController(Controller controller)
+	public void addController(IssuerController controller)
 	{
 		this.controller = controller;
 	}
 
-	public void removeController(Controller controller)
+	public void removeController(IssuerController controller)
 	{
 		// TODO Auto-generated method stub
 		

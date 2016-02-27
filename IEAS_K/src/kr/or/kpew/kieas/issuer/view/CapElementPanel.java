@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -11,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -19,9 +22,9 @@ import javax.swing.JTextField;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.Item;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
-import kr.or.kpew.kieas.issuer.controller.Controller;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
 public class CapElementPanel
 {
@@ -30,39 +33,23 @@ public class CapElementPanel
 	
 	private IKieasMessageBuilder kieasMessageBuilder;
 	
-	private JPanel mainPanel;
-	private JTabbedPane infoPanel;
+	private JComponent mainPanel;
 	
-	private HashMap<String, Component> alertComponentMap;
-	private ArrayList<HashMap<String, Component>> infoComponentMaps;
+	private Map<String, Component> alertComponentMap;
+	private List<Map<String, Component>> infoComponentMaps;
+	private List<Map<String, Component>> resourceComponentMaps;
+	private List<Map<String, Component>> areaComponentMaps;
+	private List<JButton> buttons;
 
-	private ArrayList<JPanel> infoIndexPanels;
-	private ArrayList<JButton> buttons;
-
+	private List<JPanel> infoIndexPanels;
+	private List<JPanel> resourceIndexPanels;
+	private List<JPanel> areaIndexPanels;
 
 	private JTabbedPane resourcePanel;
-
-
-	private ArrayList<JPanel> resourceIndexPanels;
-
-
-	private ArrayList<HashMap<String, Component>> resourceComponents;
-
-
 	private int resourceCounter;
 
-
 	private JTabbedPane areaPanel;
-
-
-	private ArrayList<JPanel> areaIndexPanels;
-
-
-	private ArrayList<HashMap<String, Component>> areaComponents;
-
-
 	private int areaCounter;
-
 	
 	
 	public CapElementPanel()
@@ -93,7 +80,7 @@ public class CapElementPanel
 		return alertElementMap;
 	}
 	
-	private JPanel setCapAlertPanel(String cap)
+	public JComponent setCapAlertPanel(String cap)
 	{
 		JPanel capElementPanel = new JPanel();
 		capElementPanel.setLayout(new BoxLayout(capElementPanel, BoxLayout.Y_AXIS));
@@ -107,63 +94,78 @@ public class CapElementPanel
 		capElementPanel.add(addBox(KieasMessageBuilder.MSG_TYPE, View.COMBO_BOX));
 		capElementPanel.add(addBox(KieasMessageBuilder.SCOPE, View.COMBO_BOX));
 		capElementPanel.add(addBox(KieasMessageBuilder.CODE, View.TEXT_FIELD));
-//		mainPanel.add(initCapInfoPanel());
+		
+		kieasMessageBuilder.setMessage(cap);
+		
+		setCapElement(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
+		setCapElement(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
+		setCapElement(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
+		setCapElement(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
+		setCapElement(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
+		setCapElement(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
+		setCapElement(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());
+		
+		capElementPanel.add(setCapInfoPanel(cap));
 //		mainPanel.add(initCapResourcePanel());	
 //		mainPanel.add(initCapAreaPanel());	
+		
 		capElementPanel.setBorder(BorderFactory.createTitledBorder("Alert"));
-
-		kieasMessageBuilder.setMessage(cap);		
-		updateView(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-		updateView(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-		updateView(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
-		updateView(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
-		updateView(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
-		updateView(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
-		updateView(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());
 		
 		return capElementPanel;
 	}
 	
-	private Component initCapInfoPanel()
+	private JComponent setCapInfoPanel(String cap)
 	{
-		this.infoPanel = new JTabbedPane();
-		infoPanel.setBorder(BorderFactory.createEtchedBorder());
-		this.infoIndexPanels = new ArrayList<JPanel>();
-		this.infoComponentMaps = new ArrayList<HashMap<String, Component>>();
-
-		addInfoIndexPanel();
+		JTabbedPane infoPanel = new JTabbedPane();
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//		infoPanel.setBorder(BorderFactory.createEtchedBorder());
+		this.infoIndexPanels = new ArrayList<JPanel>();
+
+		this.infoComponentMaps = new ArrayList<Map<String, Component>>();
+		int infoCounter = 0;
+		
+		JPanel infoIndexPanel = createInfoIndexPanel(cap, infoCounter);
+		infoIndexPanels.add(infoIndexPanel);
+		infoPanel.addTab("Info", infoIndexPanel);
 		
 		return infoPanel;
 	}
 	
-	public void addInfoIndexPanel()
+	public JPanel createInfoIndexPanel(String cap, int infoIndex)
 	{
-		removeTabPanel(infoPanel);
-		infoComponentMaps.add(new HashMap<>());
+		infoComponentMaps.add(new HashMap<String, Component>());
+		
 		JPanel panel = new JPanel();
-		int infoCounter = infoIndexPanels.size() + 1;
-		System.out.println("infoCounter : " + infoCounter);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(KieasMessageBuilder.LANGUAGE, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.CATEGORY, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.EVENT, View.TEXT_FIELD, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.URGENCY, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.SEVERITY, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.CERTAINTY, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, View.COMBO_BOX, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.EFFECTIVE, View.TEXT_FIELD, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, View.TEXT_FIELD, infoComponentMaps, infoCounter)); 
-		panel.add(addBox(KieasMessageBuilder.HEADLINE, View.TEXT_FIELD, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, View.TEXT_AREA, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.WEB, View.TEXT_FIELD, infoComponentMaps, infoCounter));
-		panel.add(addBox(KieasMessageBuilder.CONTACT, View.TEXT_FIELD, infoComponentMaps, infoCounter));
+		panel.add(addBox(KieasMessageBuilder.LANGUAGE, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CATEGORY, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.EVENT, View.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.URGENCY, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.SEVERITY, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CERTAINTY, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, View.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, View.TEXT_FIELD, infoIndex)); 
+		panel.add(addBox(KieasMessageBuilder.HEADLINE, View.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, View.TEXT_AREA, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.WEB, View.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CONTACT, View.TEXT_FIELD, infoIndex));
+		
+		setCapElement(KieasMessageBuilder.LANGUAGE, kieasMessageBuilder.getLanguage(infoIndex));
+		setCapElement(KieasMessageBuilder.CATEGORY, kieasMessageBuilder.getCategory(infoIndex));
+		setCapElement(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(infoIndex));
+		setCapElement(KieasMessageBuilder.URGENCY, kieasMessageBuilder.getUrgency(infoIndex));
+		setCapElement(KieasMessageBuilder.SEVERITY, kieasMessageBuilder.getSeverity(infoIndex));
+		setCapElement(KieasMessageBuilder.CERTAINTY, kieasMessageBuilder.getCertainty(infoIndex));
+		setCapElement(KieasMessageBuilder.EVENT_CODE, kieasMessageBuilder.getEvent(infoIndex));
+		setCapElement(KieasMessageBuilder.SENDER_NAME, kieasMessageBuilder.getSenderName(infoIndex));
+		setCapElement(KieasMessageBuilder.HEADLINE, kieasMessageBuilder.getHeadline(infoIndex));
+		setCapElement(KieasMessageBuilder.DESCRIPTION, kieasMessageBuilder.getDescription(infoIndex));
+		setCapElement(KieasMessageBuilder.WEB, kieasMessageBuilder.getWeb(infoIndex));
+		setCapElement(KieasMessageBuilder.CONTACT, kieasMessageBuilder.getContact(infoIndex));
 		
 		infoIndexPanels.add(panel);
-		infoPanel.addTab("Info" + infoCounter, infoIndexPanels.get(infoCounter));
-		infoCounter++;
-		addTabPanel("Add Info", infoPanel, infoCounter);
+		return panel;
 	}
 	
 	private Component initCapResourcePanel()
@@ -171,7 +173,7 @@ public class CapElementPanel
 		this.resourcePanel = new JTabbedPane();
 		resourcePanel.setBorder(BorderFactory.createEtchedBorder());
 		this.resourceIndexPanels = new ArrayList<JPanel>();
-		this.resourceComponents = new ArrayList<HashMap<String, Component>>();
+		this.resourceComponentMaps = new ArrayList<Map<String, Component>>();
 
 		this.resourceCounter = 0;
 		addResourceIndexPanel();
@@ -183,13 +185,13 @@ public class CapElementPanel
 	public void addResourceIndexPanel()
 	{
 		removeTabPanel(resourcePanel);
-		resourceComponents.add(new HashMap<>());
+		resourceComponentMaps.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(KieasMessageBuilder.RESOURCE_DESC, View.TEXT_FIELD, resourceComponents, resourceCounter));
-		panel.add(addBox(KieasMessageBuilder.MIME_TYPE, View.TEXT_FIELD, resourceComponents, resourceCounter));
-		panel.add(addBox(KieasMessageBuilder.URI, View.TEXT_FIELD, resourceComponents, resourceCounter));
+//		panel.add(addBox(KieasMessageBuilder.RESOURCE_DESC, View.TEXT_FIELD, resourceComponentMaps, resourceCounter));
+//		panel.add(addBox(KieasMessageBuilder.MIME_TYPE, View.TEXT_FIELD, resourceComponentMaps, resourceCounter));
+//		panel.add(addBox(KieasMessageBuilder.URI, View.TEXT_FIELD, resourceComponentMaps, resourceCounter));
 		
 		resourceIndexPanels.add(panel);
 		resourcePanel.addTab("Resource" + resourceCounter, resourceIndexPanels.get(resourceCounter));
@@ -202,7 +204,7 @@ public class CapElementPanel
 		this.areaPanel = new JTabbedPane();
 		areaPanel.setBorder(BorderFactory.createEtchedBorder());
 		this.areaIndexPanels = new ArrayList<JPanel>();
-		this.areaComponents = new ArrayList<HashMap<String, Component>>();
+		this.areaComponentMaps = new ArrayList<Map<String, Component>>();
 
 		this.areaCounter = 0;
 		addAreaIndexPanel();
@@ -214,12 +216,12 @@ public class CapElementPanel
 	public void addAreaIndexPanel()
 	{
 		removeTabPanel(areaPanel);
-		areaComponents.add(new HashMap<>());
+		areaComponentMaps.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(KieasMessageBuilder.AREA_DESC, View.TEXT_FIELD, areaComponents, areaCounter));
-		panel.add(addBox(KieasMessageBuilder.GEO_CODE, View.TEXT_FIELD, areaComponents, areaCounter));
+//		panel.add(addBox(KieasMessageBuilder.AREA_DESC, View.TEXT_FIELD, areaComponentMaps, areaCounter));
+//		panel.add(addBox(KieasMessageBuilder.GEO_CODE, View.TEXT_FIELD, areaComponentMaps, areaCounter));
 		
 		areaIndexPanels.add(panel);
 		areaPanel.addTab("Area" + areaCounter, areaIndexPanels.get(areaCounter));
@@ -277,12 +279,13 @@ public class CapElementPanel
 			box.add(textArea);
 			return box;
 		default:
+			System.out.println("Fail to add Box");
 			return box;
 		}
 	}
 	
 
-	private Box addBox(String labelName, String type, ArrayList<HashMap<String, Component>> components, int index)
+	private Box addBox(String labelName, String type, int index)
 	{
 		Box box = Box.createHorizontalBox();
 
@@ -292,6 +295,7 @@ public class CapElementPanel
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
 		box.add(label);
 
+		Map<String, Component> infoComponentMap = infoComponentMaps.get(index);
 		switch (type)
 		{
 		case View.COMBO_BOX:
@@ -301,20 +305,26 @@ public class CapElementPanel
 				comboboxModel.addElement(value);		
 			}
 			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
-			components.get(index).put(labelName + index, comboBox);
+//			components.put(labelName + index, comboBox);
+			infoComponentMap.put(labelName, comboBox);
+			System.out.println(labelName);
 			box.add(comboBox);
 			return box;
 		case View.TEXT_FIELD:
 			JTextField textField = new JTextField();
-			components.get(index).put(labelName + index, textField);
+//			components.put(labelName + index, textField);
+			infoComponentMap.put(labelName, textField);
+			System.out.println(labelName);
 			box.add(textField);
 			return box;
 		case View.TEXT_AREA:
 			JTextArea textArea = new JTextArea();
-			components.get(index).put(labelName + index, textArea);
+//			components.put(labelName + index, textArea);
+			infoComponentMaps.get(index).put(labelName, textArea);
 			box.add(textArea);
 			return box;
 		default:
+			System.out.println("Fail to add Box");
 			return box;
 		}
 	}
@@ -339,23 +349,25 @@ public class CapElementPanel
 		return panel;
 	}
 	
-	private void removeTabPanel(JTabbedPane target)
+	private JComponent removeTabPanel(JTabbedPane target)
 	{
-		for(int i = 0 ; i < target.getComponentCount(); i++)
-		{
-			if(target.getTitleAt(i).equals("+"))
-			{
-				target.remove(target.getSelectedComponent());
-			}
-		}
+		target.removeAll();
+//		for(int i = 0 ; i < target.getComponentCount(); i++)
+//		{
+//			if(target.getTitleAt(i).equals("+"))
+//			{
+//				target.remove(target.getSelectedComponent());
+//			}
+//		}
+		return target;
 	}
 	
-	public Component getPanel()
+	public JComponent getPanel()
 	{
 		return mainPanel;		
 	}
 	
-	public void addController(Controller controller)
+	public void addController(IssuerController controller)
 	{
 		for (JButton button : buttons)
 		{
@@ -363,7 +375,7 @@ public class CapElementPanel
 		}
 	}
 	
-	public void removeController(Controller controller)
+	public void removeController(IssuerController controller)
 	{
 		for (JButton button : buttons)
 		{
@@ -371,7 +383,7 @@ public class CapElementPanel
 		}
 	}
 	
-	public void updateView(String target, String value)
+	public void setCapElement(String target, String value)
 	{		
 		if (alertComponentMap.get(target) instanceof JTextField)
 		{
@@ -389,35 +401,34 @@ public class CapElementPanel
 				}
 			}
 		}
-//
-//		for(int j = 0; j < infoCounter ; j++)
-//		{
-//			if(j > 0)
-//			{
-////				addInfoIndexPanel();
-//			}
-//			if (infoComponents.get(j).get(target) instanceof JTextField)
-//			{
-//				((JTextField) infoComponents.get(j).get(target)).setText(value);
-//				return;
-//			}
-//			if (infoComponents.get(j).get(target) instanceof JComboBox<?>)
-//			{
-//				for(int i = 0; i < ((JComboBox<?>) infoComponents.get(j).get(target)).getItemCount(); i++)
-//				{
-//					if((((Item) ((JComboBox<?>) infoComponents.get(j).get(target)).getItemAt(i)).getKey()).equals(value))
-//					{
-//						((JComboBox<?>) infoComponents.get(j).get(target)).setSelectedIndex(i);
-//						return;
-//					}
-//				}
-//			}
-//			if (infoComponents.get(j).get(target) instanceof JTextArea)
-//			{
-//				((JTextArea) infoComponents.get(j).get(target)).setText(value);
-//				return;
-//			}
-//		}		
+
+		System.out.println("Set InfoElement : " + infoComponentMaps.size());
+		for(int j = 0; j < infoComponentMaps.size() ; j++)
+		{
+			Map<String, Component> infoComponentMap = infoComponentMaps.get(j);
+			
+			if (infoComponentMap.get(target) instanceof JTextField)
+			{
+				((JTextField) infoComponentMap.get(target)).setText(value);
+				return;
+			}
+			if (infoComponentMap.get(target) instanceof JComboBox<?>)
+			{
+				for(int i = 0; i < ((JComboBox<?>) infoComponentMap.get(target)).getItemCount(); i++)
+				{
+					if((((Item) ((JComboBox<?>) infoComponentMap.get(target)).getItemAt(i)).getKey()).equals(value))
+					{
+						((JComboBox<?>) infoComponentMap.get(target)).setSelectedIndex(i);
+						return;
+					}
+				}
+			}
+			if (infoComponentMap.get(target) instanceof JTextArea)
+			{
+				((JTextArea) infoComponentMap.get(target)).setText(value);
+				return;
+			}
+		}		
 //		//resourcePanel updateView
 //		for(int j = 0; j < resourceCounter; j++)
 //		{

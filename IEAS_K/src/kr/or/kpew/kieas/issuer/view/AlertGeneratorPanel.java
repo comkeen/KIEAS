@@ -4,23 +4,22 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import kr.or.kpew.kieas.issuer.controller.Controller;
+import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
 
-public class AlertGeneratorPanel implements Observer
+public class AlertGeneratorPanel
 {	
 	private static final String LOAD_TEXT_FIELD = "LoadTextField";
 	private static final String SAVE_TEXT_FIELD = "SaveTextField";
@@ -48,6 +47,9 @@ public class AlertGeneratorPanel implements Observer
 	private JButton sendButton;
 	private JButton registerButton;
 	private JButton setIdButton;
+	
+	private JComponent capPanelContainer;
+	private CapElementPanel capAlertPanel;
 
 
 
@@ -64,18 +66,23 @@ public class AlertGeneratorPanel implements Observer
 		this.mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		CapElementPanel capPane = new CapElementPanel();
+		this.capPanelContainer = initCapPanel();
 		
 		mainPanel.add(initTextArea());
 		mainPanel.add(initButtonPanel());
-		mainPanel.add(capPane.getPanel());
-		
+		mainPanel.add(capPanelContainer);
 		mViewComponents.addElement(panelComponenets);
 
 		this.alertGenerateScrollPanel = new JScrollPane(mainPanel);
 	}
 
-	private Component initTextArea()
+	private JComponent initCapPanel()
+	{
+		this.capAlertPanel = new CapElementPanel();
+		return capAlertPanel.getPanel();
+	}
+
+	private JComponent initTextArea()
 	{
 		this.mTextArea = new JTextArea(20, 20);
 		mTextArea.setEditable(false);
@@ -87,7 +94,7 @@ public class AlertGeneratorPanel implements Observer
 		return textAreaPane;
 	}
 
-	private Component initButtonPanel()
+	private JComponent initButtonPanel()
 	{
 		this.buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
@@ -144,13 +151,9 @@ public class AlertGeneratorPanel implements Observer
 		return this.alertGenerateScrollPanel;
 	}
 	
-	public void updateView(String target, String value)
+	public void updateView(String value)
 	{		
-		if(target.equals(View.TEXT_AREA))
-		{
-			this.mTextArea.setText(value);
-			return;
-		}
+		this.capPanelContainer = capAlertPanel.setCapAlertPanel(value);
 	}
 	
 	public String getLoadTextField()
@@ -171,15 +174,10 @@ public class AlertGeneratorPanel implements Observer
 	public void setTextArea(String message)
 	{
 		mTextArea.setText(message);
+		
 	}
 
-	@Override
-	public void update(Observable observable, Object value)
-	{
-		setTextArea(value.toString());
-	}
-
-	public void addController(Controller controller)
+	public void addController(IssuerController controller)
 	{
 		for (JButton button : buttons)
 		{
@@ -187,7 +185,7 @@ public class AlertGeneratorPanel implements Observer
 		}
 	}
 	
-	public void removeController(Controller controller)
+	public void removeController(IssuerController controller)
 	{
 		for (JButton button : buttons)
 		{

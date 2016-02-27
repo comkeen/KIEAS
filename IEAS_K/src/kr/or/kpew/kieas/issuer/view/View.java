@@ -13,7 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.or.kpew.kieas.common.Item;
-import kr.or.kpew.kieas.issuer.controller.Controller;
+import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
 
 public class View implements Observer
@@ -130,7 +130,8 @@ public class View implements Observer
 		switch (item.getKey())
 		{
 		case TEXT_AREA:
-			alertGeneratorPanel.setTextArea(item.getValue());				
+			alertGeneratorPanel.setTextArea(item.getValue());
+			alertGeneratorPanel.updateView(item.getValue());
 			break;
 
 		default:
@@ -138,14 +139,14 @@ public class View implements Observer
 		};
 	}
 	
-	public void addController(Controller controller)
+	public void addController(IssuerController controller)
 	{
 		mainFrame.addWindowListener(controller);
 		alertGeneratorPanel.addController(controller);
 		alerterLogPanel.addController(controller); 
 	}
 	
-	public void removeController(Controller controller)
+	public void removeController(IssuerController controller)
 	{
 		mainFrame.removeWindowListener(controller);
 		alertGeneratorPanel.removeController(controller);
