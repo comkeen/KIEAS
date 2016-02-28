@@ -94,13 +94,13 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		case "Clear":
 			view.setTextArea("");
 			return;			
-		case "Add Info":
+		case "Info Add":
 			view.addInfoIndexPanel();
 			return;
-		case "Add Resource":
+		case "ResourceAdder":
 			view.addResourceIndexPanel();
 			return;
-		case "Add Area":
+		case "AreaAdder":
 			view.addAreaIndexPanel();
 			return;
 			

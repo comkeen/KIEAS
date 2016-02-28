@@ -50,6 +50,7 @@ public class AlertGeneratorPanel
 	
 	private JComponent capPanelContainer;
 	private CapElementPanel capAlertPanel;
+	private IssuerController controller;
 
 
 
@@ -59,14 +60,15 @@ public class AlertGeneratorPanel
 	}
 
 	private void init()
-	{		
+	{
 		this.mViewComponents = new Vector<>();
 		this.panelComponenets = new HashMap<>();
 		this.buttons = new ArrayList<>();
 		this.mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		this.capPanelContainer = initCapPanel();
+		this.capPanelContainer = Box.createVerticalBox();
+		capPanelContainer.add(initCapPanel());
 		
 		mainPanel.add(initTextArea());
 		mainPanel.add(initButtonPanel());
@@ -153,7 +155,12 @@ public class AlertGeneratorPanel
 	
 	public void updateView(String value)
 	{		
-		this.capPanelContainer = capAlertPanel.setCapAlertPanel(value);
+		capPanelContainer.removeAll();
+		
+		capAlertPanel.createCapAlertPanel(value);
+//		capAlertPanel.setCapAlertPanel(value);
+		
+		capPanelContainer.add(capAlertPanel.getPanel());
 	}
 	
 	public String getLoadTextField()
@@ -179,10 +186,12 @@ public class AlertGeneratorPanel
 
 	public void addController(IssuerController controller)
 	{
+		this.controller = controller;
 		for (JButton button : buttons)
 		{
 			button.addActionListener(controller);
 		}
+		capAlertPanel.addController(controller);
 	}
 	
 	public void removeController(IssuerController controller)
@@ -195,16 +204,17 @@ public class AlertGeneratorPanel
 
 	public void addInfoIndexPanel()
 	{
+		capAlertPanel.addInfoIndexPanel();
+	}
+
+	public void addResourceIndexPanel()
+	{
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void addResourceIndexPanel() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addAreaIndexPanel() {
+	public void addAreaIndexPanel()
+	{
 		// TODO Auto-generated method stub
 		
 	}

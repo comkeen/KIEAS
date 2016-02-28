@@ -30,6 +30,13 @@ public class CapElementPanel
 {
 	private static final int BASE_LINE = 100;
 	
+	private static final String ALERT = "Alert";
+	private static final String INFO = "Info";
+	
+	private static final String ADD = "+";	
+	private static final String INFO_ADDER_BUTTON = "Info Add";
+	private static final String RESOURCE_ADDER_BUTTON = "ResourceAdder";
+	private static final String AREA_ADDER_BUTTON = "AreaAdder";	
 	
 	private IKieasMessageBuilder kieasMessageBuilder;
 	
@@ -50,6 +57,13 @@ public class CapElementPanel
 
 	private JTabbedPane areaPanel;
 	private int areaCounter;
+
+
+	private JTabbedPane infoPanel;
+	
+	private String capMessage;
+
+	private IssuerController controller;
 	
 	
 	public CapElementPanel()
@@ -62,7 +76,8 @@ public class CapElementPanel
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		this.buttons = new ArrayList<>();
 		
-		this.mainPanel = setCapAlertPanel(kieasMessageBuilder.buildDefaultMessage());
+		this.capMessage = kieasMessageBuilder.buildDefaultMessage();
+		this.mainPanel = createCapAlertPanel(capMessage);
 	}
 	
 	public HashMap<String, String> getAlertElement()
@@ -80,12 +95,16 @@ public class CapElementPanel
 		return alertElementMap;
 	}
 	
-	public JComponent setCapAlertPanel(String cap)
+	public JComponent createCapAlertPanel(String capMessage)
 	{
 		JPanel capElementPanel = new JPanel();
 		capElementPanel.setLayout(new BoxLayout(capElementPanel, BoxLayout.Y_AXIS));
+		capElementPanel.setBorder(BorderFactory.createTitledBorder(ALERT));
 		
 		this.alertComponentMap = new HashMap<>();
+
+		this.capMessage = capMessage;		
+		kieasMessageBuilder.setMessage(capMessage);
 		
 		capElementPanel.add(addBox(KieasMessageBuilder.IDENTIFIER, View.TEXT_FIELD));
 		capElementPanel.add(addBox(KieasMessageBuilder.SENDER, View.TEXT_FIELD));
@@ -95,62 +114,87 @@ public class CapElementPanel
 		capElementPanel.add(addBox(KieasMessageBuilder.SCOPE, View.COMBO_BOX));
 		capElementPanel.add(addBox(KieasMessageBuilder.CODE, View.TEXT_FIELD));
 		
-		kieasMessageBuilder.setMessage(cap);
+		capElementPanel.add(createCapInfoPanel());
+//		mainPanel.add(initCapResourcePanel());	
+//		mainPanel.add(initCapAreaPanel());
+		addController(controller);
+		setCapAlertPanel(capMessage);
 		
+		this.mainPanel = capElementPanel;
+		
+		return capElementPanel;
+	}
+	
+	public void setCapAlertPanel(String capMessage)
+	{			
 		setCapElement(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
 		setCapElement(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
 		setCapElement(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
 		setCapElement(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
 		setCapElement(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
 		setCapElement(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
-		setCapElement(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());
+		setCapElement(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());	
 		
-		capElementPanel.add(setCapInfoPanel(cap));
-//		mainPanel.add(initCapResourcePanel());	
-//		mainPanel.add(initCapAreaPanel());	
-		
-		capElementPanel.setBorder(BorderFactory.createTitledBorder("Alert"));
-		
-		return capElementPanel;
+		for(int i = 0; i < kieasMessageBuilder.getInfoCount(); i++)
+		{
+			setInfoIndexPanel(i);			
+		}
 	}
 	
-	private JComponent setCapInfoPanel(String cap)
+	private JComponent createCapInfoPanel()
 	{
-		JTabbedPane infoPanel = new JTabbedPane();
+		this.infoPanel = new JTabbedPane();		
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 //		infoPanel.setBorder(BorderFactory.createEtchedBorder());
-		this.infoIndexPanels = new ArrayList<JPanel>();
 
 		this.infoComponentMaps = new ArrayList<Map<String, Component>>();
-		int infoCounter = 0;
 		
-		JPanel infoIndexPanel = createInfoIndexPanel(cap, infoCounter);
-		infoIndexPanels.add(infoIndexPanel);
-		infoPanel.addTab("Info", infoIndexPanel);
+//		infoPanel.addTab(ADD, addTabAdder(INFO_ADDER_BUTTON, infoPanel));
+		
+		for(int i = 0; i < kieasMessageBuilder.getInfoCount(); i++)
+		{
+			createInfoIndexPanel(i);
+		}		
 		
 		return infoPanel;
 	}
 	
-	public JPanel createInfoIndexPanel(String cap, int infoIndex)
+	public JPanel createInfoIndexPanel(int infoCount)
 	{
+		removeTabAdder(infoPanel);
+		
 		infoComponentMaps.add(new HashMap<String, Component>());
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(addBox(KieasMessageBuilder.LANGUAGE, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.CATEGORY, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.EVENT, View.TEXT_FIELD, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.URGENCY, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.SEVERITY, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.CERTAINTY, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, View.COMBO_BOX, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, View.TEXT_FIELD, infoIndex)); 
-		panel.add(addBox(KieasMessageBuilder.HEADLINE, View.TEXT_FIELD, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, View.TEXT_AREA, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.WEB, View.TEXT_FIELD, infoIndex));
-		panel.add(addBox(KieasMessageBuilder.CONTACT, View.TEXT_FIELD, infoIndex));
-		
+		panel.add(addBox(KieasMessageBuilder.LANGUAGE, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.CATEGORY, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.EVENT, View.TEXT_FIELD, infoCount));
+		panel.add(addBox(KieasMessageBuilder.URGENCY, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.SEVERITY, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.CERTAINTY, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, View.COMBO_BOX, infoCount));
+		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, View.TEXT_FIELD, infoCount)); 
+		panel.add(addBox(KieasMessageBuilder.HEADLINE, View.TEXT_FIELD, infoCount));
+		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, View.TEXT_AREA, infoCount));
+		panel.add(addBox(KieasMessageBuilder.WEB, View.TEXT_FIELD, infoCount));
+		panel.add(addBox(KieasMessageBuilder.CONTACT, View.TEXT_FIELD, infoCount));
+
+		infoPanel.addTab(INFO + infoCount, panel);
+		addTabAdder(INFO_ADDER_BUTTON, infoPanel);
+				
+		return panel;
+	}
+
+	public void addInfoIndexPanel()
+	{
+		createInfoIndexPanel(infoPanel.getTabCount() - 1);
+		addController(controller);
+	}
+	
+	private void setInfoIndexPanel(int infoIndex)
+	{		
 		setCapElement(KieasMessageBuilder.LANGUAGE, kieasMessageBuilder.getLanguage(infoIndex));
 		setCapElement(KieasMessageBuilder.CATEGORY, kieasMessageBuilder.getCategory(infoIndex));
 		setCapElement(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(infoIndex));
@@ -162,10 +206,7 @@ public class CapElementPanel
 		setCapElement(KieasMessageBuilder.HEADLINE, kieasMessageBuilder.getHeadline(infoIndex));
 		setCapElement(KieasMessageBuilder.DESCRIPTION, kieasMessageBuilder.getDescription(infoIndex));
 		setCapElement(KieasMessageBuilder.WEB, kieasMessageBuilder.getWeb(infoIndex));
-		setCapElement(KieasMessageBuilder.CONTACT, kieasMessageBuilder.getContact(infoIndex));
-		
-		infoIndexPanels.add(panel);
-		return panel;
+		setCapElement(KieasMessageBuilder.CONTACT, kieasMessageBuilder.getContact(infoIndex));		
 	}
 	
 	private Component initCapResourcePanel()
@@ -184,7 +225,7 @@ public class CapElementPanel
 	
 	public void addResourceIndexPanel()
 	{
-		removeTabPanel(resourcePanel);
+		removeTabAdder(resourcePanel);
 		resourceComponentMaps.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -196,7 +237,7 @@ public class CapElementPanel
 		resourceIndexPanels.add(panel);
 		resourcePanel.addTab("Resource" + resourceCounter, resourceIndexPanels.get(resourceCounter));
 		resourceCounter++;
-		addTabPanel("Add Resource", resourcePanel, resourceCounter);
+		addTabAdder("Add Resource", resourcePanel);
 	}
 	
 	private Component initCapAreaPanel()
@@ -215,7 +256,7 @@ public class CapElementPanel
 	
 	public void addAreaIndexPanel()
 	{
-		removeTabPanel(areaPanel);
+		removeTabAdder(areaPanel);
 		areaComponentMaps.add(new HashMap<>());
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -226,9 +267,72 @@ public class CapElementPanel
 		areaIndexPanels.add(panel);
 		areaPanel.addTab("Area" + areaCounter, areaIndexPanels.get(areaCounter));
 		areaCounter++;
-		addTabPanel("Add Area", areaPanel, areaCounter);
+		addTabAdder("Add Area", areaPanel);
 	}
 	
+	
+	private void addTabAdder(String name, JTabbedPane target)
+	{		
+		JPanel panel =  new JPanel();
+		JButton button = createButton(name, panel);	
+		panel.add(button);
+		target.addTab(ADD, panel);
+		
+		int index = target.getTabCount();
+		System.out.println("tabcount : " + index);
+		if(index == 0)
+		{
+			target.setSelectedIndex(index);	
+		}
+		else
+		{
+			target.setSelectedIndex(index - 2);			
+		}
+	}
+	
+	private JComponent removeTabAdder(JTabbedPane target)
+	{
+		System.out.println("removeTabAdder : " + target.getComponentCount());
+		for(int i = 0 ; i < target.getTabCount(); i++)
+		{
+			if(target.getTitleAt(i).equals(ADD))
+			{
+				target.removeTabAt(i);
+			}
+		}
+		return target;
+	}
+	
+	private JButton createButton(String name, JComponent component)
+	{
+		JButton button = new JButton(name);
+		
+		switch (name)
+		{
+		case INFO_ADDER_BUTTON:
+			button.setText(INFO_ADDER_BUTTON);
+			break;
+		case RESOURCE_ADDER_BUTTON:
+			button.setText(ADD);
+			break;
+		case AREA_ADDER_BUTTON:
+			button.setText(ADD);
+			break;
+		default:
+			break;
+		}
+		
+		buttons.add(button);
+		button.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		return button;
+	}
+	
+	public JComponent getPanel()
+	{
+		return mainPanel;		
+	}
+
 	private Box addBox(String labelName, String type)
 	{
 		Box box = Box.createHorizontalBox();
@@ -282,8 +386,7 @@ public class CapElementPanel
 			System.out.println("Fail to add Box");
 			return box;
 		}
-	}
-	
+	}	
 
 	private Box addBox(String labelName, String type, int index)
 	{
@@ -328,60 +431,6 @@ public class CapElementPanel
 			return box;
 		}
 	}
-		
-	private JButton createAndAddAddButton(String name, JPanel panel)
-	{
-		JButton button = new JButton(name);
-		buttons.add(button);
-		button.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
-		panel.add(button);
-
-		return button;
-	}
-	
-	private JPanel addTabPanel(String name, JTabbedPane target, int index) {
-		JPanel panel =  new JPanel();
-		createAndAddAddButton(name, panel);
-		target.addTab("+", panel);
-		target.setSelectedIndex(index - 1);
-		
-		return panel;
-	}
-	
-	private JComponent removeTabPanel(JTabbedPane target)
-	{
-		target.removeAll();
-//		for(int i = 0 ; i < target.getComponentCount(); i++)
-//		{
-//			if(target.getTitleAt(i).equals("+"))
-//			{
-//				target.remove(target.getSelectedComponent());
-//			}
-//		}
-		return target;
-	}
-	
-	public JComponent getPanel()
-	{
-		return mainPanel;		
-	}
-	
-	public void addController(IssuerController controller)
-	{
-		for (JButton button : buttons)
-		{
-			button.addActionListener(controller);
-		}
-	}
-	
-	public void removeController(IssuerController controller)
-	{
-		for (JButton button : buttons)
-		{
-			button.removeActionListener(controller);
-		}
-	}
 	
 	public void setCapElement(String target, String value)
 	{		
@@ -402,7 +451,6 @@ public class CapElementPanel
 			}
 		}
 
-		System.out.println("Set InfoElement : " + infoComponentMaps.size());
 		for(int j = 0; j < infoComponentMaps.size() ; j++)
 		{
 			Map<String, Component> infoComponentMap = infoComponentMaps.get(j);
@@ -487,5 +535,22 @@ public class CapElementPanel
 //				return;
 //			}
 //		}
+	}
+	
+	public void addController(IssuerController controller)
+	{
+		this.controller = controller;
+		for (JButton button : buttons)
+		{
+			button.addActionListener(controller);
+		}
+	}
+	
+	public void removeController(IssuerController controller)
+	{
+		for (JButton button : buttons)
+		{
+			button.removeActionListener(controller);
+		}
 	}
 }
