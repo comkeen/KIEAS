@@ -13,7 +13,7 @@ import kr.or.kpew.kieas.common.ITransmitter;
 import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.issuer.view.View;
+import kr.or.kpew.kieas.issuer.view.IssuerView;
 
 public class IssuerModel extends Observable
 {
@@ -135,7 +135,7 @@ public class IssuerModel extends Observable
 	{
 		this.setAlertMessage(xmlReaderAndWriter.loadXml(path));
 		
-		String target = View.TEXT_AREA;
+		String target = IssuerView.TEXT_AREA;
 		String value = mAlertMessage;
 		
 		setChanged();

@@ -13,11 +13,13 @@ public interface IKieasMessageBuilder
 	public String getSent();					
 	public String getStatus();					
 	public String getMsgType();					
+	public String getSource();					
 	public String getScope();				
 	public String getRestriction();
 	public String getAddresses();			
 	public String getCode();				
 	public String getNote();
+	public String getReferences();
 	
 	public String getLanguage(int infoIndex);
 	public String getCategory(int infoIndex);

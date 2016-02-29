@@ -1,19 +1,19 @@
 package kr.or.kpew.kieas.issuer.controller;
 
 import kr.or.kpew.kieas.issuer.model.IssuerModel;
-import kr.or.kpew.kieas.issuer.view.View;
+import kr.or.kpew.kieas.issuer.view.IssuerView;
 
 public class IssuerManager
 {
 	IssuerModel model;
-	View view;
+	IssuerView view;
 	IssuerController controller;
 	
 	
 	public IssuerManager()
 	{
 		this.model = new IssuerModel();
-		this.view = new View();
+		this.view = new IssuerView();
 		this.controller = new IssuerController();
 
 		init();

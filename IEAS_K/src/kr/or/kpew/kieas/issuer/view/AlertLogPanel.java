@@ -27,7 +27,7 @@ public class AlertLogPanel
 	private static final String CLEAR_BUTTON = "Clear";
 	
 	
-	private View topView;
+	private IssuerView topView;
 	private IssuerController controller;
 
 	private JPanel mainPanel;
@@ -48,7 +48,7 @@ public class AlertLogPanel
 	private Map<String, String> mAlertMessageMap;
 	
 	
-	public AlertLogPanel(View topView)
+	public AlertLogPanel(IssuerView topView)
 	{
 		this.topView = topView;
 //		this.viewActionListener = controller;

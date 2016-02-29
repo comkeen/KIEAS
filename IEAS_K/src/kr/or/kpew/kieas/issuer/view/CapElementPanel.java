@@ -48,7 +48,6 @@ public class CapElementPanel
 	private List<Map<String, Component>> areaComponentMaps;
 	private List<JButton> buttons;
 
-	private List<JPanel> infoIndexPanels;
 	private List<JPanel> resourceIndexPanels;
 	private List<JPanel> areaIndexPanels;
 
@@ -80,21 +79,6 @@ public class CapElementPanel
 		this.mainPanel = createCapAlertPanel(capMessage);
 	}
 	
-	public HashMap<String, String> getAlertElement()
-	{
-		HashMap<String, String> alertElementMap = new HashMap<>();
-		alertElementMap.put(KieasMessageBuilder.IDENTIFIER, ((JTextField) alertComponentMap.get(KieasMessageBuilder.IDENTIFIER)).getText());
-		alertElementMap.put(KieasMessageBuilder.SENDER, ((JTextField) alertComponentMap.get(KieasMessageBuilder.SENDER)).getText());
-		alertElementMap.put(KieasMessageBuilder.SENT, ((JTextField) alertComponentMap.get(KieasMessageBuilder.SENT)).getText());
-		alertElementMap.put(KieasMessageBuilder.STATUS, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.STATUS)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.MSG_TYPE, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.MSG_TYPE)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.SCOPE, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.SCOPE)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.RESTRICTION, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.RESTRICTION)).getSelectedItem().toString());
-		alertElementMap.put(KieasMessageBuilder.CODE, ((JTextField) alertComponentMap.get(KieasMessageBuilder.CODE)).getText());
-		
-		return alertElementMap;
-	}
-	
 	public JComponent createCapAlertPanel(String capMessage)
 	{
 		JPanel capElementPanel = new JPanel();
@@ -106,17 +90,36 @@ public class CapElementPanel
 		this.capMessage = capMessage;		
 		kieasMessageBuilder.setMessage(capMessage);
 		
-		capElementPanel.add(addBox(KieasMessageBuilder.IDENTIFIER, View.TEXT_FIELD));
-		capElementPanel.add(addBox(KieasMessageBuilder.SENDER, View.TEXT_FIELD));
-		capElementPanel.add(addBox(KieasMessageBuilder.SENT, View.TEXT_FIELD));
-		capElementPanel.add(addBox(KieasMessageBuilder.STATUS, View.COMBO_BOX));
-		capElementPanel.add(addBox(KieasMessageBuilder.MSG_TYPE, View.COMBO_BOX));
-		capElementPanel.add(addBox(KieasMessageBuilder.SCOPE, View.COMBO_BOX));
-		capElementPanel.add(addBox(KieasMessageBuilder.CODE, View.TEXT_FIELD));
+		capElementPanel.add(addBox(KieasMessageBuilder.IDENTIFIER, IssuerView.TEXT_FIELD));
+		capElementPanel.add(addBox(KieasMessageBuilder.SENDER, IssuerView.TEXT_FIELD));
+		capElementPanel.add(addBox(KieasMessageBuilder.SENT, IssuerView.TEXT_FIELD));
+		capElementPanel.add(addBox(KieasMessageBuilder.STATUS, IssuerView.COMBO_BOX));
+		capElementPanel.add(addBox(KieasMessageBuilder.MSG_TYPE, IssuerView.COMBO_BOX));
+		if(kieasMessageBuilder.getSource().length() != 0)
+		{
+			capElementPanel.add(addBox(KieasMessageBuilder.SOURCE, IssuerView.TEXT_FIELD));			
+		}
+		capElementPanel.add(addBox(KieasMessageBuilder.SCOPE, IssuerView.COMBO_BOX));
+		if(kieasMessageBuilder.getRestriction().length() != 0)
+		{
+			capElementPanel.add(addBox(KieasMessageBuilder.RESTRICTION, IssuerView.TEXT_FIELD));				
+		}
+		if(kieasMessageBuilder.getAddresses().length() != 0)
+		{
+			capElementPanel.add(addBox(KieasMessageBuilder.ADDRESSES, IssuerView.TEXT_FIELD));				
+		}
+		capElementPanel.add(addBox(KieasMessageBuilder.CODE, IssuerView.TEXT_FIELD));
+		if(kieasMessageBuilder.getNote().length() != 0)
+		{
+			capElementPanel.add(addBox(KieasMessageBuilder.NOTE, IssuerView.TEXT_FIELD));				
+		}
+		if(kieasMessageBuilder.getReferences().length() != 0)
+		{
+			capElementPanel.add(addBox(KieasMessageBuilder.NOTE, IssuerView.TEXT_FIELD));				
+		}
 		
 		capElementPanel.add(createCapInfoPanel());
-//		mainPanel.add(initCapResourcePanel());	
-//		mainPanel.add(initCapAreaPanel());
+		
 		addController(controller);
 		setCapAlertPanel(capMessage);
 		
@@ -133,11 +136,14 @@ public class CapElementPanel
 		setCapElement(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
 		setCapElement(KieasMessageBuilder.MSG_TYPE, kieasMessageBuilder.getMsgType());
 		setCapElement(KieasMessageBuilder.SCOPE, kieasMessageBuilder.getScope());
+		setCapElement(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getScope());
 		setCapElement(KieasMessageBuilder.CODE, kieasMessageBuilder.getCode());	
-		
+
+		System.out.println("setElement : " + kieasMessageBuilder.getInfoCount());
 		for(int i = 0; i < kieasMessageBuilder.getInfoCount(); i++)
 		{
-			setInfoIndexPanel(i);			
+			System.out.println();
+			setInfoIndexPanel(i);
 		}
 	}
 	
@@ -147,7 +153,7 @@ public class CapElementPanel
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 //		infoPanel.setBorder(BorderFactory.createEtchedBorder());
 
-		this.infoComponentMaps = new ArrayList<Map<String, Component>>();
+		this.infoComponentMaps = new ArrayList<>();
 		
 //		infoPanel.addTab(ADD, addTabAdder(INFO_ADDER_BUTTON, infoPanel));
 		
@@ -159,29 +165,89 @@ public class CapElementPanel
 		return infoPanel;
 	}
 	
-	public JPanel createInfoIndexPanel(int infoCount)
+	public JPanel createInfoIndexPanel(int infoIndex)
 	{
 		removeTabAdder(infoPanel);
 		
-		infoComponentMaps.add(new HashMap<String, Component>());
+		infoComponentMaps.add(new HashMap<>());
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-		panel.add(addBox(KieasMessageBuilder.LANGUAGE, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.CATEGORY, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.EVENT, View.TEXT_FIELD, infoCount));
-		panel.add(addBox(KieasMessageBuilder.URGENCY, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.SEVERITY, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.CERTAINTY, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, View.COMBO_BOX, infoCount));
-		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, View.TEXT_FIELD, infoCount)); 
-		panel.add(addBox(KieasMessageBuilder.HEADLINE, View.TEXT_FIELD, infoCount));
-		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, View.TEXT_AREA, infoCount));
-		panel.add(addBox(KieasMessageBuilder.WEB, View.TEXT_FIELD, infoCount));
-		panel.add(addBox(KieasMessageBuilder.CONTACT, View.TEXT_FIELD, infoCount));
-
-		infoPanel.addTab(INFO + infoCount, panel);
+		
+		panel.add(addBox(KieasMessageBuilder.LANGUAGE, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CATEGORY, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.EVENT, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.RESPONSE_TYPE, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.URGENCY, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.SEVERITY, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CERTAINTY, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.AUDIENCE, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.EVENT_CODE, IssuerView.COMBO_BOX, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.EFFECTIVE, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.SENDER_NAME, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.HEADLINE, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.DESCRIPTION, IssuerView.TEXT_AREA, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.INSTRUCTION, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.WEB, IssuerView.TEXT_FIELD, infoIndex));
+		panel.add(addBox(KieasMessageBuilder.CONTACT, IssuerView.TEXT_FIELD, infoIndex));
+		
+//		if(kieasMessageBuilder.getLanguage(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.LANGUAGE, IssuerView.COMBO_BOX, infoIndex));
+//		}
+//		panel.add(addBox(KieasMessageBuilder.CATEGORY, IssuerView.COMBO_BOX, infoIndex));
+//		panel.add(addBox(KieasMessageBuilder.EVENT, IssuerView.TEXT_FIELD, infoIndex));
+//		if(kieasMessageBuilder.getResponseType(infoIndex).length() != 0)
+//		{
+//			//TODO
+//			panel.add(addBox(KieasMessageBuilder.RESPONSE_TYPE, IssuerView.COMBO_BOX, infoIndex));
+//		}
+//		panel.add(addBox(KieasMessageBuilder.URGENCY, IssuerView.COMBO_BOX, infoIndex));
+//		panel.add(addBox(KieasMessageBuilder.SEVERITY, IssuerView.COMBO_BOX, infoIndex));
+//		panel.add(addBox(KieasMessageBuilder.CERTAINTY, IssuerView.COMBO_BOX, infoIndex));
+//		if(kieasMessageBuilder.getAudience(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.AUDIENCE, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getEventCode(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.EVENT_CODE, IssuerView.COMBO_BOX, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getEffective(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.EFFECTIVE, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+//		//TODO onset
+//		//TODO expires
+//		if(kieasMessageBuilder.getSenderName(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.SENDER_NAME, IssuerView.TEXT_FIELD, infoIndex));		
+//		}
+//		if(kieasMessageBuilder.getHeadline(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.HEADLINE, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getDescription(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.DESCRIPTION, IssuerView.TEXT_AREA, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getInstruction(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.INSTRUCTION, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getWeb(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.WEB, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+//		if(kieasMessageBuilder.getContact(infoIndex).length() != 0)
+//		{
+//			panel.add(addBox(KieasMessageBuilder.CONTACT, IssuerView.TEXT_FIELD, infoIndex));
+//		}
+		
+//		panel.add(createCapResourcePanel());
+//		panel.add(initCapAreaPanel());
+		
+		infoPanel.addTab(INFO + infoIndex, panel);
 		addTabAdder(INFO_ADDER_BUTTON, infoPanel);
 				
 		return panel;
@@ -194,7 +260,7 @@ public class CapElementPanel
 	}
 	
 	private void setInfoIndexPanel(int infoIndex)
-	{		
+	{
 		setCapElement(KieasMessageBuilder.LANGUAGE, kieasMessageBuilder.getLanguage(infoIndex));
 		setCapElement(KieasMessageBuilder.CATEGORY, kieasMessageBuilder.getCategory(infoIndex));
 		setCapElement(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(infoIndex));
@@ -202,6 +268,7 @@ public class CapElementPanel
 		setCapElement(KieasMessageBuilder.SEVERITY, kieasMessageBuilder.getSeverity(infoIndex));
 		setCapElement(KieasMessageBuilder.CERTAINTY, kieasMessageBuilder.getCertainty(infoIndex));
 		setCapElement(KieasMessageBuilder.EVENT_CODE, kieasMessageBuilder.getEvent(infoIndex));
+		setCapElement(KieasMessageBuilder.EFFECTIVE, kieasMessageBuilder.getEffective(infoIndex));
 		setCapElement(KieasMessageBuilder.SENDER_NAME, kieasMessageBuilder.getSenderName(infoIndex));
 		setCapElement(KieasMessageBuilder.HEADLINE, kieasMessageBuilder.getHeadline(infoIndex));
 		setCapElement(KieasMessageBuilder.DESCRIPTION, kieasMessageBuilder.getDescription(infoIndex));
@@ -209,14 +276,12 @@ public class CapElementPanel
 		setCapElement(KieasMessageBuilder.CONTACT, kieasMessageBuilder.getContact(infoIndex));		
 	}
 	
-	private Component initCapResourcePanel()
+	private JComponent createCapResourcePanel()
 	{
-		this.resourcePanel = new JTabbedPane();
+		JTabbedPane resourcePanel = new JTabbedPane();
 		resourcePanel.setBorder(BorderFactory.createEtchedBorder());
-		this.resourceIndexPanels = new ArrayList<JPanel>();
 		this.resourceComponentMaps = new ArrayList<Map<String, Component>>();
 
-		this.resourceCounter = 0;
 		addResourceIndexPanel();
 		resourcePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
@@ -292,7 +357,6 @@ public class CapElementPanel
 	
 	private JComponent removeTabAdder(JTabbedPane target)
 	{
-		System.out.println("removeTabAdder : " + target.getComponentCount());
 		for(int i = 0 ; i < target.getTabCount(); i++)
 		{
 			if(target.getTitleAt(i).equals(ADD))
@@ -347,7 +411,7 @@ public class CapElementPanel
 
 		switch (type)
 		{
-		case View.COMBO_BOX:
+		case IssuerView.COMBO_BOX:
 			if(KieasMessageBuilder.RESTRICTION.equals(labelName))
 			{
 				Vector<String> comboboxModel = new Vector<>();
@@ -372,12 +436,12 @@ public class CapElementPanel
 				box.add(comboBox);
 				return box;	
 			}					
-		case View.TEXT_FIELD:
+		case IssuerView.TEXT_FIELD:
 			JTextField textField = new JTextField();
 			alertComponentMap.put(labelName, textField);
 			box.add(textField);
 			return box;
-		case View.TEXT_AREA:
+		case IssuerView.TEXT_AREA:
 			JTextArea textArea = new JTextArea();
 			alertComponentMap.put(labelName, textArea);
 			box.add(textArea);
@@ -401,28 +465,23 @@ public class CapElementPanel
 		Map<String, Component> infoComponentMap = infoComponentMaps.get(index);
 		switch (type)
 		{
-		case View.COMBO_BOX:
+		case IssuerView.COMBO_BOX:
 			Vector<Item> comboboxModel = new Vector<>();
 			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
 				comboboxModel.addElement(value);		
 			}
 			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
-//			components.put(labelName + index, comboBox);
 			infoComponentMap.put(labelName, comboBox);
-			System.out.println(labelName);
 			box.add(comboBox);
 			return box;
-		case View.TEXT_FIELD:
+		case IssuerView.TEXT_FIELD:
 			JTextField textField = new JTextField();
-//			components.put(labelName + index, textField);
 			infoComponentMap.put(labelName, textField);
-			System.out.println(labelName);
 			box.add(textField);
 			return box;
-		case View.TEXT_AREA:
+		case IssuerView.TEXT_AREA:
 			JTextArea textArea = new JTextArea();
-//			components.put(labelName + index, textArea);
 			infoComponentMaps.get(index).put(labelName, textArea);
 			box.add(textArea);
 			return box;
@@ -450,9 +509,11 @@ public class CapElementPanel
 				}
 			}
 		}
-
+		
+		System.out.println("info size : " + infoComponentMaps.size());
 		for(int j = 0; j < infoComponentMaps.size() ; j++)
 		{
+			System.out.println("target : " + target + " : " + j);
 			Map<String, Component> infoComponentMap = infoComponentMaps.get(j);
 			
 			if (infoComponentMap.get(target) instanceof JTextField)
@@ -535,6 +596,21 @@ public class CapElementPanel
 //				return;
 //			}
 //		}
+	}
+		
+	public HashMap<String, String> getAlertElement()
+	{
+		HashMap<String, String> alertElementMap = new HashMap<>();
+		alertElementMap.put(KieasMessageBuilder.IDENTIFIER, ((JTextField) alertComponentMap.get(KieasMessageBuilder.IDENTIFIER)).getText());
+		alertElementMap.put(KieasMessageBuilder.SENDER, ((JTextField) alertComponentMap.get(KieasMessageBuilder.SENDER)).getText());
+		alertElementMap.put(KieasMessageBuilder.SENT, ((JTextField) alertComponentMap.get(KieasMessageBuilder.SENT)).getText());
+		alertElementMap.put(KieasMessageBuilder.STATUS, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.STATUS)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.MSG_TYPE, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.MSG_TYPE)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.SCOPE, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.SCOPE)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.RESTRICTION, ((JComboBox<?>) alertComponentMap.get(KieasMessageBuilder.RESTRICTION)).getSelectedItem().toString());
+		alertElementMap.put(KieasMessageBuilder.CODE, ((JTextField) alertComponentMap.get(KieasMessageBuilder.CODE)).getText());
+		
+		return alertElementMap;
 	}
 	
 	public void addController(IssuerController controller)

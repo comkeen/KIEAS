@@ -13,12 +13,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kr.or.kpew.kieas.issuer.model.IssuerModel;
-import kr.or.kpew.kieas.issuer.view.View;
+import kr.or.kpew.kieas.issuer.view.IssuerView;
 
 
 public class IssuerController implements ActionListener, ListSelectionListener, WindowListener
 { 		
-	private List<View> views;
+	private List<IssuerView> views;
 	private List<IssuerModel> models;
 	
 	
@@ -30,7 +30,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 	private void init()
 	{
 		this.models = new ArrayList<IssuerModel>();
-		this.views = new ArrayList<View>();		
+		this.views = new ArrayList<IssuerView>();		
 	}
 
 	public void addModel(IssuerModel model)
@@ -38,7 +38,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		models.add(model);
 	}
 
-	public void addView(View view)
+	public void addView(IssuerView view)
 	{
 		views.add(view);
 	}
@@ -48,7 +48,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		models.remove(model);
 	}
 	
-	public void removeView(View view)
+	public void removeView(IssuerView view)
 	{
 		models.remove(view);
 	}
@@ -67,7 +67,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		System.out.println("action triggered : " + actionCommand);
 		
 		IssuerModel model = models.get(0);
-		View view = views.get(0);
+		IssuerView view = views.get(0);
 		
 		switch (actionCommand)
 		{		
@@ -137,7 +137,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		String title = "프로그램 종료";
 				
 		IssuerModel model = models.get(0);
-		View view = views.get(0);
+		IssuerView view = views.get(0);
 		
 		if (JOptionPane.showConfirmDialog(view.getFrame(),
 			question,

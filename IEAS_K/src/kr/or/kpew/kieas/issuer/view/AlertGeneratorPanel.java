@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -48,11 +49,11 @@ public class AlertGeneratorPanel
 	private JButton registerButton;
 	private JButton setIdButton;
 	
-	private JComponent capPanelContainer;
 	private CapElementPanel capAlertPanel;
-	private IssuerController controller;
-
-
+	private JTabbedPane capTabPanel;
+	private Box capElementBox;
+	private Box alertBox;
+	
 
 	public AlertGeneratorPanel()
 	{
@@ -66,22 +67,13 @@ public class AlertGeneratorPanel
 		this.buttons = new ArrayList<>();
 		this.mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-		this.capPanelContainer = Box.createVerticalBox();
-		capPanelContainer.add(initCapPanel());
 		
 		mainPanel.add(initTextArea());
 		mainPanel.add(initButtonPanel());
-		mainPanel.add(capPanelContainer);
+		mainPanel.add(initCapPanelContainer());
 		mViewComponents.addElement(panelComponenets);
 
 		this.alertGenerateScrollPanel = new JScrollPane(mainPanel);
-	}
-
-	private JComponent initCapPanel()
-	{
-		this.capAlertPanel = new CapElementPanel();
-		return capAlertPanel.getPanel();
 	}
 
 	private JComponent initTextArea()
@@ -139,7 +131,33 @@ public class AlertGeneratorPanel
 
 		return buttonPane;
 	}
+	
+	private JComponent initCapPanelContainer()
+	{
+		this.capTabPanel = new JTabbedPane();
+		this.capElementBox = Box.createVerticalBox();
+		this.alertBox = Box.createVerticalBox();
+		
+		capElementBox.add(initCapElementPanel());
+		alertBox.add(initAlertBox());
+		
+		capTabPanel.addTab("CAP Element", capElementBox);
+		capTabPanel.addTab("경보메시지", alertBox);
+		
+		return capTabPanel;
+	}
 
+	private JComponent initCapElementPanel()
+	{
+		this.capAlertPanel = new CapElementPanel();
+		return capAlertPanel.getPanel();
+	}
+
+	private JComponent initAlertBox()
+	{
+		return Box.createVerticalBox();
+	}
+	
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
@@ -155,12 +173,11 @@ public class AlertGeneratorPanel
 	
 	public void updateView(String value)
 	{		
-		capPanelContainer.removeAll();
+		capElementBox.removeAll();
 		
 		capAlertPanel.createCapAlertPanel(value);
-//		capAlertPanel.setCapAlertPanel(value);
 		
-		capPanelContainer.add(capAlertPanel.getPanel());
+		capElementBox.add(capAlertPanel.getPanel());
 	}
 	
 	public String getLoadTextField()
@@ -175,7 +192,7 @@ public class AlertGeneratorPanel
 
 	public String getTextArea()
 	{
-		return ((JTextArea) panelComponenets.get(View.TEXT_AREA)).getText();
+		return ((JTextArea) panelComponenets.get(IssuerView.TEXT_AREA)).getText();
 	}
 
 	public void setTextArea(String message)
@@ -186,7 +203,6 @@ public class AlertGeneratorPanel
 
 	public void addController(IssuerController controller)
 	{
-		this.controller = controller;
 		for (JButton button : buttons)
 		{
 			button.addActionListener(controller);

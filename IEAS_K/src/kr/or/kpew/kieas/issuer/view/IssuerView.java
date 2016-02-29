@@ -2,7 +2,6 @@ package kr.or.kpew.kieas.issuer.view;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,7 +15,7 @@ import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
 
-public class View implements Observer
+public class IssuerView implements Observer
 {	
 	public static final String TEXT_AREA = "TextArea";
 	public static final String TEXT_FIELD = "TextField";
@@ -32,7 +31,7 @@ public class View implements Observer
 	 * Main Frame과 각 포함되는 View Component 초기화.
 	 * @param alerterActionListener 이벤트 리스너
 	 */
-	public View()
+	public IssuerView()
 	{
 		initLookAndFeel();
 		this.alertGeneratorPanel = new AlertGeneratorPanel();
@@ -45,6 +44,7 @@ public class View implements Observer
 	private void init()
 	{
 		this.mainFrame = new JFrame();
+		mainFrame.setTitle("기상청");
 		mainFrame.setSize(1024, 768);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

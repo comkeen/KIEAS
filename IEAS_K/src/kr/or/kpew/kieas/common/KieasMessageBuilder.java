@@ -62,6 +62,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		public static final String CANCEL = "Cancel";
 		public static final String ACK = "Ack";
 		public static final String ERROR = "Error";
+	public static final String SOURCE = "Source";
 	public static final String SCOPE = "Scope";
 		public static final String PUBLIC = "Public";
 		public static final String RESTRICTED = "Restricted";
@@ -933,6 +934,14 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return mAlert.getMsgType().toString();
 	}	
 	/**
+	 * @return Alert 요소의 Source 값 리턴.
+	 */
+	@Override
+	public String getSource()
+	{
+		return mAlert.getSource().toString();
+	}	
+	/**
 	 * @return Alert 요소의 Scope 값 리턴.
 	 */
 	@Override
@@ -954,7 +963,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getAddresses()
 	{
-		return mAlert.getAddresses().getValue(0).toString();
+		if(mAlert.hasAddresses() && mAlert.getAddresses().getValueCount() != 0)
+		{
+			return mAlert.getAddresses().getValue(0).toString();			
+		}
+		return "";
 	}	
 	/**
 	 * @return Alert 요소의 Code 값 리턴.
@@ -972,7 +985,18 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	{
 		return mAlert.getNote();
 	}
-		
+	/**
+	 * @return Alert 요소의 References 값 리턴.
+	 */
+	@Override
+	public String getReferences()
+	{
+		if(mAlert.hasReferences() && mAlert.getReferences().getValueCount() != 0)
+		{
+			return mAlert.getReferences().getValue(0);			
+		}
+		return "";
+	}
 	/**
 	 * @param 목표가되는 Info 요소의 index
 	 * @return Info 요소의 Language 값 리턴.
@@ -980,9 +1004,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getLanguage(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasLanguage())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasLanguage())
 		{
-			return mAlert.getInfo(index).getLanguage().toString();			
+			return mAlert.getInfo(index).getLanguage().toString();		
 		}
 		return EMPTY;
 	}
@@ -993,7 +1017,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getCategory(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getCategoryCount() != 0)
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).getCategoryCount() != 0)
 		{
 			return mAlert.getInfo(index).getCategory(0).toString();		
 		}
@@ -1007,7 +1031,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getResponseType(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getResponseTypeCount() != 0)
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).getResponseTypeCount() != 0)
 		{
 			return mAlert.getInfo(index).getResponseType(0).toString();	
 		}
@@ -1021,7 +1045,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getEvent(int index)
 	{	
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEvent())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasEvent())
 		{
 			return mAlert.getInfo(index).getEvent();				
 		}
@@ -1034,7 +1058,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getUrgency(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasUrgency())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasUrgency())
 		{
 			return mAlert.getInfo(index).getUrgency().toString();			
 		}
@@ -1047,7 +1071,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getSeverity(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasSeverity())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasSeverity())
 		{
 			return mAlert.getInfo(index).getSeverity().toString();			
 		}
@@ -1060,7 +1084,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getCertainty(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasCertainty())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasCertainty())
 		{
 			return mAlert.getInfo(index).getCertainty().toString();			
 		}
@@ -1073,7 +1097,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getAudience(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasAudience())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasAudience())
 		{
 			return mAlert.getInfo(index).getAudience();		
 		}
@@ -1086,7 +1110,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getEventCode(int index) 
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).getEventCodeCount() != 0)
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).getEventCodeCount() != 0)
 		{
 			return mAlert.getInfo(index).getEventCodeList().get(0).getValue().toString();
 		}
@@ -1099,7 +1123,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getEffective(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasEffective())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasEffective())
 		{
 			return mAlert.getInfo(index).getEffective().toString();
 		}
@@ -1112,7 +1136,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getExpires(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasExpires())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasExpires())
 		{
 			return mAlert.getInfo(index).getExpires();
 		}
@@ -1125,7 +1149,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getSenderName(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasSenderName())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasSenderName())
 		{
 			return mAlert.getInfo(index).getSenderName().toString();
 		}
@@ -1138,7 +1162,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getHeadline(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasHeadline())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasHeadline())
 		{
 			return mAlert.getInfo(index).getHeadline().toString();
 		}
@@ -1151,7 +1175,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getDescription(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasDescription())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasDescription())
 		{
 			return mAlert.getInfo(index).getDescription().toString();
 		}
@@ -1164,7 +1188,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getInstruction(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasInstruction())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasInstruction())
 		{
 			return mAlert.getInfo(index).getInstruction();
 		}
@@ -1177,7 +1201,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getWeb(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasWeb())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasWeb())
 		{
 			return mAlert.getInfo(index).getWeb().toString();
 		}
@@ -1190,7 +1214,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public String getContact(int index)
 	{
-		if(mAlert.getInfoCount() != 0 && mAlert.getInfo(index).hasContact())
+		if(mAlert.getInfoCount() > index && mAlert.getInfo(index).hasContact())
 		{
 			return mAlert.getInfo(index).getContact().toString();
 		}
