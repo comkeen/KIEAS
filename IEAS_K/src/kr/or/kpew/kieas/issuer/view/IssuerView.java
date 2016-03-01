@@ -2,6 +2,7 @@ package kr.or.kpew.kieas.issuer.view;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -45,7 +46,7 @@ public class IssuerView implements Observer
 	{
 		this.mainFrame = new JFrame();
 		mainFrame.setTitle("기상청");
-		mainFrame.setSize(1024, 768);
+		mainFrame.setPreferredSize(new Dimension(1028, 768));
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -56,6 +57,7 @@ public class IssuerView implements Observer
 		mainTabbedPane.addTab("CAP Generator Panel", alertGeneratorPanel.getPanel());
 //		mainTabbedPane.addTab("Alert Log Panel", alerterLogPanel.getPanel());			
 
+		mainFrame.pack();
 		mainFrame.setVisible(true);
 	}
 

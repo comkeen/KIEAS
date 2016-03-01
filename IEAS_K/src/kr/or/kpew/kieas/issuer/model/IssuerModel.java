@@ -22,7 +22,7 @@ public class IssuerModel extends Observable
 	
 	private XmlReaderAndWriter xmlReaderAndWriter;
 	private AlertLogger alertLogger;
-	private IssuerProfile componentProfile;
+	private IssuerProfile profile;
 	
 	private String mAlertMessage;
 	
@@ -38,7 +38,7 @@ public class IssuerModel extends Observable
 		this.transmitter = new Transmitter(this);
 		this.alertLogger = new AlertLogger();
 		this.xmlReaderAndWriter = new XmlReaderAndWriter();
-		this.componentProfile = new IssuerProfile();
+		this.profile = new IssuerProfile();
 
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
@@ -48,7 +48,7 @@ public class IssuerModel extends Observable
 	private void init()
 	{	
 		String id = generateAndSetID();
-		componentProfile.setId(id);
+		profile.setId(id);
 		transmitter.addReceiver(id);
 	}
 	

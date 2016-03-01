@@ -1,6 +1,7 @@
 package kr.or.kpew.kieas.issuer.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +94,8 @@ public class AlertGeneratorPanel
 		this.buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
 
-		Box loadBox = Box.createHorizontalBox();		
+		Box loadBox = Box.createHorizontalBox();	
+		loadBox.setPreferredSize(new Dimension(30, 30));
 		this.loadCapDraftButton = createButton(LOAD_CAP_BUTTON);
 		loadBox.add(loadCapDraftButton);		
 		this.mLoadTextField = new JTextField();
@@ -104,6 +106,7 @@ public class AlertGeneratorPanel
 		buttonPane.add(loadBox);
 
 		Box saveBox = Box.createHorizontalBox();
+		saveBox.setPreferredSize(new Dimension(30, 30));
 		this.saveCapButton = createButton(SAVE_CAP_BUTTON);
 		saveBox.add(saveCapButton);
 		this.mSaveTextField = new JTextField();
@@ -128,7 +131,6 @@ public class AlertGeneratorPanel
 		buttonPane.add(setIdButton);
 		
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
 		return buttonPane;
 	}
 	

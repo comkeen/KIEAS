@@ -400,7 +400,7 @@ public class CapElementPanel
 	private Box addBox(String labelName, String type)
 	{
 		Box box = Box.createHorizontalBox();
-
+		box.setPreferredSize(new Dimension(30, 30));
 		JLabel label = new JLabel(labelName);
 		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
@@ -408,7 +408,7 @@ public class CapElementPanel
 		box.add(Box.createRigidArea(new Dimension(offset, 0)));
 		
 		box.add(label);
-
+		
 		switch (type)
 		{
 		case IssuerView.COMBO_BOX:
