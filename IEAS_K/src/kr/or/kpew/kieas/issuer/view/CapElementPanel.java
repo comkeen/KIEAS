@@ -21,7 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.common.Pair;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
@@ -426,12 +426,12 @@ public class CapElementPanel
 			}
 			else
 			{
-				Vector<Item> comboboxModel = new Vector<>();
-				for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+				Vector<Pair> comboboxModel = new Vector<>();
+				for (Pair value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 				{
 					comboboxModel.addElement(value);
 				}
-				JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
+				JComboBox<Pair> comboBox = new JComboBox<>(comboboxModel);
 				alertComponentMap.put(labelName, comboBox);
 				box.add(comboBox);
 				return box;	
@@ -466,12 +466,12 @@ public class CapElementPanel
 		switch (type)
 		{
 		case IssuerView.COMBO_BOX:
-			Vector<Item> comboboxModel = new Vector<>();
-			for (Item value : kieasMessageBuilder.getCapEnumMap().get(labelName))
+			Vector<Pair> comboboxModel = new Vector<>();
+			for (Pair value : kieasMessageBuilder.getCapEnumMap().get(labelName))
 			{
 				comboboxModel.addElement(value);		
 			}
-			JComboBox<Item> comboBox = new JComboBox<>(comboboxModel);
+			JComboBox<Pair> comboBox = new JComboBox<>(comboboxModel);
 			infoComponentMap.put(labelName, comboBox);
 			box.add(comboBox);
 			return box;
@@ -502,7 +502,7 @@ public class CapElementPanel
 		{
 			for(int i = 0; i < ((JComboBox<?>) alertComponentMap.get(target)).getItemCount(); i++)
 			{
-				if((((Item) ((JComboBox<?>) alertComponentMap.get(target)).getItemAt(i)).getKey()).equals(value))
+				if((((Pair) ((JComboBox<?>) alertComponentMap.get(target)).getItemAt(i)).getKey()).equals(value))
 				{
 					((JComboBox<?>) alertComponentMap.get(target)).setSelectedIndex(i);
 					return;
@@ -525,7 +525,7 @@ public class CapElementPanel
 			{
 				for(int i = 0; i < ((JComboBox<?>) infoComponentMap.get(target)).getItemCount(); i++)
 				{
-					if((((Item) ((JComboBox<?>) infoComponentMap.get(target)).getItemAt(i)).getKey()).equals(value))
+					if((((Pair) ((JComboBox<?>) infoComponentMap.get(target)).getItemAt(i)).getKey()).equals(value))
 					{
 						((JComboBox<?>) infoComponentMap.get(target)).setSelectedIndex(i);
 						return;

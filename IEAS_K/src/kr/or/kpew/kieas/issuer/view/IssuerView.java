@@ -12,7 +12,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.common.Pair;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
 
@@ -126,7 +126,7 @@ public class IssuerView implements Observer
 	@Override
 	public void update(Observable observable, Object value)
 	{
-		Item item = (Item) value;
+		Pair item = (Pair) value;
 		System.out.println(observable.getClass().getSimpleName() + " invoke update : " + item.getKey());
 
 		switch (item.getKey())

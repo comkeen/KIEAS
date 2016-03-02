@@ -10,7 +10,7 @@ import java.util.Random;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.ITransmitter;
-import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.common.Pair;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.issuer.view.IssuerView;
@@ -139,7 +139,7 @@ public class IssuerModel extends Observable
 		String value = mAlertMessage;
 		
 		setChanged();
-		notifyObservers(new Item(target, value));
+		notifyObservers(new Pair(target, value));
 	}	
 	
 	public void writeCap(String path, String message)

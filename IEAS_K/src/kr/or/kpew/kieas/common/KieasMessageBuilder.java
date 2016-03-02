@@ -156,7 +156,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private CapXmlParser 	capXmlParser;
 	private CapValidator 	capValidator;
 	
-	private Map<String, List<Item>> CapElementToEnumMap;
+	private Map<String, List<Pair>> CapElementToEnumMap;
 
 	private Alert  mAlert;
 	private String xmlMessage;
@@ -1980,7 +1980,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * 
 	 * @return HashMap<String elementName, ArrayList<Item> enum>
 	 */
-	public Map<String, List<Item>> getCapEnumMap()
+	public Map<String, List<Pair>> getCapEnumMap()
 	{
 		this.CapElementToEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();
@@ -1990,7 +1990,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	
 	private void buildAlertCapEnumMap()
 	{
-		ArrayList<Item> capEnum1 = new ArrayList<>();
+		ArrayList<Pair> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values())
 		{
 			String modifiedValue = "";
@@ -2014,11 +2014,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (초안)";
 			}
-			capEnum1.add(new Item(value.toString(), modifiedValue));	
+			capEnum1.add(new Pair(value.toString(), modifiedValue));	
 		}
 		CapElementToEnumMap.put(STATUS, capEnum1);
 
-		List<Item> capEnum2 = new ArrayList<>();
+		List<Pair> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values())
 		{
 			String modifiedValue = "";
@@ -2042,11 +2042,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (오류)";
 			}
-			capEnum2.add(new Item(value.toString(), modifiedValue));	
+			capEnum2.add(new Pair(value.toString(), modifiedValue));	
 		}
 		CapElementToEnumMap.put(MSG_TYPE, capEnum2);
 
-		List<Item> capEnum3 = new ArrayList<>();
+		List<Pair> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values())
 		{
 			String modifiedValue = "";
@@ -2062,7 +2062,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (개별)";
 			}
-			capEnum3.add(new Item(value.toString(), modifiedValue));
+			capEnum3.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(SCOPE, capEnum3);	
 	}
@@ -2070,7 +2070,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private void buildInfoCapEnumMap()
 	{
 		//Category
-		List<Item> capEnum1 = new ArrayList<>();
+		List<Pair> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values())
 		{
 			String modifiedValue = "";
@@ -2122,11 +2122,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (기타)";
 			}
-			capEnum1.add(new Item(value.toString(), modifiedValue));
+			capEnum1.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(CATEGORY, capEnum1);
 
-		List<Item> capEnum2 = new ArrayList<>();
+		List<Pair> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values())
 		{
 			String modifiedValue = "";
@@ -2154,20 +2154,20 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (미상)";
 			}
-			capEnum2.add(new Item(value.toString(), modifiedValue));
+			capEnum2.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(CERTAINTY, capEnum2);
 
-		List<Item> capEnum3 = new ArrayList<>();
+		List<Pair> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values())
 		{			
 			String modifiedValue = "";
 			modifiedValue = value.toString();
-			capEnum3.add(new Item(value.toString(), modifiedValue));
+			capEnum3.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(RESPONSE_TYPE, capEnum3);
 
-		List<Item> capEnum4 = new ArrayList<>();
+		List<Pair> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values())
 		{
 			String modifiedValue = "";
@@ -2191,11 +2191,11 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (미상)";
 			}
-			capEnum4.add(new Item(value.toString(), modifiedValue));
+			capEnum4.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(SEVERITY, capEnum4);
 
-		List<Item> capEnum5 = new ArrayList<>();
+		List<Pair> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values())
 		{
 			String modifiedValue = "";
@@ -2219,20 +2219,20 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (미상)";
 			}
-			capEnum5.add(new Item(value.toString(), modifiedValue));
+			capEnum5.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(URGENCY, capEnum5);
 
-		List<Item> capEnum6 = new ArrayList<>();
+		List<Pair> capEnum6 = new ArrayList<>();
 		for (KieasList.DisasterEventType value : KieasList.DisasterEventType.values())
 		{
 			String modifiedValue = "";
 			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
-			capEnum6.add(new Item(value.toString(), modifiedValue));
+			capEnum6.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(EVENT_CODE, capEnum6);
 
-		List<Item> capEnum7 = new ArrayList<>();
+		List<Pair> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST)
 		{
 			String modifiedValue = "";
@@ -2244,43 +2244,43 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			{
 				modifiedValue = value.toString() + " (영어)";
 			}
-			capEnum7.add(new Item(value.toString(), modifiedValue));
+			capEnum7.add(new Pair(value.toString(), modifiedValue));
 		}
 		CapElementToEnumMap.put(LANGUAGE, capEnum7);
 
-		List<Item> capEnum8 = new ArrayList<>();
-		Item item1 = new Item("1100000000", "서울특별시");
-		Item item2 = new Item("2600000000", "부산광역시");
-		Item item3 = new Item("2700000000", "대구광역시");
-		Item item4 = new Item("2800000000", "인천광역시");
-		Item item5 = new Item("2900000000", "광주광역시");
-		Item item6 = new Item("3000000000", "대전광역시");
-		Item item7 = new Item("3100000000", "울산광역시");
-		Item item8 = new Item("4100000000", "경기도");
-		Item item9 = new Item("4200000000", "강원도");
-		Item item10 = new Item("4300000000", "충청북도");
-		Item item11 = new Item("4400000000", "충청남도");
-		Item item12 = new Item("4500000000", "전라북도");
-		Item item13 = new Item("4600000000", "전라남도");
-		Item item14 = new Item("4700000000", "경상북도");
-		Item item15 = new Item("4800000000", "경상남도");
-		Item item16 = new Item("5000000000", "제주특별자치도");		
-		capEnum8.add(new Item(item1.getKey(), item1.getKey() + " (" + item1.getValue() + ")" ));
-		capEnum8.add(new Item(item2.getKey(), item2.getKey() + " (" + item2.getValue() + ")" ));
-		capEnum8.add(new Item(item3.getKey(), item3.getKey() + " (" + item3.getValue() + ")" ));
-		capEnum8.add(new Item(item4.getKey(), item4.getKey() + " (" + item4.getValue() + ")" ));
-		capEnum8.add(new Item(item5.getKey(), item5.getKey() + " (" + item5.getValue() + ")" ));
-		capEnum8.add(new Item(item6.getKey(), item6.getKey() + " (" + item6.getValue() + ")" ));
-		capEnum8.add(new Item(item7.getKey(), item7.getKey() + " (" + item7.getValue() + ")" ));
-		capEnum8.add(new Item(item8.getKey(), item8.getKey() + " (" + item8.getValue() + ")" ));
-		capEnum8.add(new Item(item9.getKey(), item9.getKey() + " (" + item9.getValue() + ")" ));
-		capEnum8.add(new Item(item10.getKey(), item10.getKey() + " (" + item10.getValue() + ")" ));
-		capEnum8.add(new Item(item11.getKey(), item11.getKey() + " (" + item11.getValue() + ")" ));
-		capEnum8.add(new Item(item12.getKey(), item12.getKey() + " (" + item12.getValue() + ")" ));
-		capEnum8.add(new Item(item13.getKey(), item13.getKey() + " (" + item13.getValue() + ")" ));
-		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
-		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
-		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
+		List<Pair> capEnum8 = new ArrayList<>();
+		Pair item1 = new Pair("1100000000", "서울특별시");
+		Pair item2 = new Pair("2600000000", "부산광역시");
+		Pair item3 = new Pair("2700000000", "대구광역시");
+		Pair item4 = new Pair("2800000000", "인천광역시");
+		Pair item5 = new Pair("2900000000", "광주광역시");
+		Pair item6 = new Pair("3000000000", "대전광역시");
+		Pair item7 = new Pair("3100000000", "울산광역시");
+		Pair item8 = new Pair("4100000000", "경기도");
+		Pair item9 = new Pair("4200000000", "강원도");
+		Pair item10 = new Pair("4300000000", "충청북도");
+		Pair item11 = new Pair("4400000000", "충청남도");
+		Pair item12 = new Pair("4500000000", "전라북도");
+		Pair item13 = new Pair("4600000000", "전라남도");
+		Pair item14 = new Pair("4700000000", "경상북도");
+		Pair item15 = new Pair("4800000000", "경상남도");
+		Pair item16 = new Pair("5000000000", "제주특별자치도");		
+		capEnum8.add(new Pair(item1.getKey(), item1.getKey() + " (" + item1.getValue() + ")" ));
+		capEnum8.add(new Pair(item2.getKey(), item2.getKey() + " (" + item2.getValue() + ")" ));
+		capEnum8.add(new Pair(item3.getKey(), item3.getKey() + " (" + item3.getValue() + ")" ));
+		capEnum8.add(new Pair(item4.getKey(), item4.getKey() + " (" + item4.getValue() + ")" ));
+		capEnum8.add(new Pair(item5.getKey(), item5.getKey() + " (" + item5.getValue() + ")" ));
+		capEnum8.add(new Pair(item6.getKey(), item6.getKey() + " (" + item6.getValue() + ")" ));
+		capEnum8.add(new Pair(item7.getKey(), item7.getKey() + " (" + item7.getValue() + ")" ));
+		capEnum8.add(new Pair(item8.getKey(), item8.getKey() + " (" + item8.getValue() + ")" ));
+		capEnum8.add(new Pair(item9.getKey(), item9.getKey() + " (" + item9.getValue() + ")" ));
+		capEnum8.add(new Pair(item10.getKey(), item10.getKey() + " (" + item10.getValue() + ")" ));
+		capEnum8.add(new Pair(item11.getKey(), item11.getKey() + " (" + item11.getValue() + ")" ));
+		capEnum8.add(new Pair(item12.getKey(), item12.getKey() + " (" + item12.getValue() + ")" ));
+		capEnum8.add(new Pair(item13.getKey(), item13.getKey() + " (" + item13.getValue() + ")" ));
+		capEnum8.add(new Pair(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")" ));
+		capEnum8.add(new Pair(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")" ));
+		capEnum8.add(new Pair(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")" ));
 		CapElementToEnumMap.put(GEO_CODE, capEnum8);
 	}
 }

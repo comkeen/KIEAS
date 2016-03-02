@@ -105,7 +105,7 @@ public interface IKieasMessageBuilder
 	public KieasMessageBuilder setMessage(String message);
 	public boolean validateMessage(String message);
 	public String generateKieasMessageIdentifier(String id);
-	public Map<String, List<Item>> getCapEnumMap();
+	public Map<String, List<Pair>> getCapEnumMap();
 	
 	public String getDate();
 	public String convertDateToYmdhms(String date);

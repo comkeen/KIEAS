@@ -21,7 +21,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.common.Pair;
 import kr.or.kpew.kieas.common.KieasConfiguration;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 
@@ -38,7 +38,7 @@ public class AlertSystemView implements Observer {
 	private JPanel buttonPane;
 	private JTabbedPane mainTabbedPane;
 
-	private JComboBox<Item> geoCodeCombobox;
+	private JComboBox<Pair> geoCodeCombobox;
 	private JComboBox<String> alertSystemTypeCombobox;
 
 	public AlertSystemView() {
