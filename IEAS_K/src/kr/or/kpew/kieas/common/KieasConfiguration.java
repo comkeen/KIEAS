@@ -24,12 +24,22 @@ public class KieasConfiguration
 		public static final String DATABASE_SERVER_IP_LOCAL = "jdbc:mysql://localhost:3306";
 //		public static final String DATABASE_SERVER_IP = "jdbc:mysql://172.16.165.135:3306";
 		
-		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
-		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
-		public final static String GATEWAY_TO_ALERTER_QUEUE_DESTINATION 		= PACKAGE_NAME+"gatewayToAlerterQueue";		
+		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
+		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
+//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
+//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
+
+//		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
+		public final static String GATEWAY_TOPIC_DESTINATION 					= "127.0.0.1:26751";
+		
+//		public final static String GATEWAY_TO_ALERTER_QUEUE_DESTINATION 		= PACKAGE_NAME+"gatewayToAlerterQueue";		
 		public final static String GATEWAY_TO_ALERTSYSTEM_QUEUE_DESTINATION 	= PACKAGE_NAME+"gatewayToAlertSystemQueue";
 		
-		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
+		public final static String ISSUER_TO_GATEWAY_TOPIC_DESTINATION 			= PACKAGE_NAME+"issuerToGatewayTopic";
+		
+		public final static String GATEWAY_ID = "maingateway@korea.kr";
+		
+		
 	}
 	
 	public static class KieasConstant

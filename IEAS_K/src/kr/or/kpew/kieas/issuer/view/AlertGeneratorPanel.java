@@ -1,7 +1,5 @@
 package kr.or.kpew.kieas.issuer.view;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,52 +7,42 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
+import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
 
 
 public class AlertGeneratorPanel
 {	
-	private static final String LOAD_TEXT_FIELD = "LoadTextField";
-	private static final String SAVE_TEXT_FIELD = "SaveTextField";
-	private static final String LOAD_CAP_BUTTON = "Load Cap";
-	private static final String SAVE_CAP_BUTTON = "Save Cap";
-	private static final String REGISTER_BUTTON = "Register";
-	private static final String SET_ID = "Set Id";
+	private static final String LOAD_CAP_BUTTON = "Load";
+	private static final String SAVE_CAP_BUTTON = "Save";
+	private static final String APPLY_BUTTON = "Apply";
+	private static final String SEND_BUTTON = "Send";
 
 	private JScrollPane alertGenerateScrollPanel;
-	private JPanel mainPanel;
+	private Box mainPanel;
 
 	private Vector<Object> mViewComponents;
-	private HashMap<String, Component> panelComponenets;
+	private HashMap<String, JComponent> panelComponenets;
 	private List<JButton> buttons;
-	private JScrollPane textAreaPane;
-	private JTextArea mTextArea;
 	
-	private JPanel buttonPane;
-	private JButton saveCapButton;
-	private JButton loadCapDraftButton;
+	private Box buttonPane;
 	private JTextField mSaveTextField;
 	private JTextField mLoadTextField;
 
-	private JButton alertApplyButton;
-	private JButton sendButton;
-	private JButton registerButton;
-	private JButton setIdButton;
-	
-	private CapElementPanel capAlertPanel;
 	private JTabbedPane capTabPanel;
+	private CapElementPanel capElementPanel;
 	private Box capElementBox;
 	private Box alertBox;
-	
+
+	private AlertLogPanel alertLogPanel;
 
 	public AlertGeneratorPanel()
 	{
@@ -66,69 +54,36 @@ public class AlertGeneratorPanel
 		this.mViewComponents = new Vector<>();
 		this.panelComponenets = new HashMap<>();
 		this.buttons = new ArrayList<>();
-		this.mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		this.mainPanel = Box.createVerticalBox();
 		
-		mainPanel.add(initTextArea());
 		mainPanel.add(initButtonPanel());
 		mainPanel.add(initCapPanelContainer());
+		
 		mViewComponents.addElement(panelComponenets);
 
 		this.alertGenerateScrollPanel = new JScrollPane(mainPanel);
 	}
 
-	private JComponent initTextArea()
-	{
-		this.mTextArea = new JTextArea(20, 20);
-		mTextArea.setEditable(false);
-		
-		this.textAreaPane = new JScrollPane(mTextArea);
-		panelComponenets.put("TextArea", mTextArea);
-		textAreaPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		
-		return textAreaPane;
-	}
-
 	private JComponent initButtonPanel()
 	{
-		this.buttonPane = new JPanel();
-		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
-
-		Box loadBox = Box.createHorizontalBox();	
-		loadBox.setPreferredSize(new Dimension(30, 30));
-		this.loadCapDraftButton = createButton(LOAD_CAP_BUTTON);
-		loadBox.add(loadCapDraftButton);		
-		this.mLoadTextField = new JTextField();
-		panelComponenets.put(LOAD_TEXT_FIELD, mLoadTextField);
-		mLoadTextField.setText("cap/HRA.xml");
-		loadBox.add(mLoadTextField);
-		loadBox.setBorder(BorderFactory.createLoweredBevelBorder());
-		buttonPane.add(loadBox);
-
-		Box saveBox = Box.createHorizontalBox();
-		saveBox.setPreferredSize(new Dimension(30, 30));
-		this.saveCapButton = createButton(SAVE_CAP_BUTTON);
-		saveBox.add(saveCapButton);
-		this.mSaveTextField = new JTextField();
-		panelComponenets.put(SAVE_TEXT_FIELD, mSaveTextField);
-		mSaveTextField.setText("cap/out.xml");
-		saveBox.add(mSaveTextField);
-		saveBox.setBorder(BorderFactory.createLoweredBevelBorder());
-		buttonPane.add(saveBox);
-
+		this.buttonPane = Box.createHorizontalBox();
 		
-		this.alertApplyButton = createButton("Apply");
+		JButton loadCapDraftButton = createButton(LOAD_CAP_BUTTON);
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		buttonPane.add(loadCapDraftButton);
+				
+		JButton saveCapButton = createButton(SAVE_CAP_BUTTON);
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		buttonPane.add(saveCapButton);
+		
+
+		JButton alertApplyButton = createButton(APPLY_BUTTON);
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		buttonPane.add(alertApplyButton);
-		this.sendButton = createButton("Send");
-		sendButton.setActionCommand("Send");
+		
+		JButton sendButton = createButton(SEND_BUTTON);
+		sendButton.setActionCommand(SEND_BUTTON);
 		buttonPane.add(sendButton);
-		this.registerButton = createButton(REGISTER_BUTTON);
-		registerButton.setActionCommand(REGISTER_BUTTON);
-		buttonPane.add(registerButton);
-		this.setIdButton = createButton(SET_ID);
-		setIdButton.setActionCommand(SET_ID);
-		buttonPane.add(setIdButton);
 		
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		return buttonPane;
@@ -143,28 +98,28 @@ public class AlertGeneratorPanel
 		capElementBox.add(initCapElementPanel());
 		alertBox.add(initAlertBox());
 		
-		capTabPanel.addTab("CAP Element", capElementBox);
-		capTabPanel.addTab("경보메시지", alertBox);
+		capTabPanel.addTab("CAP 요소", capElementBox);
+		capTabPanel.addTab("경보 로그", alertBox);
 		
 		return capTabPanel;
 	}
 
 	private JComponent initCapElementPanel()
 	{
-		this.capAlertPanel = new CapElementPanel();
-		return capAlertPanel.getPanel();
+		this.capElementPanel = new CapElementPanel();
+		return capElementPanel.getPanel();
 	}
 
 	private JComponent initAlertBox()
 	{
-		return Box.createVerticalBox();
+		this.alertLogPanel = new AlertLogPanel();
+		return alertLogPanel.getPanel();
 	}
 	
 	private JButton createButton(String name)
 	{
 		JButton button = new JButton(name);
 		buttons.add(button);
-		button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return button;
 	}
 
@@ -173,13 +128,14 @@ public class AlertGeneratorPanel
 		return this.alertGenerateScrollPanel;
 	}
 	
-	public void updateView(String value)
-	{		
-		capElementBox.removeAll();
+	public void updateCapElementView(String value)
+	{
+		capElementPanel.setCapAlertPanel(value);
+		alertLogPanel.setTextArea(value);
 		
-		capAlertPanel.createCapAlertPanel(value);
-		
-		capElementBox.add(capAlertPanel.getPanel());
+		JScrollBar vertical = alertGenerateScrollPanel.getVerticalScrollBar();
+		vertical.getY();
+		vertical.setValue(vertical.getMinimum());
 	}
 	
 	public String getLoadTextField()
@@ -196,11 +152,15 @@ public class AlertGeneratorPanel
 	{
 		return ((JTextArea) panelComponenets.get(IssuerView.TEXT_AREA)).getText();
 	}
+	
+	public String getCapElement()
+	{		
+		return capElementPanel.getCapElement();
+	}
 
 	public void setTextArea(String message)
 	{
-		mTextArea.setText(message);
-		
+		alertLogPanel.setTextArea(message);
 	}
 
 	public void addController(IssuerController controller)
@@ -209,7 +169,8 @@ public class AlertGeneratorPanel
 		{
 			button.addActionListener(controller);
 		}
-		capAlertPanel.addController(controller);
+		capElementPanel.addController(controller);
+		alertLogPanel.addController(controller);
 	}
 	
 	public void removeController(IssuerController controller)
@@ -218,23 +179,29 @@ public class AlertGeneratorPanel
 		{
 			button.removeActionListener(controller);
 		}
+		capElementPanel.removeController(controller);
+		alertLogPanel.removeController(controller);
 	}
 
 	public void addInfoIndexPanel()
 	{
-		capAlertPanel.addInfoIndexPanel();
+		capElementPanel.addInfoIndexPanel();
+	}
+	
+	public void updateIdentifier(String message)
+	{
+		capElementPanel.setIdentifier(message);		
 	}
 
-	public void addResourceIndexPanel()
+	public void updateTable(MessageAckPair value)
 	{
-		// TODO Auto-generated method stub
-		
+		alertLogPanel.updateTable(value);
+	}
+	
+	public String getSelectedRowIdentifier()
+	{
+		return alertLogPanel.getSelectedRowIdentifier();
 	}
 
-	public void addAreaIndexPanel()
-	{
-		// TODO Auto-generated method stub
-		
-	}
 }
 

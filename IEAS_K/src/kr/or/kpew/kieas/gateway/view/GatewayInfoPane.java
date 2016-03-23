@@ -7,14 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import kr.or.kpew.kieas.gateway.controller.GatewayActionListener;
-import kr.or.kpew.kieas.gateway.model.GatewayAlertSystemInfoTableModel;
-import kr.or.kpew.kieas.gateway.model.GatewayAlerterInfoTableModel;
+import kr.or.kpew.kieas.gateway.controller.GatewayController;
 
 public class GatewayInfoPane
 {
-	private GatewayActionListener gatewayActionListener;
-	private GatewayView gatewayView;
+	private GatewayController controll;
+	private GatewayView view;
 	private GridBagConstraints gbc;
 
 	private JPanel infoPane;
@@ -23,19 +21,19 @@ public class GatewayInfoPane
 
 	private JScrollPane alerterInfoTableScrollPane;
 
-	private GatewayAlerterInfoTableModel alerterInfoTableModel;
+	private IssuerTable alerterInfoTableModel;
 
-	private GatewayAlertSystemInfoTableModel alertSystemInfoTableModel;
+	private AlertSystemInfoTable alertSystemInfoTableModel;
 
 	private JTable alertSystemInfoTable;
 
 	private JScrollPane alertSystemInfoTableScrollPane;
 
 
-	public GatewayInfoPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener)
+	public GatewayInfoPane(GatewayView gatewayView, GatewayController gatewayActionListener)
 	{
-		this.gatewayActionListener = gatewayActionListener;
-		this.gatewayView = gatewayView;
+		this.controll = gatewayActionListener;
+		this.view = gatewayView;
 		this.gbc = new GridBagConstraints();
 
 		initInfoPane();
@@ -71,7 +69,7 @@ public class GatewayInfoPane
 	}
 
 	private void initAlertSystemInfoTablePane() {
-		this.alerterInfoTableModel = gatewayView.getAlerterInfoTableModel();
+		this.alerterInfoTableModel = view.getAlerterInfoTableModel();
 		this.alerterInfoTable = new JTable(alerterInfoTableModel.getTableModel());
 		this.alerterInfoTableScrollPane = new JScrollPane(alerterInfoTable);
 
@@ -80,14 +78,14 @@ public class GatewayInfoPane
 		alerterInfoTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 		alerterInfoTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		alerterInfoTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-		alerterInfoTable.getSelectionModel().addListSelectionListener(gatewayActionListener);
+		alerterInfoTable.getSelectionModel().addListSelectionListener(controll);
 		
 		infoPane.add(alerterInfoTableScrollPane, gbc);
 	}
 
 	private void initAlerterInfoTablePane()
 	{
-		this.alertSystemInfoTableModel = gatewayView.getAlertSystemInfoTableModel();
+		this.alertSystemInfoTableModel = view.getAlertSystemInfoTableModel();
 		this.alertSystemInfoTable = new JTable(alertSystemInfoTableModel.getTableModel());
 		this.alertSystemInfoTableScrollPane = new JScrollPane(alertSystemInfoTable);
 
@@ -98,7 +96,7 @@ public class GatewayInfoPane
 		alertSystemInfoTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 		alertSystemInfoTable.getColumnModel().getColumn(2).setPreferredWidth(200);
 		alertSystemInfoTable.getColumnModel().getColumn(3).setPreferredWidth(200);
-		alertSystemInfoTable.getSelectionModel().addListSelectionListener(gatewayActionListener);
+		alertSystemInfoTable.getSelectionModel().addListSelectionListener(controll);
 		
 		infoPane.add(alertSystemInfoTableScrollPane, gbc);		
 	}

@@ -7,6 +7,8 @@ import javax.swing.table.DefaultTableModel;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.gateway.view.AlertMessageTable.Responses;
+import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
 
 public class TableModel
 {
@@ -19,11 +21,11 @@ public class TableModel
 	private static final String NO = "No.";
 
 	
-	public TableModel(String[] comlumnNames)
+	public TableModel(String[] columnNames)
 	{
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 		
-		initTable(comlumnNames);
+		initTable(columnNames);
 	}
 
 	public void initTable(String[] columnNames)
@@ -39,24 +41,45 @@ public class TableModel
 		this.tableModel = new DefaultTableModel(indexedColumnNames, 0);
 	}
 
-	public void addTableRowData(String message)
+	public void updateTable(Object object)
 	{
-		kieasMessageBuilder.setMessage(message);
-		
-		String[] rowData = new String[indexedColumnNames.length];
+		String message = null;
+		String state = null;
+		if(object instanceof MessageAckPair)
+		{
+			MessageAckPair pair = (MessageAckPair) object;
+			message = pair.getMessage();
+			state = pair.getState();
+		}
+		else if(object instanceof String)
+		{
+			message = (String) object;
+		}		
+		//ack update
+		kieasMessageBuilder.parse(message);
+		String identifier = kieasMessageBuilder.getIdentifier();
+		System.out.println("AO: id :" + identifier );
+		for (int i = 0; i < tableModel.getRowCount(); i++)
+		{		
+			if(tableModel.getValueAt(i, 1).toString().equals(identifier))
+			{
+				getTableModel().setValueAt(state, i, 4);
+				return;
+			}
+		}
+		//addTableRow
+		String[] rowData = new String[indexedColumnNames.length + 1];
 		
 		rowData[0] = Integer.toString(tableModel.getRowCount() + 1);
-		for(int i = 1; i < indexedColumnNames.length; i++)
+		for(int j = 1; j < rowData.length - 2; j++)
 		{		
+			String methodName = GET + indexedColumnNames[j];
 			try
 			{
-				String methodName = GET + indexedColumnNames[i];
 				Method method = kieasMessageBuilder.getClass().getMethod(methodName.trim());
-				Object object = method.invoke(kieasMessageBuilder);
-				System.out.println("methodName : " + methodName);
-				System.out.println("invoke : " + object.toString());
+				Object returnObject = method.invoke(kieasMessageBuilder);
 				
-				rowData[i] = object.toString();
+				rowData[j] = returnObject.toString();
 			}
 			catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
 			{
@@ -64,10 +87,13 @@ public class TableModel
 			}
 			catch (NoSuchMethodException ex)
 			{
+				System.out.println("TableModel: there is no such a method name : " + methodName);
 				continue;
-			}			
-		}		
+			}		
+		}	
+		rowData[4] = Responses.NACK.toString();
 		tableModel.addRow(rowData);
+		return;		
 	}
 		
 	public DefaultTableModel getTableModel()

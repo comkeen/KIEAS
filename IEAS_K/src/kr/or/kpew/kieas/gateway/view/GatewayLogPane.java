@@ -10,11 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import kr.or.kpew.kieas.gateway.controller.GatewayActionListener;
+import kr.or.kpew.kieas.gateway.controller.GatewayController;
 
 public class GatewayLogPane
 {
-	private GatewayActionListener gatewayActionListener;
+	private GatewayController controller;
 	
 	private JPanel logPane;
 	
@@ -29,9 +29,9 @@ public class GatewayLogPane
 	private JButton clearLogButton;
 
 
-	public GatewayLogPane(GatewayActionListener gatewayActionListener)
+	public GatewayLogPane(GatewayController controller)
 	{		
-		this.gatewayActionListener = gatewayActionListener;
+		this.controller = controller;
 		this.gbc = new GridBagConstraints();
 
 		initGatewayLogPane();
@@ -83,13 +83,13 @@ public class GatewayLogPane
 		this.logButtonPane = new JPanel();
 
 		this.openGatewayButton = new JButton("OpenGateway");
-		openGatewayButton.addActionListener(gatewayActionListener);
+		openGatewayButton.addActionListener(controller);
 
 		this.closeGatewayButton = new JButton("CloseGateway");
-		closeGatewayButton.addActionListener(gatewayActionListener);
+		closeGatewayButton.addActionListener(controller);
 
 		this.clearLogButton = new JButton("ClearLog");
-		clearLogButton.addActionListener(gatewayActionListener);
+		clearLogButton.addActionListener(controller);
 
 		logButtonPane.add(clearLogButton, BorderLayout.WEST);
 		logButtonPane.add(openGatewayButton, BorderLayout.EAST);

@@ -2,14 +2,15 @@ package kr.or.kpew.kieas.issuer.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -17,25 +18,24 @@ import javax.swing.JTextArea;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.common.KieasMessageBuilder.AlertElementNames;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
+import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
 public class AlertLogPanel 
 {
-	private static final String TEXT_AREA = "TextArea";
 	private static final String CLEAR_BUTTON = "Clear";
-	
-	
-	private IssuerView topView;
-	private IssuerController controller;
 
-	private JPanel mainPanel;
+	private IKieasMessageBuilder kieasMessageBuilder;
+	
+	private Box mainBox;
 	
 	private JScrollPane textAreaPanel;
 	private JTextArea mTextArea;
 
-	private JPanel buttonPanel;
+	private Box buttonBox;
 	private JButton mClearButton;
 
 	private JScrollPane alertLogTableScrollPanel;
@@ -44,60 +44,40 @@ public class AlertLogPanel
 	
 	private Vector<Object> mViewComponents;
 	private Map<String, Component> mPanelComponents;
-	private Map<String, String> mAlertElementMap;
-	private Map<String, String> mAlertMessageMap;
-	
-	
-	public AlertLogPanel(IssuerView topView)
-	{
-		this.topView = topView;
-//		this.viewActionListener = controller;
 
-		initAlertElementMap();
+	
+	
+	public AlertLogPanel()
+	{
+		this.kieasMessageBuilder = new KieasMessageBuilder();
 		initPanel();
 	}
 	
-	private void initAlertElementMap()
+	public JComponent getPanel()
 	{
-		this.mAlertElementMap = new HashMap<String, String>();
-		
-		mAlertElementMap.put(KieasMessageBuilder.SENDER, KieasMessageBuilder.SENDER);
-		mAlertElementMap.put(KieasMessageBuilder.IDENTIFIER, KieasMessageBuilder.IDENTIFIER);
-		mAlertElementMap.put(KieasMessageBuilder.SENT, KieasMessageBuilder.SENT);
-		mAlertElementMap.put(KieasMessageBuilder.STATUS, KieasMessageBuilder.STATUS);
-		mAlertElementMap.put(KieasMessageBuilder.EVENT, KieasMessageBuilder.EVENT);
-		mAlertElementMap.put(KieasMessageBuilder.RESTRICTION, KieasMessageBuilder.RESTRICTION);
-		mAlertElementMap.put(KieasMessageBuilder.GEO_CODE, KieasMessageBuilder.GEO_CODE);
-		mAlertElementMap.put(KieasMessageBuilder.NOTE, KieasMessageBuilder.NOTE);
-	}
-	
-	public JPanel getPanel()
-	{
-		return this.mainPanel;
+		return this.mainBox;
 	}
 		
 	private void initPanel()
 	{		
 		this.mViewComponents = new Vector<>();
 		this.mPanelComponents = new HashMap<>();
-		this.mAlertElementMap = new HashMap<String, String>();
-		this.mAlertMessageMap = new HashMap<String, String>();
 		
-		this.mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		this.mainBox = Box.createVerticalBox();
 
-		mainPanel.add(initTextAreaPanel());
-		mainPanel.add(initButtonPanel());
-		mainPanel.add(initTablePanel());
+		mainBox.add(initTextAreaPanel());
+		mainBox.add(initButtonPanel());
+		mainBox.add(initTablePanel());
 		
 		mViewComponents.addElement(mPanelComponents);
 	}
 
-	private Component initTextAreaPanel()
+	private JComponent initTextAreaPanel()
 	{
-		this.mTextArea = new JTextArea(20, 20);
+		this.mTextArea = new JTextArea(10, 10);
+		mTextArea.setPreferredSize(new Dimension(500, 300));
 		mTextArea.setText("\n");
-		mPanelComponents.put(TEXT_AREA, mTextArea);
+		mPanelComponents.put(IssuerView.TEXT_AREA, mTextArea);
 		
 		this.textAreaPanel = new JScrollPane(mTextArea);
 		textAreaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -105,24 +85,24 @@ public class AlertLogPanel
 		return textAreaPanel;
 	}
 
-	private Component initButtonPanel()
+	private JComponent initButtonPanel()
 	{
-		this.buttonPanel = new JPanel();
+		this.buttonBox = Box.createHorizontalBox();
 
 		this.mClearButton = new JButton(CLEAR_BUTTON);
 		mClearButton.setActionCommand(CLEAR_BUTTON);
-		mClearButton.addActionListener(controller);
-		buttonPanel.add(mClearButton, BorderLayout.WEST);
+		buttonBox.add(mClearButton, BorderLayout.WEST);
 		
-		return buttonPanel;
+		return buttonBox;
 	}
-	private Component initTablePanel()
+	
+	private JComponent initTablePanel()
 	{
 		String[] columnNames =
 			{
-				KieasMessageBuilder.IDENTIFIER,
-				KieasMessageBuilder.SENDER,
-				KieasMessageBuilder.SENT,
+				AlertElementNames.Identifier.toString(),
+				AlertElementNames.Sender.toString(),
+				AlertElementNames.Sent.toString(),
 				KieasConstant.ACK
 			};
 		
@@ -130,68 +110,40 @@ public class AlertLogPanel
 		this.alertLogTable = new JTable(alertLogTableModel.getTableModel());
 		this.alertLogTableScrollPanel = new JScrollPane(alertLogTable);
 		alertLogTable.setEnabled(true);
-		
-		alertLogTable.getSelectionModel().addListSelectionListener(controller);
-		
-		
+				
 		return alertLogTableScrollPanel;
 	}
-
+	
+	public String getSelectedRowIdentifier()
+	{
+		String identifier = "";
+		if(alertLogTable.getSelectedRow() >= 0)
+		{
+			identifier = alertLogTableModel.getTableModel().getValueAt(alertLogTable.getSelectedRow(), 1).toString();
+		}
+		return identifier;
+	}
+	
 	public void setTextArea(String message)
 	{
 		mTextArea.setText(message);
+		mTextArea.setCaretPosition(0);
 	}
-	
-	public void setDataTextArea()
-	{
-		if(alertLogTable.getSelectedRow() > -1)
-		{
-			String identifier = alertLogTableModel.getTableModel().getValueAt(alertLogTable.getSelectedRow(), 2).toString();
-//			String message = topView.getAlertMessage(identifier);
-//			mTextArea.setText(message);
-		}
-	}
-
-	public void addAlertTableRow(String message)
-	{				
-		alertLogTableModel.addTableRowData(message);
-		
-//		kieasMessageBuilder.setMessage(message);
-//		putAlertMessageMap(kieasMessageBuilder.getIdentifier(), message);
-	}
-
-//	public void putAlertMessageMap(String key, String message)
-//	{
-//		mAlertMessageMap.put(key, message);
-//	}
-	
-//	public Map<String, String> getAlertElementMap(String message)
-//	{
-//		kieasMessageBuilder.setMessage(message);
-//
-//		mAlertElementMap.replace(KieasMessageBuilder.SENDER, kieasMessageBuilder.getSender());
-//		mAlertElementMap.replace(KieasMessageBuilder.IDENTIFIER, kieasMessageBuilder.getIdentifier());
-//		mAlertElementMap.replace(KieasMessageBuilder.STATUS, kieasMessageBuilder.getStatus());
-//		mAlertElementMap.replace(KieasMessageBuilder.SENT, kieasMessageBuilder.getSent());
-//		mAlertElementMap.replace(KieasMessageBuilder.EVENT, kieasMessageBuilder.getEvent(0));
-//		mAlertElementMap.replace(KieasMessageBuilder.NOTE, kieasMessageBuilder.getNote());
-//		if(kieasMessageBuilder.getRestriction() != null)
-//		{
-//			mAlertElementMap.replace(KieasMessageBuilder.RESTRICTION, kieasMessageBuilder.getRestriction());			
-//		}
-//		alertElementMap.replace(GEO_CODE, kieasMessageBuilder.getSent());
-//
-//		return mAlertElementMap;
-//	}
 	
 	public void addController(IssuerController controller)
 	{
-		this.controller = controller;
+		mClearButton.addActionListener(controller);
+		alertLogTable.getSelectionModel().addListSelectionListener(controller);
 	}
 
 	public void removeController(IssuerController controller)
 	{
-		// TODO Auto-generated method stub
-		
+		mClearButton.removeActionListener(controller);
+		alertLogTable.getSelectionModel().removeListSelectionListener(controller);
+	}
+
+	public void updateTable(MessageAckPair value)
+	{
+		alertLogTableModel.updateTable(value);		
 	}
 }

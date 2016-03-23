@@ -28,8 +28,6 @@ public class XmlReaderAndWriter
 	{
 		this.loadPath = DEFAULT_LOAD_PATH;
 		this.savePath = DEFAULT_SAVE_PATH;
-		
-		System.out.println("XmlReaderAndWriter instantiated");
 	}
 	
 	public String getLoadPath()

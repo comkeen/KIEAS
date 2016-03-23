@@ -1,6 +1,8 @@
-package kr.or.kpew.kieas.gateway.controller;
+package kr.or.kpew.kieas.network.jms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jms.Connection;
@@ -16,15 +18,19 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.or.kpew.kieas.common.ITransmitter;
+import kr.or.kpew.kieas.common.IOnMessageHandler;
+import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
+import kr.or.kpew.kieas.common.Item;
+import kr.or.kpew.kieas.common.KieasConfiguration;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
+import kr.or.kpew.kieas.network.IServerTransmitter;
 
 
-public class GatewayTransmitter implements ITransmitter
+public class GatewayTransmitter implements IServerTransmitter
 {
 	private static final String QUEUE_HEADER = "queue://";
-		
-	private _GatewayController controller;
+
+	private String id;
 
 	private Connection connection;
 	private Session session;
@@ -35,23 +41,26 @@ public class GatewayTransmitter implements ITransmitter
 	
 	private String mqServerIp;
 
+	private IOnMessageHandler handler;
 	
-	public GatewayTransmitter(_GatewayController controller)
+	List<Item> alertsystems = new ArrayList<>();
+	
+	public GatewayTransmitter()
 	{
-		this.controller = controller;
-
-		init();
 	}
 	
-	private void init()
+	@Override
+	public void init(String id)
 	{
+		this.id = id;
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;		
 		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
 		
 		openConnection();		
+
+		
 	}
 	
-	@Override
 	public void openConnection()
 	{
 		try
@@ -64,16 +73,15 @@ public class GatewayTransmitter implements ITransmitter
 		}
 		catch (Exception ex)
 		{
-//			ex.printStackTrace();
 			System.out.println("Could not found MQ Server : " + mqServerIp);
 			return;
 		}
-		this.addReceiver(KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-		this.addReceiver(KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+		
+		this.addReceiver(id);
 	}
 	
 	@Override
-	public void closeConnection()
+	public void close()
 	{
 		try 
 		{
@@ -90,7 +98,6 @@ public class GatewayTransmitter implements ITransmitter
 		}
 	}
 		
-	@Override
 	public void addReceiver(String destination)
 	{		
 		if(connection == null || session == null)
@@ -115,21 +122,30 @@ public class GatewayTransmitter implements ITransmitter
 						TextMessage textMessage = (TextMessage) message;
 						try 
 						{
+							String queue = message.getJMSReplyTo().toString();
+							String sender = queue.replace(QUEUE_HEADER, "");
+							handler.onMessage(sender, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
+							/*
 							if (message.getJMSDestination().toString().equals(QUEUE_HEADER + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
 							{
-								controller.acceptAleterMessage(textMessage.getText());
+								
+								handler.onMessage(sender, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
+//								model.onMessageFromIssuer(textMessage.getText());
 								return;
 							}
 							else if (message.getJMSDestination().toString().equals(QUEUE_HEADER  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
 							{
-								controller.acceptAletSystemMessage(textMessage.getText());
+								System.out.println("g: msg from a");
+								handler.onMessage(KieasTcpProtocol.SenderType.AlertSystem.toString(), IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
 								return;
 							}
 							else
 							{
-								controller.acceptAleterMessage(textMessage.getText());
+								System.out.println("unknown sender");
+								handler.onMessage(KieasTcpProtocol.SenderType.Issuer.toString(), IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
 								return;
 							}
+							*/
 							
 						}
 						catch (JMSException e)
@@ -149,43 +165,24 @@ public class GatewayTransmitter implements ITransmitter
 	}
 
 	@Override
-	public void removeReceiver(String target)
-	{
-		try
-		{
-			messageConsumerMap.get(target).close();
-			messageConsumerMap.remove(target);
-		} 
-		catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
-	}
-		
-	@Override
-	public void setMqServer(String ip)
-	{
-		this.mqServerIp = ip;
-		
-		closeConnection();
-		openConnection();
-	}
-	
-	@Override
-	public void sendMessage(String message, String destination) 
+	public void sendTo(String id, byte[] message) 
 	{
 		if(connection == null || session == null)
 		{
 			System.out.println("Could not found JMS Connection");
 			return;
 		}
-		
+
 		try
 		{
-			Destination queueDestination = this.session.createQueue(destination);
+			String address = getAddress(id); 
+			if(address == null) {
+				System.out.println("not connected system: " + id);
+			}
+			Destination queueDestination = this.session.createQueue(address);
 			this.queueProducer = this.session.createProducer(queueDestination);
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
+			TextMessage textMessage = this.session.createTextMessage(new String(message));
 
 			queueProducer.send(textMessage);
 		}
@@ -196,15 +193,16 @@ public class GatewayTransmitter implements ITransmitter
 	}
 
 	@Override
-	public void sendTopicMessage(String message, String topic)
+	public void broadcast(byte[] message)
 	{
+		String topic = KieasConfiguration.KieasAddress.GATEWAY_TOPIC_DESTINATION;
 		System.out.println("gateway topic send : " + topic);
 		try
 		{
 			Destination destination = this.session.createTopic(topic);
 			this.topicProducer = this.session.createProducer(destination);
 			topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
+			TextMessage textMessage = this.session.createTextMessage(new String(message));
 
 			topicProducer.send(textMessage);
 		} 
@@ -212,7 +210,38 @@ public class GatewayTransmitter implements ITransmitter
 		{
 			e.printStackTrace();
 		}
-	}	
+	}
+	
+	public String getAddress(String id) {
+		return id;
+		
+//		for (Item item : alertsystems) {
+//			if(item.getKey().equals(id))
+//				return item.getValue();
+//		}
+//		return null;
+	}
+	
+	public void setMqServer(String ip)
+	{
+		this.mqServerIp = ip;
+		
+		close();
+		openConnection();
+	}
+
+	@Override
+	public void setOnReceiveHandler(IOnMessageHandler handler) {
+		this.handler = handler;
+	}
+
+	@Override
+	public void waitForClient() {
+		addReceiver(KieasAddress.GATEWAY_TOPIC_DESTINATION);		
+	}
+	
+	
+
 }
 
 

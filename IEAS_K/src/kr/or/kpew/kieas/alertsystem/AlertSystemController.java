@@ -22,7 +22,7 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 			view.clear();
 			break;
 		case "Register":
-			model.registerToGateway();			
+//			model.registerToGateway();			
 			break;
 			/*
 		case "setId":
@@ -38,7 +38,8 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		model.selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, e.getItem().toString());
+//		model.selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, e.getItem().toString());
+
 	}	
 
 	@Override
@@ -50,8 +51,7 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		System.out.println("win close");
-		model.readyForExit();
+//		model.readyForExit();
 		view.systemExit();
 	}
 

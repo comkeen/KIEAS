@@ -4,225 +4,200 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.Observable;
-import java.util.Random;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.ITransmitter;
-import kr.or.kpew.kieas.common.Pair;
+import kr.or.kpew.kieas.common.IOnMessageHandler;
+import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
+import kr.or.kpew.kieas.common.IssuerProfile;
+import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
+import kr.or.kpew.kieas.gateway.view.AlertMessageTable.Responses;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.common.Profile;
+import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
 import kr.or.kpew.kieas.issuer.view.IssuerView;
+import kr.or.kpew.kieas.network.IClientTransmitter;
 
-public class IssuerModel extends Observable
+public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMessageHandler
 {
 	private IKieasMessageBuilder kieasMessageBuilder;
-	private ITransmitter transmitter;
-	
+	private IClientTransmitter transmitter;
+
 	private XmlReaderAndWriter xmlReaderAndWriter;
 	private AlertLogger alertLogger;
 	private IssuerProfile profile;
-	
+
 	private String mAlertMessage;
-	
-		
+
 	/**
 	 * AlerterModel들을 관리한다.
 	 * CAP 메시지 처리를 위한 KieasMessageBuilder 초기화.
 	 * Database 접근을 위한 DatabaseHandler 초기화.
+	 * @param transmitter 
 	 * @param alerterController Controller
 	 */
-	public IssuerModel()
+	public IssuerModel(IClientTransmitter transmitter, IssuerProfile profile)
 	{
-		this.transmitter = new Transmitter(this);
-		this.alertLogger = new AlertLogger();
-		this.xmlReaderAndWriter = new XmlReaderAndWriter();
-		this.profile = new IssuerProfile();
+		super(profile);
+		this.transmitter = transmitter;
+		transmitter.setOnMessageHandler(this);
 
+		this.alertLogger = new AlertLogger();
+		alertLogger.addModel(this);
+		this.xmlReaderAndWriter = new XmlReaderAndWriter();
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-		
+
 		init();
 	}
-	
+
 	private void init()
 	{	
-		String id = generateAndSetID();
-		profile.setId(id);
-		transmitter.addReceiver(id);
+		transmitter.init(profile.getSender(), KieasAddress.GATEWAY_ID);
+		transmitter.setOnMessageHandler(this);
 	}
-	
-	public String generateAndSetID()
-	{
-		Integer randomIntegerer = new Integer(new Random().nextInt(9999));
-		String str = randomIntegerer.toString();
-		if(str.length() < 4)
-		{
-			for(int i = 0; i < 4 - str.length(); i++)
-			{
-				str = "0" + str;
+
+	/**
+	 * 현재 시스템의 IP 주소를 구하기 위한 메소드이다.
+	 * 통합경보시스템 고유의 기능은 아니다. 참조모델 구현 시 시스템 ID를 IP 주소를 이용하여 생성하므로 필요하다. 
+	 * @return 현재 시스템의 IP 주소(ex: 123.123.123.123)
+	 */
+	protected String getLocalServerIp() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()
+							&& inetAddress.isSiteLocalAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
 			}
-		}
-		String alerterId = getLocalServerIp() + ":" + Integer.parseInt(str) + "/alerterId";		
-		
-		notifyObservers(alerterId);
-		
-		return alerterId;
-	}
-	
-
-	public void registerToGateway()
-	{
-		String id = generateAndSetID();
-		
-		kieasMessageBuilder.buildDefaultMessage();
-
-		kieasMessageBuilder.setIdentifier(kieasMessageBuilder.generateKieasMessageIdentifier(id));
-		kieasMessageBuilder.setSender(id);
-		kieasMessageBuilder.setSent(kieasMessageBuilder.getDate());
-		kieasMessageBuilder.setStatus(KieasMessageBuilder.SYSTEM);
-		kieasMessageBuilder.setMsgType(KieasMessageBuilder.ALERT);
-		kieasMessageBuilder.setRestriction(KieasMessageBuilder.RESTRICTED);
-		kieasMessageBuilder.setRestriction("Alerter");
-		kieasMessageBuilder.build();
-		
-		transmitter.sendMessage(kieasMessageBuilder.getMessage(), KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);	
-		
-		String log = "(" + id + ")" + " Register to Gateway :";
-		System.out.println(log);
-	}
-
-	public void sendMessage()
-	{
-		String message = mAlertMessage;
-		
-		transmitter.sendMessage(message, KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION);
-
-		kieasMessageBuilder.setMessage(message);
-		String identifier = kieasMessageBuilder.getIdentifier();
-		alertLogger.saveAlertLog(identifier, message);
-		
-		System.out.println("Send Message to " + "Gateway : ");		
-	}
-	
-	public void acceptMessage(String message)
-	{
-		try 
-		{
-			System.out.println("Message Received");
-			kieasMessageBuilder.setMessage(message);
-			alertLogger.saveAlertLog(kieasMessageBuilder.getIdentifier(), message);
-//			String sender = kieasMessageBuilder.getSender();
-//			String identifier = kieasMessageBuilder.getIdentifier();
-
-			System.out.println();
-//			if(sender.equals(KieasConfiguration.KieasName.GATEWAY_NAME))
-//			{
-//				alerterModelManager.receiveGatewayAck(identifier);
-//			}
-//			else 
-//			{
-//				alerterTopView.receiveAlertSystemAck(identifier);
-//			}
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	public void loadCap(String path)
-	{
-		this.setAlertMessage(xmlReaderAndWriter.loadXml(path));
-		
-		String target = IssuerView.TEXT_AREA;
-		String value = mAlertMessage;
-		
-		setChanged();
-		notifyObservers(new Pair(target, value));
-	}	
-	
-	public void writeCap(String path, String message)
-	{ 
-		xmlReaderAndWriter.writerXml(path, message);
-	}
-	
-	public void receiveGatewayAck(String identifier)
-	{
-		alertLogger.receiveAck(identifier, AlertLogger.ACK);
-	}
-	
-	
-	public void updateView(String view, String target, String value) 
-	{
-//		controller.updateView(view, target, value);
-	}
-	
-	public void updateView(String view, String target, List<String> value) 
-	{
-//		controller.updateView(view, target, value);
-	}
-
-
-	
-//	public List<String> getQueryResult(String target, String query)
-//	{	
-//		System.out.println("getQuery target, query : " + target + " " + query);
-//		List<String> result = kieasMessageBuilder.convertDbToCap(databaseHandler.getQueryResult(target, query.toUpperCase()));
-//		for (String string : result)
-//		{
-//			System.out.println("query result = " + string);
-//		}
-//		switch (target)
-//		{
-//		case KieasMessageBuilder.EVENT_CODE:
-//			alerterDataBasePanelModel.setQueryResult(result);
-//			break;
-//		case KieasMessageBuilder.STATUS:
-//			
-//			break;	
-//		default:
-//			break;
-//		}
-//		return result;	
-//	}	
-	
-//	public void insertDataBase(String message)
-//	{
-//		databaseHandler.insertCap(kieasMessageBuilder.convertCapToDb(message));
-//	}
-
-	public void setAlertMessage(String message)
-	{
-		this.mAlertMessage = message;
-	}	
-	
-	private String getLocalServerIp()
-	{
-		try
-		{
-		    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();)
-		    {
-		        NetworkInterface intf = en.nextElement();
-		        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
-		        {
-		            InetAddress inetAddress = enumIpAddr.nextElement();
-		            if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress())
-		            {
-		            	return inetAddress.getHostAddress().toString();
-		            }
-		        }
-		    }
-		}
-		catch (SocketException e)
-		{		
-			e.printStackTrace();
+		} catch (SocketException ex) {
 		}
 		return null;
 	}
 
+	public void loadCap(String path)
+	{
+		kieasMessageBuilder.parse(xmlReaderAndWriter.loadXml(path));
+		kieasMessageBuilder.setIdentifier(createMessageId());
+		String message = kieasMessageBuilder.getMessage();
+
+		setAlertMessage(message);
+
+		notifyItemToObservers(IssuerView.CAP_ELEMENT_PANEL, message);
+	}	
+
+	public void sendMessage()
+	{	
+		kieasMessageBuilder.parse(mAlertMessage);
+
+		kieasMessageBuilder.setIdentifier(createMessageId());
+		kieasMessageBuilder.setSent();
+
+		String message = kieasMessageBuilder.getMessage();
+
+		setAlertMessage(message);
+		
+		System.out.println("AO: Save Alert Log");	
+		alertLogger.saveAlertLog(message);
+
+		System.out.println("AO: Send Message to " + "Gateway : ");		
+		transmitter.send(stringToByte(message));	
+		
+		updateIdentifier(message);				
+	}
+
+	@Override
+	public void onMessage(String senderAddress, byte[] data)
+	{
+		System.out.println("AO: received from GW: " + senderAddress);
+		String message = new String(data);
+
+		kieasMessageBuilder.parse(message);
+		String msgType = kieasMessageBuilder.getMsgType().toString();
+		String status = kieasMessageBuilder.getStatus().toString();
+		String references = kieasMessageBuilder.getReferences();
+
+		String[] tokens = references.split(",");
+		String sender = tokens[0];		
+		String identifier = tokens[1];
+		String sent = tokens[2];
+		
+		switch (msgType)
+		{
+		case "ACK":
+			alertLogger.saveAckLog(message);
+			if(alertLogger.loadAlertLogState(identifier).equals(Responses.COMP.toString()))
+			{
+				notifyItemToObservers(IssuerView.ACK, identifier);				
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+
+	private void updateIdentifier(String message)
+	{
+		notifyItemToObservers(IssuerView.IDENTIFIER, message);
+	}
+
+	public void updateTable(MessageAckPair pair)
+	{
+		notifyItemToObservers(IssuerView.TABLE, pair);
+	}
+
+	private void notifyItemToObservers(String target, Object value)
+	{
+		setChanged();
+		if(value instanceof String)
+		{
+			notifyObservers(new Item(target, (String) value));		
+		}
+		else if(value instanceof MessageAckPair)
+		{
+			notifyObservers((MessageAckPair) value);
+		}
+	}
+
+	public void writeCap(String path, String message)
+	{ 
+		xmlReaderAndWriter.writerXml(path, message);
+	}
+
+	public void setAlertMessage(String message)
+	{
+		this.mAlertMessage = message;
+		notifyItemToObservers(IssuerView.TEXT_AREA, message);
+	}	
+
 	public void closeConnection()
 	{
-		transmitter.closeConnection();
+		transmitter.close();
+	}
+
+	@Override
+	public void setProfile(Profile profile)
+	{
+		this.profile = (IssuerProfile)profile;
+	}
+
+	@Override
+	public Profile getProfile() {
+		return profile;
+	}
+
+	@Override
+	public void onRegister(String sender, String address) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setSelectedAlertLog(String identifier)
+	{
+		notifyItemToObservers(IssuerView.TEXT_AREA, alertLogger.loadAlertLog(identifier));
 	}
 }

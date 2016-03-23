@@ -7,28 +7,22 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
-
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import kr.or.kpew.kieas.common.Pair;
-import kr.or.kpew.kieas.common.KieasConfiguration;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.common.AlertSystemProfile;
 
 public class AlertSystemView implements Observer {
-	//public AlertSystemModel model;
 	private AlertSystemController controller;
-	private KieasMessageBuilder kieasMessageBuilder;
 
 	private JFrame frame;
 	private Container alertPane;
@@ -38,11 +32,9 @@ public class AlertSystemView implements Observer {
 	private JPanel buttonPane;
 	private JTabbedPane mainTabbedPane;
 
-	private JComboBox<Pair> geoCodeCombobox;
-	private JComboBox<String> alertSystemTypeCombobox;
+	JTextField systemType;
 
 	public AlertSystemView() {
-		kieasMessageBuilder = new KieasMessageBuilder();
 	}
 	
 	public void show() {
@@ -79,7 +71,8 @@ public class AlertSystemView implements Observer {
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
 
-		frame.setSize(1024, 512);
+		frame.setSize(600, 400);
+		frame.setLocation(600, 400);
 		frame.setPreferredSize(new Dimension(512, 256));
 
 	}
@@ -104,55 +97,20 @@ public class AlertSystemView implements Observer {
 
 	private void initButtonPane() {
 		this.buttonPane = new JPanel();
+		
+		systemType = new JTextField(15);
+		systemType.setEnabled(false);
+		systemType.setText("<경보시스템 종류>");
 
-		initComboBox();
 		JButton clearButton = new JButton("Clear");
 		clearButton.addActionListener(controller);
-		JButton registerButton = new JButton("Register");
-		registerButton.addActionListener(controller);
-		JButton setIdButton = new JButton("setId");
-		setIdButton.addActionListener(controller);
-
-		buttonPane.add(alertSystemTypeCombobox, BorderLayout.WEST);
-		// buttonPane.add(geoCodeCombobox, BorderLayout.WEST);
 		buttonPane.add(clearButton, BorderLayout.WEST);
-		buttonPane.add(setIdButton, BorderLayout.WEST);
-		buttonPane.add(registerButton, BorderLayout.WEST);
+
+		buttonPane.add(systemType, BorderLayout.WEST);
 
 		alertPane.add(buttonPane, gbc);
 	}
 
-	private void initComboBox() {
-		Vector<String> comboboxModel = new Vector<>();
-		for (String type : KieasConfiguration.KieasList.ALERT_SYSTEM_TYPE_LIST) {
-			comboboxModel.addElement(type);
-		}
-		this.alertSystemTypeCombobox = new JComboBox<>(comboboxModel);
-		alertSystemTypeCombobox.addItemListener(controller);
-//		alertSystemTypeCombobox.addItemListener(new ItemListener() {
-//			public void itemStateChanged(ItemEvent e) {
-//				model.selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, e.getItem().toString());
-//			}
-//		});
-
-		// Vector<Item> comboboxModel2 = new Vector<>();
-		// for (Item item :
-		// kieasMessageBuilder.getCapEnumMap().get(KieasMessageBuilder.GEO_CODE))
-		// {
-		// comboboxModel2.addElement(item);
-		// }
-		// this.geoCodeCombobox = new JComboBox<>(comboboxModel2);
-		// geoCodeCombobox.addItemListener(new ItemListener()
-		// {
-		// public void itemStateChanged(ItemEvent e)
-		// {
-		// controller.selectTopic(AlertSystemController.GEO_CODE,
-		// e.getItem().toString());
-		// }
-		// });
-	}
-	
-	
 
 	private void setGbc(int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty) {
 		gbc.gridx = gridx;
@@ -163,34 +121,17 @@ public class AlertSystemView implements Observer {
 		gbc.weighty = weighty;
 	}
 
-	/*
-	public void setAlertSystemId(String alertSystemId) {
-		frame.setTitle(alertSystemId);
-	}
-	*/
-
 	public void systemExit() {
 		String question = "표준경보시스템 프로그램을 종료하시겠습니까?";
 		String title = "프로그램 종료";
 
 		if (JOptionPane.showConfirmDialog(frame, question, title, JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-//			
 			System.exit(0);
 		} else {
-			System.out.println("cancel exit program");
+			System.out.println("AS: cancel exit program");
 		}
 	}
-
-	/*
-	public String getSelectedGeoCode() {
-		return geoCodeCombobox.getSelectedItem().toString();
-	}
-
-	public String getSelectedAlertSystemType() {
-		return alertSystemTypeCombobox.getSelectedItem().toString();
-	}
-	*/
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -199,9 +140,9 @@ public class AlertSystemView implements Observer {
 		}
 		else if(arg instanceof AlertSystemProfile) {
 			AlertSystemProfile profile = (AlertSystemProfile)arg;
-			frame.setTitle(profile.getAlertSystemId());
+			frame.setTitle(profile.getSender());
+			systemType.setText(profile.getType().getDescription());
 		}
-		//System.out.println(o.toString());
 	}
 
 	public void clear() {

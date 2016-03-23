@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.publicalerts.cap.Point;
+import com.google.publicalerts.cap.Alert.MsgType;
+import com.google.publicalerts.cap.Alert.Scope;
+import com.google.publicalerts.cap.Alert.Status;
+import com.google.publicalerts.cap.Info.Category;
 
 
 public interface IKieasMessageBuilder
@@ -11,12 +15,12 @@ public interface IKieasMessageBuilder
 	public String getIdentifier();				
 	public String getSender();					
 	public String getSent();					
-	public String getStatus();					
-	public String getMsgType();					
+	public Status getStatus();					
+	public MsgType getMsgType();					
 	public String getSource();					
-	public String getScope();				
+	public Scope getScope();				
 	public String getRestriction();
-	public String getAddresses();			
+	public List<String> getAddresses();
 	public String getCode();				
 	public String getNote();
 	public String getReferences();
@@ -57,15 +61,21 @@ public interface IKieasMessageBuilder
 	public void setSender(String text);
 	public void setSent(String text);
 	public void setSent();
-	public void setStatus(String text);
-	public void setMsgType(String text);
+	public void setStatus(Status status);
+	public void setStatus(String status);
+	public void setMsgType(MsgType type);
+	public void setMsgType(String type);
+	public void setSource(String text);
+	public void setScope(Scope scope);
 	public void setScope(String text);
 	public void setRestriction(String text);
 	public void setAddresses(String text);
 	public void setCode(String text);
 	public void setNote(String text);
+	public void addReference(String text);
 
 	public void setLanguage(int infoIndex, String text);
+	public void setCategory(int infoIndex, Category category);
 	public void setCategory(int infoIndex, String text);
 	public void setResponseType(int infoIndex, String text);
 	public void setEvent(int infoIndex, String text);
@@ -94,18 +104,19 @@ public interface IKieasMessageBuilder
 
 	public void setAreaDesc(int infoIndex, int areaIndex, String text);
 	public void setPolygon(int infoIndex, int areaIndex, int polygonIndex, Point[] points);
-	public void setCircle(int infoIndex, int areaIndex, int circleIndex, long latitud, long longitude, long radius);
+	public void setCircle(int infoIndex, int areaIndex, int circleIndex, double latitud, double longitude, double radius);
 	public void setGeoCode(int infoIndex, int areaIndex, String text);
-	public void setAltitude(int infoIndex, int areaIndex, long text);
-	public void setCeiling(int infoIndex, int areaIndex, long text);
+	public void setAltitude(int infoIndex, int areaIndex, double text);
+	public void setCeiling(int infoIndex, int areaIndex, double text);
 	
 	public String build();
 	public String buildDefaultMessage();
 	public String getMessage();
-	public KieasMessageBuilder setMessage(String message);
+	public void parse(String message);
 	public boolean validateMessage(String message);
 	public String generateKieasMessageIdentifier(String id);
-	public Map<String, List<Pair>> getCapEnumMap();
+	@SuppressWarnings("rawtypes")
+	public Map<Enum, List<Item>> getCapEnumMap();
 	
 	public String getDate();
 	public String convertDateToYmdhms(String date);
@@ -116,4 +127,12 @@ public interface IKieasMessageBuilder
 	
 //	public List<String> convertDbToCap(List<CAPAlert> alertList);
 //	public CAPAlert convertCapToDb(String capMessage);
+	/**
+	 * 현재 CAP 메시지에 대한 수신응답(Ack)메시지를 생성한다.
+	 * @param identifier 현재 시스템의 식별자
+	 * @return 생성한 수신응답 메시지
+	 */
+	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination);
+
+	
 }

@@ -8,33 +8,35 @@ import java.awt.event.WindowListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import kr.or.kpew.kieas.gateway.model.GatewayModel;
+import kr.or.kpew.kieas.gateway.view.GatewayView;
 
-public class GatewayActionListener implements ActionListener, ListSelectionListener, WindowListener
+
+public class GatewayController implements ActionListener, ListSelectionListener, WindowListener
 {	
-	private _GatewayController controller;
-
+	private GatewayModel model;
+	private GatewayView view;
 	
-	public GatewayActionListener(_GatewayController gatewayController) {
-		this.controller = gatewayController;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		
 		if (actionCommand.equals("OpenGateway")){
-			controller.openGateway();
+			model.openGateway();
 		} else if(actionCommand.equals("CloseGateway")) {
-			controller.closeGateway();			
+			model.closeGateway();			
+			view.systemExit();
 		} else if(actionCommand.equals("ClearLog")) {
-			controller.clearLog();			
+			view.clearLog();			
 		} 
 	}
+	
 
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
-		controller.selectTableEvent();
+		view.selectTableEvent();
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class GatewayActionListener implements ActionListener, ListSelectionListe
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		controller.systemExit();
+		view.systemExit();
 	}
 
 	@Override
@@ -60,5 +62,17 @@ public class GatewayActionListener implements ActionListener, ListSelectionListe
 
 	@Override
 	public void windowOpened(WindowEvent e) {}
+
+	
+	public void setModel(GatewayModel model) {
+		this.model = model;
+		
+	}
+
+	public void setView(GatewayView view) {
+		this.view = view;
+		
+	}
+
 
 }

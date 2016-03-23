@@ -8,14 +8,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
-import kr.or.kpew.kieas.gateway.controller.GatewayActionListener;
-import kr.or.kpew.kieas.gateway.model.GatewayAlertTable;
+import kr.or.kpew.kieas.gateway.controller.GatewayController;
 
 public class GatewayDataPane
 {	
 	private GatewayView topView;
-	private GatewayActionListener viewActionListener;
-	private GatewayAlertTable alertTableModel;
+	private GatewayController viewActionListener;
+	private AlertMessageTable alertTableModel;
 
 	private GridBagConstraints gbc;
 	
@@ -29,7 +28,7 @@ public class GatewayDataPane
 	private JTable alertLogTable;
 
 
-	public GatewayDataPane(GatewayView gatewayView, GatewayActionListener gatewayActionListener)
+	public GatewayDataPane(GatewayView gatewayView, GatewayController gatewayActionListener)
 	{		
 		this.viewActionListener = gatewayActionListener;
 		this.topView = gatewayView;
@@ -75,10 +74,6 @@ public class GatewayDataPane
 	private void initDataButtonPane()
 	{
 		this.dataButtonPane = new JPanel();
-		
-//		this.testTableButton = new JButton("TestTable");
-//		testTableButton.addActionListener(gatewayActionListener);
-//		dataButtonPane.add(testTableButton, BorderLayout.WEST);
 
 		dataPane.add(dataButtonPane, gbc);
 	}
@@ -109,7 +104,7 @@ public class GatewayDataPane
 		if(alertLogTable.getSelectedRow() > -1)
 		{
 			String identifier = alertTableModel.getTableModel().getValueAt(alertLogTable.getSelectedRow(), 2).toString();
-			String message = topView.getAlertMessage(identifier);
+			String message = alertTableModel.getAlertMessage(identifier);
 			dataTextArea.setText(message);
 		}
 	}

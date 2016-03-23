@@ -5,9 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -15,80 +12,59 @@ import javax.swing.event.ListSelectionListener;
 import kr.or.kpew.kieas.issuer.model.IssuerModel;
 import kr.or.kpew.kieas.issuer.view.IssuerView;
 
-
+/**
+ * 경보발령대의 Controller는 각종 Listener 인터페이스를 구현하여 이벤트에 따른 처리를 담당한다. 
+ * @author byun-ai
+ *
+ */
 public class IssuerController implements ActionListener, ListSelectionListener, WindowListener
 { 		
-	private List<IssuerView> views;
-	private List<IssuerModel> models;
+	private IssuerView view;
+	private IssuerModel model;
 	
-	
-	public IssuerController()
-	{		
-		init();
-	}
-	
-	private void init()
+	public void setModel(IssuerModel model)
 	{
-		this.models = new ArrayList<IssuerModel>();
-		this.views = new ArrayList<IssuerView>();		
+		this.model = model;
 	}
 
-	public void addModel(IssuerModel model)
+	public void setView(IssuerView view)
 	{
-		models.add(model);
-	}
-
-	public void addView(IssuerView view)
-	{
-		views.add(view);
+		this.view = view;
 	}
 	
-	public void removeModel(IssuerModel model)
-	{
-		models.remove(model);
-	}
-	
-	public void removeView(IssuerView view)
-	{
-		models.remove(view);
-	}
 	
 	/**
-	 * event.getActionCommand()로 버튼 액션을 식별하여 처리한다.
-	 * "Load Cap" : "~/cap/" 위치에 있는 지정된 이름의 Cap Draft를 로드한다.
-	 * "Save Cap" : AlerterCapGeneratePanel.TextArea의 내용을 "/cap/" 위치에 지정된 이름으로 저장한다.
-	 * "Apply" : AlerterCapGeneratePanel의 AlertPanel과 InfoPanel의 내용을 CapFormat으로 변환하여 TextArea에 적용한다.
-	 * "Add Info" : AlerterCapGeneratePanel.InfoPanel에서 InfoIndexPanel을 추가한다.
+	 * 버튼 이벤트를 처리한다. 액션커맨드에 의해 이벤트를 식별하여 해당하는 작업을 수행한다.
 	 * 
 	 */
 	public void actionPerformed(ActionEvent event)
 	{
 		String actionCommand = event.getActionCommand();
-		System.out.println("action triggered : " + actionCommand);
 		
-		IssuerModel model = models.get(0);
-		IssuerView view = views.get(0);
-		
+		String path;
 		switch (actionCommand)
 		{		
 		case "Send":
 			model.sendMessage();
 			return;
-		case "Load Cap":
-			model.loadCap(view.getLoadTextField());
+		case "Load":
+			path = view.showFileOpenDialog();
+			if(path != null)
+				model.loadCap(path);
 			return;
-		case "Save Cap":
-			model.writeCap(view.getSaveTextField(), view.getTextArea());
+		case "Save":
+			path = view.showFileOpenDialog();
+			if(path != null)
+				model.writeCap(path, view.getTextArea());
 			return;
 		case "Set Id":
-			model.generateAndSetID();
+//			model.generateAndSetID();
 			return;
 		case "Apply":
-			//TODO
-			model.setAlertMessage(view.getTextArea());
+			model.setAlertMessage(view.getCapElement());
 			return;
 		case "Register":
-			model.registerToGateway();
+//			model.registerToGateway();
 			return;
 			
 		case "Clear":
@@ -97,23 +73,20 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		case "Info Add":
 			view.addInfoIndexPanel();
 			return;
-		case "ResourceAdder":
-			view.addResourceIndexPanel();
-			return;
-		case "AreaAdder":
-			view.addAreaIndexPanel();
-			return;
-			
 		default:
-			System.out.println("There is no such a actionCommand : " + actionCommand);
+			System.out.println("AO: There is no such a actionCommand : " + actionCommand);
 			return;
 		}
 	}
 
+	/**
+	 * View의 JTable에서 발생한 이벤트를 처리한다.
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
-//		controller.selectTableEvent();
+		String identifier = view.getSelectedRowIdentifier();
+		model.setSelectedAlertLog(identifier);
 	}
 
 
@@ -127,30 +100,26 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 	
 	
 	/**
-	 * 프로그램 종료시 네트워크 접속 종료
+	 * 윈도우 창 종료에 대한 프로그램 종료 작업을 수행한다.
 	 */
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		System.out.println("Program closing");
 		String question = "표준경보발령대 프로그램을 종료하시겠습니까?";
 		String title = "프로그램 종료";
 				
-		IssuerModel model = models.get(0);
-		IssuerView view = views.get(0);
-		
 		if (JOptionPane.showConfirmDialog(view.getFrame(),
 			question,
 			title,
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 	    {
-			model.closeConnection();
+//			model.closeConnection();
 	        System.exit(0);
 	    }
 		else
 		{
-			System.out.println("cancel exit program");
+			System.out.println("AO: cancel exit program");
 		}
 	}
 

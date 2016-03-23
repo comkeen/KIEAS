@@ -1,4 +1,4 @@
-package kr.or.kpew.kieas.issuer.model;
+package kr.or.kpew.kieas.network.jms;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +16,14 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.or.kpew.kieas.common.ITransmitter;
+import kr.or.kpew.kieas.common.IOnMessageHandler;
+import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
+import kr.or.kpew.kieas.network.IClientTransmitter;
 
 
-public class Transmitter implements ITransmitter
+public class IssuerTransmitter implements IClientTransmitter
 {
-	private IssuerModel modelManager;
-
 	private Connection connection;
 	private Session session;
 	
@@ -32,30 +32,28 @@ public class Transmitter implements ITransmitter
 	private Map<String, MessageConsumer> messageConsumerMap;
 
 	private String mqServerIp;
+
 	private String id;
+	private String destination;
 
+	private IOnMessageHandler handler;
 
-	public Transmitter(IssuerModel model)
+	private Destination here;
+
+	public IssuerTransmitter()
 	{
-		this.modelManager = model;
-		
 		System.out.println("Transmitter instantiated");
 		
-		init();
+		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
+		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
 	}
 	
-	private void init()
-	{
-		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
-		this.id = KieasAddress.GATEWAY_TO_ALERTER_QUEUE_DESTINATION;	//default
-		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
-		
-		openConnection();
-	}	
-	
 	@Override
-	public void openConnection()
+	public void init(String id ,String destination)
 	{
+		this.id = id;
+		this.destination  = destination;
+		
 		try
 		{
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(mqServerIp);
@@ -63,18 +61,19 @@ public class Transmitter implements ITransmitter
 			connection.start();
 			
 			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			here = session.createQueue(id);
 		}
 		catch (Exception ex)
 		{
-//			ex.printStackTrace();
 			System.out.println("Could not found MQ Server : " + mqServerIp);
+//			ex.printStackTrace();
 			return;
 		}
 		this.addReceiver(id);
 	}
 	
 	@Override
-	public void closeConnection()
+	public void close()
 	{
 		try 
 		{
@@ -92,7 +91,7 @@ public class Transmitter implements ITransmitter
 	}
 		
 	@Override
-	public void sendMessage(String message, String destination)
+	public void send(byte[] message)
 	{
 		if(connection == null || session == null)
 		{
@@ -106,7 +105,8 @@ public class Transmitter implements ITransmitter
 			System.out.println("alerter to gw dest : " + destination);
 			this.queueProducer = this.session.createProducer(queueDestination);
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
+			TextMessage textMessage = this.session.createTextMessage(new String(message));
+			textMessage.setJMSReplyTo(here);
 
 			queueProducer.send(textMessage);
 			queueProducer.close();
@@ -117,7 +117,6 @@ public class Transmitter implements ITransmitter
 		}
 	}
 	
-	@Override
 	public void addReceiver(String myDestination)
 	{
 		this.id = myDestination;
@@ -130,10 +129,10 @@ public class Transmitter implements ITransmitter
 		
 		try 
 		{
-			Destination queueDestination = this.session.createQueue(id);
-			MessageConsumer consumer = session.createConsumer(queueDestination);
+//			Destination queueDestination = here;//this.session.createQueue(id);
+			MessageConsumer consumer = session.createConsumer(here);
 			messageConsumerMap.put(myDestination, consumer);
-			System.out.println("gw to alerter Dest : " + queueDestination);
+			System.out.println("gw to alerter Dest : " + here);
 			
 			MessageListener listener = new MessageListener()
 			{
@@ -146,7 +145,7 @@ public class Transmitter implements ITransmitter
 						try
 						{
 							System.out.println("alerter receive message");
-							modelManager.acceptMessage(textMessage.getText());	//Message Receive			
+							handler.onMessage(KieasAddress.GATEWAY_ID, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));	//Message Receive			
 						}
 						catch (JMSException e)
 						{
@@ -162,44 +161,17 @@ public class Transmitter implements ITransmitter
 			e.printStackTrace();
 		}
 	}
-		
-	@Override
-	public void removeReceiver(String target)
-	{
-		try
-		{
-			messageConsumerMap.get(target).close();
-			messageConsumerMap.remove(target);
-		} 
-		catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
-	}
 	
-	@Override
 	public void setMqServer(String ip)
 	{
 		this.mqServerIp = ip;
 		
-		closeConnection();
-		openConnection();
+		close();
 	}
 
 	@Override
-	public void sendTopicMessage(String message, String topic)
-	{
-		try {
-			Destination destination = this.session.createTopic(topic);
-			MessageProducer topicProducer = this.session.createProducer(destination);
-			topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
+	public void setOnMessageHandler(IOnMessageHandler handler) {
+		this.handler = handler;
+	}
 
-			topicProducer.send(textMessage);
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}	
 }

@@ -1,13 +1,13 @@
 package kr.or.kpew.kieas.common;
 
 
-public class Pair
+public class Item
 {
 	private String key;
 	private String value;
 
 
-	public Pair(String key, String value)
+	public Item(String key, String value)
 	{
 		this.key = key;
 		this.value = value;

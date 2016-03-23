@@ -1,12 +1,12 @@
-package kr.or.kpew.kieas.gateway.model;
+package kr.or.kpew.kieas.gateway.view;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.table.DefaultTableModel;
 
-public class GatewayAlerterInfoTableModel {
+import kr.or.kpew.kieas.common.IssuerProfile;
+
+public class IssuerTable {
 
 	private DefaultTableModel tableModel;
 
@@ -16,7 +16,7 @@ public class GatewayAlerterInfoTableModel {
 	private int alerterCount;
 
 
-	public GatewayAlerterInfoTableModel()
+	public IssuerTable()
 	{
 		initTable();
 	}
@@ -33,19 +33,20 @@ public class GatewayAlerterInfoTableModel {
 		this.tableModel = new DefaultTableModel(columnNames.toArray(), 0);
 	}
 
-	public void addTableRowData(Map<String, String> alertElementMap)
+	public void addTableRowData(IssuerProfile issuer)
 	{
+		String issuerId = issuer.getSender();
 		for(int i = 0; i < tableModel.getRowCount(); i++)
 		{
-			if(tableModel.getValueAt(i, 1).toString().equals(alertElementMap.get(_GatewayModel.SENDER))){
+			if(tableModel.getValueAt(i, 1).toString().equals(issuerId)){
 				return;
 			}
 		}
 		
 		alerterCount = tableModel.getRowCount()+1;
 		rowData.set(0, Integer.toString(alerterCount));
-		rowData.set(1, alertElementMap.get(_GatewayModel.SENDER));
-
+		rowData.set(1, issuerId);
+		
 		tableModel.addRow(rowData.toArray());
 	}
 
