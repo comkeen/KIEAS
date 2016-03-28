@@ -24,9 +24,9 @@ public interface IServerTransmitter {
 	/**
 	 * 주어진 대상으로 데이터를 전달한다.
 	 * @param target 전달할 대상
-	 * @param data 전달할 데이터
+	 * @param message 전달할 데이터
 	 */
-	public void sendTo(String target, byte[] data);
+	public void sendTo(String target, String message);
 	
 	/**
 	 * 현재 연결된 모든 경보시스템에 데이터를 전달한다.

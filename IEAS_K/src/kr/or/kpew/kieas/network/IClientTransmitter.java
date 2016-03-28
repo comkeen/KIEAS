@@ -24,6 +24,6 @@ public interface IClientTransmitter {
 	 * init에서 정의한 대상으로 데이터를 전달한다.
 	 * @param data 전달할 데이터
 	 */
-	public void send(byte[] data);
+	public void send(String message);
 
 }

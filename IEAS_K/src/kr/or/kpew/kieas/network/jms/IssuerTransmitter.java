@@ -17,35 +17,30 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
-import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.network.IClientTransmitter;
 
 
 public class IssuerTransmitter implements IClientTransmitter
 {
+	private IOnMessageHandler handler;
+	
 	private Connection connection;
 	private Session session;
 	
-	private MessageProducer queueProducer;
-	
-	private Map<String, MessageConsumer> messageConsumerMap;
-
-	private String mqServerIp;
+	private MessageProducer queueProducer;	
 
 	private String id;
+	private String mqServerIp;
 	private String destination;
 
-	private IOnMessageHandler handler;
 
 	private Destination here;
 
+	
 	public IssuerTransmitter()
 	{
-		System.out.println("Transmitter instantiated");
-		
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
-		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
 	}
 	
 	@Override
@@ -63,10 +58,10 @@ public class IssuerTransmitter implements IClientTransmitter
 			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			here = session.createQueue(id);
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			System.out.println("Could not found MQ Server : " + mqServerIp);
-//			ex.printStackTrace();
+			System.out.println("AO: Could not found MQ Server : " + mqServerIp);
+//			e.printStackTrace();
 			return;
 		}
 		this.addReceiver(id);
@@ -77,12 +72,12 @@ public class IssuerTransmitter implements IClientTransmitter
 	{
 		try 
 		{
-			if(connection != null)
+			if(connection != null || session == null)
 			{
 				session.close();
 				connection.close();			
 			}
-			System.out.println("Issuer Connection Closed");
+			System.out.println("AO: Connection Closed");
 		}
 		catch (JMSException e)
 		{
@@ -91,21 +86,22 @@ public class IssuerTransmitter implements IClientTransmitter
 	}
 		
 	@Override
-	public void send(byte[] message)
+	public void send(String message)
 	{
 		if(connection == null || session == null)
 		{
-			System.out.println("Could not found JMS Connection");
+			System.out.println("AO: Could not found JMS Connection");
 			return;
 		}
 		
 		try
 		{
 			Destination queueDestination = this.session.createQueue(destination);
-			System.out.println("alerter to gw dest : " + destination);
 			this.queueProducer = this.session.createProducer(queueDestination);
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(new String(message));
+			System.out.println("AO: Issuer to gw dest : " + destination);
+			
+			TextMessage textMessage = this.session.createTextMessage(message);
 			textMessage.setJMSReplyTo(here);
 
 			queueProducer.send(textMessage);
@@ -123,7 +119,7 @@ public class IssuerTransmitter implements IClientTransmitter
 		
 		if(connection == null || session == null)
 		{
-			System.out.println("Could not found JMS Connection");
+			System.out.println("AO: Could not found JMS Connection");
 			return;
 		}
 		
@@ -131,8 +127,7 @@ public class IssuerTransmitter implements IClientTransmitter
 		{
 //			Destination queueDestination = here;//this.session.createQueue(id);
 			MessageConsumer consumer = session.createConsumer(here);
-			messageConsumerMap.put(myDestination, consumer);
-			System.out.println("gw to alerter Dest : " + here);
+			System.out.println("AO: gw to alerter Dest : " + here);
 			
 			MessageListener listener = new MessageListener()
 			{
@@ -144,13 +139,18 @@ public class IssuerTransmitter implements IClientTransmitter
 
 						try
 						{
-							System.out.println("alerter receive message");
-							handler.onMessage(KieasAddress.GATEWAY_ID, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));	//Message Receive			
+							System.out.println("AO: received message");
+							handler.onMessage(KieasAddress.GATEWAY_ID, textMessage.getText());	//Received Message Handler
+							return;
 						}
 						catch (JMSException e)
 						{
 							e.printStackTrace();
 						}
+					}
+					else
+					{
+						System.out.println("AO: Received None Validate Message");
 					}
 				}
 			};

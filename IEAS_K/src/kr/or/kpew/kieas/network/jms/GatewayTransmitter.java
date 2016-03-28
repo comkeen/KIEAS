@@ -1,8 +1,6 @@
 package kr.or.kpew.kieas.network.jms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.jms.Connection;
@@ -19,8 +17,6 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
-import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
-import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.network.IServerTransmitter;
@@ -30,20 +26,18 @@ public class GatewayTransmitter implements IServerTransmitter
 {
 	private static final String QUEUE_HEADER = "queue://";
 
-	private String id;
-
 	private Connection connection;
 	private Session session;
 	
 	private MessageProducer queueProducer;	
 	private MessageProducer topicProducer;	
 	private Map<String, MessageConsumer> messageConsumerMap;
-	
+
+	private String id;
 	private String mqServerIp;
 
 	private IOnMessageHandler handler;
 	
-	List<Item> alertsystems = new ArrayList<>();
 	
 	public GatewayTransmitter()
 	{
@@ -57,8 +51,6 @@ public class GatewayTransmitter implements IServerTransmitter
 		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
 		
 		openConnection();		
-
-		
 	}
 	
 	public void openConnection()
@@ -73,7 +65,7 @@ public class GatewayTransmitter implements IServerTransmitter
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Could not found MQ Server : " + mqServerIp);
+			System.out.println("GW: Could not found MQ Server : " + mqServerIp);
 			return;
 		}
 		
@@ -90,7 +82,7 @@ public class GatewayTransmitter implements IServerTransmitter
 				session.close();
 				connection.close();			
 			}
-			System.out.println("Alerter Connection Close");
+			System.out.println("GW: Connection Close");
 		}
 		catch (JMSException e)
 		{
@@ -102,7 +94,7 @@ public class GatewayTransmitter implements IServerTransmitter
 	{		
 		if(connection == null || session == null)
 		{
-			System.out.println("Could not found JMS Connection");
+			System.out.println("GW: Could not found JMS Connection");
 			return;
 		}
 		
@@ -124,29 +116,7 @@ public class GatewayTransmitter implements IServerTransmitter
 						{
 							String queue = message.getJMSReplyTo().toString();
 							String sender = queue.replace(QUEUE_HEADER, "");
-							handler.onMessage(sender, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
-							/*
-							if (message.getJMSDestination().toString().equals(QUEUE_HEADER + KieasAddress.ALERTER_TO_GATEWAY_QUEUE_DESTINATION))
-							{
-								
-								handler.onMessage(sender, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
-//								model.onMessageFromIssuer(textMessage.getText());
-								return;
-							}
-							else if (message.getJMSDestination().toString().equals(QUEUE_HEADER  + KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION))
-							{
-								System.out.println("g: msg from a");
-								handler.onMessage(KieasTcpProtocol.SenderType.AlertSystem.toString(), IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
-								return;
-							}
-							else
-							{
-								System.out.println("unknown sender");
-								handler.onMessage(KieasTcpProtocol.SenderType.Issuer.toString(), IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
-								return;
-							}
-							*/
-							
+							handler.onMessage(sender,textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -165,24 +135,24 @@ public class GatewayTransmitter implements IServerTransmitter
 	}
 
 	@Override
-	public void sendTo(String id, byte[] message) 
+	public void sendTo(String address, String message) 
 	{
 		if(connection == null || session == null)
 		{
-			System.out.println("Could not found JMS Connection");
+			System.out.println("GW: Could not found JMS Connection");
 			return;
 		}
 
 		try
 		{
-			String address = getAddress(id); 
-			if(address == null) {
-				System.out.println("not connected system: " + id);
+			if(address == null)
+			{
+				System.out.println("GW: not connected system: " + address);
 			}
 			Destination queueDestination = this.session.createQueue(address);
 			this.queueProducer = this.session.createProducer(queueDestination);
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(new String(message));
+			TextMessage textMessage = this.session.createTextMessage(message);
 
 			queueProducer.send(textMessage);
 		}
@@ -212,16 +182,6 @@ public class GatewayTransmitter implements IServerTransmitter
 		}
 	}
 	
-	public String getAddress(String id) {
-		return id;
-		
-//		for (Item item : alertsystems) {
-//			if(item.getKey().equals(id))
-//				return item.getValue();
-//		}
-//		return null;
-	}
-	
 	public void setMqServer(String ip)
 	{
 		this.mqServerIp = ip;
@@ -231,17 +191,16 @@ public class GatewayTransmitter implements IServerTransmitter
 	}
 
 	@Override
-	public void setOnReceiveHandler(IOnMessageHandler handler) {
+	public void setOnReceiveHandler(IOnMessageHandler handler) 
+	{
 		this.handler = handler;
 	}
 
 	@Override
-	public void waitForClient() {
+	public void waitForClient()
+	{
 		addReceiver(KieasAddress.GATEWAY_TOPIC_DESTINATION);		
 	}
-	
-	
-
 }
 
 

@@ -116,7 +116,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 경보시스템으로 가정하였다.
 	 */
 	@Override
-	public void onMessage(String senderAddress, byte[] data) {
+	public void onMessage(String senderAddress, String message) {
 		String id = senderAddress;
 		Set<Entry<String, String>> s = addresses.entrySet();
 		for (Entry<String, String> e : s) {
@@ -127,11 +127,11 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		}
 
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
-		kieasMessageBuilder.parse(new String(data));
+		kieasMessageBuilder.parse(message);
 
 		switch (kieasMessageBuilder.getStatus()) {
 		case ACTUAL:
-			onMessageFromIssuer(id, kieasMessageBuilder, data);
+			onMessageFromIssuer(id, kieasMessageBuilder, message);
 			break;
 		case SYSTEM:
 			onMessageFromAlertSystem(id, kieasMessageBuilder);
@@ -147,7 +147,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 
 	 * @param message
 	 */
-	public void onMessageFromIssuer(String senderId, IKieasMessageBuilder kieasMessageBuilder, byte[] rawData) {
+	public void onMessageFromIssuer(String senderId, IKieasMessageBuilder kieasMessageBuilder, String message) {
 		Status status = kieasMessageBuilder.getStatus();
 //		this.senderId = senderId;
 		String log = "GW:" + " Received Message From Alerter (" + senderId + ") : ";
@@ -157,7 +157,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		switch (status) {
 		// 경보메시지를 수신한 경우 각 경보시스템에 전달한다.
 		case ACTUAL:
-			onAlertMessage(senderId, kieasMessageBuilder, rawData);
+			onAlertMessage(senderId, kieasMessageBuilder, message);
 			break;
 		default:
 			System.out.println("GW: unknown message from " + kieasMessageBuilder.getSender());
@@ -210,10 +210,9 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 			e.printStackTrace();
 		}
 		
-		IKieasMessageBuilder ack = receivedMessageBuilder.createAckMessage(createMessageId(), profile.getSender(),
-				senderId);
+		IKieasMessageBuilder ack = receivedMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), senderId);
 
-		transmitter.sendTo(senderId, stringToByte(ack.build()));
+		transmitter.sendTo(senderId, ack.build());
 
 		String log = "GW:" + " Send Acknowledge to (" + senderId + ") : ";
 		System.out.println(log);
@@ -228,7 +227,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * @param message
 	 *            수신한 경보메시지
 	 */
-	private void onAlertMessage(String senderAddress, IKieasMessageBuilder kieasMessageBuilder, byte[] rawData) {
+	private void onAlertMessage(String senderAddress, IKieasMessageBuilder kieasMessageBuilder, String message) {
 		// 경보를 수신한 즉시 Ack를 전송한다.
 		sendAcknowledge(senderAddress, kieasMessageBuilder);
 
@@ -241,7 +240,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		// transmitter.broadcast(rawData);
 		for (Profile target : receivers)
 		{
-			transmitter.sendTo(target.getSender(), rawData);
+			transmitter.sendTo(target.getSender(), message);
 		}
 		String log = "GW:" + " Send Message To AlertSystems";
 		System.out.println(log);

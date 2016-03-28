@@ -33,9 +33,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	}
 
 	@Override
-	public void onMessage(String sender, byte[] data)
+	public void onMessage(String sender, String message)
 	{
-		String message = new String(data);
 		IKieasMessageBuilder builder = new KieasMessageBuilder();
 		try {
 			builder.parse(message);
@@ -72,7 +71,7 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		{
 			e.printStackTrace();
 		}
-		transmitter.send(stringToByte(ack.build()));
+		transmitter.send(ack.build());
 
 	}
 

@@ -15,9 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
-import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.AlertElementNames;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
 import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
@@ -27,8 +25,6 @@ import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 public class AlertLogPanel 
 {
 	private static final String CLEAR_BUTTON = "Clear";
-
-	private IKieasMessageBuilder kieasMessageBuilder;
 	
 	private Box mainBox;
 	
@@ -49,7 +45,6 @@ public class AlertLogPanel
 	
 	public AlertLogPanel()
 	{
-		this.kieasMessageBuilder = new KieasMessageBuilder();
 		initPanel();
 	}
 	

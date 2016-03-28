@@ -30,15 +30,14 @@ import com.google.publicalerts.cap.Info.Certainty;
 import com.google.publicalerts.cap.Info.ResponseType;
 import com.google.publicalerts.cap.Info.Severity;
 import com.google.publicalerts.cap.Info.Urgency;
-
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
-
 import com.google.publicalerts.cap.NotCapException;
 import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Polygon;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
+
+import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
+import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
 
 /**
  * CAP 형식의 메시지를 생성하고 다루는 클래스. Google CAP Library를 활용하여 CAP 메시지를 다룬다.
@@ -46,8 +45,10 @@ import com.google.publicalerts.cap.ValuePair;
  * @author byun-ai
  *
  */
-public class KieasMessageBuilder implements IKieasMessageBuilder {
-	public enum AlertElementNames {
+public class KieasMessageBuilder implements IKieasMessageBuilder
+{
+	public enum AlertElementNames
+	{
 		Identifier,
 		Sender,
 		Sent,
@@ -66,8 +67,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		Info
 	}
 	
-	public enum InfoElementNames {
-
+	public enum InfoElementNames
+	{
 		Language,
 		Category,
 		Event,
@@ -89,7 +90,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		Parameter
 	}
 	
-	public enum ResourceElementNames {
+	public enum ResourceElementNames
+	{
 		ResourceDesc,
 		MimeType,
 		Size,
@@ -98,7 +100,18 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		Digest
 	}
 	
-//	enum Category {
+	public enum AreaElementNames
+	{
+		Area,
+		AreaDesc,
+		Polygon,
+		Circle,
+		GeoCode,
+		Altitude,
+		Ceiling
+	}
+		
+//	public enum Category {
 //		Geo,
 //		Met,
 //		Safety,
@@ -112,27 +125,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 //		CBRNE,
 //		Other,
 //	}
-	public static final String KOREAN = "ko-KR";
-	public static final String ENGLISH = "en-US";
 
-	public static final String RESOURCE = "Resource";
-	public static final String RESOURCE_DESC = "ResourceDesc";
-	public static final String MIME_TYPE = "MimeType";
-	public static final String SIZE = "Size";
-	public static final String URI = "Uri";
-	public static final String DEREF_URI = "DerefUri";
-	public static final String DIGEST = "Digest";
-
-	public enum AreaElementNames {
-		Area,
-		AreaDesc,
-		Polygon,
-		Circle,
-		GeoCode,
-		Altitude,
-		Ceiling
-	}
-
+	private Map<Enum, List<Item>> CapElementToEnumMap;
+	
 	private static final int DEFAULT_INFO_SIZE = 0;
 	private static final String EMPTY = "";
 
@@ -140,17 +135,16 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 	private CapXmlParser capXmlParser;
 	private CapValidator capValidator;
 
-	@SuppressWarnings("rawtypes")
-	private Map<Enum, List<Item>> CapElementToEnumMap;
-
 	private Alert mAlert;
-	private String xmlMessage;
+//	private String xmlMessage;
 
-	public KieasMessageBuilder() {
+	public KieasMessageBuilder()
+	{
 		init();
 	}
 
-	private void init() {
+	public void init()
+	{
 		this.capXmlBuilder = new CapXmlBuilder();
 		this.capXmlParser = new CapXmlParser(true);
 		this.capValidator = new CapValidator();
@@ -439,9 +433,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		}
 
 		this.mAlert = alert;
-		this.xmlMessage = capXmlBuilder.toXml(alert);
-
-		return xmlMessage;
+		
+		return capXmlBuilder.toXml(alert);
 	}
 
 	/**
@@ -450,11 +443,14 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 	 * @return xml 형태
 	 */
 	@Override
-	public String getMessage() {
-		try {
-			this.xmlMessage = capXmlBuilder.toXml(mAlert);
-			return xmlMessage;
-		} catch (NotCapException e) {
+	public String getMessage()
+	{
+		try
+		{
+			return capXmlBuilder.toXml(mAlert);
+		} 
+		catch (NotCapException e)
+		{
 			e.printStackTrace();
 		}
 		System.out.println("There is no CAP message");
@@ -485,23 +481,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 	}
 	
 
-	/**
-	 * xml CAP 메시지의 유효성 검사.
-	 * 
-	 * @return boolean
-	 */
-	//TODO 지금 validate은 단순히 CAP 1.2 확인으로 보임. KIEAS를 따르는지에 대한 스키마 이상의 검사가 필요함
-	@Override
-	public boolean validateMessage(String message) {
-		try {
-			capValidator.validateAlert(capXmlParser.parseFrom(message));
-			System.out.println("Cap Message Validation Complete.");
-			return true;
-		} catch (CapException | NotCapException | SAXParseException e) {
-			System.out.println("Cap Message Validation Fail.");
-			return false;
-		}
-	}
 
 	/**
 	 * 통합경보시스템에서 사용하는 CAP 메시지 Identifier 생성.
@@ -1744,21 +1723,40 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		mAlert = Alert.newBuilder(mAlert).setInfo(infoIndex, info).buildPartial();
 	}
 
-	/**
-	 * CAP 요소에서 사용하는 Enum들을 가져옴. CAP 요소 이름 elementName을 Key로 사용하며 이것으로 Enum 리스트를
-	 * 식별함.
-	 * 
-	 * @return HashMap<String elementName, ArrayList<Item> enum>
-	 */
-	@SuppressWarnings("rawtypes")
-	public Map<Enum, List<Item>> getCapEnumMap() {
+	@Override
+	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination) {
+		IKieasMessageBuilder builder = new KieasMessageBuilder();
+		//builder.buildDefaultMessage();
+		builder.setIdentifier(identifier);
+		builder.setSender(sender);
+		builder.setSent();
+		builder.setStatus(Status.SYSTEM);
+		builder.setMsgType(MsgType.ACK);
+		builder.setScope(Scope.PRIVATE);
+		builder.setAddresses(destination);
+		builder.addReference(this.getSender()+","+this.getIdentifier()+","+this.getSent());
+		
+		return builder;
+	}
+
+	@Override
+	public String[] parseReferences(String references)
+	{
+		String[] tokens = references.split(",");
+		return tokens;
+	}
+	
+
+	public Map<Enum, List<Item>> getCapEnumMap()
+	{		
 		this.CapElementToEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();
 		buildInfoCapEnumMap();
 		return CapElementToEnumMap;
 	}
-
-	private void buildAlertCapEnumMap() {
+	
+	private void buildAlertCapEnumMap()
+	{
 		List<Item> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values()) {
 			String modifiedValue = "";
@@ -1963,22 +1961,4 @@ public class KieasMessageBuilder implements IKieasMessageBuilder {
 		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")"));
 		CapElementToEnumMap.put(AreaElementNames.GeoCode, capEnum8);
 	}
-
-	@Override
-	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination) {
-		IKieasMessageBuilder builder = new KieasMessageBuilder();
-		//builder.buildDefaultMessage();
-		builder.setIdentifier(identifier);
-		builder.setSender(sender);
-		builder.setSent();
-		builder.setStatus(Status.SYSTEM);
-		builder.setMsgType(MsgType.ACK);
-		builder.setScope(Scope.PRIVATE);
-		builder.setAddresses(destination);
-		builder.addReference(this.getSender()+","+this.getIdentifier()+","+this.getSent());
-		
-		return builder;
-	}
-
-
 }

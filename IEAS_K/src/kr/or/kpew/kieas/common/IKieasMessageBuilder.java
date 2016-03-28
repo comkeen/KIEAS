@@ -3,6 +3,8 @@ package kr.or.kpew.kieas.common;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JComponent;
+
 import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Alert.MsgType;
 import com.google.publicalerts.cap.Alert.Scope;
@@ -113,10 +115,8 @@ public interface IKieasMessageBuilder
 	public String buildDefaultMessage();
 	public String getMessage();
 	public void parse(String message);
-	public boolean validateMessage(String message);
+	public String[] parseReferences(String references);
 	public String generateKieasMessageIdentifier(String id);
-	@SuppressWarnings("rawtypes")
-	public Map<Enum, List<Item>> getCapEnumMap();
 	
 	public String getDate();
 	public String convertDateToYmdhms(String date);
@@ -133,6 +133,5 @@ public interface IKieasMessageBuilder
 	 * @return 생성한 수신응답 메시지
 	 */
 	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination);
-
-	
+	public Map<Enum, List<Item>> getCapEnumMap();
 }

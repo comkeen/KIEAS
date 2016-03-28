@@ -29,7 +29,6 @@ import kr.or.kpew.kieas.common.KieasMessageBuilder.AlertElementNames;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.AreaElementNames;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.InfoElementNames;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.ResourceElementNames;
-
 import kr.or.kpew.kieas.common.Profile.AlertSystemType;
 import kr.or.kpew.kieas.issuer.controller.IssuerController;
 
@@ -58,7 +57,6 @@ public class CapElementPanel
 	private List<JButton> buttons;
 
 	private JTabbedPane infoPanel;
-	private JComponent resourcePanel;
 	private JComponent areaBox;
 
 	private IssuerController controller;

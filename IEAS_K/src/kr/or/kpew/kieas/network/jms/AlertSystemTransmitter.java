@@ -54,7 +54,7 @@ public class AlertSystemTransmitter implements IClientTransmitter
 		}
 		catch (Exception ex) 
 		{
-			System.out.println("Could not found MQ Server : " + mqServerIp);
+			System.out.println("AS: Could not found MQ Server : " + mqServerIp);
 //			ex.printStackTrace();
 			return;
 		}
@@ -66,7 +66,7 @@ public class AlertSystemTransmitter implements IClientTransmitter
 	{
 		try
 		{
-			System.out.println("as session with : " + queue);
+			System.out.println("AS: as session with : " + queue);
 			Destination here = this.session.createQueue(queue);
 			this.consumer = session.createConsumer(here);
 			
@@ -80,7 +80,7 @@ public class AlertSystemTransmitter implements IClientTransmitter
 
 						try 
 						{
-							handler.onMessage(KieasAddress.GATEWAY_ID, IntegratedEmergencyAlertSystem.stringToByte(textMessage.getText()));
+							handler.onMessage(KieasAddress.GATEWAY_ID, textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -107,7 +107,7 @@ public class AlertSystemTransmitter implements IClientTransmitter
 			{
 				connection.close();			
 			}
-			System.out.println("AlertSystem Connection Close");
+			System.out.println("AS: Connection Close");
 		}
 		catch (JMSException e)
 		{
@@ -116,15 +116,16 @@ public class AlertSystemTransmitter implements IClientTransmitter
 	}
 	
 	@Override
-	public void send(byte[] message)
+	public void send(String message)
 	{
-		System.out.println("send message to: " + destination);
+		System.out.println("AS: send message to : " + destination);
 		try
 		{
 			Destination queueDestination = session.createQueue(destination);
 			this.producer = this.session.createProducer(queueDestination);
 			this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(new String(message));
+			
+			TextMessage textMessage = this.session.createTextMessage(message);
 			textMessage.setJMSReplyTo(here);
 
 			this.producer.send(textMessage);

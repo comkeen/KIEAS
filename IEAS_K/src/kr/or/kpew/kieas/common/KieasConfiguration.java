@@ -17,17 +17,12 @@ public class KieasConfiguration
 	public static class KieasAddress 
 	{
 		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://localhost:61616";
-//		public static final String ACTIVEMQ_SERVER_IP = "tcp://127.0.0.1:61616";
-//		public static final String ACTIVEMQ_SERVER_IP = "tcp://192.168.0.7:61616"; //home window
-//		public static final String ACTIVEMQ_SERVER_IP = "tcp://172.16.165.135:61616"; //host window
-
-		public static final String DATABASE_SERVER_IP_LOCAL = "jdbc:mysql://localhost:3306";
-//		public static final String DATABASE_SERVER_IP = "jdbc:mysql://172.16.165.135:3306";
+//		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://127.0.0.1:61616";
 		
-		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
-		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
-//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
-//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
+//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
+//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
+		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
+		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
 
 //		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
 		public final static String GATEWAY_TOPIC_DESTINATION 					= "127.0.0.1:26751";
@@ -69,35 +64,6 @@ public class KieasConfiguration
 			"옥외가로등경보시스템",
 			"전광판",
 			"BIS시스템"
-		};
-		
-		public static final String[] ALERT_ELEMENT_LIST =
-		{
-			"Identifier",
-			"Sender",
-			"Sent",
-			"Status",
-			"MsgType",
-			"Scope",
-			"Restriction",
-			"Code",
-		};
-		
-		public static final String[] INFO_ELEMENT_LIST =
-		{
-			"Language",
-			"Category",
-			"Event",
-			"Urgency",
-			"Severity",
-			"Certainty",
-			"EventCode",
-			"Effective",
-			"SenderName",
-			"Web",
-			"Contact",
-			"Headline",
-			"Description"
 		};
 		
 		public enum DisasterEventType

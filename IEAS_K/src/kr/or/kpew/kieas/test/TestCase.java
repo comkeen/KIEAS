@@ -1,10 +1,6 @@
 package kr.or.kpew.kieas.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
-import java.io.UnsupportedEncodingException;
-import java.time.Instant;
 
 import org.junit.Test;
 
@@ -21,8 +17,8 @@ import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Resource;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder.AlertElementNames;
 import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
@@ -238,11 +234,11 @@ public class TestCase {
 //		Instant second = first.plusSeconds(1);          // 12:00:01
 //		Instant thirdAndAfter = second.plusSeconds(1);  // 12:00:02
 		
-		for(int i = 0; i< 10000; i++)
-		{	
-			Instant now = Instant.now(); 	
-			System.out.println("now : " + now);		
-		}
+//		for(int i = 0; i< 10000; i++)
+//		{	
+//			Instant now = Instant.now(); 	
+//			System.out.println("now : " + now);		
+//		}
 		
 //		System.out.println("first : " + first);
 //		System.out.println("first2 : " + first2);
