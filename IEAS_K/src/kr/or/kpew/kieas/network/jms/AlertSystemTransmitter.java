@@ -14,7 +14,6 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
-import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.network.IClientTransmitter;
 
@@ -33,14 +32,12 @@ public class AlertSystemTransmitter implements IClientTransmitter
 	
 	private Destination here;
 	
-	private String id;
 	private String destination;
 
 
 	@Override
 	public void init(String id, String destination)
 	{
-		this.id = id;
 		this.destination = destination;
 		
 		String mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;

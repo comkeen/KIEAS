@@ -45,6 +45,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 		switch (actionCommand)
 		{		
 		case "Send":
+			model.setAlertMessage(view.getCapElement());
 			model.sendMessage();
 			return;
 		case "Load":
@@ -69,7 +70,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 			
 		case "Clear":
 			view.setTextArea("");
-			return;			
+			return;
 		case "Info Add":
 			view.addInfoIndexPanel();
 			return;
@@ -114,7 +115,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 	    {
-//			model.closeConnection();
+			model.closeConnection();
 	        System.exit(0);
 	    }
 		else

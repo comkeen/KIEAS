@@ -2,15 +2,18 @@ package kr.or.kpew.kieas.network;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
 
-public interface IClientTransmitter {
-	
+public interface IClientTransmitter
+{	
 	/**
-	 * 주어진 대상에 연결한다. 향후 이 대상에게만 데이터를 전송할 수 있다.
-	 * @param id 이 시스템의 주소 cap의 <sender>를 이용한다.
-	 * @param target 연결하기 위한 대상의 주소
+	 * 통신 기능을 사용하기 위한 초기화를 진행한다. 이 인터페이스의 구현체는 메시지 송수신을 담당한다.
+	 * @param id 이 시스템의 주소. cap의 <sender>를 이용한다.
+	 * @param target 메시지 송신시 대상이 되는 주소
 	 */
-	public void init(String id, String target);
+	public void init(String id, String destination);
 
+	/**
+	 * 커넥션을 닫는다.
+	 */
 	public void close();
 
 	/**
@@ -21,8 +24,8 @@ public interface IClientTransmitter {
 
 	
 	/**
-	 * init에서 정의한 대상으로 데이터를 전달한다.
-	 * @param data 전달할 데이터
+	 * init에서 정의한 대상으로 메시지를 전달한다.
+	 * @param message 전달할 메시지.
 	 */
 	public void send(String message);
 

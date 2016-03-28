@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+/**
+ * xml 파일을 읽거나 쓰기위해 사용되는 클래스. 현재는 사용하지 않는다.
+ * @author byun-ai
+ *
+ */
 public class XmlReaderAndWriter
 {
 	private static final String DEFAULT_LOAD_PATH = "cap/HRA.xml";

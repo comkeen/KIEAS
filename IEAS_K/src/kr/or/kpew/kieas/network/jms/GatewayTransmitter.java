@@ -1,8 +1,5 @@
 package kr.or.kpew.kieas.network.jms;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -31,7 +28,6 @@ public class GatewayTransmitter implements IServerTransmitter
 	
 	private MessageProducer queueProducer;	
 	private MessageProducer topicProducer;	
-	private Map<String, MessageConsumer> messageConsumerMap;
 
 	private String id;
 	private String mqServerIp;
@@ -39,16 +35,11 @@ public class GatewayTransmitter implements IServerTransmitter
 	private IOnMessageHandler handler;
 	
 	
-	public GatewayTransmitter()
-	{
-	}
-	
 	@Override
 	public void init(String id)
 	{
 		this.id = id;
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;		
-		this.messageConsumerMap = new HashMap<String, MessageConsumer>();
 		
 		openConnection();		
 	}
@@ -102,8 +93,6 @@ public class GatewayTransmitter implements IServerTransmitter
 		{
 			Destination queueDestination = session.createQueue(destination);
 			MessageConsumer consumer = session.createConsumer(queueDestination);
-			
-			messageConsumerMap.put(destination, consumer);
 			
 			MessageListener listener = new MessageListener()
 			{

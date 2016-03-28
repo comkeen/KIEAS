@@ -13,7 +13,15 @@ import kr.or.kpew.kieas.network.jms.AlertSystemTransmitter;
 import kr.or.kpew.kieas.network.jms.GatewayTransmitter;
 import kr.or.kpew.kieas.network.jms.IssuerTransmitter;
 
-public class IntegratedAlertSystemMain {
+/**
+ * 1개의 경보발령대와 1개의 통합게이트웨이, 그리고 8개의 경보시스템을 동시에 실행시켜주는 메인 클래스 이다.
+ * 통합 테스트는 주로 이 클래스를 사용하여 이루어진다.
+ * @author byun-ai
+ *
+ */
+
+public class IntegratedAlertSystemMain
+{
 	static Profile gProfile = new Profile("maingateway@korea.kr", "국민안전처");
 
 	static AlertSystemProfile aProfile = new AlertSystemProfile("townbroadcast085@korea.kr", "경상남도",
@@ -42,6 +50,8 @@ public class IntegratedAlertSystemMain {
 		switch (type) {
 		case JMS:
 			return new GatewayTransmitter();
+		default:
+			break;
 		}
 		return null;
 	}
@@ -50,6 +60,8 @@ public class IntegratedAlertSystemMain {
 		switch (type) {
 		case JMS:
 			return new AlertSystemTransmitter();
+		default:
+			break;
 		}
 		return null;
 	}
@@ -58,6 +70,8 @@ public class IntegratedAlertSystemMain {
 		switch (type) {
 		case JMS:
 			return new IssuerTransmitter();
+		default:
+			break;
 		}
 		return null;
 	}
@@ -118,7 +132,6 @@ public class IntegratedAlertSystemMain {
 		AlertSystemManager f = new AlertSystemManager(new AlertSystemTransmitter(), cbs);
 
 		IssuerManager i = new IssuerManager(new IssuerTransmitter(), civilalertorg);
-
 	}
 
 

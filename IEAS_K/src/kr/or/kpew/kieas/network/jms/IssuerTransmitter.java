@@ -1,8 +1,5 @@
 package kr.or.kpew.kieas.network.jms;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -29,42 +26,32 @@ public class IssuerTransmitter implements IClientTransmitter
 	private Session session;
 	
 	private MessageProducer queueProducer;	
+	private Destination here;
 
-	private String id;
 	private String mqServerIp;
 	private String destination;
 
-
-	private Destination here;
-
-	
-	public IssuerTransmitter()
-	{
-		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
-	}
 	
 	@Override
-	public void init(String id ,String destination)
+	public void init(String id, String destination)
 	{
-		this.id = id;
-		this.destination  = destination;
+		this.destination = destination;
 		
 		try
 		{
-			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(mqServerIp);
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL);
 			this.connection = factory.createConnection();
 			connection.start();
 			
 			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			here = session.createQueue(id);
+			here = session.createQueue(destination);
 		}
 		catch (Exception e)
 		{
 			System.out.println("AO: Could not found MQ Server : " + mqServerIp);
-//			e.printStackTrace();
 			return;
 		}
-		this.addReceiver(id);
+		this.setReceiver(destination);
 	}
 	
 	@Override
@@ -113,10 +100,8 @@ public class IssuerTransmitter implements IClientTransmitter
 		}
 	}
 	
-	public void addReceiver(String myDestination)
+	public void setReceiver(String myDestination)
 	{
-		this.id = myDestination;
-		
 		if(connection == null || session == null)
 		{
 			System.out.println("AO: Could not found JMS Connection");
@@ -125,9 +110,7 @@ public class IssuerTransmitter implements IClientTransmitter
 		
 		try 
 		{
-//			Destination queueDestination = here;//this.session.createQueue(id);
 			MessageConsumer consumer = session.createConsumer(here);
-			System.out.println("AO: gw to alerter Dest : " + here);
 			
 			MessageListener listener = new MessageListener()
 			{

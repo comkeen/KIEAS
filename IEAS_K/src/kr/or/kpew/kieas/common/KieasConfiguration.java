@@ -1,6 +1,10 @@
 package kr.or.kpew.kieas.common;
 
-
+/**
+ * 전체 시스템에서 사용하는 각종 상수값들을 정의한 클래스이다.
+ * @author byun-ai
+ *
+ */
 public class KieasConfiguration
 {	
 	public final static String PACKAGE_NAME 				= "kieas.";
@@ -19,21 +23,14 @@ public class KieasConfiguration
 		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://localhost:61616";
 //		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://127.0.0.1:61616";
 		
-//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
-//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
+		public final static String GATEWAY_ID = "maingateway@korea.kr";
 		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
 		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
-
+//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
+//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
+		
 //		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
 		public final static String GATEWAY_TOPIC_DESTINATION 					= "127.0.0.1:26751";
-		
-//		public final static String GATEWAY_TO_ALERTER_QUEUE_DESTINATION 		= PACKAGE_NAME+"gatewayToAlerterQueue";		
-		public final static String GATEWAY_TO_ALERTSYSTEM_QUEUE_DESTINATION 	= PACKAGE_NAME+"gatewayToAlertSystemQueue";
-		
-		public final static String ISSUER_TO_GATEWAY_TOPIC_DESTINATION 			= PACKAGE_NAME+"issuerToGatewayTopic";
-		
-		public final static String GATEWAY_ID = "maingateway@korea.kr";
-		
 		
 	}
 	

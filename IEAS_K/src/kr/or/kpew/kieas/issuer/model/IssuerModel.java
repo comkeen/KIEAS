@@ -42,19 +42,17 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		super(profile);
 		this.transmitter = transmitter;
 		transmitter.setOnMessageHandler(this);
-
+		transmitter.init(profile.getSender(), KieasAddress.GATEWAY_ID);
+		
+		//발령한 경보와 수신한 수신응답 메시지를 저장한다.
 		this.alertLogger = new AlertLogger();
 		alertLogger.addModel(this);
+		
+		//cap 형식의 xml파일을 읽거나 쓰는 기능을 수행한다. 현재는 사용하지 않는다.
 		this.xmlReaderAndWriter = new XmlReaderAndWriter();
+		
+		//cap 형식의 메시지를 파싱하기 위해 사용된다.
 		this.kieasMessageBuilder = new KieasMessageBuilder();
-
-		init();
-	}
-
-	private void init()
-	{	
-		transmitter.init(profile.getSender(), KieasAddress.GATEWAY_ID);
-		transmitter.setOnMessageHandler(this);
 	}
 
 	/**
@@ -80,6 +78,9 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		return null;
 	}
 
+	/**
+	 * alertLogger에 발령하는 메시지를 저장하고 transmitter에 지정되있는 대상으로 메시지를 송신한다.
+	 */
 	public void sendMessage()
 	{	
 		kieasMessageBuilder.parse(mAlertMessage);
@@ -100,6 +101,9 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		updateIdentifier(message);
 	}
 
+	/**
+	 * transmitter에서 메시지를 수신했을 때 이 메소드로 처리한다.
+	 */
 	@Override
 	public void onMessage(String senderAddress, String message)
 	{
@@ -125,20 +129,33 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 			break;
 		default:
 			System.out.println("AO: Received Message msgType " + msgType);
-			break;
+			throw new UnsupportedOperationException();
 		}
 	}
 
+	/**
+	 * 이미 발령된 경보메시지 identifier를 갱신하기위해 사용되는 메소드.
+	 * @param message
+	 */
 	private void updateIdentifier(String message)
 	{
 		notifyItemToObservers(IssuerView.IDENTIFIER, message);
 	}
 
+	/**
+	 * 경보발령과 수신응답 메시지 수신에 따른 경보로그 테이블의 정보를 갱신하기 위해 사용되는 메소드.
+	 * @param pair
+	 */
 	public void updateTable(MessageAckPair pair)
 	{
 		notifyItemToObservers(IssuerView.TABLE, pair);
 	}
 
+	/**
+	 * 경보발령대의 Model과 View는 Observer Patter을 적용하여 연결되어있다.
+	 * @param target 갱신되어야 할 View의 대상을 지정한다. 
+	 * @param value 갱신되는 새로운 정보를 지정한다.
+	 */
 	private void notifyItemToObservers(String target, Object value)
 	{
 		setChanged();
@@ -152,42 +169,14 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		}
 	}
 
+	/**
+	 * 프로그램에서 작성되어 있는 cap형식을 xml 파일로 쓰기 위해 사용되는 메소드.
+	 * @param path 파일로 저장되어질 이름을 의미한다.
+	 * @param message xml 파일로 쓰여질 내용을 의미한다.
+	 */
 	public void writeCap(String path, String message)
 	{ 
 		xmlReaderAndWriter.writerXml(path, message);
-	}
-
-	public void setAlertMessage(String message)
-	{
-		this.mAlertMessage = message;
-		notifyItemToObservers(IssuerView.TEXT_AREA, message);
-	}	
-
-	public void closeConnection()
-	{
-		transmitter.close();
-	}
-
-	@Override
-	public void setProfile(Profile profile)
-	{
-		this.profile = (IssuerProfile)profile;
-	}
-
-	@Override
-	public Profile getProfile() {
-		return profile;
-	}
-
-	@Override
-	public void onRegister(String sender, String address)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void setSelectedAlertLog(String identifier)
-	{
-		notifyItemToObservers(IssuerView.TEXT_AREA, alertLogger.loadAlertLog(identifier));
 	}
 	
 	/**
@@ -206,4 +195,54 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		
 		notifyItemToObservers(IssuerView.CAP_ELEMENT_PANEL, message);
 	}	
+
+	/**
+	 * 현재 로드되어 있는 cap 경보 메시지를 지정한다.
+	 * @param message 현재 로드되어 있는 cap 경보 메시지.
+	 */
+	public void setAlertMessage(String message)
+	{
+		this.mAlertMessage = message;
+		notifyItemToObservers(IssuerView.TEXT_AREA, message);
+	}	
+
+	/**
+	 * transmitter의 커넥션을 닫는다.
+	 */
+	public void closeConnection()
+	{
+		transmitter.close();
+	}
+
+	/**
+	 * 경보발령대의 프로필을 지정한다.
+	 */
+	@Override
+	public void setProfile(Profile profile)
+	{
+		this.profile = (IssuerProfile)profile;
+	}
+
+	/**
+	 * 경보발령대의 프로필을 가져온다.
+	 */
+	@Override
+	public Profile getProfile() {
+		return profile;
+	}
+
+	@Override
+	public void onRegister(String sender, String address)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * 현재 선택된 경보로그 테이블의 행의 identifier를 식별하여 대상이되는 경보로그를 TextArea에 갱신하는 메소드.
+	 * @param identifier
+	 */
+	public void setSelectedAlertLog(String identifier)
+	{
+		notifyItemToObservers(IssuerView.TEXT_AREA, alertLogger.loadAlertLog(identifier));
+	}
 }

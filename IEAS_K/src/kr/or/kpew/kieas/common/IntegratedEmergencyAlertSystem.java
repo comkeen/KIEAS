@@ -1,6 +1,5 @@
 package kr.or.kpew.kieas.common;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Observable;
 
 /**
@@ -26,16 +25,7 @@ public abstract class IntegratedEmergencyAlertSystem extends Observable implemen
 	 * CAP 메시지의 식별자를 생성하기 위한 메소드이다.
 	 * @return CAP 메시지의 식별자
 	 */
-	protected String createMessageId() {
+	public String createMessageId() {
 		return getProfile().getAgency() + String.format("%010d", messageCount++);
-	}
-	
-	public static byte[] stringToByte(String s) {
-		try {
-			return s.getBytes("utf-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

@@ -126,14 +126,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		Other,
 //	}
 
-	private Map<Enum, List<Item>> CapElementToEnumMap;
+	private Map<Enum<?>, List<Item>> CapElementToEnumMap;
 	
 	private static final int DEFAULT_INFO_SIZE = 0;
 	private static final String EMPTY = "";
 
 	private CapXmlBuilder capXmlBuilder;
 	private CapXmlParser capXmlParser;
-	private CapValidator capValidator;
 
 	private Alert mAlert;
 //	private String xmlMessage;
@@ -147,7 +146,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	{
 		this.capXmlBuilder = new CapXmlBuilder();
 		this.capXmlParser = new CapXmlParser(true);
-		this.capValidator = new CapValidator();
 
 		this.mAlert = buildDefaultAlert();
 	}
@@ -1747,7 +1745,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 	
 
-	public Map<Enum, List<Item>> getCapEnumMap()
+	public Map<Enum<?>, List<Item>> getCapEnumMap()
 	{		
 		this.CapElementToEnumMap = new HashMap<>();
 		buildAlertCapEnumMap();

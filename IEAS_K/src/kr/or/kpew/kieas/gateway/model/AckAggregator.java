@@ -15,6 +15,7 @@ public class AckAggregator
 	
 	private String issuerId;
 	
+	
 	public AckAggregator()
 	{
 		init();

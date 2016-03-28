@@ -5,8 +5,14 @@ import java.util.Map;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
+import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.gateway.view.AlertMessageTable.Responses;
 
+/**
+ * 발령하는 경보메시지와 수신하는 수신응답메시지를 저장한다. 경보로그를 표현하는 테이블의 정보를 갱신한다.
+ * @author byun-ai
+ *
+ */
 public class AlertLogger
 {
 	private Map<String, MessageAckPair> alertLogMap;
@@ -28,6 +34,10 @@ public class AlertLogger
 		this.kieasMessageBuilder = new KieasMessageBuilder();
 	}
 
+	/**
+	 * 발령한 경보메시지를 저장한다.
+	 * @param message 저장되는 cap 형식의 메시지.
+	 */
 	public void saveAlertLog(String message)
 	{		
 		kieasMessageBuilder.parse(message);
@@ -38,6 +48,11 @@ public class AlertLogger
 		issuerModel.updateTable(pair);
 	}
 
+	/**
+	 * 수신한 수신응답메시지를 저장한다.
+	 * 수신한 수신응답메시지의 종류에 따라 경보로그 테이블의 수신응답 상태를 갱신한다.
+	 * @param message 저장되는 cap 형식의 메시지
+	 */
 	public void saveAckLog(String message)
 	{
 		kieasMessageBuilder.parse(message);
@@ -47,22 +62,22 @@ public class AlertLogger
 		}
 		
 		String references = kieasMessageBuilder.getReferences();
-		String[] tokens = references.split(",");
-		String sender = tokens[0];		
-		String identifier = tokens[1];
-		String sent = tokens[2];
+		String[] parsedReferences = kieasMessageBuilder.parseReferences(references);
+//		String sender = parsedReferences[0];		
+		String identifier = parsedReferences[1];
+//		String sent = parsedReferences[2];
 	
 		if(alertLogMap.containsKey(identifier))
 		{
 			MessageAckPair pair = alertLogMap.get(identifier);
-			String state = pair.getState();			
+			String state = pair.getState();
 			
 			switch (state)
 			{
-			case "NACK":
+			case KieasConstant.NACK:
 				pair.setState(Responses.ACK.toString());
 				break;
-			case "ACK":
+			case KieasConstant.ACK:
 				pair.setState(Responses.COMP.toString());				
 				break;
 			default:
@@ -78,26 +93,41 @@ public class AlertLogger
 		}
 	}
 
+	/**
+	 * 저장된 경보메시지를 불러온다.
+	 * @param identifier 저장된 메시지를 식별하는데 사용된다.
+	 * @return
+	 */
 	public String loadAlertLog(String identifier)
 	{
 		return alertLogMap.get(identifier).getMessage();
 	}
 
+	/**
+	 * 저장된 경보메시지의 수신응답 상태를 불러온다.
+	 * @param identifier
+	 * @return
+	 */
 	public String loadAlertLogState(String identifier)
 	{
 		return alertLogMap.get(identifier).getState();
 	}
 	
+	/**
+	 * 저장된 수신응답메시지를 불러온다.
+	 * @param identifier
+	 * @return
+	 */
 	public String loadAckLog(String identifier)
 	{
 		return ackLogMap.get(identifier);
 	}
 
-	public void receiveAck(String identifier, String state)
-	{
-		alertLogMap.get(identifier).setState(state);
-	}
-
+	/**
+	 * 경보메시지와 수신응답 상태를 표현하기 위한 pair 자료구조.
+	 * @author byun-ai
+	 *
+	 */
 	public class MessageAckPair
 	{		
 		String message;
