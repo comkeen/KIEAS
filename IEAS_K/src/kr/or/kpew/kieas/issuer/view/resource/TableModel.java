@@ -58,7 +58,6 @@ public class TableModel
 		//ack update
 		kieasMessageBuilder.parse(message);
 		String identifier = kieasMessageBuilder.getIdentifier();
-		System.out.println("AO: id :" + identifier );
 		for (int i = 0; i < tableModel.getRowCount(); i++)
 		{		
 			if(tableModel.getValueAt(i, 1).toString().equals(identifier))
