@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.google.publicalerts.cap.Alert.Status;
 
 import kr.or.kpew.kieas.common.AlertSystemProfile;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
@@ -16,11 +12,14 @@ import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.IssuerProfile;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
-import kr.or.kpew.kieas.network.IServerTransmitter;
+import kr.or.kpew.kieas.network.ITransmitter;
 
-public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnMessageHandler {
-	IServerTransmitter transmitter;
-	Profile profile;
+import com.google.publicalerts.cap.Alert.Status;
+
+public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnMessageHandler
+{
+	private ITransmitter transmitter;
+	private Profile profile;
 
 	private List<IssuerProfile> issuers = new ArrayList<>();
 	private List<AlertSystemProfile> alertsystems = new ArrayList<>();
@@ -28,24 +27,26 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	private List<Profile> receivers;
 	
 	private AckAggregator ackAggregator;
-	
-	
 
-	public class Pair {
+	
+	public class Pair
+	{
 		public Type type;
 		public Object object;
 
-		public Pair(Type type, Object object) {
+		public Pair(Type type, Object object)
+		{
 			this.type = type;
 			this.object = object;
 		}
 	}
 
-	public GatewayModel(IServerTransmitter transmitter, Profile profile) {
+	public GatewayModel(ITransmitter transmitter, Profile profile)
+	{
 		super(profile);
 
 		this.transmitter = transmitter;
-		transmitter.setOnReceiveHandler(this);
+		transmitter.setOnMessageHandler(this);
 	}
 
 	/**
@@ -53,12 +54,13 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 
 	 * @author raychani
 	 */
-	public enum Type {
+	public enum Type
+	{
 		Log, GatewayId, AlertMessage, RegisterIssuer, RegisterAlertSystem, Ack
 	}
 
-	public void init() {
-
+	public void init()
+	{
 		this.ackAggregator = new AckAggregator();
 		transmitter.init(profile.getSender());
 		setChangedAndNotify(Type.GatewayId, profile.getSender());
@@ -81,31 +83,23 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		notifyLog(log);
 	}
 
-	public void registerIssuer(IssuerProfile profile) {
+	public void registerIssuer(IssuerProfile profile)
+	{
 		issuers.add(profile);
 		setChangedAndNotify(Type.RegisterIssuer, profile);
-
 	}
 
-	public void registerAlertSystem(AlertSystemProfile profile) {
+	public void registerAlertSystem(AlertSystemProfile profile)
+	{
 		alertsystems.add(profile);
 		setChangedAndNotify(Type.RegisterAlertSystem, profile);
-
-	}
-
-	public boolean isRegisted(Profile profile) {
-		if (profile instanceof AlertSystemProfile) {
-			return alertsystems.contains(profile);
-		} else if (profile instanceof IssuerProfile) {
-			return issuers.contains(profile);
-		}
-
-		return false;
 	}
 
 	@Override
-	public void onRegister(String sender, String address) {
-		if (!addresses.containsKey(sender)) {
+	public void onRegister(String sender, String address)
+	{
+		if (!addresses.containsKey(sender))
+		{
 			addresses.put(sender, address);
 		}
 
@@ -116,19 +110,8 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 경보시스템으로 가정하였다.
 	 */
 	@Override
-	public void onMessage(String senderAddress, String message)
+	public void onMessage(String message)
 	{
-		String id = senderAddress;
-		Set<Entry<String, String>> s = addresses.entrySet();
-		for (Entry<String, String> e : s)
-		{
-			if(e.getValue().equals(senderAddress))
-			{
-				id = e.getKey();
-				break;
-			}
-		}
-
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
 		String sender = kieasMessageBuilder.getSender();
@@ -161,7 +144,8 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		System.out.println(log);
 		notifyLog(log);
 		
-		switch (status) {
+		switch (status)
+		{
 		// 경보메시지를 수신한 경우 각 경보시스템에 전달한다.
 		case ACTUAL:
 			onAlertMessage(senderId, message);
@@ -326,7 +310,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		setChangedAndNotify(Type.Log, log);
 	}
 
-	public void setTransmitter(IServerTransmitter transmitter) {
+	public void setTransmitter(ITransmitter transmitter) {
 		this.transmitter = transmitter;
 
 	}

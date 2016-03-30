@@ -11,15 +11,14 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import kr.or.kpew.kieas.common.IOnMessageHandler;
+import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
+import kr.or.kpew.kieas.network.ITransmitter;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import kr.or.kpew.kieas.common.IOnMessageHandler;
-import kr.or.kpew.kieas.common.KieasConfiguration;
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
-import kr.or.kpew.kieas.network.IServerTransmitter;
 
-
-public class GatewayTransmitter implements IServerTransmitter
+public class GatewayTransmitter implements ITransmitter
 {
 	private static final String QUEUE_HEADER = "queue://";
 
@@ -27,24 +26,23 @@ public class GatewayTransmitter implements IServerTransmitter
 	private Session session;
 	
 	private MessageProducer queueProducer;	
-	private MessageProducer topicProducer;	
 
-	private String id;
 	private String mqServerIp;
 
 	private IOnMessageHandler handler;
 	
 	
 	@Override
-	public void init(String id)
+	public void init(String destination)
 	{
-		this.id = id;
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;		
 		
-		openConnection();		
+		open();		
+		addReceiver(destination);
 	}
 	
-	public void openConnection()
+	@Override
+	public void open()
 	{
 		try
 		{
@@ -59,8 +57,6 @@ public class GatewayTransmitter implements IServerTransmitter
 			System.out.println("GW: Could not found MQ Server : " + mqServerIp);
 			return;
 		}
-		
-		this.addReceiver(id);
 	}
 	
 	@Override
@@ -68,7 +64,7 @@ public class GatewayTransmitter implements IServerTransmitter
 	{
 		try 
 		{
-			if(connection != null)
+			if(connection != null && session != null)
 			{
 				session.close();
 				connection.close();			
@@ -81,6 +77,7 @@ public class GatewayTransmitter implements IServerTransmitter
 		}
 	}
 		
+	@Override
 	public void addReceiver(String destination)
 	{		
 		if(connection == null || session == null)
@@ -104,8 +101,7 @@ public class GatewayTransmitter implements IServerTransmitter
 						try 
 						{
 							String queue = message.getJMSReplyTo().toString();
-							String sender = queue.replace(QUEUE_HEADER, "");
-							handler.onMessage(sender,textMessage.getText());
+							handler.onMessage(textMessage.getText());
 						}
 						catch (JMSException e)
 						{
@@ -150,45 +146,19 @@ public class GatewayTransmitter implements IServerTransmitter
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public void broadcast(byte[] message)
-	{
-		String topic = KieasConfiguration.KieasAddress.GATEWAY_TOPIC_DESTINATION;
-		System.out.println("gateway topic send : " + topic);
-		try
-		{
-			Destination destination = this.session.createTopic(topic);
-			this.topicProducer = this.session.createProducer(destination);
-			topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(new String(message));
-
-			topicProducer.send(textMessage);
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 	
 	public void setMqServer(String ip)
 	{
 		this.mqServerIp = ip;
 		
 		close();
-		openConnection();
+		open();
 	}
 
 	@Override
-	public void setOnReceiveHandler(IOnMessageHandler handler) 
+	public void setOnMessageHandler(IOnMessageHandler handler) 
 	{
 		this.handler = handler;
-	}
-
-	@Override
-	public void waitForClient()
-	{
-		addReceiver(KieasAddress.GATEWAY_TOPIC_DESTINATION);		
 	}
 }
 

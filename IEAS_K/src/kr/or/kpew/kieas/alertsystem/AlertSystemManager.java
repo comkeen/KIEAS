@@ -1,14 +1,17 @@
 package kr.or.kpew.kieas.alertsystem;
 
 import kr.or.kpew.kieas.common.AlertSystemProfile;
-import kr.or.kpew.kieas.network.IClientTransmitter;
+import kr.or.kpew.kieas.network.ITransmitter;
 
-public class AlertSystemManager {
-	AlertSystemModel model;
-	AlertSystemView view;
-	AlertSystemController controller;
+public class AlertSystemManager
+{
+	private AlertSystemModel model;
+	private AlertSystemView view;
+	private AlertSystemController controller;
 	
-	public AlertSystemManager(IClientTransmitter transmitter, AlertSystemProfile profile) {
+	
+	public AlertSystemManager(ITransmitter transmitter, AlertSystemProfile profile)
+	{
 		model = new AlertSystemModel(transmitter, profile);
 		view = new AlertSystemView();
 		controller = new AlertSystemController();
@@ -23,5 +26,4 @@ public class AlertSystemManager {
 		
 		view.show();
 	}
-
 }

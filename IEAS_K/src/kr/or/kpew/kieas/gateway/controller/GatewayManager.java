@@ -1,19 +1,20 @@
 package kr.or.kpew.kieas.gateway.controller;
 
 import kr.or.kpew.kieas.gateway.view.GatewayView;
-import kr.or.kpew.kieas.network.IServerTransmitter;
+import kr.or.kpew.kieas.network.ITransmitter;
 import kr.or.kpew.kieas.common.AlertSystemProfile;
 import kr.or.kpew.kieas.common.IssuerProfile;
 import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.gateway.model.GatewayModel;
 
 
-public class GatewayManager {
+public class GatewayManager
+{
 	GatewayModel model;
 	GatewayView view;
 	GatewayController controller;
 	
-	public GatewayManager(IServerTransmitter transmitter, Profile profile)
+	public GatewayManager(ITransmitter transmitter, Profile profile)
 	{
 		model = new GatewayModel(transmitter, profile);		
 		view = new GatewayView();
@@ -26,14 +27,15 @@ public class GatewayManager {
 		
 		view.init();
 		model.init();		
-
 	}
 
-	public void registAlertSystem(AlertSystemProfile aProfile) {
-		model.registerAlertSystem(aProfile);
+	public void registAlertSystem(AlertSystemProfile asProfile)
+	{
+		model.registerAlertSystem(asProfile);
 	}
 
-	public void registIssuer(IssuerProfile iProfile) {
+	public void registIssuer(IssuerProfile iProfile)
+	{
 		model.registerIssuer(iProfile);
 	}
 }

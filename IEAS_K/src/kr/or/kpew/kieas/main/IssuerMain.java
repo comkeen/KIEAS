@@ -9,8 +9,8 @@ public class IssuerMain
 {
 	public IssuerMain()
 	{
-		new IssuerManager(new IssuerTransmitter(), 
-				new IssuerProfile("issuerkma0124@korea.kr", "기상청"));		
+		IssuerProfile profile = new IssuerProfile("issuerkma0124@korea.kr", "기상청");
+		new IssuerManager(new IssuerTransmitter(), profile);		
 	}
 	
 	public static void main(String[] args) 

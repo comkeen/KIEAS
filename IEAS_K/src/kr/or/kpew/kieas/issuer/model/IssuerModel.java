@@ -17,12 +17,12 @@ import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.gateway.view.AlertMessageTable.Responses;
 import kr.or.kpew.kieas.issuer.model.AlertLogger.MessageAckPair;
 import kr.or.kpew.kieas.issuer.view.IssuerView;
-import kr.or.kpew.kieas.network.IClientTransmitter;
+import kr.or.kpew.kieas.network.ITransmitter;
 
 public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMessageHandler
 {
 	private IKieasMessageBuilder kieasMessageBuilder;
-	private IClientTransmitter transmitter;
+	private ITransmitter transmitter;
 	private IssuerProfile profile;
 
 	private XmlReaderAndWriter xmlReaderAndWriter;
@@ -38,12 +38,12 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	 * @param transmitter 발령대에서 사용할 통신방식을 규정한다. 통신방식은 TCP/IP와 JMS 두가지 방법을 활용할 수 있게 고안되었으나 현재는 JMS만을 사용한다.
 	 * @param profile 경보발령대에서 사용하는 발령대프로필은 프로필은 상속하여 구현되어있다. 프로필은 통신에서 라우팅 기능을 위해 사용된다. 프로필에 대한 정보는 kr.or.kpew.kieas.common.Profile을 참고하라.
 	 */
-	public IssuerModel(IClientTransmitter transmitter, IssuerProfile profile)
+	public IssuerModel(ITransmitter transmitter, IssuerProfile profile)
 	{
 		super(profile);
 		this.transmitter = transmitter;
 		transmitter.setOnMessageHandler(this);
-		transmitter.init(profile.getSender(), KieasAddress.GATEWAY_ID);
+		transmitter.init(profile.getSender());
 		
 		//발령한 경보와 수신한 수신응답 메시지를 저장한다.
 		this.alertLogger = new AlertLogger();
@@ -95,8 +95,8 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		
 		alertLogger.saveAlertLog(message);
 
-		System.out.println("AO: Send Message to " + "Gateway : ");		
-		transmitter.send(message);
+		System.out.println("AO: Send Message to GW : ");		
+		transmitter.sendTo(KieasAddress.GATEWAY_ID, message);
 		
 		updateIdentifier(message);
 	}
@@ -105,9 +105,9 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	 * transmitter에서 메시지를 수신했을 때 이 메소드로 처리한다.
 	 */
 	@Override
-	public void onMessage(String senderAddress, String message)
+	public void onMessage(String message)
 	{
-		System.out.println("AO: Received Message from GW: " + senderAddress);
+		System.out.println("AO: Received Message from GW");
 
 		kieasMessageBuilder.parse(message);
 		String msgType = kieasMessageBuilder.getMsgType().toString();

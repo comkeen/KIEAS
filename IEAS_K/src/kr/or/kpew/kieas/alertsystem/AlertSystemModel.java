@@ -4,21 +4,21 @@ import kr.or.kpew.kieas.common.AlertSystemProfile;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
-import kr.or.kpew.kieas.network.IClientTransmitter;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
+import kr.or.kpew.kieas.network.ITransmitter;
 
 public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	private AlertSystemProfile profile;
 	
-	IClientTransmitter transmitter;
+	ITransmitter transmitter;
 
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 
 	public static final long DELAY = 1000;
 
-	public AlertSystemModel(IClientTransmitter transmitter, AlertSystemProfile profile) {
+	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile) {
 		super(profile);
 
 		this.transmitter = transmitter;
@@ -27,13 +27,13 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 
 	public void init() {
 
-		transmitter.init(profile.getSender(), KieasAddress.GATEWAY_ID);
+		transmitter.init(profile.getSender());
 		setChanged();
 		notifyObservers(profile);
 	}
 
 	@Override
-	public void onMessage(String sender, String message)
+	public void onMessage(String message)
 	{
 		System.out.println(message);
 		IKieasMessageBuilder builder = new KieasMessageBuilder();
@@ -76,7 +76,7 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 			e.printStackTrace();
 		}
 		System.out.println("AS: " + profile.getSender() + "send message to : " + destination);
-		transmitter.send(ackMessage);
+		transmitter.sendTo(KieasAddress.GATEWAY_ID, ackMessage);
 	}
 
 	public void readyForExit() {

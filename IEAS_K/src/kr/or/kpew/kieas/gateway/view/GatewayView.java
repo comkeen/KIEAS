@@ -19,8 +19,8 @@ import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.gateway.controller.GatewayController;
 import kr.or.kpew.kieas.gateway.model.GatewayModel.Pair;
 
-public class GatewayView implements Observer {
-
+public class GatewayView implements Observer
+{
 	private GatewayController controller;
 
 	private GatewayLogPane gatewayLogPane;
@@ -37,16 +37,9 @@ public class GatewayView implements Observer {
 
 	private boolean initialized = false;
 
-	// public static GatewayView getInstance()
-	// {
-	// if (gatewayView == null)
-	// {
-	// gatewayView = new GatewayView();
-	// }
-	// return gatewayView;
-	// }
-
-	public void init() {
+	
+	public void init()
+	{
 		issuersTable = new IssuerTable();
 		alertsystemsTable = new AlertSystemInfoTable();
 		alertMessageTable = new AlertMessageTable();

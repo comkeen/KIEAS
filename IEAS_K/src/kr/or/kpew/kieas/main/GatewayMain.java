@@ -9,12 +9,12 @@ public class GatewayMain
 {
 	public GatewayMain()
 	{
-		//GatewayModel.getInstance();
+		Profile profile = new Profile("maingateway@korea.kr", "국민안전처");
+		new GatewayManager(new GatewayTransmitter(), profile);
 	}
 	
 	public static void main(String[] args)
 	{
-		new GatewayManager(new GatewayTransmitter(),
-				new Profile("maingateway@korea.kr", "국민안전처"));
+		new GatewayMain();
 	}
 }

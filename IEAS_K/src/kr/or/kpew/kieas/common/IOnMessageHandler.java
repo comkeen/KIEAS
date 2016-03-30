@@ -7,7 +7,7 @@ public interface IOnMessageHandler
 	 * @param sender
 	 * @param data
 	 */
-	public void onMessage(String sender, String message);
+	public void onMessage(String message);
 	
 	/** 
 	 * 수신한 등록 요청에 대해 서버는 등록을, 클라이언트는 등록 결과를 처리하기 위한 메소드
