@@ -35,20 +35,23 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onMessage(String sender, String message)
 	{
+		System.out.println(message);
 		IKieasMessageBuilder builder = new KieasMessageBuilder();
-		try {
+		try
+		{
 			builder.parse(message);
 			
-			switch (builder.getStatus()) {
+			switch (builder.getStatus())
+			{
 			case ACTUAL:
-			case EXERCISE:
-				sendAcknowledge(builder, KieasAddress.ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION);
+				sendAcknowledge(message, KieasAddress.GATEWAY_ID);
 				setChanged();
 				notifyObservers(message);
 				break;
+			case EXERCISE:
+				break;
 			case SYSTEM:
 				break;
-
 			default:
 				break;
 			}
@@ -59,9 +62,10 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	}
 
 	
-	protected void sendAcknowledge(IKieasMessageBuilder receivedMessageBuilder, String destination)
+	protected void sendAcknowledge(String message, String destination)
 	{
-		IKieasMessageBuilder ack = receivedMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), destination);
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		String ackMessage = kieasMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), destination);
 		
 		try
 		{
@@ -71,8 +75,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		{
 			e.printStackTrace();
 		}
-		transmitter.send(ack.build());
-
+		System.out.println("AS: " + profile.getSender() + "send message to : " + destination);
+		transmitter.send(ackMessage);
 	}
 
 	public void readyForExit() {

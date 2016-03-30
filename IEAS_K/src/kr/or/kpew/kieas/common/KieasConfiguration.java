@@ -41,9 +41,9 @@ public class KieasConfiguration
 		public static final String DEFAULT_TIME_ZONE = "Asia/Seoul";
 		public static final String GEO_CODE_VALUE_NAME = "행정구역코드";
 
-		public static final String ACK = "Ack";
-		public static final String NACK = "Nack";
-		public static final String COMP = "Comp";
+		public static final String ACK = "ACK";
+		public static final String NACK = "NACK";
+		public static final String COMP = "COMP";
 	}
 	
 	public static class KieasList

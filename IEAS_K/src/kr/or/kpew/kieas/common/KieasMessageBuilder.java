@@ -126,7 +126,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 //		Other,
 //	}
 
-	private Map<Enum<?>, List<Item>> CapElementToEnumMap;
+	private Map<Enum<?>, List<Item>> capElementToEnumMap;
 	
 	private static final int DEFAULT_INFO_SIZE = 0;
 	private static final String EMPTY = "";
@@ -1722,7 +1722,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	@Override
-	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination) {
+	public String createAckMessage(String identifier, String sender, String destination) {
 		IKieasMessageBuilder builder = new KieasMessageBuilder();
 		//builder.buildDefaultMessage();
 		builder.setIdentifier(identifier);
@@ -1734,7 +1734,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		builder.setAddresses(destination);
 		builder.addReference(this.getSender()+","+this.getIdentifier()+","+this.getSent());
 		
-		return builder;
+		return builder.getMessage();
 	}
 
 	@Override
@@ -1747,13 +1747,16 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 
 	public Map<Enum<?>, List<Item>> getCapEnumMap()
 	{		
-		this.CapElementToEnumMap = new HashMap<>();
-		buildAlertCapEnumMap();
-		buildInfoCapEnumMap();
-		return CapElementToEnumMap;
+		if(capElementToEnumMap == null)
+		{
+			this.capElementToEnumMap = new HashMap<>();
+			capElementToEnumMap = buildAlertCapEnumMap(capElementToEnumMap);
+			capElementToEnumMap = buildInfoCapEnumMap(capElementToEnumMap);
+		}		
+		return capElementToEnumMap;
 	}
 	
-	private void buildAlertCapEnumMap()
+	private Map<Enum<?>, List<Item>> buildAlertCapEnumMap(Map<Enum<?>, List<Item>> capElementToEnumMap)
 	{
 		List<Item> capEnum1 = new ArrayList<>();
 		for (Status value : Alert.Status.values()) {
@@ -1771,7 +1774,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(AlertElementNames.Status, capEnum1);
+		capElementToEnumMap.put(AlertElementNames.Status, capEnum1);
 
 		List<Item> capEnum2 = new ArrayList<>();
 		for (MsgType value : Alert.MsgType.values()) {
@@ -1789,7 +1792,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(AlertElementNames.MsgType, capEnum2);
+		capElementToEnumMap.put(AlertElementNames.MsgType, capEnum2);
 
 		List<Item> capEnum3 = new ArrayList<>();
 		for (Scope value : Alert.Scope.values()) {
@@ -1803,10 +1806,12 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(AlertElementNames.Scope, capEnum3);
+		capElementToEnumMap.put(AlertElementNames.Scope, capEnum3);
+		
+		return capElementToEnumMap;
 	}
 
-	private void buildInfoCapEnumMap() {
+	private Map<Enum<?>, List<Item>> buildInfoCapEnumMap(Map<Enum<?>, List<Item>> capElementToEnumMap) {
 		// Category
 		List<Item> capEnum1 = new ArrayList<>();
 		for (Category value : Info.Category.values()) {
@@ -1838,7 +1843,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum1.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.Category, capEnum1);
+		capElementToEnumMap.put(InfoElementNames.Category, capEnum1);
 
 		List<Item> capEnum2 = new ArrayList<>();
 		for (Certainty value : Info.Certainty.values()) {
@@ -1858,7 +1863,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum2.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.Certainty, capEnum2);
+		capElementToEnumMap.put(InfoElementNames.Certainty, capEnum2);
 
 		List<Item> capEnum3 = new ArrayList<>();
 		for (ResponseType value : Info.ResponseType.values()) {
@@ -1866,7 +1871,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			modifiedValue = value.toString();
 			capEnum3.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.ResponseType, capEnum3);
+		capElementToEnumMap.put(InfoElementNames.ResponseType, capEnum3);
 
 		List<Item> capEnum4 = new ArrayList<>();
 		for (Severity value : Info.Severity.values()) {
@@ -1884,7 +1889,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum4.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.Severity, capEnum4);
+		capElementToEnumMap.put(InfoElementNames.Severity, capEnum4);
 
 		List<Item> capEnum5 = new ArrayList<>();
 		for (Urgency value : Info.Urgency.values()) {
@@ -1902,7 +1907,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum5.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.Urgency, capEnum5);
+		capElementToEnumMap.put(InfoElementNames.Urgency, capEnum5);
 
 		List<Item> capEnum6 = new ArrayList<>();
 		for (KieasList.DisasterEventType value : KieasList.DisasterEventType.values()) {
@@ -1910,7 +1915,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			modifiedValue = value.toString() + " (" + value.getKoreanEventCode() + ")";
 			capEnum6.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.EventCode, capEnum6);
+		capElementToEnumMap.put(InfoElementNames.EventCode, capEnum6);
 
 		List<Item> capEnum7 = new ArrayList<>();
 		for (String value : KieasConfiguration.KieasList.LANGUAGE_LIST) {
@@ -1922,7 +1927,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 			}
 			capEnum7.add(new Item(value.toString(), modifiedValue));
 		}
-		CapElementToEnumMap.put(InfoElementNames.Language, capEnum7);
+		capElementToEnumMap.put(InfoElementNames.Language, capEnum7);
 
 		List<Item> capEnum8 = new ArrayList<>();
 		Item item1 = new Item("1100000000", "서울특별시");
@@ -1957,6 +1962,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		capEnum8.add(new Item(item14.getKey(), item14.getKey() + " (" + item14.getValue() + ")"));
 		capEnum8.add(new Item(item15.getKey(), item15.getKey() + " (" + item15.getValue() + ")"));
 		capEnum8.add(new Item(item16.getKey(), item16.getKey() + " (" + item16.getValue() + ")"));
-		CapElementToEnumMap.put(AreaElementNames.GeoCode, capEnum8);
+		capElementToEnumMap.put(AreaElementNames.GeoCode, capEnum8);
+		
+		return capElementToEnumMap;
 	}
 }

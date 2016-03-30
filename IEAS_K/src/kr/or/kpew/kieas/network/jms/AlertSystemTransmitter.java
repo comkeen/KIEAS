@@ -115,7 +115,6 @@ public class AlertSystemTransmitter implements IClientTransmitter
 	@Override
 	public void send(String message)
 	{
-		System.out.println("AS: send message to : " + destination);
 		try
 		{
 			Destination queueDestination = session.createQueue(destination);

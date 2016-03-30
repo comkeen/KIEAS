@@ -13,8 +13,6 @@ public class AckAggregator
 	private Map<String, List<Profile>> beTracedProfilesMap;
 	private List<String[]> senderList;
 	
-	private String issuerId;
-	
 	
 	public AckAggregator()
 	{
@@ -45,7 +43,7 @@ public class AckAggregator
 	public String[] checkAck(String senderAddress, String messageId)
 	{		
 		List<Profile> profiles = beTracedProfilesMap.get(messageId);
-		if(profiles.size() > 0)
+		if(profiles != null && profiles.size() > 0)
 		{
 			for (Profile profile : profiles)
 			{
@@ -57,7 +55,7 @@ public class AckAggregator
 				}
 			}
 		}		
-		if(profiles.size() == 0)
+		if(profiles != null && profiles.size() == 0)
 		{
 			System.out.println("remove profiles");
 			beTracedProfilesMap.remove(messageId);

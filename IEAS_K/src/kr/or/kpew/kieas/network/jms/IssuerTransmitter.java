@@ -122,7 +122,6 @@ public class IssuerTransmitter implements IClientTransmitter
 
 						try
 						{
-							System.out.println("AO: received message");
 							handler.onMessage(KieasAddress.GATEWAY_ID, textMessage.getText());	//Received Message Handler
 							return;
 						}

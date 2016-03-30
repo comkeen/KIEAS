@@ -130,6 +130,6 @@ public interface IKieasMessageBuilder
 	 * @param identifier 현재 시스템의 식별자
 	 * @return 생성한 수신응답 메시지
 	 */
-	public IKieasMessageBuilder createAckMessage(String identifier, String sender, String destination);
+	public String createAckMessage(String identifier, String sender, String destination);
 	public Map<Enum<?>, List<Item>> getCapEnumMap();
 }

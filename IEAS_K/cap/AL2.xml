@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
   <identifier>국민안전처1508190002</identifier>
-  <sender>홍길동@mpss.go.kr</sender>
+  <sender>KildongHong@mpss.go.kr</sender>
   <sent>2015-08-19T14:14:00+09:00</sent>
-  <status>Update</status>
+  <status>Actual</status>
   <msgType>Alert</msgType>
   <scope>Public</scope>
   <code>대한민국정부1.0</code>
-  <references>홍길동@mpss.go.kr,국민안전처1508190001,2015-08-19T14:00:00</references>
+  <references>KildongHong@mpss.go.kr,국민안전처1508190001,2015-08-19T14:00:00</references>
   <info>
     <language>ko-KR</language>
     <category>Security</category> 
@@ -24,23 +24,29 @@
     <headline>민방공 경계경보 발표</headline>
     <description>
     <![CDATA[
-		2015년 8월 19일 오후 14시 20분, 청주시 일대에 발표되었던 민방공 공습경보를
-		민방공 경계경보로 변경. 경계상황 유지 및 사태 수습.
+2015년 8월 19일 오후 14시 20분, 청주시 일대에 발표되었던 민방공 공습경보를
+민방공 경계경보로 변경. 경계상황 유지 및 사태 수습.
 	]]>
     </description>
 	<instruction>
 	<![CDATA[
-		경계태세 유지하며 대피소에서 나와 지속적으로 방송 청취
-		방독면 등 개인 보호장비 점검 및 정비
-		피해지역 복구 활동, 인명피해자 구조 사태수습 참여 (훈련상황)
+경계태세 유지하며 대피소에서 나와 지속적으로 방송 청취
+방독면 등 개인 보호장비 점검 및 정비
+피해지역 복구 활동, 인명피해자 구조 사태수습 참여 (훈련상황)
 	]]>
 	</instruction>
     <contact>청원구청 총무과, 043-201-8062</contact>
 	<parameter>
 		<valueName>CBSText</valueName>
-		<value>2015년 8월 19일 오후 14시 15분을 기하여 청주시 일대 민방공 공습경보를 민방공 경계경보로 변경. 경계상황 유지 및 사태 수습.</value>
+		<value>
+2015년 8월 19일 오후 14시 15분을 기하여 청주시 일대 민방공 공습경보를 민방공 경계경보로 변경. 경계상황 유지 및 사태 수습.
+		</value>
+	</parameter>
+	<parameter>
 		<valueName>DMBPriority</valueName>
 		<value>3</value>
+	</parameter>
+	<parameter>
 		<valueName>CBSPriority</valueName>
 		<value>0</value>
 	</parameter>

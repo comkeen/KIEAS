@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>국민안전처0000000000</identifier>
+  <sender>dmbalert@korea.kr</sender>
+  <sent>2016-03-30T17:29:08+09:00</sent>
+  <status>System</status>
+  <msgType>Ack</msgType>
+  <scope>Private</scope>
+  <addresses>kieas.alertSystemToGatewayQueue</addresses>
+  <code>대한민국정부1.0</code>
+  <references>KildongHong@mpss.go.kr,민방위0000000001,2016-03-30T17:29:07+09:00</references>
+</alert>

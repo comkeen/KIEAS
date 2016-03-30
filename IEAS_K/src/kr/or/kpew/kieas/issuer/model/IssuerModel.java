@@ -11,6 +11,7 @@ import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.IssuerProfile;
 import kr.or.kpew.kieas.common.Item;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
+import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.gateway.view.AlertMessageTable.Responses;
@@ -92,7 +93,6 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 
 		setAlertMessage(message);
 		
-		System.out.println("AO: Save Alert Log");
 		alertLogger.saveAlertLog(message);
 
 		System.out.println("AO: Send Message to " + "Gateway : ");		
@@ -107,7 +107,7 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	@Override
 	public void onMessage(String senderAddress, String message)
 	{
-		System.out.println("AO: Received from GW: " + senderAddress);
+		System.out.println("AO: Received Message from GW: " + senderAddress);
 
 		kieasMessageBuilder.parse(message);
 		String msgType = kieasMessageBuilder.getMsgType().toString();
@@ -117,10 +117,15 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 //		String sender = parsedReferences[0];
 //		String identifier = parsedReferences[1];
 //		String sent = parsedReferences[2];
+		String sender= kieasMessageBuilder.getSender();
+		if(sender != KieasAddress.GATEWAY_ID)
+		{
+			System.out.println("AO: ack sender - " + sender);
+		}
 		
 		switch (msgType)
 		{
-		case "ACK":
+		case KieasConstant.ACK:
 			alertLogger.saveAckLog(message);
 			if(alertLogger.loadAlertLogState(parsedReferences[1]).equals(Responses.COMP.toString()))
 			{

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
   <identifier>국민안전처1508190003</identifier>
-  <sender>홍길동@mpss.go.kr</sender>
+  <sender>KildongHong@mpss.go.kr</sender>
   <sent>2015-08-19T14:20:00+09:00</sent>
   <status>Actual</status>
   <msgType>Alert</msgType>
   <scope>Public</scope>
   <code>대한민국정부1.0</code>
-  <references>홍길동@mpss.go.kr,국민안전처1508190002,2015-08-19T14:14:00</references>
+  <references>KildongHong@mpss.go.kr,국민안전처1508190002,2015-08-19T14:14:00</references>
   <info>
     <language>ko-KR</language>
     <category>Security</category>
@@ -24,7 +24,7 @@
     <headline>민방위 경보 해제</headline>
     <description>
     <![CDATA[
-		2015년 8월 19일 오후 14시 20분, 청주시 일대에 발표되었던 민방위 경보를 해제함.
+2015년 8월 19일 오후 14시 20분, 청주시 일대에 발표되었던 민방위 경보를 해제함.
 	]]>
     </description>
 	<instruction>
@@ -35,9 +35,15 @@
     <contact>청원구청 총무과, 043-201-8062</contact>
 	<parameter>
 		<valueName>CBSText</valueName>
-		<value>2015년 8월 19일 오후 14시 20분을 기해 청주시 일대에 발표되었던 민방위 경보를 해제함. 정상 활동으로 복귀 가능.</value>
+		<value>
+2015년 8월 19일 오후 14시 20분을 기해 청주시 일대에 발표되었던 민방위 경보를 해제함. 정상 활동으로 복귀 가능.
+		</value>
+	</parameter>
+	<parameter>	
 		<valueName>DMBPriority</valueName>
 		<value>3</value>
+	</parameter>
+	<parameter>
 		<valueName>CBSPriority</valueName>
 		<value>0</value>
 	</parameter>

@@ -21,6 +21,7 @@ public class AlertLogger
 	private IKieasMessageBuilder kieasMessageBuilder;
 	private IssuerModel issuerModel;
 
+	private static int count = 0;
 
 	public AlertLogger()
 	{
@@ -54,7 +55,12 @@ public class AlertLogger
 	 * @param message 저장되는 cap 형식의 메시지
 	 */
 	public void saveAckLog(String message)
-	{
+	{		
+		String c = Integer.toString(count++);
+		String path = "cap/out" + c + ".xml";
+		issuerModel.writeCap(path, message);		
+		System.out.println("AlertLogger write file :" + count + " - " + path);
+		
 		kieasMessageBuilder.parse(message);
 		if(!ackLogMap.containsKey(kieasMessageBuilder.getIdentifier()))
 		{
