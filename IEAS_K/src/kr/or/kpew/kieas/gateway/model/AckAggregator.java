@@ -50,14 +50,14 @@ public class AckAggregator
 				if(profile.getSender().equals(senderAddress))
 				{
 					profiles.remove(profile);
-					System.out.println("remain profiles size:" + profiles.size());
+					System.out.println("AckAggregator: Remain profiles size:" + profiles.size());
 					break;
 				}
 			}
 		}		
 		if(profiles != null && profiles.size() == 0)
 		{
-			System.out.println("remove profiles");
+			System.out.println("AckAggregator: Remove profiles");
 			beTracedProfilesMap.remove(messageId);
 			for (int i = 0; i < senderList.size(); i++) 
 			{

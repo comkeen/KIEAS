@@ -35,7 +35,6 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onMessage(String message)
 	{
-		System.out.println(message);
 		IKieasMessageBuilder builder = new KieasMessageBuilder();
 		try
 		{

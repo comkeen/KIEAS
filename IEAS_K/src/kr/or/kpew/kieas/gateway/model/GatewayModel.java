@@ -241,12 +241,12 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		ackAggregator.addProfileTracing(senderAddress, kieasMessageBuilder, receivers);
 		
 		// 수신한 경보를 모든 경보시스템에 전달한다.
-		// transmitter.broadcast(rawData);
+		// transmitter.broadcast(rawData);	
+		String log = "GW: Send Message To AlertSystems";
 		for (Profile target : receivers)
 		{
 			transmitter.sendTo(target.getSender(), message);
 		}
-		String log = "GW:" + " Send Message To AlertSystems";
 		System.out.println(log);
 		notifyLog(log);
 
