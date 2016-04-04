@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
+import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
 
 public class AckAggregator
 {
-	private Map<String, List<Profile>> beTracedProfilesMap;
+	private Map<String, List<Profile>> beTracedProfileMap;
 	private List<String[]> senderList;
 	
 	
@@ -21,13 +22,16 @@ public class AckAggregator
 	
 	public void init()
 	{
-		this.beTracedProfilesMap = new HashMap<>();
+		this.beTracedProfileMap = new HashMap<>();
 		this.senderList = new LinkedList<>();
 	}
 	
-	public void addProfileTracing(String senderAddress, IKieasMessageBuilder kieasMessageBuilder, List<Profile> profiles)
+	public void addProfileTracing(String senderAddress, String message, List<Profile> profiles)
 	{
-		beTracedProfilesMap.put(kieasMessageBuilder.getIdentifier(), profiles);
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		kieasMessageBuilder.parse(message);
+		
+		beTracedProfileMap.put(kieasMessageBuilder.getIdentifier(), profiles);
 		String[] items = new String[3];
 		items[0] = kieasMessageBuilder.getIdentifier();
 		items[1] = senderAddress;
@@ -37,13 +41,13 @@ public class AckAggregator
 	
 	public void removeProfileTracing(String messageIdentifier)
 	{
-		beTracedProfilesMap.remove(messageIdentifier);
+		beTracedProfileMap.remove(messageIdentifier);
 	}
 	
 	public String[] checkAck(String senderAddress, String messageId)
 	{		
 		System.out.println("AckAggregator: check " + messageId);
-		List<Profile> profiles = beTracedProfilesMap.get(messageId);
+		List<Profile> profiles = beTracedProfileMap.get(messageId);
 		if(profiles != null && profiles.size() > 0)
 		{
 			for (Profile profile : profiles)
@@ -59,7 +63,7 @@ public class AckAggregator
 		if(profiles != null && profiles.size() == 0)
 		{
 			System.out.println("AckAggregator: Remove profiles");
-			beTracedProfilesMap.remove(messageId);
+			beTracedProfileMap.remove(messageId);
 			for (int i = 0; i < senderList.size(); i++) 
 			{
 				if(messageId.equals(senderList.get(i)[0]))

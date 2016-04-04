@@ -35,7 +35,7 @@ public class GatewayTransmitter implements ITransmitter
 	@Override
 	public void init(String destination)
 	{
-		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;		
+		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
 		
 		open();		
 		addReceiver(destination);

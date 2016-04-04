@@ -236,7 +236,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		// 전달할 대상의 주소를 찾는다.
 		this.receivers = routeMessage(kieasMessageBuilder);
 		System.out.println("GW: routed alertsystems: " + this.receivers.size());
-		ackAggregator.addProfileTracing(senderAddress, kieasMessageBuilder, receivers);
+		ackAggregator.addProfileTracing(senderAddress, message, receivers);
 		
 		// 수신한 경보를 모든 경보시스템에 전달한다.
 		// transmitter.broadcast(rawData);	

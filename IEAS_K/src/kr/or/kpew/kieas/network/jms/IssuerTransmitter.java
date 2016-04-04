@@ -34,8 +34,6 @@ public class IssuerTransmitter implements ITransmitter
 
 
 
-
-
 	@Override
 	public void init(String destination)
 	{
@@ -141,7 +139,6 @@ public class IssuerTransmitter implements ITransmitter
 			this.queueProducer = this.session.createProducer(queueProducerDestination);
 			
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			System.out.println("AO: Issuer to gw dest : " + target);
 
 			TextMessage textMessage = this.session.createTextMessage(message);
 			textMessage.setJMSReplyTo(queueProducerDestination);

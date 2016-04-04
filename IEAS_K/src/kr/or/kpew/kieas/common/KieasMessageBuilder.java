@@ -137,7 +137,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private Alert mAlert;
 //	private String xmlMessage;
 
-	private Profile profile;
 
 	
 	public KieasMessageBuilder()
@@ -1745,8 +1744,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	@Override
 	public void setProfile(Profile profile)
 	{
-		this.profile = profile;
-		
 		this.setSender(profile.getSender());
 	}
 
