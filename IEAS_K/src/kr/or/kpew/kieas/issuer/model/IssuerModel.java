@@ -43,13 +43,14 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		super(profile);
 		this.transmitter = transmitter;
 		transmitter.setOnMessageHandler(this);
+		System.out.println("AO: set issuer sender : " + profile.getSender());
 		transmitter.init(profile.getSender());
 		
 		//발령한 경보와 수신한 수신응답 메시지를 저장한다.
 		this.alertLogger = new AlertLogger();
 		alertLogger.addModel(this);
 		
-		//cap 형식의 xml파일을 읽거나 쓰는 기능을 수행한다. 현재는 사용하지 않는다.
+		//cap 형식의 xml파일을 읽거나 쓰는 기능을 수행한다.
 		this.xmlReaderAndWriter = new XmlReaderAndWriter();
 		
 		//cap 형식의 메시지를 파싱하기 위해 사용된다.
@@ -86,6 +87,7 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	{	
 		kieasMessageBuilder.parse(mAlertMessage);
 
+		kieasMessageBuilder.setProfile(profile);
 		kieasMessageBuilder.setIdentifier(createMessageId());
 		kieasMessageBuilder.setSent();
 
@@ -194,6 +196,7 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	{
 		kieasMessageBuilder.parse(xmlReaderAndWriter.loadXml(path));
 		kieasMessageBuilder.setIdentifier(createMessageId());
+		kieasMessageBuilder.setSender(profile.getSender());
 		String message = kieasMessageBuilder.getMessage();
 		
 		setAlertMessage(message);

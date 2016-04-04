@@ -131,5 +131,6 @@ public interface IKieasMessageBuilder
 	 * @return 생성한 수신응답 메시지
 	 */
 	public String createAckMessage(String identifier, String sender, String destination);
+	public void setProfile(Profile profile);
 	public Map<Enum<?>, List<Item>> getCapEnumMap();
 }

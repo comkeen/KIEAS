@@ -137,6 +137,9 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private Alert mAlert;
 //	private String xmlMessage;
 
+	private Profile profile;
+
+	
 	public KieasMessageBuilder()
 	{
 		init();
@@ -166,7 +169,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return capXmlBuilder.toXml(mAlert);
 	}
 
-	private Alert buildDefaultAlert() {
+	private Alert buildDefaultAlert()
+	{
 		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS).setIdentifier("Identifier")
 				.setSender("Sender").setSent(CapUtil.formatCapDate(getDateCalendar())).setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT).setScope(Alert.Scope.RESTRICTED).addCode(KieasConstant.CODE)
@@ -1047,7 +1051,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 *            값
 	 */
 	@Override
-	public void setSender(String text) {
+	public void setSender(String text)
+	{
 		mAlert = Alert.newBuilder(mAlert).setSender(text).buildPartial();
 	}
 
@@ -1056,7 +1061,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 *            값
 	 */
 	@Override
-	public void setSent(String text) {
+	public void setSent(String text)
+	{
 		mAlert = Alert.newBuilder(mAlert).setSent(text).buildPartial();
 	}
 
@@ -1448,9 +1454,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Parameter 요소 index, Parameter의 ValueName 값,
-	 *            Parameter의 Value 값
+	 * @param 목표 Info 요소 index, 목표 Parameter 요소 index, Parameter의 ValueName 값, Parameter의 Value 값
 	 */
 	@Override
 	public void setParameter(int infoIndex, int parameterIndex, String valueName, String value) {
@@ -1469,8 +1473,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, ResourceDesc 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, ResourceDesc 값
 	 */
 	@Override
 	public void setResourceDesc(int infoIndex, int resourceIndex, String text) {
@@ -1488,8 +1491,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, MimeType 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, MimeType 값
 	 */
 	@Override
 	public void setMimeType(int infoIndex, int resourceIndex, String text) {
@@ -1507,8 +1509,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, Size 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Size 값
 	 */
 	@Override
 	public void setSize(int infoIndex, int resourceIndex, String text) {
@@ -1526,8 +1527,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, Uri 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Uri 값
 	 */
 	@Override
 	public void setUri(int infoIndex, int resourceIndex, String text) {
@@ -1545,8 +1545,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, DerefUri 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, DerefUri 값
 	 */
 	@Override
 	public void setDerefUri(int infoIndex, int resourceIndex, String text) {
@@ -1564,8 +1563,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Resource 요소 index, Digest 값
+	 * @param 목표 Info 요소 index, 목표 Resource 요소 index, Digest 값
 	 */
 	@Override
 	public void setDigest(int infoIndex, int resourceIndex, String text) {
@@ -1583,8 +1581,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, AreaDesc 값
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, AreaDesc 값
 	 */
 	@Override
 	public void setAreaDesc(int infoIndex, int areaIndex, String text) {
@@ -1604,8 +1601,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, Polygon 값
+	 * @param 목표 Info요소 index, 목표 Area요소 index, Polygon 값
 	 */
 	@Override
 	public void setPolygon(int infoIndex, int areaIndex, int polygonIndex, Point[] points) {
@@ -1634,8 +1630,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, Circle 값
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, Circle 값
 	 */
 	@Override
 	public void setCircle(int infoIndex, int areaIndex, int circleIndex, double latitude, double longitude, double radius) {
@@ -1660,8 +1655,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, GeoCode 값
+	 * @param 목표 Info 요소 index, 목표 Area 요소 index, GeoCode 값
 	 */
 	@Override
 	public void setGeoCode(int infoIndex, int areaIndex, String text) {
@@ -1686,8 +1680,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, Altitude 값
+	 * @param 목표 Info요소 index, 목표 Area요소 index, Altitude 값
 	 */
 	@Override
 	public void setAltitude(int infoIndex, int areaIndex, double text) {
@@ -1704,12 +1697,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, 목표 Area 요소 index, Ceiling 값
+	 * @param 목표 Info요소 index, 목표 Area요소 index, Ceiling 값
 	 */
 	@Override
-	public void setCeiling(int infoIndex, int areaIndex, double text) {
-		if (infoIndex >= mAlert.getInfoCount()) {
+	public void setCeiling(int infoIndex, int areaIndex, double text)
+	{
+		if (infoIndex >= mAlert.getInfoCount())
+		{
 			incrementInfoByInfoIndex(infoIndex);
 		}
 		if (areaIndex >= Info.newBuilder(mAlert.getInfo(infoIndex)).getAreaCount()) {
@@ -1744,6 +1738,13 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		return tokens;
 	}
 	
+	@Override
+	public void setProfile(Profile profile)
+	{
+		this.profile = profile;
+		
+		this.setSender(profile.getSender());
+	}
 
 	public Map<Enum<?>, List<Item>> getCapEnumMap()
 	{		

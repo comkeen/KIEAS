@@ -8,14 +8,15 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.network.ITransmitter;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
 
 
 public class IssuerTransmitter implements ITransmitter
@@ -26,9 +27,13 @@ public class IssuerTransmitter implements ITransmitter
 	private Session session;
 
 	private MessageProducer queueProducer;	
-	private Destination here;
+	private Queue queueDestination;
+	private Destination queueConsumerDestination;
 
 	private String mqServerIp;
+
+
+
 
 
 	@Override
@@ -49,7 +54,6 @@ public class IssuerTransmitter implements ITransmitter
 			this.connection = factory.createConnection();
 			connection.start();
 			this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			here = session.createQueue(this.hashCode()+"");
 		}
 		catch (Exception e) 
 		{
@@ -87,7 +91,8 @@ public class IssuerTransmitter implements ITransmitter
 
 		try 
 		{
-			MessageConsumer consumer = session.createConsumer(here);
+			this.queueConsumerDestination = session.createQueue(myDestination);
+			MessageConsumer queueConsumer = session.createConsumer(queueConsumerDestination);
 
 			MessageListener listener = new MessageListener()
 			{
@@ -113,7 +118,7 @@ public class IssuerTransmitter implements ITransmitter
 					}
 				}
 			};
-			consumer.setMessageListener(listener);
+			queueConsumer.setMessageListener(listener);
 		}
 		catch (Exception e)
 		{
@@ -132,13 +137,14 @@ public class IssuerTransmitter implements ITransmitter
 
 		try
 		{
-			Destination queueDestination = this.session.createQueue(target);
-			this.queueProducer = this.session.createProducer(queueDestination);
+			Destination queueProducerDestination = this.session.createQueue(target);
+			this.queueProducer = this.session.createProducer(queueProducerDestination);
+			
 			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			System.out.println("AO: Issuer to gw dest : " + target);
 
 			TextMessage textMessage = this.session.createTextMessage(message);
-			textMessage.setJMSReplyTo(here);
+			textMessage.setJMSReplyTo(queueProducerDestination);
 
 			queueProducer.send(textMessage);
 			queueProducer.close();
@@ -157,7 +163,8 @@ public class IssuerTransmitter implements ITransmitter
 	}
 
 	@Override
-	public void setOnMessageHandler(IOnMessageHandler handler) {
+	public void setOnMessageHandler(IOnMessageHandler handler)
+	{
 		this.handler = handler;
 	}
 }

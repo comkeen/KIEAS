@@ -16,9 +16,10 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 
-	public static final long DELAY = 1000;
+	public static final long DELAY = 2000;
 
-	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile) {
+	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile)
+	{
 		super(profile);
 
 		this.transmitter = transmitter;

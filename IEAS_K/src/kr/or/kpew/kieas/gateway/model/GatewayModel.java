@@ -191,8 +191,11 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		
 		setChangedAndNotify(Type.Ack, parsedReferences[1]);
 				String[] items = ackAggregator.checkAck(senderAddress, parsedReferences[1]);
-
-		if(items != null && items.length > 0)			
+		if(items != null)
+		{
+			System.out.println("GW: received ack count : " + items.length);
+		}
+		if(items != null && items.length > 0)	
 		{
 			System.out.println("GW: Send Aggregated Ack");
 			kieasMessageBuilder.parse(items[2]);
@@ -200,8 +203,8 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		}
 	}
 
-	protected void sendAcknowledge(String senderId, IKieasMessageBuilder receivedMessageBuilder) {
-		
+	protected void sendAcknowledge(String senderId, IKieasMessageBuilder receivedMessageBuilder)
+	{		
 		try
 		{
 			Thread.sleep(1000);
@@ -213,13 +216,12 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		
 		String ackMessage = receivedMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), senderId);
 
+		String log = "GW: Send Acknowledge to (" + senderId + ") : ";
 		transmitter.sendTo(senderId, ackMessage);
 
-		String log = "GW:" + " Send Acknowledge to (" + senderId + ") : ";
 		System.out.println(log);
 
 		notifyLog(log);
-
 	}
 
 	/**
@@ -289,7 +291,6 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 
 	public void exit() {
 		transmitter.close();
-
 	}
 
 	/**

@@ -130,16 +130,20 @@ public class GatewayTransmitter implements ITransmitter
 
 		try
 		{
-			if(address == null)
+			System.out.println("GWT: send to : " + address);
+			if(address != null)
+			{
+				Destination queueDestination = this.session.createQueue(address);
+				this.queueProducer = this.session.createProducer(queueDestination);
+				queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+				TextMessage textMessage = this.session.createTextMessage(message);
+
+				queueProducer.send(textMessage);
+			}
+			else
 			{
 				System.out.println("GW: not connected system: " + address);
 			}
-			Destination queueDestination = this.session.createQueue(address);
-			this.queueProducer = this.session.createProducer(queueDestination);
-			queueProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			TextMessage textMessage = this.session.createTextMessage(message);
-
-			queueProducer.send(textMessage);
 		}
 		catch (Exception e)
 		{
