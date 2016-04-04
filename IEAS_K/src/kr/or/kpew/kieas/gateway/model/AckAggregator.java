@@ -42,6 +42,7 @@ public class AckAggregator
 	
 	public String[] checkAck(String senderAddress, String messageId)
 	{		
+		System.out.println("AckAggregator: check " + messageId);
 		List<Profile> profiles = beTracedProfilesMap.get(messageId);
 		if(profiles != null && profiles.size() > 0)
 		{

@@ -191,11 +191,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		
 		setChangedAndNotify(Type.Ack, parsedReferences[1]);
 				String[] items = ackAggregator.checkAck(senderAddress, parsedReferences[1]);
-		if(items != null)
-		{
-			System.out.println("GW: received ack count : " + items.length);
-		}
-		if(items != null && items.length > 0)	
+		if(items != null && items.length > 0)
 		{
 			System.out.println("GW: Send Aggregated Ack");
 			kieasMessageBuilder.parse(items[2]);

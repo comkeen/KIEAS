@@ -1735,6 +1735,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	public String[] parseReferences(String references)
 	{
 		String[] tokens = references.split(",");
+		for (String string : tokens)
+		{
+			System.out.println("parse :" + string);
+		}
 		return tokens;
 	}
 	
