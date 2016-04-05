@@ -1,5 +1,6 @@
 package kr.or.kpew.kieas.alertsystem;
 
+import kr.or.kpew.kieas.alertsystem.AlertValidator.State;
 import kr.or.kpew.kieas.common.AlertSystemProfile;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
@@ -10,25 +11,28 @@ import kr.or.kpew.kieas.network.ITransmitter;
 
 public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	private AlertSystemProfile profile;
-	
+
 	ITransmitter transmitter;
+
+	private AlertValidator alertValidator;
 
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 
 	public static final long DELAY = 1000;
 
-	
+
 	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile)
 	{
 		super(profile);
 
+		this.alertValidator = new AlertValidator();
 		this.transmitter = transmitter;
 		transmitter.setOnMessageHandler(this);
 	}
 
-	public void init() {
-
+	public void init()
+	{
 		transmitter.init(profile.getSender());
 		setChanged();
 		notifyObservers(profile);
@@ -37,37 +41,62 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onMessage(String message)
 	{
-		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
-		try
+		State state = alertValidator.validateMessage(message);
+		switch (state)
 		{
-			kieasMessageBuilder.parse(message);
-			
-			switch (kieasMessageBuilder.getStatus())
-			{
-			case ACTUAL:
-				sendAcknowledge(message);
-				setChanged();
-				notifyObservers(message);
-				break;
-			case EXERCISE:
-				break;
-			case SYSTEM:
-				break;
-			default:
-				break;
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		case New:
+			onNewMessage(message);
+			break;
+		case Duplication:
+			System.out.println("AS: Duplicated Alert");
+			break;
+		default:
+			break;
 		}
 	}
 
-	
+	private void onNewMessage(String message)
+	{
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		
+		String geoCode = alertValidator.hasGeoCode(message);
+		if(profile.getGeoCode().equals(geoCode) || geoCode.length() == 0)
+		{
+			try
+			{
+				kieasMessageBuilder.parse(message);
+				switch (kieasMessageBuilder.getStatus())
+				{
+				case ACTUAL:
+					sendAcknowledge(message);
+					setChanged();
+					notifyObservers(message);
+					break;
+				case EXERCISE:
+					break;
+				case SYSTEM:
+					break;
+				default:
+					break;
+				}
+
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			System.out.println("AS: Not Match GeoCode : " + geoCode);
+		}
+	}
+
 	protected void sendAcknowledge(String message)
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender());
-		
+
 		try
 		{
 			Thread.sleep(DELAY);
@@ -76,8 +105,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		{
 			e.printStackTrace();
 		}
-		
-		System.out.println("AS: " + profile.getSender() + " Send message to GW ");
+
+		System.out.println("AS: " + profile.getSender() + " Send Ack to GW ");
 		transmitter.sendTo(KieasAddress.GATEWAY_ID, ackMessage);
 	}
 
@@ -98,8 +127,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onRegister(String sender, String address) {
 		setChanged();
-		notifyObservers("register succeed");
-		
+		notifyObservers("Register Succeed");
+
 	}
 
 }
