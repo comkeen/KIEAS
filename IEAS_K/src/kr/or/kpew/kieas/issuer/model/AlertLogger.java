@@ -59,7 +59,6 @@ public class AlertLogger
 		String c = Integer.toString(count++);
 		String path = "cap/out" + c + ".xml";
 		issuerModel.writeCap(path, message);		
-		System.out.println("AlertLogger write file :" + count + " - " + path);
 		
 		kieasMessageBuilder.parse(message);
 		if(!ackLogMap.containsKey(kieasMessageBuilder.getIdentifier()))
@@ -95,7 +94,7 @@ public class AlertLogger
 		}
 		else
 		{
-			System.out.println("AlertLogger: there is no alertLogMap key - " + identifier);
+			System.out.println("AlertLogger: There is no alertLogMap key - " + identifier);
 		}
 	}
 

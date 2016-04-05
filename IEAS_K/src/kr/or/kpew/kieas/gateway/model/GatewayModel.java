@@ -14,7 +14,9 @@ import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.network.ITransmitter;
 
+import com.google.publicalerts.cap.Alert.Scope;
 import com.google.publicalerts.cap.Alert.Status;
+
 
 public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnMessageHandler
 {
@@ -106,23 +108,23 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	}
 
 	/**
-	 * 메시지를 수신하였을 때 처리하기 위한 메소드이다. <status>가 Actual은 항상 발령대라고 가정하고 System은
-	 * 경보시스템으로 가정하였다.
+	 * 메시지를 수신하였을 때 처리하기 위한 메소드이다.
+	 * <status>가 Actual은 항상 발령대라고 가정하고 System은 경보시스템으로 가정하였다.
 	 */
 	@Override
 	public void onMessage(String message)
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
-		String sender = kieasMessageBuilder.getSender();
-
-		switch (kieasMessageBuilder.getStatus())
+		Status status = kieasMessageBuilder.getStatus();
+		
+		switch (status)
 		{
 		case ACTUAL:
-			onMessageFromIssuer(sender, message);
+			onMessageFromIssuer(message);
 			break;
 		case SYSTEM:
-			onMessageFromAlertSystem(sender, message);
+			onMessageFromAlertSystem(message);
 			break;
 		default:
 			throw new UnsupportedOperationException();
@@ -135,12 +137,13 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 
 	 * @param message
 	 */
-	public void onMessageFromIssuer(String senderId, String message)
+	public void onMessageFromIssuer(String message)
 	{
 		KieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		kieasMessageBuilder.parse(message);
 		Status status = kieasMessageBuilder.getStatus();
-//		this.senderId = senderId;
-		String log = "GW:" + " Received Message From Alerter (" + senderId + ") : ";
+		
+		String log = "GW:" + " Received Message From Issuer (" + kieasMessageBuilder.getSender() + ") : ";
 		System.out.println(log);
 		notifyLog(log);
 		
@@ -148,10 +151,10 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		{
 		// 경보메시지를 수신한 경우 각 경보시스템에 전달한다.
 		case ACTUAL:
-			onAlertMessage(senderId, message);
+			onAlertMessage(message);
 			break;
 		default:
-			System.out.println("GW: unknown message from " + kieasMessageBuilder.getSender());
+			System.out.println("GW: Unknown message from " + kieasMessageBuilder.getSender());
 			break;
 		}
 	}
@@ -162,7 +165,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * 
 	 * @param message
 	 */
-	public void onMessageFromAlertSystem(String senderAddress, String message)
+	public void onMessageFromAlertSystem(String message)
 	{
 		KieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
@@ -171,7 +174,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		switch (status)
 		{
 		case SYSTEM:
-			onAckMessage(senderAddress, message);
+			onAckMessage(message);
 			break;
 		default:
 			System.out.println("GW: unknown message from " + kieasMessageBuilder.getSender());
@@ -179,28 +182,35 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 		}
 	}
 
-	private void onAckMessage(String senderAddress, String message)
+	private void onAckMessage(String message)
 	{
 		KieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
-		String log = "GW:" + " Received Ack From AlertSystem : " + kieasMessageBuilder.getSender();
+		String log = "GW: Received Ack From AlertSystem : " + kieasMessageBuilder.getSender();
 		System.out.println(log);
-
+		notifyLog(log);
+		
 		String references = kieasMessageBuilder.getReferences();
 		String[] parsedReferences = kieasMessageBuilder.parseReferences(references);
 		
 		setChangedAndNotify(Type.Ack, parsedReferences[1]);
-				String[] items = ackAggregator.checkAck(senderAddress, parsedReferences[1]);
+				String[] items = ackAggregator.checkAck(kieasMessageBuilder.getSender(), parsedReferences[1]);
 		if(items != null && items.length > 0)
 		{
-			System.out.println("GW: Send Aggregated Ack");
-			kieasMessageBuilder.parse(items[2]);
-			sendAcknowledge(items[1], kieasMessageBuilder);
+			log = "GW: Aggregate Ack Complete for: " + items[0];
+			System.out.println(log);
+			notifyLog(log);
+			
+			sendAcknowledge(items[2]);
 		}
 	}
 
-	protected void sendAcknowledge(String senderId, IKieasMessageBuilder receivedMessageBuilder)
+	protected void sendAcknowledge(String message)
 	{		
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		kieasMessageBuilder.parse(message);
+		String senderForAck = kieasMessageBuilder.getSender();
+		
 		try
 		{
 			Thread.sleep(1000);
@@ -210,14 +220,13 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 			e.printStackTrace();
 		}
 		
-		String ackMessage = receivedMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), senderId);
+		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender());
 
-		String log = "GW: Send Acknowledge to (" + senderId + ") : ";
-		transmitter.sendTo(senderId, ackMessage);
-
+		String log = "GW: Send Acknowledge to (" + senderForAck + ") : ";
 		System.out.println(log);
-
 		notifyLog(log);
+		
+		transmitter.sendTo(senderForAck, ackMessage);
 	}
 
 	/**
@@ -226,27 +235,25 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 * @param message
 	 *            수신한 경보메시지
 	 */
-	private void onAlertMessage(String senderAddress, String message)
+	private void onAlertMessage(String message)
 	{
 		KieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
 		// 경보를 수신한 즉시 Ack를 전송한다.
-		sendAcknowledge(senderAddress, kieasMessageBuilder);
+		sendAcknowledge(message);
 
 		// 전달할 대상의 주소를 찾는다.
-		this.receivers = routeMessage(kieasMessageBuilder);
-		System.out.println("GW: routed alertsystems: " + this.receivers.size());
-		ackAggregator.addProfileTracing(senderAddress, message, receivers);
+		this.receivers = routeMessage(message);
+		ackAggregator.addProfileTracing(message, receivers);
 		
 		// 수신한 경보를 모든 경보시스템에 전달한다.
-		// transmitter.broadcast(rawData);	
 		String log = "GW: Send Message To AlertSystems";
+		System.out.println(log);
+		notifyLog(log);
 		for (Profile target : receivers)
 		{
 			transmitter.sendTo(target.getSender(), message);
 		}
-		System.out.println(log);
-		notifyLog(log);
 
 		setChangedAndNotify(Type.AlertMessage, kieasMessageBuilder);
 	}
@@ -258,34 +265,45 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	 *            수신한 경보메시지
 	 * @return 전송 대상 경보시스템의 주소
 	 */
-	private List<Profile> routeMessage(IKieasMessageBuilder builder) {
+	private List<Profile> routeMessage(String message)
+	{
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		kieasMessageBuilder.parse(message);
+		
 		List<Profile> receivers = new ArrayList<>();
 
-		for (AlertSystemProfile profile : alertsystems) {
-			if (profile.getAddress() == null) {
+		for (AlertSystemProfile profile : alertsystems) 
+		{
+			if (profile.getAddress() == null)
+			{
 				profile.setAddress(addresses.get(profile.getSender()));
-
 			}
-
-			switch (builder.getScope()) {
+			
+			Scope scope = kieasMessageBuilder.getScope();
+			switch (scope)
+			{
 			case PUBLIC:
 				receivers.add(profile);
 				break;
 			case RESTRICTED:
-				if (builder.getRestriction().equalsIgnoreCase(profile.getType().name()))
+				if (kieasMessageBuilder.getRestriction().equalsIgnoreCase(profile.getType().name()))
+				{
 					receivers.add(profile);
+				}
 				break;
 			case PRIVATE:
-				if (builder.getAddresses().contains(profile.getSender()))
+				if (kieasMessageBuilder.getAddresses().contains(profile.getSender()))
+				{
 					receivers.add(profile);
+				}
 				break;
 			}
 		}
 		return receivers;
-
 	}
 
-	public void exit() {
+	public void exit()
+	{
 		transmitter.close();
 	}
 

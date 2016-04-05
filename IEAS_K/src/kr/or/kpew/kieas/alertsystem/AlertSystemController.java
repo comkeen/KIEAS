@@ -9,8 +9,8 @@ import java.awt.event.WindowListener;
 
 public class AlertSystemController implements ActionListener, WindowListener, ItemListener
 {	
-	private AlertSystemModel model;
 	private AlertSystemView view;
+	private AlertSystemModel model;
 
 	
 	@Override
@@ -21,18 +21,8 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 		case "Clear":
 			view.clear();
 			break;
-		case "Register":
-//			model.registerToGateway();			
-			break;
-			/*
-		case "setId":
-			model.setID();
-			break;
-			*/
 		default:
-			System.out.println("default");
-			throw new UnsupportedOperationException();
-//			break;
+			break;
 		}
 	}
 	
@@ -51,7 +41,7 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-//		model.readyForExit();
+		model.close();
 		view.systemExit();
 	}
 
@@ -67,13 +57,12 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	@Override
 	public void windowOpened(WindowEvent e) {}
 
-	public void setModel(AlertSystemModel model) {
+	public void setModel(AlertSystemModel model)
+	{
 		this.model = model;
 	}
 
 	public void setView(AlertSystemView view) {
 		this.view = view;
 	}
-
-
 }

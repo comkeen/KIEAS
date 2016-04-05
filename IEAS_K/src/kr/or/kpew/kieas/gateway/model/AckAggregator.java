@@ -26,7 +26,7 @@ public class AckAggregator
 		this.senderList = new LinkedList<>();
 	}
 	
-	public void addProfileTracing(String senderAddress, String message, List<Profile> profiles)
+	public void addProfileTracing(String message, List<Profile> profiles)
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
@@ -34,7 +34,7 @@ public class AckAggregator
 		beTracedProfileMap.put(kieasMessageBuilder.getIdentifier(), profiles);
 		String[] items = new String[3];
 		items[0] = kieasMessageBuilder.getIdentifier();
-		items[1] = senderAddress;
+		items[1] = kieasMessageBuilder.getSender();
 		items[2] = kieasMessageBuilder.getMessage();
 		senderList.add(items);
 	}
@@ -44,29 +44,26 @@ public class AckAggregator
 		beTracedProfileMap.remove(messageIdentifier);
 	}
 	
-	public String[] checkAck(String senderAddress, String messageId)
+	public String[] checkAck(String sender, String messageIdentifier)
 	{		
-		System.out.println("AckAggregator: check " + messageId);
-		List<Profile> profiles = beTracedProfileMap.get(messageId);
+		List<Profile> profiles = beTracedProfileMap.get(messageIdentifier);
 		if(profiles != null && profiles.size() > 0)
 		{
 			for (Profile profile : profiles)
 			{
-				if(profile.getSender().equals(senderAddress))
+				if(profile.getSender().equals(sender))
 				{
 					profiles.remove(profile);
-					System.out.println("AckAggregator: Remain profiles size:" + profiles.size());
 					break;
 				}
 			}
 		}		
 		if(profiles != null && profiles.size() == 0)
 		{
-			System.out.println("AckAggregator: Remove profiles");
-			beTracedProfileMap.remove(messageId);
+			beTracedProfileMap.remove(messageIdentifier);
 			for (int i = 0; i < senderList.size(); i++) 
 			{
-				if(messageId.equals(senderList.get(i)[0]))
+				if(messageIdentifier.equals(senderList.get(i)[0]))
 				{
 					return senderList.get(i);
 				}

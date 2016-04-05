@@ -16,8 +16,9 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 
-	public static final long DELAY = 2000;
+	public static final long DELAY = 1000;
 
+	
 	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile)
 	{
 		super(profile);
@@ -36,15 +37,15 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onMessage(String message)
 	{
-		IKieasMessageBuilder builder = new KieasMessageBuilder();
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		try
 		{
-			builder.parse(message);
+			kieasMessageBuilder.parse(message);
 			
-			switch (builder.getStatus())
+			switch (kieasMessageBuilder.getStatus())
 			{
 			case ACTUAL:
-				sendAcknowledge(message, KieasAddress.GATEWAY_ID);
+				sendAcknowledge(message);
 				setChanged();
 				notifyObservers(message);
 				break;
@@ -62,10 +63,10 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	}
 
 	
-	protected void sendAcknowledge(String message, String destination)
+	protected void sendAcknowledge(String message)
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
-		String ackMessage = kieasMessageBuilder.createAckMessage(createMessageId(), profile.getSender(), destination);
+		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender());
 		
 		try
 		{
@@ -75,11 +76,12 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		{
 			e.printStackTrace();
 		}
-		System.out.println("AS: " + profile.getSender() + "send message to : " + destination);
+		
+		System.out.println("AS: " + profile.getSender() + " Send message to GW ");
 		transmitter.sendTo(KieasAddress.GATEWAY_ID, ackMessage);
 	}
 
-	public void readyForExit() {
+	public void close() {
 		transmitter.close();
 	}
 

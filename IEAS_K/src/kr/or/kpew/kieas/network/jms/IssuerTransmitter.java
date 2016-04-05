@@ -8,7 +8,6 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
-import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
@@ -27,7 +26,6 @@ public class IssuerTransmitter implements ITransmitter
 	private Session session;
 
 	private MessageProducer queueProducer;	
-	private Queue queueDestination;
 	private Destination queueConsumerDestination;
 
 	private String mqServerIp;

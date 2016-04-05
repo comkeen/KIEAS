@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.publicalerts.cap.Alert.MsgType;
 import com.google.publicalerts.cap.Alert.Scope;
 import com.google.publicalerts.cap.Alert.Status;
+import com.google.publicalerts.cap.Group.Builder;
 import com.google.publicalerts.cap.Info.Category;
 import com.google.publicalerts.cap.Point;
 
@@ -42,6 +43,7 @@ public interface IKieasMessageBuilder
 	public String getInstruction(int infoIndex);
 	public String getWeb(int infoIndex);
 	public String getContact(int infoIndex);
+	public String getParameter(int infoIndex, int parameterIndex);
 	
 	public String getResourceDesc(int infoIndex, int resourceIndex);
 	public String getMimeType(int infoIndex, int resourceIndex);
@@ -71,8 +73,8 @@ public interface IKieasMessageBuilder
 	public void setRestriction(String text);
 	public void setAddresses(String text);
 	public void setCode(String text);
+	public void setReferences(String text);
 	public void setNote(String text);
-	public void addReference(String text);
 
 	public void setLanguage(int infoIndex, String text);
 	public void setCategory(int infoIndex, Category category);
@@ -112,25 +114,24 @@ public interface IKieasMessageBuilder
 	public String build();
 	public String buildDefaultMessage();
 	public String getMessage();
-	public void parse(String message);
+	public Builder convertToReferences(String text);
 	public String[] parseReferences(String references);
 	public String generateKieasMessageIdentifier(String id);
 	
-	public String getDate();
-	public String convertDateToYmdhms(String date);
-	
-	public int getInfoCount();
-	public int getResourceCount(int infoIndex);
-	public int getAreaCount(int infoIndex);
-	
-//	public List<String> convertDbToCap(List<CAPAlert> alertList);
-//	public CAPAlert convertCapToDb(String capMessage);
 	/**
 	 * 현재 CAP 메시지에 대한 수신응답(Ack)메시지를 생성한다.
 	 * @param identifier 현재 시스템의 식별자
 	 * @return 생성한 수신응답 메시지
 	 */
-	public String createAckMessage(String identifier, String sender, String destination);
-	public void setProfile(Profile profile);
+	public String createAckMessage(String message, String identifier, String sender);
+	public String getDate();
+	public String convertDateToYmdhms(String date);
 	public Map<Enum<?>, List<Item>> getCapEnumMap();
+	
+	public void parse(String message);
+	public void setProfile(Profile profile);
+	
+	public int getInfoCount();
+	public int getResourceCount(int infoIndex);
+	public int getAreaCount(int infoIndex);
 }

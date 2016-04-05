@@ -117,26 +117,20 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 
 		String[] parsedReferences = kieasMessageBuilder.parseReferences(references);
 //		String sender = parsedReferences[0];
-//		String identifier = parsedReferences[1];
+		String identifier = parsedReferences[1];
 //		String sent = parsedReferences[2];
-		String sender= kieasMessageBuilder.getSender();
-		if(sender != KieasAddress.GATEWAY_ID)
-		{
-			System.out.println("AO: ack sender - " + sender);
-		}
 		
 		switch (msgType)
 		{
 		case KieasConstant.ACK:
 			alertLogger.saveAckLog(message);
-			if(alertLogger.loadAlertLogState(parsedReferences[1]).equals(Responses.COMP.toString()))
+			if(alertLogger.loadAlertLogState(identifier).equals(Responses.COMP.toString()))
 			{
-				notifyItemToObservers(IssuerView.ACK, parsedReferences[1]);				
+				notifyItemToObservers(IssuerView.ACK, identifier);				
 			}
 			break;
 		default:
-			System.out.println("AO: Received Message msgType " + msgType);
-			throw new UnsupportedOperationException();
+			break;
 		}
 	}
 

@@ -20,16 +20,14 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class GatewayTransmitter implements ITransmitter
 {
-	private static final String QUEUE_HEADER = "queue://";
+	private IOnMessageHandler handler;
 
 	private Connection connection;
 	private Session session;
-	
+
 	private MessageProducer queueProducer;	
 
 	private String mqServerIp;
-
-	private IOnMessageHandler handler;
 	
 	
 	@Override
@@ -67,7 +65,7 @@ public class GatewayTransmitter implements ITransmitter
 			if(connection != null && session != null)
 			{
 				session.close();
-				connection.close();			
+				connection.close();
 			}
 			System.out.println("GW: Connection Close");
 		}
@@ -76,7 +74,7 @@ public class GatewayTransmitter implements ITransmitter
 			e.printStackTrace();
 		}
 	}
-		
+	
 	@Override
 	public void addReceiver(String destination)
 	{		
@@ -100,7 +98,6 @@ public class GatewayTransmitter implements ITransmitter
 						TextMessage textMessage = (TextMessage) message;
 						try 
 						{
-							String queue = message.getJMSReplyTo().toString();
 							handler.onMessage(textMessage.getText());
 						}
 						catch (JMSException e)
@@ -130,7 +127,6 @@ public class GatewayTransmitter implements ITransmitter
 
 		try
 		{
-			System.out.println("GWT: send to : " + address);
 			if(address != null)
 			{
 				Destination queueDestination = this.session.createQueue(address);
@@ -142,7 +138,7 @@ public class GatewayTransmitter implements ITransmitter
 			}
 			else
 			{
-				System.out.println("GW: not connected system: " + address);
+				System.out.println("GW: Could not connect to system");
 			}
 		}
 		catch (Exception e)
@@ -165,7 +161,3 @@ public class GatewayTransmitter implements ITransmitter
 		this.handler = handler;
 	}
 }
-
-
-
-

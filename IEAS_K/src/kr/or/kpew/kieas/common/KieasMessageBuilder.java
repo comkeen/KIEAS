@@ -157,13 +157,14 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * 
 	 * @return xml 형태
 	 */
-	public String buildDefaultMessage() {
+	public String buildDefaultMessage()
+	{
 		this.mAlert = buildDefaultAlert();
 
-		for (int infoIndex = 0; infoIndex < DEFAULT_INFO_SIZE; infoIndex++) {
+		for (int infoIndex = 0; infoIndex < DEFAULT_INFO_SIZE; infoIndex++)
+		{
 			mAlert = Alert.newBuilder(mAlert).addInfo(buildDefaultInfo()).build();
 		}
-		System.out.println("build default cap");
 
 		return capXmlBuilder.toXml(mAlert);
 	}
@@ -409,7 +410,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 * 작성된 CAP 메시지 빌드
 	 */
 	@Override
-	public String build() {
+	public String build()
+	{
 		// Alert build
 		Alert alert = Alert.newBuilder(mAlert).setXmlns(CapValidator.CAP_LATEST_XMLNS).clearInfo().buildPartial();
 
@@ -452,10 +454,10 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		} 
 		catch (NotCapException e)
 		{
-			e.printStackTrace();
+			System.out.println("There is no CAP message");
+			return EMPTY;
 		}
-		System.out.println("There is no CAP message");
-		return "";
+		
 	}
 
 	/**
@@ -470,7 +472,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 		catch (NotCapException | SAXParseException | CapException e)
 		{
-			System.out.println("MessageBuilder: invalid Parse from Cap message");
+			System.out.println("MessageBuilder: Invalid Parsing from Cap message");
 			e.printStackTrace();
 		}
 	}
@@ -901,6 +903,18 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		}
 		return EMPTY;
 	}
+	
+	@Override
+	public String getParameter(int infoIndex, int parameterIndex)
+	{
+		if (mAlert.getInfoCount() > infoIndex && mAlert.getInfo(infoIndex).getParameter(parameterIndex) != null)
+		{
+			String valueName = mAlert.getInfo(infoIndex).getParameter(parameterIndex).getValueName();
+			String value = mAlert.getInfo(infoIndex).getParameter(parameterIndex).getValue();
+			return valueName + "," + value;
+		}
+		return EMPTY;
+	}
 
 	/**
 	 * @param 목표가되는
@@ -1178,17 +1192,23 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 	
 	@Override
-	public void addReference(String text) {
+	public void setReferences(String text)
+	{
 		Builder builder = mAlert.getReferences().toBuilder();
-		builder.addValue(text);
-		
-		///mAlert = Alert.newBuilder(mAlert).setReferences(builderForValue);
+		builder.clear().addValue(text);
 		mAlert = Alert.newBuilder(mAlert).setReferences(builder).buildPartial();
+	}
+	
+	@Override
+	public Builder convertToReferences(String text)
+	{
+		Builder builder = mAlert.getReferences().toBuilder();
+		builder.clear().addValue(text);
+		return builder;
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Language 값
+	 * @param 목표 Info 요소 index, Language 값
 	 */
 	@Override
 	public void setLanguage(int infoIndex, String text) {
@@ -1201,8 +1221,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Category 값
+	 * @param 목표 Info 요소 index, Category 값
 	 */
 	@Override
 	public void setCategory(int infoIndex, String text) {
@@ -1226,8 +1245,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, ResponseType 값
+	 * @param 목표 Info 요소 index, ResponseType 값
 	 */
 	@Override
 	public void setResponseType(int infoIndex, String text) {
@@ -1241,8 +1259,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Event 값
+	 * @param 목표 Info 요소 index, Event 값
 	 */
 	@Override
 	public void setEvent(int infoIndex, String text) {
@@ -1255,8 +1272,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Urgency 값
+	 * @param 목표 Info 요소 index, Urgency 값
 	 */
 	@Override
 	public void setUrgency(int infoIndex, String text) {
@@ -1269,8 +1285,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Severity 값
+	 * @param 목표 Info 요소 index, Severity 값
 	 */
 	@Override
 	public void setSeverity(int infoIndex, String text) {
@@ -1283,8 +1298,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Certatinty 값
+	 * @param 목표 Info 요소 index, Certatinty 값
 	 */
 	@Override
 	public void setCertainty(int infoIndex, String text) {
@@ -1298,8 +1312,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Audience 값
+	 * @param 목표 Info 요소 index, Audience 값
 	 */
 	@Override
 	public void setAudience(int infoIndex, String text) {
@@ -1312,8 +1325,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, EventCode 값
+	 * @param 목표 Info 요소 index, EventCode 값
 	 */
 	@Override
 	public void setEventCode(int infoIndex, String text) {
@@ -1327,8 +1339,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Effective 값
+	 * @param 목표 Info 요소 index, Effective 값
 	 */
 	@Override
 	public void setEffective(int infoIndex, String text) {
@@ -1341,8 +1352,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Onset 값
+	 * @param 목표 Info 요소 index, Onset 값
 	 */
 	@Override
 	public void setOnset(int infoIndex, String text) {
@@ -1355,8 +1365,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표
-	 *            Info 요소 index, Expires 값
+	 * @param 목표 Info 요소 index, Expires 값
 	 */
 	@Override
 	public void setExpires(int infoIndex, String text) {
@@ -1715,29 +1724,37 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	@Override
-	public String createAckMessage(String identifier, String sender, String destination) {
-		IKieasMessageBuilder builder = new KieasMessageBuilder();
-		//builder.buildDefaultMessage();
-		builder.setIdentifier(identifier);
-		builder.setSender(sender);
-		builder.setSent();
-		builder.setStatus(Status.SYSTEM);
-		builder.setMsgType(MsgType.ACK);
-		builder.setScope(Scope.PRIVATE);
-		builder.setAddresses(destination);
-		builder.addReference(this.getSender()+","+this.getIdentifier()+","+this.getSent());
+	public String createAckMessage(String message, String identifier, String sender)
+	{
+		Alert parsedAlert = null;
+		try
+		{
+			parsedAlert = capXmlParser.parseFrom(message);
+		}
+		catch (NotCapException | SAXParseException | CapException e)
+		{
+			e.printStackTrace();
+		}
 		
-		return builder.getMessage();
+		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS)
+				.setIdentifier(identifier)
+				.setSender(sender)
+				.setSent(CapUtil.formatCapDate(getDateCalendar()))
+				.setStatus(Status.SYSTEM)
+				.setMsgType(MsgType.ACK)
+				.setScope(Scope.PRIVATE)
+				.setAddresses(this.convertToAddresses(sender))
+				.setReferences(this.convertToReferences(parsedAlert.getSender()+","+parsedAlert.getIdentifier()+","+parsedAlert.getSent()))
+				.addCode(KieasConstant.CODE)
+				.build();
+		
+		return capXmlBuilder.toXml(alert);
 	}
 
 	@Override
 	public String[] parseReferences(String references)
 	{
 		String[] tokens = references.split(",");
-		for (String string : tokens)
-		{
-			System.out.println("parse :" + string);
-		}
 		return tokens;
 	}
 	

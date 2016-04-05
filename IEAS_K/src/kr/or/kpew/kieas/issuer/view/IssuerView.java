@@ -28,7 +28,6 @@ public class IssuerView implements Observer {
 	public static final String ACK = "Ack";
 
 	private AlertGeneratorPanel alertGeneratorPanel;
-	private AlertLogPanel alerterLogPanel;
 
 	private JFrame mainFrame;
 	private JTabbedPane mainTabbedPane;
@@ -39,10 +38,10 @@ public class IssuerView implements Observer {
 	 * @param alerterActionListener
 	 *            이벤트 리스너
 	 */
-	public IssuerView() {
+	public IssuerView()
+	{
 		initLookAndFeel();
 		this.alertGeneratorPanel = new AlertGeneratorPanel();
-		this.alerterLogPanel = new AlertLogPanel();
 
 		init();
 	}

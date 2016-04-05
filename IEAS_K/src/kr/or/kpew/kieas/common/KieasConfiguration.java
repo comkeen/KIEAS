@@ -24,14 +24,10 @@ public class KieasConfiguration
 //		public static final String ACTIVEMQ_SERVER_IP_LOCAL = "tcp://127.0.0.1:61616";
 		
 		public final static String GATEWAY_ID = "maingateway@korea.kr";
-		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
-		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
-//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION			= "127.0.0.1:26750";
-//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= "127.0.0.1:26751";
+//		public final static String ALERTER_TO_GATEWAY_QUEUE_DESTINATION 		= PACKAGE_NAME+"alerterToGatewayQueue";
+//		public final static String ALERTSYSTEM_TO_GATEWAY_QUEUE_DESTINATION 	= PACKAGE_NAME+"alertSystemToGatewayQueue";
 		
 //		public final static String GATEWAY_TOPIC_DESTINATION 					= PACKAGE_NAME+"gatewayTopic";
-		public final static String GATEWAY_TOPIC_DESTINATION 					= "127.0.0.1:26751";
-		
 	}
 	
 	public static class KieasConstant
