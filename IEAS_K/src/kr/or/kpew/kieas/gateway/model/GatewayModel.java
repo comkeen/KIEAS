@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import kr.or.kpew.kieas.common.AlertSystemProfile;
+import kr.or.kpew.kieas.common.AlertValidator;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.IOnMessageHandler;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
@@ -29,6 +30,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	private List<Profile> receivers;
 	
 	private AckAggregator ackAggregator;
+	private AlertValidator alertValidator;
 
 	
 	public class Pair
@@ -47,6 +49,7 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 	{
 		super(profile);
 
+		this.alertValidator = new AlertValidator();
 		this.transmitter = transmitter;
 		transmitter.setOnMessageHandler(this);
 	}
@@ -220,7 +223,8 @@ public class GatewayModel extends IntegratedEmergencyAlertSystem implements IOnM
 			e.printStackTrace();
 		}
 		
-		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender());
+		boolean[] validationResults = alertValidator.fullValidationMessage(message); 
+		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender(), alertValidator.getAckCode(validationResults));
 
 		String log = "GW: Send Acknowledge to (" + senderForAck + ") : ";
 		System.out.println(log);

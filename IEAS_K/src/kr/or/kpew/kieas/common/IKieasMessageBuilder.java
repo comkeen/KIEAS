@@ -8,6 +8,9 @@ import com.google.publicalerts.cap.Alert.Scope;
 import com.google.publicalerts.cap.Alert.Status;
 import com.google.publicalerts.cap.Group.Builder;
 import com.google.publicalerts.cap.Info.Category;
+
+import kr.or.kpew.kieas.common.AlertValidator.AckCode;
+
 import com.google.publicalerts.cap.Point;
 
 
@@ -123,7 +126,7 @@ public interface IKieasMessageBuilder
 	 * @param identifier 현재 시스템의 식별자
 	 * @return 생성한 수신응답 메시지
 	 */
-	public String createAckMessage(String message, String identifier, String sender);
+	public String createAckMessage(String message, String identifier, String sender, AckCode ackCode);
 	public String getDate();
 	public String convertDateToYmdhms(String date);
 	public Map<Enum<?>, List<Item>> getCapEnumMap();

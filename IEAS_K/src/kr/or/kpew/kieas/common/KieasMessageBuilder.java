@@ -36,6 +36,7 @@ import com.google.publicalerts.cap.Polygon;
 import com.google.publicalerts.cap.Resource;
 import com.google.publicalerts.cap.ValuePair;
 
+import kr.or.kpew.kieas.common.AlertValidator.AckCode;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
 
@@ -43,7 +44,6 @@ import kr.or.kpew.kieas.common.KieasConfiguration.KieasList;
  * CAP 형식의 메시지를 생성하고 다루는 클래스. Google CAP Library를 활용하여 CAP 메시지를 다룬다.
  * 
  * @author byun-ai
- *
  */
 public class KieasMessageBuilder implements IKieasMessageBuilder
 {
@@ -110,6 +110,21 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 		Altitude,
 		Ceiling
 	}
+	public enum AlertSystemType {
+		CivelDefense("민방위 경보시스템"),
+		DmbAlertSystem("DMB 재난경보방송"),
+		CbsAlertSystem("CBS 재난문자방송"),
+		LocalBroadcasting("마을방송시스템");
+		
+		private String description;
+		private AlertSystemType(String description) {
+			this.description = description;
+		}
+		public String getDescription() {
+			return description;
+		}
+	}
+
 		
 //	public enum Category {
 //		Geo,
@@ -1724,7 +1739,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	@Override
-	public String createAckMessage(String message, String identifier, String sender)
+	public String createAckMessage(String message, String identifier, String sender, AckCode ackCode)
 	{
 		Alert parsedAlert = null;
 		try
@@ -1746,6 +1761,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 				.setAddresses(this.convertToAddresses(sender))
 				.setReferences(this.convertToReferences(parsedAlert.getSender()+","+parsedAlert.getIdentifier()+","+parsedAlert.getSent()))
 				.addCode(KieasConstant.CODE)
+				.setNote(ackCode.getCode()+","+ackCode.getDescription())
 				.build();
 		
 		return capXmlBuilder.toXml(alert);

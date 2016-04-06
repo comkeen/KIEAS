@@ -1,7 +1,7 @@
 package kr.or.kpew.kieas.alertsystem;
 
-import kr.or.kpew.kieas.alertsystem.AlertValidator.State;
 import kr.or.kpew.kieas.common.AlertSystemProfile;
+import kr.or.kpew.kieas.common.AlertValidator;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
@@ -41,62 +41,50 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	@Override
 	public void onMessage(String message)
 	{
-		State state = alertValidator.validateMessage(message);
-		switch (state)
+		boolean[] validationResults = alertValidator.fullValidationMessage(message);
+		if(!validationResults[0])
 		{
-		case New:
-			onNewMessage(message);
-			break;
-		case Duplication:
 			System.out.println("AS: Duplicated Alert");
+			return;
+		}
+		else if(!validationResults[5])
+		{
+			System.out.println("AS: Invalid target AS GeoCode");
+			return;
+		}
+		else
+		{
+			onNewMessage(message, validationResults);			
+		}
+	}
+
+	private void onNewMessage(String message, boolean[] validationResults)
+	{
+		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		kieasMessageBuilder.parse(message);
+		
+		switch (kieasMessageBuilder.getStatus())
+		{
+		case ACTUAL:
+			sendAcknowledge(message, validationResults);
+			setChanged();
+			notifyObservers(message);
+			break;
+		case EXERCISE:
+			break;
+		case SYSTEM:
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void onNewMessage(String message)
+	protected void sendAcknowledge(String message, boolean[] validationResults)
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
-		
-		String geoCode = alertValidator.hasGeoCode(message);
-		if(profile.getGeoCode().equals(geoCode) || geoCode.length() == 0)
-		{
-			try
-			{
-				kieasMessageBuilder.parse(message);
-				switch (kieasMessageBuilder.getStatus())
-				{
-				case ACTUAL:
-					sendAcknowledge(message);
-					setChanged();
-					notifyObservers(message);
-					break;
-				case EXERCISE:
-					break;
-				case SYSTEM:
-					break;
-				default:
-					break;
-				}
+		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender(), alertValidator.getAckCode(validationResults));
 
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-			System.out.println("AS: Not Match GeoCode : " + geoCode);
-		}
-	}
-
-	protected void sendAcknowledge(String message)
-	{
-		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
-		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender());
-
+		// String ackMessage = kieasMessageBuilder.createAckMessage("YoonKwan_babo", 0, "JungEunKim", null);
 		try
 		{
 			Thread.sleep(DELAY);
