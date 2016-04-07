@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>국민안전처0000000000</identifier>
+  <sender>maingateway@korea.kr</sender>
+  <sent>2016-04-08T04:49:20+09:00</sent>
+  <status>System</status>
+  <msgType>Ack</msgType>
+  <scope>Private</scope>
+  <addresses>maingateway@korea.kr</addresses>
+  <code>대한민국정부1.0</code>
+  <note>800,경보 서비스 확인</note>
+  <references>civilalerter@korea.kr,민방위0000000001,2016-04-08T04:49:19+09:00</references>
+</alert>

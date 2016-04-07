@@ -83,7 +83,7 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	{
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender(), alertValidator.getAckCode(validationResults));
-
+		System.out.println("AS: ackmessage \n"+ackMessage);
 		// String ackMessage = kieasMessageBuilder.createAckMessage("YoonKwan_babo", 0, "JungEunKim", null);
 		try
 		{
