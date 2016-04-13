@@ -32,6 +32,8 @@ public class IntegratedAlertSystemMain
 //	private IssuerProfile kma;
 	private IssuerProfile civilalertorg;
 
+	public static int xLocation = 600;
+	
 	enum TransmitterType
 	{
 		JMS,
@@ -76,11 +78,11 @@ public class IntegratedAlertSystemMain
 			e.printStackTrace();
 		}
 
-		new AlertSystemManager(createAlertSystemTransmitter(type), aProfile);
-		new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
-		new AlertSystemManager(createAlertSystemTransmitter(type), civil);
-		new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
-		new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
+		AlertSystemManager as1 = new AlertSystemManager(createAlertSystemTransmitter(type), aProfile);
+		AlertSystemManager as2 = new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
+		AlertSystemManager as3 = new AlertSystemManager(createAlertSystemTransmitter(type), civil);
+		AlertSystemManager as4 = new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
+		AlertSystemManager as5 = new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
 
 		new IssuerManager(createIssuerTransmitter(type), civilalertorg);
 	}

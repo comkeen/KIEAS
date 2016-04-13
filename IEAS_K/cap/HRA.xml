@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
   <identifier>기상청0123456789</identifier>
-  <sender>KildongHong@mpss.go.kr</sender>
+  <sender>weather@kma.go.kr</sender>
   <sent>2015-01-01T00:00:00+09:00</sent>
   <status>Actual</status>
   <msgType>Alert</msgType>

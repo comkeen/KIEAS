@@ -41,7 +41,7 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		model.close();
+//		model.close();
 		view.systemExit();
 	}
 

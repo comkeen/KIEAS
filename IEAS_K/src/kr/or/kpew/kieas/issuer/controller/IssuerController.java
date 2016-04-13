@@ -115,7 +115,7 @@ public class IssuerController implements ActionListener, ListSelectionListener, 
 			JOptionPane.YES_NO_OPTION,
 			JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 	    {
-			model.closeConnection();
+//			model.closeConnection();
 	        System.exit(0);
 	    }
 		else

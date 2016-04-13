@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
   <identifier>국민안전처1508190001</identifier>
-  <sender>KildongHong@mpss.go.kr</sender>
+  <sender>civilalerter@korea.kr</sender>
   <sent>2015-08-19T14:00:00+09:00</sent>
   <status>Actual</status>
   <msgType>Alert</msgType>

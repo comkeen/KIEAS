@@ -20,6 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.or.kpew.kieas.common.AlertSystemProfile;
+import kr.or.kpew.kieas.main.IntegratedAlertSystemMain;
 
 public class AlertSystemView implements Observer {
 	private AlertSystemController controller;
@@ -71,10 +72,10 @@ public class AlertSystemView implements Observer {
 		Container container = frame.getContentPane();
 		container.add(mainTabbedPane);
 
-		frame.setSize(600, 400);
-		frame.setLocation(600, 400);
+		frame.setSize(400, 400);
+		frame.setLocation(IntegratedAlertSystemMain.xLocation, 400);
+		IntegratedAlertSystemMain.xLocation += 50;
 		frame.setPreferredSize(new Dimension(512, 256));
-
 	}
 
 	private void initAlertPane() {
