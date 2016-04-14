@@ -73,8 +73,9 @@ public class AlertSystemView implements Observer {
 		container.add(mainTabbedPane);
 
 		frame.setSize(400, 400);
-		frame.setLocation(IntegratedAlertSystemMain.xLocation, 400);
+		frame.setLocation(IntegratedAlertSystemMain.xLocation, IntegratedAlertSystemMain.yLocation);
 		IntegratedAlertSystemMain.xLocation += IntegratedAlertSystemMain.xIncrement;
+		IntegratedAlertSystemMain.yLocation += IntegratedAlertSystemMain.yIncrement;
 		frame.setPreferredSize(new Dimension(512, 256));
 	}
 

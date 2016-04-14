@@ -33,7 +33,9 @@ public class IntegratedAlertSystemMain
 	private IssuerProfile civilalertorg;
 
 	public static int xLocation = 800; //set AS View's xLocation
+	public static int yLocation = 400; //set AS View's xLocation
 	public static final int xIncrement = 50; //set AS View's xLocation
+	public static final int yIncrement = 30; //set AS View's yLocation
 	
 	enum TransmitterType
 	{

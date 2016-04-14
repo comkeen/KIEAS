@@ -61,6 +61,9 @@ public class KieasConfiguration
 		
 		public enum DisasterEventType
 		{
+			AL1("민방공공습경보"), 
+			AL2("민방공경계경보"), 
+			CLR("민방공경보해제"), 
 			HRA("호우주의보"), 
 			HRW("호우경보"), 
 			HSW("대설주의보"),
