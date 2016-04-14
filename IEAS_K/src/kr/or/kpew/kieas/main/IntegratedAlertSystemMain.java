@@ -32,7 +32,8 @@ public class IntegratedAlertSystemMain
 //	private IssuerProfile kma;
 	private IssuerProfile civilalertorg;
 
-	public static int xLocation = 600;
+	public static int xLocation = 800; //set AS View's xLocation
+	public static final int xIncrement = 50; //set AS View's xLocation
 	
 	enum TransmitterType
 	{

@@ -48,8 +48,8 @@ public class IssuerView implements Observer {
 
 	private void init() {
 		this.mainFrame = new JFrame();
-		mainFrame.setTitle("기상청");
-		mainFrame.setPreferredSize(new Dimension(600, 800));
+		mainFrame.setTitle("표준경보발령대");
+		mainFrame.setPreferredSize(new Dimension(800, 800));
 		mainFrame.setLocation(0, 0);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 

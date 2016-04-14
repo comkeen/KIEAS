@@ -74,7 +74,7 @@ public class AlertSystemView implements Observer {
 
 		frame.setSize(400, 400);
 		frame.setLocation(IntegratedAlertSystemMain.xLocation, 400);
-		IntegratedAlertSystemMain.xLocation += 50;
+		IntegratedAlertSystemMain.xLocation += IntegratedAlertSystemMain.xIncrement;
 		frame.setPreferredSize(new Dimension(512, 256));
 	}
 

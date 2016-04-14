@@ -67,8 +67,8 @@ public class GatewayView implements Observer
 		String name = "Gateway";
 		this.frame = new JFrame(name);
 		frame.setSize(600, 400);
-		frame.setLocation(600, 0);		
-		frame.setPreferredSize(new Dimension(400, 200));
+		frame.setLocation(800, 0);
+		frame.setPreferredSize(new Dimension(600, 400));
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(controller);
