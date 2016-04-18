@@ -12,8 +12,14 @@
 
 ## 관련 문서 ##
 
-### [ 배경자료 ] ###
-다음은 [2015 기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)이다.
+### [ 기술설명회 자료 ] ###
+[2016 2차 공통경보프로토콜 기술설명회 자료](https://drive.google.com/drive/folders/0B2mOw8eNDJEGQ0RkbWNITDNxNnM)
+ * 지능맞춤형 통합경보시스템 연구개발
+ * 통합경보시스템 참조모델 설계
+ * 참조모델 시연 및 구현가이드라인
+ * 참조모델 환경구성방법
+
+[2015 공통경보프로토콜 기술설명회 자료](https://drive.google.com/folderview?id=0B_zNG8ZKU_9-M3I2YWlSMk1kbUk&usp=sharing)
 
  * 재난의 정의와 재난관리: 재난, 재난관리에 관한 개요
  * 재난경보 전달 체계: 재난경보시스템의 개요와 국내외 현황
