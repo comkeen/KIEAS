@@ -12,6 +12,10 @@
 
 ## 관련 문서 ##
 
+### [ 참조모델 문서 ] ###
+ * [구현가이드라인](https://drive.google.com/open?id=0B2mOw8eNDJEGdWQxa1NaOWhrem8)
+ * [설치문서](https://drive.google.com/open?id=0B2mOw8eNDJEGU2pLaEN6TFRNQTA)
+
 ### [ 기술설명회 자료 ] ###
 [2016 2차 공통경보프로토콜 기술설명회 자료](https://drive.google.com/drive/folders/0B2mOw8eNDJEGQ0RkbWNITDNxNnM)
  * 지능맞춤형 통합경보시스템 연구개발
