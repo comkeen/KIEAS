@@ -13,7 +13,7 @@
 ## 관련 문서 ##
 
 ### [ 참조모델 문서 ] ###
- * [구현가이드라인](https://drive.google.com/open?id=0B2mOw8eNDJEGdWQxa1NaOWhrem8)
+ * [구현가이드라인](https://drive.google.com/file/d/0B_zNG8ZKU_9-RDUya2FmSWFnUlE)
  * [설치문서](https://drive.google.com/open?id=0B2mOw8eNDJEGU2pLaEN6TFRNQTA)
 
 ### [ 기술설명회 자료 ] ###
