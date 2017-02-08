@@ -1,9 +1,14 @@
 package kr.or.kpew.kieas.network.xmpp;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
@@ -13,22 +18,34 @@ import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Message.Type;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.builder.XmlDocument;
+import org.xmlpull.v1.builder.impl.XmlDocumentImpl;
+import org.xmlpull.v1.builder.impl.XmlElementImpl;
 
 import kr.or.kpew.kieas.common.IOnMessageHandler;
 import kr.or.kpew.kieas.network.ITransmitter;
 
 public class XmppTransmitter implements ITransmitter {
 
-	protected String server = "maingateway";
-	protected StanzaListener listener;
 	protected AbstractXMPPConnection connection;
+	protected String server;
 	
 	protected IOnMessageHandler handler;
 
@@ -64,6 +81,8 @@ public class XmppTransmitter implements ITransmitter {
 		}
 		
 		addReceiver(destination);
+		//ProviderManager.addExtensionProvider(PlatformMessage.ROOT_ELEMENT_NAME, PlatformMessage.NAMESPACE_URI, new PlatformMessage.Provider());
+
 	}
 
 	@Override
@@ -71,12 +90,21 @@ public class XmppTransmitter implements ITransmitter {
 		// TODO Auto-generated method stub
 		//System.out.println("Send to " + target + " : " + message);
 		
-		Message m = new Message();
-		m.addExtension(new PlatformMessage("aaa", message, "bbb"));
+		System.out.println(message);
+		Message m = new Message(target+"@xmpp.raychani.net", Type.chat);
+		m.setFrom(this.connection.getUser());
+		String xml = message.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n", "");
+		
+		PlatformMessage pm = new PlatformMessage(PlatformMessage.Type.AlertBroadcastRequest, xml);
+		m.addExtension(pm);
+		
+		//System.out.println(pm.toXML());
+		
 		Chat chat = ChatManager.getInstanceFor(connection).createChat(target+"@xmpp.raychani.net");
+		
 		try {
-			
 			chat.sendMessage(m);
+			//connection.sendStanza(m);
 		} catch (NotConnectedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,21 +114,60 @@ public class XmppTransmitter implements ITransmitter {
 	@Override
 	public void addReceiver(String destination) {
 	       ChatManager manager = ChatManager.getInstanceFor(this.connection);
+	       
+//	       connection.addAsyncStanzaListener(new StanzaListener() {
+//			
+//			@Override
+//			public void processPacket(Stanza packet) throws NotConnectedException {
+//				DefaultExtensionElement extension = packet.getExtension(PlatformMessage.ROOT_ELEMENT_NAME, PlatformMessage.NAMESPACE_URI);
+//				String xml = PlatformMessage.buildXml(extension);
+//				System.out.println(PlatformMessage.parsePlatform(xml));
+//				
+//				handler.onMessage(PlatformMessage.parsePlatform(xml));
+//				
+//			}
+//
+//
+//		}, new StanzaFilter() {
+//			
+//			@Override
+//			public boolean accept(Stanza stanza) {
+//				if(stanza.hasExtension("PlatformMessage", "http://raychani.net/MultimediaEmergencyInformationPlatform"))
+//					return true;
+//				else
+//					return false;
+//			}
+//		});
+	       
 	       manager.addChatListener(new ChatManagerListener() {
 			
 			@Override
 			public void chatCreated(Chat chat, boolean createdLocally) {
-				// TODO Auto-generated method stub
 				chat.addMessageListener(new ChatMessageListener() {
 					
 					@Override
 					public void processMessage(Chat chat, Message message) {
 						// TODO Auto-generated method stub
+						//String msg = message.toString();
+						//System.out.println(message.toXML());
 						
-						handler.onMessage(message.getBody());
+						//System.out.println(PlatformMessage.parseXmpp(msg));
+						
+						
+						//System.out.println(msg);
+						
+						DefaultExtensionElement extension = message.getExtension(PlatformMessage.ROOT_ELEMENT_NAME, PlatformMessage.NAMESPACE_URI);
+						String xml = PlatformMessage.buildXml(extension);
+						String cap = PlatformMessage.parsePlatform(xml);
+						if(cap==null)
+							return;
+						handler.onMessage(cap);
+						
+						
 					}
 				});
 			}
+
 		});
 
 		
@@ -108,7 +175,6 @@ public class XmppTransmitter implements ITransmitter {
 
 	@Override
 	public void setOnMessageHandler(IOnMessageHandler handler) {
-		// TODO Auto-generated method stub
 		this.handler = handler;
 	}
 

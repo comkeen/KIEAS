@@ -11,7 +11,7 @@ public class AlertSystemMain
 	public AlertSystemMain()
 	{
 		AlertSystemProfile profile = new AlertSystemProfile("townbroadcast085@korea.kr", "경상남도", AlertSystemType.CivelDefense);
-		new AlertSystemManager(new AlertSystemTransmitter(), profile);
+		//new AlertSystemManager(new AlertSystemTransmitter(), profile);
 	}
 	
 	public static void main(String[] args)

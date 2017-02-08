@@ -81,13 +81,13 @@ public class IntegratedAlertSystemMain
 			e.printStackTrace();
 		}
 
-		AlertSystemManager as1 = new AlertSystemManager(createAlertSystemTransmitter(type), aProfile);
+		AlertSystemManager as1 = new AlertSystemManager(createAlertSystemTransmitter(type), aProfile, gwProfile);
 //		AlertSystemManager as2 = new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
 //		AlertSystemManager as3 = new AlertSystemManager(createAlertSystemTransmitter(type), civil);
 //		AlertSystemManager as4 = new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
 //		AlertSystemManager as5 = new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
 
-		new IssuerManager(createIssuerTransmitter(type), civilalertorg);
+		new IssuerManager(createIssuerTransmitter(type), civilalertorg, gwProfile);
 	}
 	
 	public ITransmitter createGatewayTransmitter(TransmitterType type)

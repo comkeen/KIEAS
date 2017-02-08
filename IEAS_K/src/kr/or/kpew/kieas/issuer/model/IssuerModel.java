@@ -29,6 +29,7 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	private AlertLogger alertLogger;
 
 	private String mAlertMessage;
+	private String gatewayName;
 
 	/**
 	 * 경보발령대의 주요 기능들을 관리한다.
@@ -98,7 +99,7 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 		alertLogger.saveAlertLog(message);
 
 		System.out.println("AO: Send Message to GW : ");		
-		transmitter.sendTo(KieasAddress.GATEWAY_ID, message);
+		transmitter.sendTo(gatewayName, message);
 		
 		updateIdentifier(message);
 	}
@@ -246,5 +247,10 @@ public class IssuerModel extends IntegratedEmergencyAlertSystem implements IOnMe
 	public void setSelectedAlertLog(String identifier)
 	{
 		notifyItemToObservers(IssuerView.TEXT_AREA, alertLogger.loadAlertLog(identifier));
+	}
+
+	public void setGatewayName(String gateway) {
+		this.gatewayName = gateway;
+		
 	}
 }

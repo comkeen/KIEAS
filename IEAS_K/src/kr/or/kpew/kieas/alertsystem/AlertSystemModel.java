@@ -16,6 +16,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 
 	private AlertValidator alertValidator;
 
+	private String gatewayName;
+
 	public static final String GEO_CODE = "GeoCode";
 	public static final String ALERT_SYSTEM_TYPE = "AlertSystemType";
 
@@ -95,7 +97,7 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		}
 
 		System.out.println("AS: " + profile.getSender() + " Send Ack to GW ");
-		transmitter.sendTo(KieasAddress.GATEWAY_ID, ackMessage);
+		transmitter.sendTo(gatewayName, ackMessage);
 	}
 
 	public void close() {
@@ -117,6 +119,11 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		setChanged();
 		notifyObservers("Register Succeed");
 
+	}
+
+	public void setGatewayName(String gateway) {
+		this.gatewayName = gateway;
+		
 	}
 
 }
