@@ -11,6 +11,7 @@ import kr.or.kpew.kieas.network.ITransmitter;
 import kr.or.kpew.kieas.network.jms.AlertSystemTransmitter;
 import kr.or.kpew.kieas.network.jms.GatewayTransmitter;
 import kr.or.kpew.kieas.network.jms.IssuerTransmitter;
+import kr.or.kpew.kieas.network.xmpp.GatewayXmpp;
 
 /**
  * 1개의 경보발령대와 1개의 통합게이트웨이, 그리고 5개의 경보시스템을 동시에 실행시켜주는 메인 클래스 이다.
@@ -39,23 +40,22 @@ public class IntegratedAlertSystemMain
 	
 	enum TransmitterType
 	{
-		JMS,
-		TCPIP
+		JMS, TCPIP, XMPP
 	}
 	
 	public IntegratedAlertSystemMain()
 	{
-		init(TransmitterType.JMS);
+		init(TransmitterType.XMPP);
 	}
 	
 	public void init(TransmitterType type)
 	{
-		gwProfile = new Profile("maingateway@korea.kr", "국민안전처");
+		gwProfile = new Profile("maingateway", "국민안전처");
 		
 //		kma = new IssuerProfile("issuerkma0124@korea.kr", "기상청");
-		civilalertorg = new IssuerProfile("civilalerter@korea.kr", "민방위");
+		civilalertorg = new IssuerProfile("civilalerter", "민방위");
 		
-		aProfile = new AlertSystemProfile("townbroadcast085@korea.kr", "경상남도", AlertSystemType.LocalBroadcasting);
+		aProfile = new AlertSystemProfile("townbroadcast085", "경상남도", AlertSystemType.LocalBroadcasting);
 		bProfile = new AlertSystemProfile("townbroadcast221@korea.kr", "전라남도", AlertSystemType.LocalBroadcasting);
 		civil = new AlertSystemProfile("civildef@korea.kr", "국민안전처", AlertSystemType.CivelDefense);
 		dmb = new AlertSystemProfile("dmbalert@korea.kr", "국민안전처", AlertSystemType.DmbAlertSystem);
@@ -64,10 +64,10 @@ public class IntegratedAlertSystemMain
 		GatewayManager g = new GatewayManager(createGatewayTransmitter(type), gwProfile);
 
 		g.registAlertSystem(aProfile);
-		g.registAlertSystem(bProfile);
-		g.registAlertSystem(civil);
-		g.registAlertSystem(dmb);
-		g.registAlertSystem(cbs);
+//		g.registAlertSystem(bProfile);
+//		g.registAlertSystem(civil);
+//		g.registAlertSystem(dmb);
+//		g.registAlertSystem(cbs);
 
 //		g.registIssuer(kma);
 		g.registIssuer(civilalertorg);
@@ -82,10 +82,10 @@ public class IntegratedAlertSystemMain
 		}
 
 		AlertSystemManager as1 = new AlertSystemManager(createAlertSystemTransmitter(type), aProfile);
-		AlertSystemManager as2 = new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
-		AlertSystemManager as3 = new AlertSystemManager(createAlertSystemTransmitter(type), civil);
-		AlertSystemManager as4 = new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
-		AlertSystemManager as5 = new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
+//		AlertSystemManager as2 = new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
+//		AlertSystemManager as3 = new AlertSystemManager(createAlertSystemTransmitter(type), civil);
+//		AlertSystemManager as4 = new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
+//		AlertSystemManager as5 = new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
 
 		new IssuerManager(createIssuerTransmitter(type), civilalertorg);
 	}
@@ -96,6 +96,8 @@ public class IntegratedAlertSystemMain
 		{
 		case JMS:
 			return new GatewayTransmitter();
+		case XMPP:
+			return new GatewayXmpp();
 		default:
 			break;
 		}
@@ -106,6 +108,8 @@ public class IntegratedAlertSystemMain
 		switch (type) {
 		case JMS:
 			return new AlertSystemTransmitter();
+		case XMPP:
+			return new GatewayXmpp();
 		default:
 			break;
 		}
@@ -116,6 +120,8 @@ public class IntegratedAlertSystemMain
 		switch (type) {
 		case JMS:
 			return new IssuerTransmitter();
+		case XMPP:
+			return new GatewayXmpp();
 		default:
 			break;
 		}
