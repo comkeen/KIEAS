@@ -10,7 +10,6 @@ import kr.or.kpew.kieas.common.IOnMessageHandler;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
 import kr.or.kpew.kieas.common.IssuerProfile;
 import kr.or.kpew.kieas.common.Item;
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;

@@ -1028,6 +1028,8 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	 */
 	@Override
 	public String getGeoCode(int infoIndex, int areaIndex) {
+		if(mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocodeCount() <= 0)
+			return "";
 		if (mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocode(0) != null) {
 			return mAlert.getInfo(infoIndex).getArea(areaIndex).getGeocode(0).getValue();
 		} else {

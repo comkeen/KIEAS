@@ -28,9 +28,14 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>rocks.xmpp</groupId>
+			<artifactId>xmpp-core-client</artifactId>
+			<version>0.7.3</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-broker</artifactId>
-			<version>5.12.1</version>
+			<artifactId>activemq-all</artifactId>
+			<version>5.14.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -48,16 +53,6 @@
 			<version>2.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.36</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-dbutils</groupId>
-			<artifactId>commons-dbutils</artifactId>
-			<version>1.6</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>org.json</artifactId>
 			<version>chargebee-1.0</version>
@@ -67,23 +62,6 @@
 			<artifactId>javax.json-api</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.igniterealtime.smack/smack-tcp -->
-		<dependency>
-			<groupId>org.igniterealtime.smack</groupId>
-			<artifactId>smack-tcp</artifactId>
-			<version>4.1.9</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.igniterealtime.smack/smack-java7 -->
-		<dependency>
-			<groupId>org.igniterealtime.smack</groupId>
-			<artifactId>smack-java7</artifactId>
-			<version>4.1.9</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.igniterealtime.smack/smack-im -->
-		<dependency>
-			<groupId>org.igniterealtime.smack</groupId>
-			<artifactId>smack-im</artifactId>
-			<version>4.1.9</version>
-		</dependency>
+
 	</dependencies>
 </project>

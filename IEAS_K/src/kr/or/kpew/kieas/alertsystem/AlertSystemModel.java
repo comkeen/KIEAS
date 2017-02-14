@@ -4,7 +4,6 @@ import kr.or.kpew.kieas.common.AlertSystemProfile;
 import kr.or.kpew.kieas.common.AlertValidator;
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
 import kr.or.kpew.kieas.common.IntegratedEmergencyAlertSystem;
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasAddress;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
 import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.network.ITransmitter;

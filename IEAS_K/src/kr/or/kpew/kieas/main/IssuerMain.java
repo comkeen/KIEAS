@@ -1,8 +1,6 @@
 package kr.or.kpew.kieas.main;
 
 import kr.or.kpew.kieas.common.IssuerProfile;
-import kr.or.kpew.kieas.issuer.controller.IssuerManager;
-import kr.or.kpew.kieas.network.jms.IssuerTransmitter;
 
 
 public class IssuerMain

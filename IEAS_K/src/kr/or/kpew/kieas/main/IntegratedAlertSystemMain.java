@@ -11,7 +11,7 @@ import kr.or.kpew.kieas.network.ITransmitter;
 import kr.or.kpew.kieas.network.jms.AlertSystemTransmitter;
 import kr.or.kpew.kieas.network.jms.GatewayTransmitter;
 import kr.or.kpew.kieas.network.jms.IssuerTransmitter;
-import kr.or.kpew.kieas.network.xmpp.GatewayXmpp;
+import kr.or.kpew.kieas.network.xmpp.BabblerTransmitter;
 
 /**
  * 1개의 경보발령대와 1개의 통합게이트웨이, 그리고 5개의 경보시스템을 동시에 실행시켜주는 메인 클래스 이다.
@@ -40,7 +40,7 @@ public class IntegratedAlertSystemMain
 	
 	enum TransmitterType
 	{
-		JMS, TCPIP, XMPP
+		JMS, TCPIP, XMPP, AMQP
 	}
 	
 	public IntegratedAlertSystemMain()
@@ -97,7 +97,7 @@ public class IntegratedAlertSystemMain
 		case JMS:
 			return new GatewayTransmitter();
 		case XMPP:
-			return new GatewayXmpp();
+			return new BabblerTransmitter();
 		default:
 			break;
 		}
@@ -109,7 +109,7 @@ public class IntegratedAlertSystemMain
 		case JMS:
 			return new AlertSystemTransmitter();
 		case XMPP:
-			return new GatewayXmpp();
+			return new BabblerTransmitter();
 		default:
 			break;
 		}
@@ -121,7 +121,7 @@ public class IntegratedAlertSystemMain
 		case JMS:
 			return new IssuerTransmitter();
 		case XMPP:
-			return new GatewayXmpp();
+			return new BabblerTransmitter();
 		default:
 			break;
 		}
