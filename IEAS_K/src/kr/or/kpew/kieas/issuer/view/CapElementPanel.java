@@ -161,7 +161,7 @@ public class CapElementPanel
 	{
 		removeTabAdder(INFO_ADDER_BUTTON, infoPanel);
 		
-		infoComponentMaps.add(new HashMap<>());
+		infoComponentMaps.add(new HashMap());
 		
 		
 		Box panel = Box.createVerticalBox();

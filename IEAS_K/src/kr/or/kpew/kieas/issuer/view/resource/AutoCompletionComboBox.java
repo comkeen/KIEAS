@@ -30,7 +30,7 @@ public class AutoCompletionComboBox extends PlainDocument {
 	FocusListener editorFocusListener;
 
 	
-	public AutoCompletionComboBox(JComboBox<?> comboBox)
+	public AutoCompletionComboBox(final JComboBox<?> comboBox)
 	{
 		this.comboBox = comboBox;
 		comboBox.setEditable(true);
