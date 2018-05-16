@@ -14,10 +14,8 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 
 	
 	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		switch (e.getActionCommand().toString())
-		{
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand().toString()) {
 		case "Clear":
 			view.clear();
 			break;

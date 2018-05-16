@@ -9,8 +9,7 @@ public class GatewayMain
 {
 	public GatewayMain()
 	{
-		Profile profile = new Profile("maingateway@korea.kr", "국민안전처");
-		new GatewayManager(new GatewayTransmitter(), profile);
+//		new GatewayManager(new GatewayTransmitter(), new Profile("maingateway@korea.kr", "국민안전처"));
 	}
 	
 	public static void main(String[] args)

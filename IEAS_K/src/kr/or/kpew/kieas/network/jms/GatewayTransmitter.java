@@ -26,7 +26,7 @@ public class GatewayTransmitter implements ITransmitter
 	{
 		this.mqServerIp = KieasAddress.ACTIVEMQ_SERVER_IP_LOCAL;
 		
-		open();		
+		open();
 		addReceiver(destination);
 	}
 	

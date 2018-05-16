@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,7 +21,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import kr.or.kpew.kieas.common.AlertSystemProfile;
-import kr.or.kpew.kieas.main.IntegratedAlertSystemMain;
 
 public class AlertSystemView implements Observer {
 	private AlertSystemController controller;
@@ -73,9 +73,9 @@ public class AlertSystemView implements Observer {
 		container.add(mainTabbedPane);
 
 		frame.setSize(400, 400);
-		frame.setLocation(IntegratedAlertSystemMain.xLocation, IntegratedAlertSystemMain.yLocation);
-		IntegratedAlertSystemMain.xLocation += IntegratedAlertSystemMain.xIncrement;
-		IntegratedAlertSystemMain.yLocation += IntegratedAlertSystemMain.yIncrement;
+//		frame.setLocation(IntegratedAlertSystemMain.xLocation, IntegratedAlertSystemMain.yLocation);
+//		IntegratedAlertSystemMain.xLocation += IntegratedAlertSystemMain.xIncrement;
+//		IntegratedAlertSystemMain.yLocation += IntegratedAlertSystemMain.yIncrement;
 		frame.setPreferredSize(new Dimension(512, 256));
 	}
 

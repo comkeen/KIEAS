@@ -2,12 +2,12 @@
 <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
   <identifier>국민안전처0000000005</identifier>
   <sender>maingateway</sender>
-  <sent>2017-02-02T19:09:20+09:00</sent>
+  <sent>2018-05-16T15:25:58+09:00</sent>
   <status>System</status>
   <msgType>Ack</msgType>
   <scope>Private</scope>
   <addresses>maingateway</addresses>
   <code>대한민국정부1.0</code>
   <note>800,경보 서비스 확인</note>
-  <references>civilalerter,민방위0000000002,2017-02-02T19:09:17+09:00</references>
+  <references>civilalerter,민방위0000000004,2018-05-16T15:25:54+09:00</references>
 </alert>

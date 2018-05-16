@@ -45,21 +45,21 @@ public class IntegratedAlertSystemMain
 	
 	public IntegratedAlertSystemMain()
 	{
-		init(TransmitterType.XMPP);
+		init(TransmitterType.JMS);
 	}
 	
 	public void init(TransmitterType type)
 	{
 		gwProfile = new Profile("maingateway", "국민안전처");
 		
-//		kma = new IssuerProfile("issuerkma0124@korea.kr", "기상청");
 		civilalertorg = new IssuerProfile("civilalerter", "민방위");
+//		kma = new IssuerProfile("issuerkma0124@korea.kr", "기상청");
 		
 		aProfile = new AlertSystemProfile("townbroadcast085", "경상남도", AlertSystemType.LocalBroadcasting);
-		bProfile = new AlertSystemProfile("townbroadcast221@korea.kr", "전라남도", AlertSystemType.LocalBroadcasting);
-		civil = new AlertSystemProfile("civildef@korea.kr", "국민안전처", AlertSystemType.CivelDefense);
-		dmb = new AlertSystemProfile("dmbalert@korea.kr", "국민안전처", AlertSystemType.DmbAlertSystem);
-		cbs = new AlertSystemProfile("cbsalert@korea.kr", "국민안전처", AlertSystemType.CbsAlertSystem);
+//		bProfile = new AlertSystemProfile("townbroadcast221@korea.kr", "전라남도", AlertSystemType.LocalBroadcasting);
+//		civil = new AlertSystemProfile("civildef@korea.kr", "국민안전처", AlertSystemType.CivelDefense);
+//		dmb = new AlertSystemProfile("dmbalert@korea.kr", "국민안전처", AlertSystemType.DmbAlertSystem);
+//		cbs = new AlertSystemProfile("cbsalert@korea.kr", "국민안전처", AlertSystemType.CbsAlertSystem);
 		
 		GatewayManager g = new GatewayManager(createGatewayTransmitter(type), gwProfile);
 
@@ -69,15 +69,12 @@ public class IntegratedAlertSystemMain
 //		g.registAlertSystem(dmb);
 //		g.registAlertSystem(cbs);
 
-//		g.registIssuer(kma);
 		g.registIssuer(civilalertorg);
+//		g.registIssuer(kma);
 
-		try
-		{
+		try {
 			Thread.sleep(1000);
-		} 
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
