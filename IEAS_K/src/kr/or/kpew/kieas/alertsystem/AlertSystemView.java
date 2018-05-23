@@ -135,9 +135,11 @@ public class AlertSystemView implements Observer {
 		}
 	}
 
+	//model의 notifyObservers(Object obj)에 의해 호출되는 함수. obj를 처리하면 된다.
 	@Override
 	public void update(Observable o, Object arg) {
-		if(arg instanceof String) {		
+		if(arg instanceof String) {	
+			//실제 view에서 하는 일
 			alertArea.setText((String)arg);
 		}
 		else if(arg instanceof AlertSystemProfile) {

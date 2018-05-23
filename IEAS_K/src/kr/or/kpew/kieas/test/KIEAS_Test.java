@@ -1,6 +1,6 @@
 package kr.or.kpew.kieas.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
 
@@ -17,10 +17,7 @@ import com.google.publicalerts.cap.Point;
 import com.google.publicalerts.cap.Resource;
 
 import kr.or.kpew.kieas.common.IKieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasConfiguration.KieasConstant;
 import kr.or.kpew.kieas.common.KieasMessageBuilder;
-import kr.or.kpew.kieas.common.KieasMessageBuilder.AlertElementNames;
-import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
 public class KIEAS_Test {
@@ -41,6 +38,8 @@ public class KIEAS_Test {
 		//CAP 메시지빌더의 xml 형태의 메시지 반환
 		String result1 = kieasMessageBuilder.getMessage();
 
+		System.out.println("print identifier: "+kieasMessageBuilder.getIdentifier());
+		
 		// 구글 CAP 라이브러리를 이용한 기본 CAP메시지 생성
 		// Alert 요소 작성
 		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS).setIdentifier("Identifier")
@@ -50,8 +49,8 @@ public class KIEAS_Test {
 		CapXmlBuilder xmlBuilder = new CapXmlBuilder();
 		String result2 = xmlBuilder.toXml(alert);
 
-		// System.out.println("Using KieasMessageBuilder : \n" + result1);
-		// System.out.println("Using GoogleCapLibrary : \n" + result2);
+//		System.out.println("Using KieasMessageBuilder : \n" + result1);
+//		System.out.println("Using GoogleCapLibrary : \n" + result2);
 
 		assertEquals(true, result1.equals(result2));
 	}
@@ -157,7 +156,7 @@ public class KIEAS_Test {
 		kieasMessageBuilder.setPolygon(0, 0, 0, points);
 		kieasMessageBuilder.setPolygon(0, 0, 1, points);
 
-		System.out.println(kieasMessageBuilder.getMessage());
+//		System.out.println(kieasMessageBuilder.getMessage());
 	}
 
 //	@Test

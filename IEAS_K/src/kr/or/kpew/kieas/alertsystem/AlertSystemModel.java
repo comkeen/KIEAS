@@ -37,8 +37,10 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		notifyObservers(profile);
 	}
 
+	//네트워크를 통해 메시지를 수신했을 때 호출되는 이벤트 핸들러
 	@Override
 	public void onMessage(String message) {
+		//수신한 메시지 검증 프로세스
 		boolean[] validationResults = alertValidator.fullValidationMessage(message);
 		if(!validationResults[0]) {
 			System.out.println("AS: Duplicated Alert");
@@ -47,19 +49,25 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 			System.out.println("AS: Invalid target AS GeoCode");
 			return;
 		} else {
+			//검증된 메시지 수신에 대한 이벤트 처리 
 			onNewMessage(message, validationResults);			
 		}
 	}
 
+	//검증된 메시지 수신에 대한 이벤트
 	private void onNewMessage(String message, boolean[] validationResults) {
+		//CAP 메시지 처리를 위한 메시지빌더 생성
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
+		//xml String 메시지를 cap 처리를 쉽게 하기 위해 kieasMessageBuilder 객체로 변환
 		kieasMessageBuilder.parse(message);
 		
+		//cap메시지의 status 요소에 따른 처리
 		switch (kieasMessageBuilder.getStatus()) {
 		case ACTUAL:
 			sendAcknowledge(message, validationResults);
 			setChanged();
-			notifyObservers(message);
+//			notifyObservers(message);
+			notifyObservers(kieasMessageBuilder.getIdentifier());
 			break;
 		case EXERCISE:
 			break;
