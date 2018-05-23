@@ -150,9 +150,6 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	private CapXmlParser capXmlParser;
 
 	private Alert mAlert;
-//	private String xmlMessage;
-
-
 	
 	public KieasMessageBuilder()
 	{
@@ -932,8 +929,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표가되는
-	 *            Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
 	 * @return Resource 요소의 ResourceDesc 값 리턴.
 	 */
 	@Override
@@ -942,8 +938,7 @@ public class KieasMessageBuilder implements IKieasMessageBuilder
 	}
 
 	/**
-	 * @param 목표가되는
-	 *            Info 요소의 index, 목표가되는 Resource 요소의 index
+	 * @param 목표가되는 Info 요소의 index, 목표가되는 Resource 요소의 index
 	 * @return Resource 요소의 MimeType 값 리턴.
 	 */
 	@Override

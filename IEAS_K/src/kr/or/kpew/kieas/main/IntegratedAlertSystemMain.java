@@ -11,114 +11,105 @@ import kr.or.kpew.kieas.network.ITransmitter;
 import kr.or.kpew.kieas.network.jms.AlertSystemTransmitter;
 import kr.or.kpew.kieas.network.jms.GatewayTransmitter;
 import kr.or.kpew.kieas.network.jms.IssuerTransmitter;
-import kr.or.kpew.kieas.network.xmpp.BabblerTransmitter;
 
 /**
- * 1개의 경보발령대와 1개의 통합게이트웨이, 그리고 5개의 경보시스템을 동시에 실행시켜주는 메인 클래스 이다.
- * 통합 테스트는 주로 이 클래스를 사용하여 이루어진다.
- * @author byun-ai
+ * 1개의 경보발령대, 1개의 통합게이트웨이, 1개의 경보시스템을 동시에 실행시켜주는 메인 클래스.
+ * 각 콤포넌트간 통신을 위해 ActiveMQ를 먼저 실행하고 이 프로젝트를 실행시키자.
  *
  */
 
 public class IntegratedAlertSystemMain
 {
-	private Profile gwProfile;
-
-	private AlertSystemProfile aProfile;
-	private AlertSystemProfile bProfile;
-	private AlertSystemProfile civil;
-	private AlertSystemProfile dmb;
-	private AlertSystemProfile cbs;
-
-//	private IssuerProfile kma;
-	private IssuerProfile civilalertorg;
-
-	public static int xLocation = 800; //set AS View's xLocation
-	public static int yLocation = 400; //set AS View's xLocation
-	public static final int xIncrement = 50; //set AS View's xLocation
-	public static final int yIncrement = 30; //set AS View's yLocation
 	
-	enum TransmitterType
+	/**
+	 * 통신방법에 대한 enumeration, 이 프로젝트에서는 JMS 방식만 사용.
+	 *
+	 */	
+	public enum TransmitterType
 	{
 		JMS, TCPIP, XMPP, AMQP
 	}
 	
 	public IntegratedAlertSystemMain()
 	{
+		//JMS 통신방식으로 구성요소들 초기화 작업, 발령대, 게이트웨이, 경보시스템 생성
 		init(TransmitterType.JMS);
 	}
 	
 	public void init(TransmitterType type)
 	{
-		gwProfile = new Profile("maingateway", "국민안전처");
+		//게이트웨이 프로파일: 게이트웨이를 생성하기 위해 필요(식별자,이름)
+		Profile gatewayProfile = new Profile("maingateway", "국민안전처");
+		//발령대 프로파일: 발령대를 생성하기 위해 필요(식별자,이름)
+		IssuerProfile issuerProfile = new IssuerProfile("civilalerter", "민방위");
+		//경보시스템 프로파일: 수신기를 생성하기 위해 필요(식별자,지역,경보시스템타입)
+		AlertSystemProfile alertSystemProfile = new AlertSystemProfile("townbroadcast085", "경상남도", AlertSystemType.LocalBroadcasting);
 		
-		civilalertorg = new IssuerProfile("civilalerter", "민방위");
-//		kma = new IssuerProfile("issuerkma0124@korea.kr", "기상청");
-		
-		aProfile = new AlertSystemProfile("townbroadcast085", "경상남도", AlertSystemType.LocalBroadcasting);
-//		bProfile = new AlertSystemProfile("townbroadcast221@korea.kr", "전라남도", AlertSystemType.LocalBroadcasting);
-//		civil = new AlertSystemProfile("civildef@korea.kr", "국민안전처", AlertSystemType.CivelDefense);
-//		dmb = new AlertSystemProfile("dmbalert@korea.kr", "국민안전처", AlertSystemType.DmbAlertSystem);
-//		cbs = new AlertSystemProfile("cbsalert@korea.kr", "국민안전처", AlertSystemType.CbsAlertSystem);
-		
-		GatewayManager g = new GatewayManager(createGatewayTransmitter(type), gwProfile);
-
-		g.registAlertSystem(aProfile);
-//		g.registAlertSystem(bProfile);
-//		g.registAlertSystem(civil);
-//		g.registAlertSystem(dmb);
-//		g.registAlertSystem(cbs);
-
-		g.registIssuer(civilalertorg);
-//		g.registIssuer(kma);
+		//게이트웨이를 초기화하는 클래스 생성(통신모듈생성(통신방식),게이트웨이프로파일)
+		GatewayManager gatewayManager = new GatewayManager(createGatewayTransmitter(type), gatewayProfile);
+		//경보시스템을 게이트웨이를 통해 사용하기 위해 게이트웨이에 경보시스템 등록(경보시스템프로파일)  
+		gatewayManager.registAlertSystem(alertSystemProfile);
+		//경보발령대를 게이트웨이를 통해 사용하기 위해 게이트웨이에 경보발령대 등록(경보시스템프로파일)
+		gatewayManager.registIssuer(issuerProfile);
 
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		AlertSystemManager as1 = new AlertSystemManager(createAlertSystemTransmitter(type), aProfile, gwProfile);
-//		AlertSystemManager as2 = new AlertSystemManager(createAlertSystemTransmitter(type), bProfile);
-//		AlertSystemManager as3 = new AlertSystemManager(createAlertSystemTransmitter(type), civil);
-//		AlertSystemManager as4 = new AlertSystemManager(createAlertSystemTransmitter(type), dmb);
-//		AlertSystemManager as5 = new AlertSystemManager(createAlertSystemTransmitter(type), cbs);
-
-		new IssuerManager(createIssuerTransmitter(type), civilalertorg, gwProfile);
+		//경보시스템을 초기화하는 클래스 생성(통신모듈생성(통신방식),경보시스템프로파일,게이트웨이프로파일)
+		new AlertSystemManager(createAlertSystemTransmitter(type), alertSystemProfile, gatewayProfile);
+		//발령대를 초기화하는 클래스 생성(통신모듈생성(통신방식),발령대프로파일,게이트웨이프로파일)
+		new IssuerManager(createIssuerTransmitter(type), issuerProfile, gatewayProfile);
 	}
 	
+	/**
+	 * 게이트웨이 통신모듈 생성 메소드
+	 * 
+	 * @param 통신 타입
+	 * @return 통신모듈 인터페이스
+	 *
+	 */	
 	public ITransmitter createGatewayTransmitter(TransmitterType type)
 	{
 		switch (type)
 		{
 		case JMS:
 			return new GatewayTransmitter();
-		case XMPP:
-			return new BabblerTransmitter();
 		default:
 			break;
 		}
 		return null;
 	}
 
+	/**
+	 * 경보시스템 통신모듈 생성 메소드
+	 * 
+	 * @param 통신 타입
+	 * @return 통신모듈 인터페이스
+	 *
+	 */	
 	public ITransmitter createAlertSystemTransmitter(TransmitterType type) {
 		switch (type) {
 		case JMS:
 			return new AlertSystemTransmitter();
-		case XMPP:
-			return new BabblerTransmitter();
 		default:
 			break;
 		}
 		return null;
 	}
 
-	public static ITransmitter createIssuerTransmitter(TransmitterType type) {
+	/**
+	 * 발령대 통신모듈 생성 메소드
+	 * 
+	 * @param 통신 타입
+	 * @return 통신모듈 인터페이스
+	 *
+	 */	
+	public ITransmitter createIssuerTransmitter(TransmitterType type) {
 		switch (type) {
 		case JMS:
 			return new IssuerTransmitter();
-		case XMPP:
-			return new BabblerTransmitter();
 		default:
 			break;
 		}

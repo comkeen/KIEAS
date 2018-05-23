@@ -11,7 +11,6 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 {	
 	private AlertSystemView view;
 	private AlertSystemModel model;
-
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -27,7 +26,6 @@ public class AlertSystemController implements ActionListener, WindowListener, It
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 //		model.selectTopic(AlertSystemModel.ALERT_SYSTEM_TYPE, e.getItem().toString());
-
 	}	
 
 	@Override

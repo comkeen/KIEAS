@@ -7,6 +7,11 @@ import com.google.publicalerts.cap.CapValidator;
 import com.google.publicalerts.cap.CapXmlParser;
 import com.google.publicalerts.cap.NotCapException;
 
+/**
+ * 구글 CAP 라이브러리의 CapValidator를 이용한 CAP 메시지 검증을 위한 클래스
+ * @author comkeen
+ *
+ */
 public class KieasMessageValidator
 {
 	private CapValidator capValidator;

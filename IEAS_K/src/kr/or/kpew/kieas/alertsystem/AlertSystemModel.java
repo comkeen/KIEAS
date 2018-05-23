@@ -9,12 +9,12 @@ import kr.or.kpew.kieas.common.Profile;
 import kr.or.kpew.kieas.network.ITransmitter;
 
 public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
+	
 	private AlertSystemProfile profile;
-
-	ITransmitter transmitter;
-
+	private ITransmitter transmitter;
 	private AlertValidator alertValidator;
-
+	
+	//게이트웨이프로파일의 게이트웨이 이름을 JMS 데스티네이션으로 사용
 	private String gatewayName;
 
 	public static final String GEO_CODE = "GeoCode";
@@ -23,8 +23,7 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 	public static final long DELAY = 1000;
 
 
-	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile)
-	{
+	public AlertSystemModel(ITransmitter transmitter, AlertSystemProfile profile) {
 		super(profile);
 
 		this.alertValidator = new AlertValidator();
@@ -32,40 +31,31 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		transmitter.setOnMessageHandler(this);
 	}
 
-	public void init()
-	{
+	public void init() {
 		transmitter.init(profile.getSender());
 		setChanged();
 		notifyObservers(profile);
 	}
 
 	@Override
-	public void onMessage(String message)
-	{
+	public void onMessage(String message) {
 		boolean[] validationResults = alertValidator.fullValidationMessage(message);
-		if(!validationResults[0])
-		{
+		if(!validationResults[0]) {
 			System.out.println("AS: Duplicated Alert");
 			return;
-		}
-		else if(!validationResults[5])
-		{
+		} else if(!validationResults[5]) {
 			System.out.println("AS: Invalid target AS GeoCode");
 			return;
-		}
-		else
-		{
+		} else {
 			onNewMessage(message, validationResults);			
 		}
 	}
 
-	private void onNewMessage(String message, boolean[] validationResults)
-	{
+	private void onNewMessage(String message, boolean[] validationResults) {
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		kieasMessageBuilder.parse(message);
 		
-		switch (kieasMessageBuilder.getStatus())
-		{
+		switch (kieasMessageBuilder.getStatus()) {
 		case ACTUAL:
 			sendAcknowledge(message, validationResults);
 			setChanged();
@@ -80,18 +70,13 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		}
 	}
 
-	protected void sendAcknowledge(String message, boolean[] validationResults)
-	{
+	protected void sendAcknowledge(String message, boolean[] validationResults) {
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
 		String ackMessage = kieasMessageBuilder.createAckMessage(message, createMessageId(), profile.getSender(), alertValidator.getAckCode(validationResults));
 		System.out.println("AS: ackmessage \n"+ackMessage);
-		// String ackMessage = kieasMessageBuilder.createAckMessage("YoonKwan_babo", 0, "JungEunKim", null);
-		try
-		{
+		try {
 			Thread.sleep(DELAY);
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 

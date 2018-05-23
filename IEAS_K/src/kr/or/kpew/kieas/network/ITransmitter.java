@@ -11,7 +11,7 @@ public interface ITransmitter
 	
 	/**
 	 * 주어진 대상으로 데이터를 전달한다.
-	 * @param target 전달할 대상
+	 * @param target 전달할 목적지
 	 * @param message 전달할 데이터
 	 */
 	public void sendTo(String target, String message);

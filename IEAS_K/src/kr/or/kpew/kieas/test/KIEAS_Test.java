@@ -24,7 +24,8 @@ import kr.or.kpew.kieas.issuer.view.resource.TableModel;
 
 
 public class KIEAS_Test {
-	// 간단한 CAP메시지 생성 테스트
+	
+	//구글 CAP 라이브러리와 이를 사용하기 쉽게 맵핑해서 만든 CAP메시지빌더를 이용한 기본적인 CAP 메시지 생성
 	@Test
 	public void SimpleCapBuildTest() {
 		// 구글 CAP 라이브러리를 맵핑하여 만든 CAP메시지빌더 클래스를 이용한 기본 CAP메시지 생성
@@ -37,6 +38,7 @@ public class KIEAS_Test {
 		kieasMessageBuilder.setStatus(Status.ACTUAL);
 		kieasMessageBuilder.setMsgType(MsgType.ALERT);
 		kieasMessageBuilder.setScope(Scope.PUBLIC);
+		//CAP 메시지빌더의 xml 형태의 메시지 반환
 		String result1 = kieasMessageBuilder.getMessage();
 
 		// 구글 CAP 라이브러리를 이용한 기본 CAP메시지 생성
@@ -44,6 +46,7 @@ public class KIEAS_Test {
 		Alert alert = Alert.newBuilder().setXmlns(CapValidator.CAP_LATEST_XMLNS).setIdentifier("Identifier")
 				.setSender("Sender").setSent("2016-02-14T00:54:14+09:00").setStatus(Alert.Status.ACTUAL)
 				.setMsgType(Alert.MsgType.ALERT).setScope(Alert.Scope.PUBLIC).addCode("대한민국정부1.0").buildPartial();
+		//Alert 객체를 xml로 변환
 		CapXmlBuilder xmlBuilder = new CapXmlBuilder();
 		String result2 = xmlBuilder.toXml(alert);
 
@@ -53,6 +56,7 @@ public class KIEAS_Test {
 		assertEquals(true, result1.equals(result2));
 	}
 
+	//구글 CAP 라이브러리와 이를 사용하기 쉽게 맵핑해서 만든 CAP메시지빌더를 이용한 거의 모든 요소가 포함되는 CAP 메시지 생성
 	@Test
 	public void FullCapBuildTest() {
 		// 구글 CAP 라이브러리를 맵핑하여 만든 CAP메시지빌더 클래스를 이용한 CAP메시지 생성
@@ -116,6 +120,7 @@ public class KIEAS_Test {
 		assertEquals(true, result1.equals(result2));
 	}
 
+	//1개 이상 있을 수 있는 요소들에 대한 생성 테스트
 	@Test
 	public void MultiElementBuildTest() {
 		IKieasMessageBuilder kieasMessageBuilder = new KieasMessageBuilder();
@@ -152,25 +157,25 @@ public class KIEAS_Test {
 		kieasMessageBuilder.setPolygon(0, 0, 0, points);
 		kieasMessageBuilder.setPolygon(0, 0, 1, points);
 
-		// System.out.println(kieasMessageBuilder.getMessage());
+		System.out.println(kieasMessageBuilder.getMessage());
 	}
 
-	@Test
-	public void TableModelTest()
-	{
-		KieasMessageBuilder builder = new KieasMessageBuilder();
-		String[] columnNames =
-			{
-				AlertElementNames.Identifier.toString(),
-				AlertElementNames.Sender.toString(),
-				AlertElementNames.Sent.toString(),
-				KieasConstant.ACK
-			};
-		
-		TableModel tableModel = new TableModel(columnNames);
-		tableModel.updateTable(builder.buildDefaultMessage());
-		tableModel.updateTable(builder.buildDefaultMessage());
-	}
+//	@Test
+//	public void TableModelTest()
+//	{
+//		KieasMessageBuilder builder = new KieasMessageBuilder();
+//		String[] columnNames =
+//			{
+//				AlertElementNames.Identifier.toString(),
+//				AlertElementNames.Sender.toString(),
+//				AlertElementNames.Sent.toString(),
+//				KieasConstant.ACK
+//			};
+//		
+//		TableModel tableModel = new TableModel(columnNames);
+//		tableModel.updateTable(builder.buildDefaultMessage());
+//		tableModel.updateTable(builder.buildDefaultMessage());
+//	}
 	
 //	@Test
 //	public void TcpIpTest() 

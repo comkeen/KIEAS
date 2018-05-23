@@ -3,6 +3,12 @@ package kr.or.kpew.kieas.common;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 이 클래스는 내가 만든게 아니라 잘 모름.
+ * 참조문서의 "TTAK.OT-06.0055/R1"의 6.3절 응답 코드 및 설명에서 서술하는 응답 코드에 관한 구현.
+ * @author comkeen
+ *
+ */
 public class AlertValidator
 {
 	public enum AckCode

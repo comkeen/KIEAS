@@ -4,8 +4,7 @@ public interface IOnMessageHandler
 {
 	/**
 	 * 수신한 메시지를 처리하기 위한 메소드
-	 * @param sender
-	 * @param data
+	 * @param message
 	 */
 	public void onMessage(String message);
 	

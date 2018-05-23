@@ -13,7 +13,11 @@ import kr.or.kpew.kieas.common.AlertValidator.AckCode;
 
 import com.google.publicalerts.cap.Point;
 
-
+/**
+ * CAP 메시지빌더 인터페이스
+ * @author comkeen
+ *
+ */
 public interface IKieasMessageBuilder
 {	
 	public String getIdentifier();				
@@ -124,6 +128,7 @@ public interface IKieasMessageBuilder
 	/**
 	 * 현재 CAP 메시지에 대한 수신응답(Ack)메시지를 생성한다.
 	 * @param identifier 현재 시스템의 식별자
+	 * @sender 수신응답 메시지가 전달되어야 하는 목적지
 	 * @return 생성한 수신응답 메시지
 	 */
 	public String createAckMessage(String message, String identifier, String sender, AckCode ackCode);

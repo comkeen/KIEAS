@@ -11,14 +11,12 @@ import kr.or.kpew.kieas.gateway.model.GatewayModel;
 public class GatewayManager
 {
 	GatewayModel model;
-	GatewayView view;
-	GatewayController controller;
 	
 	public GatewayManager(ITransmitter transmitter, Profile profile)
 	{
 		model = new GatewayModel(transmitter, profile);		
-		view = new GatewayView();
-		controller = new GatewayController();
+		GatewayView view = new GatewayView();
+		GatewayController controller = new GatewayController();
 		
 		model.addObserver(view);		
 		view.setController(controller);		
