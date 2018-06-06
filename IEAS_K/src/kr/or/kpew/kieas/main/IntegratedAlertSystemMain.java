@@ -44,7 +44,9 @@ public class IntegratedAlertSystemMain
 		IssuerProfile issuerProfile = new IssuerProfile("civilalerter", "민방위");
 		//경보시스템 프로파일: 수신기를 생성하기 위해 필요(식별자,지역,경보시스템타입)
 		AlertSystemProfile alertSystemProfile = new AlertSystemProfile("townbroadcast085", "경상남도", AlertSystemType.LocalBroadcasting);
-		
+		alertSystemProfile.setLanguage("us-EN");
+		alertSystemProfile.setGeoCode("1100000000");
+		alertSystemProfile.setCapability("그림");
 		//게이트웨이를 초기화하는 클래스 생성(통신모듈생성(통신방식),게이트웨이프로파일)
 		GatewayManager gatewayManager = new GatewayManager(createGatewayTransmitter(type), gatewayProfile);
 		//경보시스템을 게이트웨이를 통해 사용하기 위해 게이트웨이에 경보시스템 등록(경보시스템프로파일)  

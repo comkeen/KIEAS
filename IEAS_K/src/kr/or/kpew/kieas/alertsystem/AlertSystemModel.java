@@ -66,8 +66,8 @@ public class AlertSystemModel extends IntegratedEmergencyAlertSystem {
 		case ACTUAL:
 			sendAcknowledge(message, validationResults);
 			setChanged();
-//			notifyObservers(message);
-			notifyObservers(kieasMessageBuilder.getIdentifier());
+			notifyObservers(message);
+//			notifyObservers(kieasMessageBuilder.getIdentifier());
 			break;
 		case EXERCISE:
 			break;

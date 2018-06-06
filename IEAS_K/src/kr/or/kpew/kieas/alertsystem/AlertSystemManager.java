@@ -14,7 +14,7 @@ public class AlertSystemManager
 	public AlertSystemManager(ITransmitter transmitter, AlertSystemProfile profile, Profile gateway)
 	{
 		model = new AlertSystemModel(transmitter, profile);
-		view = new AlertSystemView();
+		view = new AlertSystemView(profile);
 		controller = new AlertSystemController();
 		
 		model.addObserver(view);

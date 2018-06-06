@@ -5,6 +5,28 @@ public class AlertSystemProfile extends Profile {
 	private String name;
 	private String geoCode;
 	private AlertSystemType type;
+	private String language;
+	private String capability;
+
+	public String getCapability() {
+		return capability;
+	}
+
+
+	public void setCapability(String capability) {
+		this.capability = capability;
+	}
+
+
+	public String getLanguage() {
+		return language;
+	}
+
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
 
 	public AlertSystemProfile(String sender, String agency, AlertSystemType type) {
 		super(sender, agency);
