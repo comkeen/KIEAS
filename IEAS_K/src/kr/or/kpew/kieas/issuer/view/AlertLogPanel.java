@@ -70,7 +70,6 @@ public class AlertLogPanel
 	private JComponent initTextAreaPanel()
 	{
 		this.mTextArea = new JTextArea(10, 10);
-		mTextArea.setPreferredSize(new Dimension(500, 300));
 		mTextArea.setText("\n");
 		mPanelComponents.put(IssuerView.TEXT_AREA, mTextArea);
 		
@@ -140,5 +139,9 @@ public class AlertLogPanel
 	public void updateTable(MessageAckPair value)
 	{
 		alertLogTableModel.updateTable(value);		
+	}
+
+	public String getTextArea() {
+		return ((JTextArea) mPanelComponents.get(IssuerView.TEXT_AREA)).getText();
 	}
 }

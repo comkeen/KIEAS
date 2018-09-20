@@ -150,7 +150,7 @@ public class AlertGeneratorPanel
 
 	public String getTextArea()
 	{
-		return ((JTextArea) panelComponenets.get(IssuerView.TEXT_AREA)).getText();
+		return alertLogPanel.getTextArea();
 	}
 	
 	public String getCapElement()

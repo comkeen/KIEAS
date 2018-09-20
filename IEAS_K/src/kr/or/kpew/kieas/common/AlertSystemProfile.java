@@ -6,6 +6,7 @@ public class AlertSystemProfile extends Profile {
 	private String geoCode;
 	private AlertSystemType type;
 	private String language;
+	//수신기 표출기능을 정의한다. 문자, 그림, 음성, 영상 을 사용한다고 가정하자.
 	private String capability;
 
 	public String getCapability() {
